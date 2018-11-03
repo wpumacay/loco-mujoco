@@ -13,10 +13,19 @@ find_package( GLEW REQUIRED )
 
 include_directories( ${GLEW_INCLUDE_DIRS} )
 
+# helloworld example
 add_executable( helloworld
                 helloworld.cpp )
 target_link_libraries( helloworld
-                       mujoco200
+                       mujoco200 glfw
                        ${OPENGL_LIBRARIES} 
-                       ${GLEW_LIBRARIES}
-                       glfw )
+                       ${GLEW_LIBRARIES} )
+
+# basicIntegration example
+include_directories( "${CMAKE_SOURCE_DIR}/glengine/include" )
+
+add_executable( basicIntegration
+                basicIntegration.cpp )
+target_link_libraries( basicIntegration
+                       mujoco200nogl
+                       gengine )

@@ -1,0 +1,10 @@
+*.o
+*.pyc
+*.pyo
+*.swp
+*.swo
+*.so
+*.a
+
+build/
+.vscode/

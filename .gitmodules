@@ -1,0 +1,6 @@
+[submodule "editor"]
+	path = editor
+	url = git@github.com:wpumacay/tysocModelEditor.git
+[submodule "glengine"]
+	path = glengine
+	url = git@github.com:wpumacay/cat1.git

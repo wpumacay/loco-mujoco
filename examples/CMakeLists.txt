@@ -29,3 +29,19 @@ add_executable( basicIntegration
 target_link_libraries( basicIntegration
                        mujoco200nogl
                        gengine )
+
+
+# tinyxml2 example
+include_directories( "${CMAKE_SOURCE_DIR}/tinyxml2" )
+
+add_executable( test_tinyxml2
+                test_tinyxml2.cpp )
+target_link_libraries( test_tinyxml2
+                       tinyxml2 )
+
+# mjcf example
+add_executable( test_mjcf
+                test_mjcf.cpp
+                mjcf.cpp )
+target_link_libraries( test_mjcf
+                       tinyxml2 )

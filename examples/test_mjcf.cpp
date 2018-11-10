@@ -1,5 +1,5 @@
 
-#include "mjcf.h"
+#include "mjcf/mjcf.h"
 
 
 #ifndef MUJOCO_RESOURCES_PATH
@@ -11,11 +11,11 @@ void traverse( mjcf::IElement* element, int depth = 0 );
 int main()
 {
     std::string _modelPath( MUJOCO_RESOURCES_PATH );
-    _modelPath += "mjxml/basic.xml";
+    _modelPath += "mjxml/walker.xml";
 
     auto _root = mjcf::loadModel( _modelPath );
 
-    traverse( _root );
+    // traverse( _root );
 
     mjcf::saveModel( _root, "test_basic.xml" );
 
@@ -93,6 +93,13 @@ int main()
     }
 
     mjcf::saveModel( _root2, "test_basic_programmatical.xml" );
+
+    std::string _schemaPath( MUJOCO_RESOURCES_PATH );
+    _schemaPath += "schema.xml";
+
+    mjcf::Schema _schema;
+    _schema.load( _schemaPath );
+    _schema.print();
 
     return 0;
 }

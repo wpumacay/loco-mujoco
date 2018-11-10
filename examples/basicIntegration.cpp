@@ -62,7 +62,7 @@ int main()
         while( g_data->time - simstart < 1.0 / 60.0 )
             mj_step( g_model, g_data );
 
-        std::cout << "g_data->time : " << g_data->time << std::endl;
+        // std::cout << "g_data->time : " << g_data->time << std::endl;
         mj_step( g_model, g_data );
 
         _app->update();

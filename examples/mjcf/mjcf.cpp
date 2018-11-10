@@ -48,6 +48,8 @@ namespace mjcf
         IElement* _ielement = NULL;
 
         std::string _etype = xmlElement->Value();
+        // std::cout << "parsing element type: " << xmlElement->Value() << std::endl;
+
         if ( _etype == "mujoco" )
         {
             _ielement = parseRoot( xmlElement );
@@ -76,6 +78,12 @@ namespace mjcf
         {
             _ielement = parseCamera( xmlElement );
         }
+        else
+        {
+            std::cout << "WARNING> not supported type: " << _etype << std::endl;
+            _ielement = new IElement();
+            _ielement->etype = _etype;
+        }
 
         auto _firstChild = xmlElement->FirstChildElement();
         auto _currentChild = _firstChild;
@@ -90,170 +98,6 @@ namespace mjcf
         }
 
         return _ielement;
-    }
-
-    std::string toString( const Vec3& vec )
-    {
-        std::string _res;
-
-        _res += std::to_string( vec.x );
-        _res += " ";
-        _res += std::to_string( vec.y );
-        _res += " ";
-        _res += std::to_string( vec.z );
-
-        return _res;
-    }
-
-    std::string toString( const Vec4& vec )
-    {
-        std::string _res;
-
-        _res += std::to_string( vec.x );
-        _res += " ";
-        _res += std::to_string( vec.y );
-        _res += " ";
-        _res += std::to_string( vec.z );
-        _res += " ";
-        _res += std::to_string( vec.w );
-
-        return _res;
-    }
-
-    std::string toString( const Size& size )
-    {
-        std::string _res;
-
-        for ( size_t i = 0; i < size.ndim; i++ )
-        {
-            _res += std::to_string( size.buff[i] );
-            if ( i != ( size.ndim - 1 ) )
-            {
-                _res += " ";
-            }
-        }
-
-        return _res;
-    }
-
-    std::vector< std::string > split( const std::string& str )
-    {
-        std::vector< std::string > _res;
-                    
-        int pos = str.find( ' ' );
-        if ( pos == std::string::npos )
-        {
-            _res.push_back( str );
-            return _res;
-        }
-
-        int initpos = 0;
-
-        while ( pos != std::string::npos )
-        {
-            _res.push_back( str.substr( initpos, pos - initpos ) );
-            initpos = pos + 1;
-
-            pos = str.find( ' ', initpos );
-        }
-
-        _res.push_back( str.substr( initpos, std::min( pos, (int) str.size() ) - initpos ) );
-                    
-        return _res;
-    }
-
-    std::string safeParseString( tinyxml2::XMLElement* xmlElement,
-                                 const std::string& attribName,
-                                 const std::string& opt )
-    {
-        auto _attrib = xmlElement->Attribute( attribName.c_str() );
-
-        if ( _attrib )
-        {
-            return std::string( _attrib );
-        }
-
-        return opt;
-    }
-
-    Vec3 safeParseVec3( tinyxml2::XMLElement* xmlElement, 
-                        const std::string& attribName, 
-                        const Vec3& opt )
-    {
-        auto _attrib = xmlElement->Attribute( attribName.c_str() );
-
-        if ( _attrib )
-        {
-            return _parseVec3( _attrib );
-        }
-        return opt;
-    }
-
-    Vec4 safeParseVec4( tinyxml2::XMLElement* xmlElement, 
-                        const std::string& attribName, 
-                        const Vec4& opt )
-    {
-        auto _attrib = xmlElement->Attribute( attribName.c_str() );
-
-        if ( _attrib )
-        {
-            return _parseVec4( _attrib );
-        }
-        return opt;
-    }
-
-    Size safeParseSize( tinyxml2::XMLElement* xmlElement, 
-                        const std::string& attribName,  
-                        const Size& opt )
-    {
-        auto _attrib = xmlElement->Attribute( attribName.c_str() );
-
-        if ( _attrib )
-        {
-            return _parseSize( _attrib );
-        }
-        return opt;
-    }
-
-    Vec3 _parseVec3( const std::string& strvec )
-    {
-        Vec3 _res;
-        
-        auto _fields = split( strvec );
-        _res.x = std::stof( _fields[0] );
-        _res.y = std::stof( _fields[1] );
-        _res.z = std::stof( _fields[2] );
-
-        return _res;
-    }
-
-    Vec4 _parseVec4( const std::string& strvec )
-    {
-        Vec4 _res;
-        
-        auto _fields = split( strvec );
-        _res.x = std::stof( _fields[0] );
-        _res.y = std::stof( _fields[1] );
-        _res.z = std::stof( _fields[2] );
-        _res.w = std::stof( _fields[3] );
-
-        return _res;
-    }
-
-    Size _parseSize( const std::string& strsize )
-    {
-        Size _res;
-
-        auto _fields = split( strsize );
-
-        // @TOQO: Add asserts
-        _res.ndim = _fields.size();
-        for ( size_t i = 0; i < _fields.size(); i++ )
-        {
-            _res.buff[i] = std::stof( _fields[i] );
-        }
-
-        return _res;
     }
 
     void EBody::print()

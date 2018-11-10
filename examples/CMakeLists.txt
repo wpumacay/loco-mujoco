@@ -3,7 +3,7 @@ message( "Configuring examples" )
 
 set( CMAKE_CXX_STANDARD 11 )
 
-set( CMAKE_CXX_FLAGS "-mavx -pthread ${CMAKE_CXX_FLAGS}" )
+set( CMAKE_CXX_FLAGS "-mavx -pthread -g ${CMAKE_CXX_FLAGS}" )
 
 include_directories( "~/.mujoco/mujoco200_linux/include" )
 link_directories( "~/.mujoco/mujoco200_linux/bin" )
@@ -42,6 +42,17 @@ target_link_libraries( test_tinyxml2
 # mjcf example
 add_executable( test_mjcf
                 test_mjcf.cpp
-                mjcf.cpp )
+                mjcf/mjcf.cpp
+                mjcf/mjcf_common.cpp
+                mjcf/mjcf_utils.cpp )
 target_link_libraries( test_mjcf
+                       tinyxml2 )
+
+# mjcf generic example
+add_executable( test_mjcf_generic
+                test_mjcf_generic.cpp
+                mjcf/mjcf_elements.cpp
+                mjcf/mjcf_common.cpp
+                mjcf/mjcf_utils.cpp )
+target_link_libraries( test_mjcf_generic
                        tinyxml2 )

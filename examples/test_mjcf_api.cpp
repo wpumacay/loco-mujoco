@@ -1,24 +1,32 @@
     
 #include <mujoco.h>
-#include <glfw3.h>
 
-#include "mjcf/mjcf.h"
+#include <cmath>
+
+#include <LApp.h>
+#include <LFpsCamera.h>
+#include <LFixedCamera3d.h>
+#include <LLightDirectional.h>
+#include <LMeshBuilder.h>
+
+#include "mjcf/mjcf_api.h"
 
 
 #ifndef MUJOCO_RESOURCES_PATH
     #define MUJOCO_RESOURCES_PATH "../../res/"
 #endif
 
-#define PENDULUM_NUM_LINKS 2
+#define PENDULUM_NUM_LINKS 5
 #define PENDULUM_LINK_LEGTH 0.5f
 #define PENDULUM_BASE_LINK_NAME "link_"
 #define PENDULUM_BASE_JOINT_NAME "joint_"
+#define PENDULUM_MODEL_FILE "double_pendulum.xml"
 
 struct MjContext
 {
     mjModel*    model;
     mjData*     data;
-    
+
     // visualization
     mjvCamera   camera;
     mjvOption   options;
@@ -26,34 +34,188 @@ struct MjContext
     mjrContext  gpuContext;
 };
 
+// mouse interaction
+bool button_left = false;
+bool button_middle = false;
+bool button_right =  false;
+double lastx = 0;
+double lasty = 0;
+
 MjContext g_MujocoContext;
 
+// keyboard callback
+void keyboard(GLFWwindow* window, int key, int scancode, int act, int mods)
+{
+    // backspace: reset simulation
+    if( act==GLFW_PRESS && key==GLFW_KEY_BACKSPACE )
+    {
+        mj_resetData( g_MujocoContext.model, g_MujocoContext.data );
+        mj_forward( g_MujocoContext.model, g_MujocoContext.data );
+    }
+}
+
+
+// mouse button callback
+void mouse_button(GLFWwindow* window, int button, int act, int mods)
+{
+    // update button state
+    button_left =   (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS);
+    button_middle = (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE)==GLFW_PRESS);
+    button_right =  (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)==GLFW_PRESS);
+
+    // update mouse position
+    glfwGetCursorPos(window, &lastx, &lasty);
+}
+
+
+// mouse move callback
+void mouse_move(GLFWwindow* window, double xpos, double ypos)
+{
+    // no buttons down: nothing to do
+    if( !button_left && !button_middle && !button_right )
+        return;
+
+    // compute mouse displacement, save
+    double dx = xpos - lastx;
+    double dy = ypos - lasty;
+    lastx = xpos;
+    lasty = ypos;
+
+    // get current window size
+    int width, height;
+    glfwGetWindowSize(window, &width, &height);
+
+    // get shift key state
+    bool mod_shift = (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT)==GLFW_PRESS ||
+                      glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT)==GLFW_PRESS);
+
+    // determine action based on mouse button
+    mjtMouse action;
+    if( button_right )
+        action = mod_shift ? mjMOUSE_MOVE_H : mjMOUSE_MOVE_V;
+    else if( button_left )
+        action = mod_shift ? mjMOUSE_ROTATE_H : mjMOUSE_ROTATE_V;
+    else
+        action = mjMOUSE_ZOOM;
+
+    // move camera
+    mjv_moveCamera( g_MujocoContext.model, 
+                    action, dx/height, dy/height, 
+                    &g_MujocoContext.scene, 
+                    &g_MujocoContext.camera);
+}
+
+// scroll callback
+void scroll(GLFWwindow* window, double xoffset, double yoffset)
+{
+    // emulate vertical mouse motion = 5% of window height
+    mjv_moveCamera( g_MujocoContext.model,
+                    mjMOUSE_ZOOM, 0, -0.05*yoffset, 
+                    &g_MujocoContext.scene, 
+                    &g_MujocoContext.camera );
+}
 
 mjcf::GenericElement* createPendulum( int numLinks );
-
-mjcf::GenericElement* _createWorldBody();
 mjcf::GenericElement* _createPendulumLinks();
 mjcf::GenericElement* _createLink( mjcf::GenericElement* parent, int linkIndx = 0 );
 
-mjcf::GenericElement* _createBody( const std::string& name,
-                                   const mjcf::Vec3& pos = { 0, 0, 0 },
-                                   const mjcf::Vec4& quat = { 0, 0, 0, 1 } );
-mjcf::GenericElement* _createGeometry( const std::string& name,
-                                       const std::string& type,
-                                       const mjcf::Sizef& size,
-                                       float mass = 0.0f,
-                                       const mjcf::Vec3& pos = { 0, 0, 0 },
-                                       const mjcf::Vec4& quat = { 0, 0, 0, 1 } );
-mjcf::GenericElement* _createGeometry( const std::string& name,
-                                       const std::string& type,
-                                       const mjcf::Sizef& size,
-                                       const mjcf::Sizef& fromto,
-                                       float mass = 0.0f );
+void setBodyPosition( const std::string& name, const mjcf::Vec3& pos );
+mjcf::Vec3 getBodyPosition( const std::string& name );
+
+void setActuatorCtrl( const std::string& name, float val );
 
 int main()
 {
     auto _pendulum = createPendulum( 2 );
-    mjcf::saveGenericModel( _pendulum, "double_pendulum.xml" );
+    std::string _savefile( MUJOCO_RESOURCES_PATH );
+    _savefile += PENDULUM_MODEL_FILE;
+    mjcf::saveGenericModel( _pendulum, _savefile );
+
+    mj_activate( "/home/gregor/.mujoco/mjkey.txt" );
+
+    char _error[1000];
+    g_MujocoContext.model = mj_loadXML( _savefile.c_str(), NULL, _error, 1000 );
+    if ( !g_MujocoContext.model )
+    {
+        std::cout << "ERROR> " << std::string( _error ) << std::endl;
+        return 1;
+    }
+
+    g_MujocoContext.data = mj_makeData( g_MujocoContext.model );
+
+    // init GLFW
+    if( !glfwInit() )
+        mju_error( "Could not initialize GLFW" );
+
+    // create window, make OpenGL context current, request v-sync
+    GLFWwindow* window = glfwCreateWindow(1200, 900, "Demo", NULL, NULL);
+    glfwMakeContextCurrent(window);
+    glfwSwapInterval(1);
+
+    // initialize visualization data structures
+    mjv_defaultCamera(&g_MujocoContext.camera);
+    mjv_defaultOption(&g_MujocoContext.options);
+    mjv_defaultScene(&g_MujocoContext.scene);
+    mjr_defaultContext(&g_MujocoContext.gpuContext);
+
+    // create scene and context
+    mjv_makeScene( g_MujocoContext.model, &g_MujocoContext.scene, 2000);
+    mjr_makeContext( g_MujocoContext.model, &g_MujocoContext.gpuContext, mjFONTSCALE_150);
+
+    // install GLFW mouse and keyboard callbacks
+    glfwSetKeyCallback(window, keyboard);
+    glfwSetCursorPosCallback(window, mouse_move);
+    glfwSetMouseButtonCallback(window, mouse_button);
+    glfwSetScrollCallback(window, scroll);
+
+    // run main loop, target real-time simulation and 60 fps rendering
+    while( !glfwWindowShouldClose(window) )
+    {
+        float _z = PENDULUM_LINK_LEGTH * PENDULUM_NUM_LINKS + 0.5f;
+        float _y = 0.0;
+        float _x = std::sin( g_MujocoContext.data->time / 2.0f );
+
+        setBodyPosition( "base", { _x, _y, _z } );
+
+        setActuatorCtrl( "torque_0", 2.0f * std::sin( 5.0f * g_MujocoContext.data->time ) );
+
+        // advance interactive simulation for 1/60 sec
+        //  Assuming MuJoCo can simulate faster than real-time, which it usually can,
+        //  this loop will finish on time for the next frame to be rendered at 60 fps.
+        //  Otherwise add a cpu timer and exit this loop when it is time to render.
+        mjtNum simstart = g_MujocoContext.data->time;
+        while( g_MujocoContext.data->time - simstart < 1.0/60.0 )
+            mj_step(g_MujocoContext.model, g_MujocoContext.data);
+
+        // auto _pos = getBodyPosition( "base" );
+
+        // get framebuffer viewport
+        mjrRect viewport = {0, 0, 0, 0};
+        glfwGetFramebufferSize(window, &viewport.width, &viewport.height);
+
+        // update scene and render
+        mjv_updateScene( g_MujocoContext.model, 
+                         g_MujocoContext.data, 
+                         &g_MujocoContext.options, 
+                         NULL, &g_MujocoContext.camera, 
+                         mjCAT_ALL, &g_MujocoContext.scene);
+        mjr_render(viewport, &g_MujocoContext.scene, &g_MujocoContext.gpuContext);
+
+        // swap OpenGL buffers (blocking call due to v-sync)
+        glfwSwapBuffers(window);
+
+        // process pending GUI events, call GLFW callbacks
+        glfwPollEvents();
+    }
+
+    //free visualization storage
+    mjv_freeScene(&g_MujocoContext.scene);
+    mjr_freeContext(&g_MujocoContext.gpuContext);
+
+    // free MuJoCo model and data, deactivate
+    mj_deleteData(g_MujocoContext.data);
+    mj_deleteModel(g_MujocoContext.model);
+    mj_deactivate();
 
     return 0;
 }
@@ -90,13 +252,13 @@ mjcf::GenericElement* createPendulum( int numLinks )
         
     }
 
-    auto _worldBody = _createWorldBody();
+    auto _worldBody = mjcf::_createWorldBody();
 
     // attach some visual aspects, base plane and general info
     {
         // floor
-        auto _floor = _createBody( "floor" );
-        auto _floorGeom = _createGeometry( "floor", "plane", { 3, { 3.0, 3.0, 0.2 } }, 0.0f );
+        auto _floor = mjcf::_createBody( "floor" );
+        auto _floorGeom = mjcf::_createGeometry( "floor", "plane", { 3, { 3.0, 3.0, 0.2 } }, 0.0f );
         _floorGeom->setAttributeString( "material", "grid" );
         _floor->children.push_back( _floorGeom );
         _worldBody->children.push_back( _floor );
@@ -146,22 +308,16 @@ mjcf::GenericElement* createPendulum( int numLinks )
     return _root;
 }
 
-mjcf::GenericElement* _createWorldBody()
-{
-    return new mjcf::GenericElement( "worldbody" );
-}
-
-
 mjcf::GenericElement* _createLink( mjcf::GenericElement* parent, int linkIndx )
 {
-    auto _link = _createBody( std::string( PENDULUM_BASE_LINK_NAME ) + std::to_string( linkIndx ),
-                              { 0, 0, ( ( linkIndx == 0 ) ? 0.0f :-PENDULUM_LINK_LEGTH ) } );
+    auto _link = mjcf::_createBody( std::string( PENDULUM_BASE_LINK_NAME ) + std::to_string( linkIndx ),
+                                    { 0, 0, ( ( linkIndx == 0 ) ? 0.0f :-PENDULUM_LINK_LEGTH ) } );
     {
-        auto _linkGeom = _createGeometry( std::string( PENDULUM_BASE_LINK_NAME ) + std::to_string( linkIndx ),
-                                          "capsule",
-                                          { 1, { 0.02 } },
-                                          { 6, { 0, 0, 0, 0, 0, -PENDULUM_LINK_LEGTH } },
-                                          0.01f );
+        auto _linkGeom = mjcf::_createGeometry( std::string( PENDULUM_BASE_LINK_NAME ) + std::to_string( linkIndx ),
+                                                "capsule",
+                                                { 1, { 0.02 } },
+                                                { 6, { 0, 0, 0, 0, 0, -PENDULUM_LINK_LEGTH } },
+                                                0.01f );
         _linkGeom->setAttributeString( "material", "self" );
         _link->children.push_back( _linkGeom );
 
@@ -182,13 +338,13 @@ mjcf::GenericElement* _createLink( mjcf::GenericElement* parent, int linkIndx )
 mjcf::GenericElement* _createPendulumLinks()
 {
     // make the base body
-    auto _baseLink = _createBody( "base", { 0, 0, PENDULUM_NUM_LINKS * PENDULUM_LINK_LEGTH + 0.5f } );
+    auto _baseLink = mjcf::_createBody( "base", { 0, 0, PENDULUM_NUM_LINKS * PENDULUM_LINK_LEGTH + 0.5f } );
     // add some geometry to this element
     {
-        auto _baseGeom = _createGeometry( "base", "cylinder", 
-                                          { 1, { 0.025 } },
-                                          { 6, { 0.0, -0.1, 0.0, 0.0, 0.1, 0.0 } },
-                                          0.0f );
+        auto _baseGeom = mjcf::_createGeometry( "base", "cylinder", 
+                                                { 1, { 0.025 } },
+                                                { 6, { 0.0, -0.1, 0.0, 0.0, 0.1, 0.0 } },
+                                                0.0f );
         _baseGeom->setAttributeString( "material", "decoration" );
         _baseLink->children.push_back( _baseGeom );
     }
@@ -201,60 +357,59 @@ mjcf::GenericElement* _createPendulumLinks()
         _currentLink = _createLink( _currentLink, i );
     }
 
-    auto _effector = _createGeometry( "endmass", "sphere", 
-                                      { 1, { 0.05f } }, 1.0f, 
-                                      { 0, 0, -PENDULUM_LINK_LEGTH } );
+    auto _effector = mjcf::_createGeometry( "endmass", "sphere", 
+                                            { 1, { 0.05f } }, 1.0f, 
+                                            { 0, 0, -PENDULUM_LINK_LEGTH } );
     _currentLink->children.push_back( _effector );
 
     return _baseLink;
 }
 
-mjcf::GenericElement* _createBody( const std::string& name,
-                                   const mjcf::Vec3& pos,
-                                   const mjcf::Vec4& quat )
+
+
+mjcf::Vec3 getBodyPosition( const std::string& name )
 {
-    auto _body = new mjcf::GenericElement( "body" );
+    mjcf::Vec3 _res;
+    
+    auto _id = mj_name2id( g_MujocoContext.model, mjOBJ_BODY, name.c_str() );
+    std::cout << "id: " << _id << std::endl;
 
-    _body->setAttributeString( "name", name );
-    _body->setAttributeVec3( "pos", pos );
-    _body->setAttributeVec4( "quat", quat );
+    if ( _id != -1 )
+    {
+        _res.x = g_MujocoContext.data->xpos[ 3 * _id + 0 ];
+        _res.y = g_MujocoContext.data->xpos[ 3 * _id + 1 ];
+        _res.z = g_MujocoContext.data->xpos[ 3 * _id + 2 ];
+    }
+    else
+    {
+        std::cout << "body: " << name << " not found" << std::endl;
+    }
 
-    return _body;
+    return _res;
 }
 
-mjcf::GenericElement* _createGeometry( const std::string& name,
-                                       const std::string& type,
-                                       const mjcf::Sizef& size,
-                                       float mass,
-                                       const mjcf::Vec3& pos,
-                                       const mjcf::Vec4& quat )
+void setBodyPosition( const std::string& name, const mjcf::Vec3& pos )
 {
-    auto _geometry = new mjcf::GenericElement( "geom" );
+    auto _id = mj_name2id( g_MujocoContext.model, mjOBJ_BODY, name.c_str() );
 
-    _geometry->setAttributeString( "name", name );
-    _geometry->setAttributeString( "type", type );
-    _geometry->setAttributeArrayFloat( "size", size );
-    _geometry->setAttributeFloat( "mass", mass );
-    _geometry->setAttributeVec3( "pos", pos );
-    _geometry->setAttributeVec4( "quat", quat );
+    if ( _id != -1 )
+    {
+        g_MujocoContext.model->body_pos[ 3 * _id + 0 ] = pos.x;
+        g_MujocoContext.model->body_pos[ 3 * _id + 1 ] = pos.y;
+        g_MujocoContext.model->body_pos[ 3 * _id + 2 ] = pos.z;
 
-    return _geometry;
+        // g_MujocoContext.data->xipos[ 3 * _id + 0 ] = pos.x;
+        // g_MujocoContext.data->xipos[ 3 * _id + 1 ] = pos.y;
+        // g_MujocoContext.data->xipos[ 3 * _id + 2 ] = pos.z;
+    }
 }
 
-mjcf::GenericElement* _createGeometry( const std::string& name,
-                                       const std::string& type,
-                                       const mjcf::Sizef& size,
-                                       const mjcf::Sizef& fromto,
-                                       float mass )
+void setActuatorCtrl( const std::string& name, float val )
 {
-    auto _geometry = new mjcf::GenericElement( "geom" );
+    auto _id = mj_name2id( g_MujocoContext.model, mjOBJ_ACTUATOR, name.c_str() );
 
-    _geometry->setAttributeString( "name", name );
-    _geometry->setAttributeString( "type", type );
-    _geometry->setAttributeArrayFloat( "size", size );
-    _geometry->setAttributeFloat( "mass", mass );
-    _geometry->setAttributeArrayFloat( "fromto", fromto );
-
-    return _geometry;
+    if ( _id != -1 )
+    {
+        g_MujocoContext.data->ctrl[ _id ] = val;
+    }
 }
-

@@ -1,5 +1,5 @@
 
-#include "mjcf/mjcf_elements.h"
+#include "mjcf/mjcf.h"
 
 
 #ifndef MUJOCO_RESOURCES_PATH

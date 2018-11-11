@@ -20,6 +20,9 @@ namespace mjcf
         std::map< std::string, Sizei >          _sizeis;
         std::map< std::string, std::string >    _strings;
 
+        GenericElement();
+        GenericElement( const std::string& elementType );
+
         void collectAttribs( Schema* schema, tinyxml2::XMLElement* xmlElement );
         void insertAttribs( tinyxml2::XMLElement* xmlElement );
 
@@ -40,12 +43,4 @@ namespace mjcf
         
         void print();
     };
-
-    GenericElement* _parseGenericElement( Schema* schema, tinyxml2::XMLElement* xmlElement );
-    void _createElement( tinyxml2::XMLDocument& doc,
-                         tinyxml2::XMLElement* parentXML,
-                         GenericElement* element );
-
-    GenericElement* loadGenericModel( Schema* schema, const std::string& modelfile );
-    void saveGenericModel( GenericElement* root, const std::string& modelfile );
 }

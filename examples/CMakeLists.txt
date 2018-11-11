@@ -39,20 +39,22 @@ add_executable( test_tinyxml2
 target_link_libraries( test_tinyxml2
                        tinyxml2 )
 
-# mjcf example
-add_executable( test_mjcf
-                test_mjcf.cpp
-                mjcf/mjcf.cpp
-                mjcf/mjcf_common.cpp
-                mjcf/mjcf_utils.cpp )
-target_link_libraries( test_mjcf
-                       tinyxml2 )
-
 # mjcf generic example
 add_executable( test_mjcf_generic
                 test_mjcf_generic.cpp
+                mjcf/mjcf.cpp
                 mjcf/mjcf_elements.cpp
                 mjcf/mjcf_common.cpp
                 mjcf/mjcf_utils.cpp )
 target_link_libraries( test_mjcf_generic
+                       tinyxml2 )
+
+# mjcf api example
+add_executable( test_mjcf_api
+                test_mjcf_api.cpp
+                mjcf/mjcf.cpp
+                mjcf/mjcf_elements.cpp
+                mjcf/mjcf_common.cpp
+                mjcf/mjcf_utils.cpp )
+target_link_libraries( test_mjcf_api
                        tinyxml2 )

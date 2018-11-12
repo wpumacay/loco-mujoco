@@ -52,6 +52,8 @@ target_link_libraries( test_mjcf_generic
 # mjcf api example
 add_executable( test_mjcf_api
                 test_mjcf_api.cpp
+                pendulum.cpp
+                mjcint/mjcint_api.cpp
                 mjcf/mjcf_api.cpp
                 mjcf/mjcf.cpp
                 mjcf/mjcf_elements.cpp
@@ -60,6 +62,23 @@ add_executable( test_mjcf_api
 target_link_libraries( test_mjcf_api
                        tinyxml2
                        mujoco200
+                       glfw
+                       ${OPENGL_LIBRARIES} 
+                       ${GLEW_LIBRARIES} )
+
+# mjcf renderer integration example
+add_executable( test_mjcf_renderer
+                test_mjcf_renderer.cpp
+                pendulum.cpp
+                mjcint/mjcint_api.cpp
+                mjcf/mjcf_api.cpp
+                mjcf/mjcf.cpp
+                mjcf/mjcf_elements.cpp
+                mjcf/mjcf_common.cpp
+                mjcf/mjcf_utils.cpp )
+target_link_libraries( test_mjcf_renderer
+                       tinyxml2
+                       mujoco200nogl
                        gengine glfw
                        ${OPENGL_LIBRARIES} 
                        ${GLEW_LIBRARIES} )

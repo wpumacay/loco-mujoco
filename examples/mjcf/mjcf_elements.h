@@ -37,7 +37,7 @@ namespace mjcf
 
         int getAttributeInt( const std::string& attribName );
         float getAttributeFloat( const std::string& attribName );
-        Sizef getAttributeArrayReal( const std::string& attribName );
+        Sizef getAttributeArrayFloat( const std::string& attribName );
         Sizei getAttributeArrayInt( const std::string& attribName );
         std::string getAttributeString( const std::string& attribName );
         

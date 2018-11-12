@@ -165,4 +165,55 @@ namespace mjcf
 
         _sizefs[ attribName ] = _svec;
     }
+    
+    int GenericElement::getAttributeInt( const std::string& attribName )
+    {
+        if ( _ints.find( attribName ) != _ints.end() )
+        {
+            return _ints[ attribName ];
+        }
+
+        return 0;
+    }
+
+    float GenericElement::getAttributeFloat( const std::string& attribName )
+    {
+        if ( _floats.find( attribName ) != _floats.end() )
+        {
+            return _floats[ attribName ];
+        }
+
+        return 0.0f;
+    }
+
+    Sizef GenericElement::getAttributeArrayFloat( const std::string& attribName )
+    {
+        if ( _sizefs.find( attribName ) != _sizefs.end() )
+        {
+            return _sizefs[ attribName ];
+        }
+
+        return { 0, { 0.0f } };
+    }
+
+    Sizei GenericElement::getAttributeArrayInt( const std::string& attribName )
+    {
+        if ( _sizeis.find( attribName ) != _sizeis.end() )
+        {
+            return _sizeis[ attribName ];
+        }
+
+        return { 0, { 0 } };
+    }
+
+    std::string GenericElement::getAttributeString( const std::string& attribName )
+    {
+        if ( _strings.find( attribName ) != _strings.end() )
+        {
+            return _strings[ attribName ];
+        }
+
+        return "";
+    }
+
 }

@@ -8,17 +8,14 @@
     <actuator>
         <motor gear="1.000000" ctrlrange="-2.000000 2.000000" ctrllimited="true" joint="joint_0" name="torque_0"/>
         <motor gear="1.000000" ctrlrange="-2.000000 2.000000" ctrllimited="true" joint="joint_1" name="torque_1"/>
-        <motor gear="1.000000" ctrlrange="-2.000000 2.000000" ctrllimited="true" joint="joint_2" name="torque_2"/>
-        <motor gear="1.000000" ctrlrange="-2.000000 2.000000" ctrllimited="true" joint="joint_3" name="torque_3"/>
-        <motor gear="1.000000" ctrlrange="-2.000000 2.000000" ctrllimited="true" joint="joint_4" name="torque_4"/>
     </actuator>
     <worldbody>
         <body pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" name="floor">
             <geom mass="0.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="3.000000 3.000000 0.200000" material="grid" name="floor" type="plane"/>
         </body>
-        <light pos="0.000000 0.000000 4.500000" name="light"/>
+        <light pos="0.000000 0.000000 3.000000" name="light"/>
         <camera pos="0.000000 -1.500000 2.000000" xyaxes="1.000000 0.000000 0.000000 0.000000 1.000000 1.000000" name="fixed"/>
-        <body pos="0.000000 0.000000 3.000000" quat="0.000000 0.000000 0.000000 1.000000" name="base">
+        <body pos="0.000000 0.000000 1.500000" quat="0.000000 0.000000 0.000000 1.000000" name="base">
             <geom mass="0.000000" fromto="0.000000 -0.100000 0.000000 0.000000 0.100000 0.000000" size="0.025000" material="decoration" name="base" type="cylinder"/>
             <body pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" name="link_0">
                 <geom mass="0.010000" fromto="0.000000 0.000000 0.000000 0.000000 0.000000 -0.500000" size="0.020000" material="self" name="link_0" type="capsule"/>
@@ -26,19 +23,7 @@
                 <body pos="0.000000 0.000000 -0.500000" quat="0.000000 0.000000 0.000000 1.000000" name="link_1">
                     <geom mass="0.010000" fromto="0.000000 0.000000 0.000000 0.000000 0.000000 -0.500000" size="0.020000" material="self" name="link_1" type="capsule"/>
                     <joint damping="0.100000" axis="0.000000 1.000000 0.000000" name="joint_1" type="hinge"/>
-                    <body pos="0.000000 0.000000 -0.500000" quat="0.000000 0.000000 0.000000 1.000000" name="link_2">
-                        <geom mass="0.010000" fromto="0.000000 0.000000 0.000000 0.000000 0.000000 -0.500000" size="0.020000" material="self" name="link_2" type="capsule"/>
-                        <joint damping="0.100000" axis="0.000000 1.000000 0.000000" name="joint_2" type="hinge"/>
-                        <body pos="0.000000 0.000000 -0.500000" quat="0.000000 0.000000 0.000000 1.000000" name="link_3">
-                            <geom mass="0.010000" fromto="0.000000 0.000000 0.000000 0.000000 0.000000 -0.500000" size="0.020000" material="self" name="link_3" type="capsule"/>
-                            <joint damping="0.100000" axis="0.000000 1.000000 0.000000" name="joint_3" type="hinge"/>
-                            <body pos="0.000000 0.000000 -0.500000" quat="0.000000 0.000000 0.000000 1.000000" name="link_4">
-                                <geom mass="0.010000" fromto="0.000000 0.000000 0.000000 0.000000 0.000000 -0.500000" size="0.020000" material="self" name="link_4" type="capsule"/>
-                                <joint damping="0.100000" axis="0.000000 1.000000 0.000000" name="joint_4" type="hinge"/>
-                                <geom mass="1.000000" pos="0.000000 0.000000 -0.500000" quat="0.000000 0.000000 0.000000 1.000000" size="0.050000" name="endmass" type="sphere"/>
-                            </body>
-                        </body>
-                    </body>
+                    <geom mass="1.000000" pos="0.000000 0.000000 -0.500000" quat="0.000000 0.000000 0.000000 1.000000" size="0.050000" name="endmass" type="sphere"/>
                 </body>
             </body>
         </body>

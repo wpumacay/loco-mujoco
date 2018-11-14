@@ -23,3 +23,11 @@
 
     1. implemented basic structure of the abstract terrain generation library
     2. implemented sections-type terraing generation
+
+* Refactored repo and updated design
+
+![design-v0](../_imgs/img_tysoc_design_v0.jpg)
+
+## 14, nov, 2018
+
+@TODO: Should have finished removing the mujoco visualizer dependency and adding/integrating my custom gl engine.

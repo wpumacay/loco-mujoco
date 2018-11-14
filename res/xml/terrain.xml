@@ -1,0 +1,135 @@
+<mujoco>
+    <include file="visual.xml"/>
+    <include file="skybox.xml"/>
+    <include file="materials.xml"/>
+    <option timestep="0.002500"/>
+    <statistic extent="2.000000" center="0.000000 0.000000 1.000000"/>
+    <default>
+        <geom conaffinity="0" contype="1" friction="0.700000 0.100000 0.100000"/>
+        <site size="0.010000"/>
+        <default class="walker">
+            <geom material="self" type="capsule"/>
+            <joint axis="0.000000 -1.000000 0.000000"/>
+        </default>
+    </default>
+    <worldbody>
+        <body pos="2.000000 0.000000 7.000000" childclass="walker" name="torso">
+            <light pos="0.000000 0.000000 2.000000" mode="trackcom" name="light"/>
+            <camera euler="60.000000 0.000000 0.000000" pos="0.000000 -2.000000 0.700000" mode="trackcom" name="side"/>
+            <camera pos="-2.000000 0.000000 0.500000" xyaxes="0.000000 -1.000000 0.000000 1.000000 0.000000 3.000000" mode="trackcom" name="back"/>
+            <joint armature="0.000000" damping="0.000000" axis="0.000000 0.000000 1.000000" solimplimit="0.000000 0.990000 0.010000" limited="false" name="rootz" type="slide"/>
+            <joint armature="0.000000" damping="0.000000" axis="1.000000 0.000000 0.000000" solimplimit="0.000000 0.990000 0.010000" limited="false" name="rootx" type="slide"/>
+            <joint armature="0.000000" damping="0.000000" axis="0.000000 1.000000 0.000000" solimplimit="0.000000 0.990000 0.010000" limited="false" name="rooty" type="hinge"/>
+            <geom size="0.070000 0.300000" name="torso"/>
+            <body pos="0.000000 -0.050000 -0.300000" name="right_thigh">
+                <joint armature="0.010000" damping="0.100000" range="-20.000000 100.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="right_hip"/>
+                <geom pos="0.000000 0.000000 -0.225000" size="0.050000 0.225000" name="right_thigh"/>
+                <body pos="0.000000 0.000000 -0.700000" name="right_leg">
+                    <joint armature="0.010000" damping="0.100000" pos="0.000000 0.000000 0.250000" range="-150.000000 0.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="right_knee"/>
+                    <geom size="0.040000 0.250000" name="right_leg"/>
+                    <body pos="0.060000 0.000000 -0.250000" name="right_foot">
+                        <joint armature="0.010000" damping="0.100000" pos="-0.060000 0.000000 0.000000" range="-45.000000 45.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="right_ankle"/>
+                        <geom size="0.050000 0.100000" zaxis="1.000000 0.000000 0.000000" name="right_foot"/>
+                    </body>
+                </body>
+            </body>
+            <body pos="0.000000 0.050000 -0.300000" name="left_thigh">
+                <joint armature="0.010000" damping="0.100000" range="-20.000000 100.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="left_hip"/>
+                <geom pos="0.000000 0.000000 -0.225000" size="0.050000 0.225000" name="left_thigh"/>
+                <body pos="0.000000 0.000000 -0.700000" name="left_leg">
+                    <joint armature="0.010000" damping="0.100000" pos="0.000000 0.000000 0.250000" range="-150.000000 0.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="left_knee"/>
+                    <geom size="0.040000 0.250000" name="left_leg"/>
+                    <body pos="0.060000 0.000000 -0.250000" name="left_foot">
+                        <joint armature="0.010000" damping="0.100000" pos="-0.060000 0.000000 0.000000" range="-45.000000 45.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="left_ankle"/>
+                        <geom size="0.050000 0.100000" zaxis="1.000000 0.000000 0.000000" name="left_foot"/>
+                    </body>
+                </body>
+            </body>
+        </body>
+        <body pos="0.000000 0.000000 1.500000" quat="0.000000 0.000000 0.000000 1.000000" name="base">
+            <geom mass="0.000000" fromto="0.000000 -0.100000 0.000000 0.000000 0.100000 0.000000" size="0.025000" material="decoration" name="base" type="cylinder"/>
+            <body pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" name="link_0">
+                <geom mass="0.010000" fromto="0.000000 0.000000 0.000000 0.000000 0.000000 -0.500000" size="0.020000" material="self" name="link_0" type="capsule"/>
+                <joint damping="0.100000" axis="0.000000 1.000000 0.000000" name="joint_0" type="hinge"/>
+                <body pos="0.000000 0.000000 -0.500000" quat="0.000000 0.000000 0.000000 1.000000" name="link_1">
+                    <geom mass="0.010000" fromto="0.000000 0.000000 0.000000 0.000000 0.000000 -0.500000" size="0.020000" material="self" name="link_1" type="capsule"/>
+                    <joint damping="0.100000" axis="0.000000 1.000000 0.000000" name="joint_1" type="hinge"/>
+                    <geom mass="1.000000" pos="0.000000 0.000000 -0.500000" quat="0.000000 0.000000 0.000000 1.000000" size="0.050000" name="endmass" type="sphere"/>
+                </body>
+            </body>
+        </body>
+    </worldbody>
+    <sensor>
+        <subtreelinvel body="torso" name="torso_subtreelinvel"/>
+    </sensor>
+    <actuator>
+        <motor ctrlrange="-1.000000 1.000000" gear="100.000000" ctrllimited="true" joint="right_hip" name="right_hip"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="50.000000" ctrllimited="true" joint="right_knee" name="right_knee"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="20.000000" ctrllimited="true" joint="right_ankle" name="right_ankle"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="100.000000" ctrllimited="true" joint="left_hip" name="left_hip"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="50.000000" ctrllimited="true" joint="left_knee" name="left_knee"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="20.000000" ctrllimited="true" joint="left_ankle" name="left_ankle"/>
+    </actuator>
+    <worldbody>
+        <body pos="0.000000 0.000000 100.000000" quat="0.000000 0.000000 0.000000 1.000000" name="tobj_0">
+            <geom conaffinity="1" contype="0" mass="0.100000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="tobj_0" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 101.025002" quat="0.000000 0.000000 0.000000 1.000000" name="tobj_1">
+            <geom conaffinity="1" contype="0" mass="0.100000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="tobj_1" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 102.050003" quat="0.000000 0.000000 0.000000 1.000000" name="tobj_2">
+            <geom conaffinity="1" contype="0" mass="0.100000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="tobj_2" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 103.074997" quat="0.000000 0.000000 0.000000 1.000000" name="tobj_3">
+            <geom conaffinity="1" contype="0" mass="0.100000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="tobj_3" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 104.099998" quat="0.000000 0.000000 0.000000 1.000000" name="tobj_4">
+            <geom conaffinity="1" contype="0" mass="0.100000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="tobj_4" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 105.125000" quat="0.000000 0.000000 0.000000 1.000000" name="tobj_5">
+            <geom conaffinity="1" contype="0" mass="0.100000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="tobj_5" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 106.150002" quat="0.000000 0.000000 0.000000 1.000000" name="tobj_6">
+            <geom conaffinity="1" contype="0" mass="0.100000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="tobj_6" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 107.175003" quat="0.000000 0.000000 0.000000 1.000000" name="tobj_7">
+            <geom conaffinity="1" contype="0" mass="0.100000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="tobj_7" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 108.199997" quat="0.000000 0.000000 0.000000 1.000000" name="tobj_8">
+            <geom conaffinity="1" contype="0" mass="0.100000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="tobj_8" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 109.224998" quat="0.000000 0.000000 0.000000 1.000000" name="tobj_9">
+            <geom conaffinity="1" contype="0" mass="0.100000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="tobj_9" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 110.250000" quat="0.000000 0.000000 0.000000 1.000000" name="tobj_10">
+            <geom conaffinity="1" contype="0" mass="0.100000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="tobj_10" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 111.275002" quat="0.000000 0.000000 0.000000 1.000000" name="tobj_11">
+            <geom conaffinity="1" contype="0" mass="0.100000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="tobj_11" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 112.300003" quat="0.000000 0.000000 0.000000 1.000000" name="tobj_12">
+            <geom conaffinity="1" contype="0" mass="0.100000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="tobj_12" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 113.324997" quat="0.000000 0.000000 0.000000 1.000000" name="tobj_13">
+            <geom conaffinity="1" contype="0" mass="0.100000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="tobj_13" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 114.349998" quat="0.000000 0.000000 0.000000 1.000000" name="tobj_14">
+            <geom conaffinity="1" contype="0" mass="0.100000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="tobj_14" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 115.375000" quat="0.000000 0.000000 0.000000 1.000000" name="tobj_15">
+            <geom conaffinity="1" contype="0" mass="0.100000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="tobj_15" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 116.400002" quat="0.000000 0.000000 0.000000 1.000000" name="tobj_16">
+            <geom conaffinity="1" contype="0" mass="0.100000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="tobj_16" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 117.425003" quat="0.000000 0.000000 0.000000 1.000000" name="tobj_17">
+            <geom conaffinity="1" contype="0" mass="0.100000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="tobj_17" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 118.449997" quat="0.000000 0.000000 0.000000 1.000000" name="tobj_18">
+            <geom conaffinity="1" contype="0" mass="0.100000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="tobj_18" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 119.474998" quat="0.000000 0.000000 0.000000 1.000000" name="tobj_19">
+            <geom conaffinity="1" contype="0" mass="0.100000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="tobj_19" type="box"/>
+        </body>
+    </worldbody>
+</mujoco>

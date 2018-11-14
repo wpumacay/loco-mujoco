@@ -8,13 +8,12 @@
 #include <LLightDirectional.h>
 #include <LMeshBuilder.h>
 
-#include "mjcf/mjcf_api.h"
-#include "mjcint/mjcint_api.h"
+#include <mjcf/mjcf_api.h>
+#include <mjcint/mjcint_api.h>
+#include <helpers/pendulum.h>
 
-#include "pendulum.h"
-
-#ifndef MUJOCO_RESOURCES_PATH
-    #define MUJOCO_RESOURCES_PATH "../../res/"
+#ifndef TYSOCMJC_RESOURCES_PATH
+    #define TYSOCMJC_RESOURCES_PATH "../../res/"
 #endif
 
 #define PENDULUM_NUM_LINKS 2
@@ -262,8 +261,9 @@ int main()
 {
     // Create pendulum and initialize some mujoco
     {
-        g_pendulum = pendulum::create( PENDULUM_NUM_LINKS );
-        std::string _savefile( MUJOCO_RESOURCES_PATH );
+        g_pendulum = pendulum::create( PENDULUM_NUM_LINKS, PENDULUM_LINK_LEGTH );
+        std::string _savefile( TYSOCMJC_RESOURCES_PATH );
+        _savefile += "xml/";
         _savefile += PENDULUM_MODEL_FILE;
         mjcf::saveGenericModel( g_pendulum, _savefile );
 

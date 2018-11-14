@@ -1,28 +1,41 @@
 
-#include "mjcf/mjcf.h"
+#include <mjcf/mjcf.h>
 
 
-#ifndef MUJOCO_RESOURCES_PATH
-    #define MUJOCO_RESOURCES_PATH "../../res/"
+#ifndef TYSOCMJC_RESOURCES_PATH
+    #define TYSOCMJC_RESOURCES_PATH "../../res/"
 #endif
 
-void traverse( mjcf::GenericElement* element, int depth = 0 );
+void traverse( mjcf::GenericElement* element, int depth )
+{
+    for ( size_t i = 0; i < depth; i++ )
+    {
+        std::cout << "\t";
+    }
+    // std::cout << "el: " << element->etype << std::endl;
+    element->print();
+
+    for ( size_t i = 0; i < element->children.size(); i++ )
+    {
+        traverse( element->children[i], depth + 1 );
+    }
+}
 
 int main()
 {
     mjcf::Schema _schema;
     {
-        std::string _schemaPath( MUJOCO_RESOURCES_PATH );
-        _schemaPath += "schema.xml";
+        std::string _schemaPath( TYSOCMJC_RESOURCES_PATH );
+        _schemaPath += "xml/schema.xml";
 
         _schema.load( _schemaPath );
     }
 
-    std::string _modelPath( MUJOCO_RESOURCES_PATH );
-    _modelPath += "mjxml/walker.xml";
+    std::string _modelPath( TYSOCMJC_RESOURCES_PATH );
+    _modelPath += "xml/walker.xml";
 
     auto _root = mjcf::loadGenericModel( &_schema, _modelPath );
-    mjcf::saveGenericModel( _root, "test_basic.xml" );
+    mjcf::saveGenericModel( _root, "test_walker.xml" );
 
     auto _root2 = new mjcf::GenericElement();
     _root2->etype = "mujoco";
@@ -100,19 +113,4 @@ int main()
     mjcf::saveGenericModel( _root2, "test_generic_programmatical.xml" );
 
     return 0;
-}
-
-void traverse( mjcf::GenericElement* element, int depth )
-{
-    for ( size_t i = 0; i < depth; i++ )
-    {
-        std::cout << "\t";
-    }
-    // std::cout << "el: " << element->etype << std::endl;
-    element->print();
-
-    for ( size_t i = 0; i < element->children.size(); i++ )
-    {
-        traverse( element->children[i], depth + 1 );
-    }
 }

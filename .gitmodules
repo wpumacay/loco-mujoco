@@ -1,3 +1,9 @@
-[submodule "glengine"]
-	path = glengine
+[submodule "ext/cat1"]
+	path = ext/cat1
 	url = git@github.com:wpumacay/cat1.git
+[submodule "ext/mjCpp"]
+	path = ext/mjCpp
+	url = git@github.com:wpumacay/mjCpp.git
+[submodule "ext/tysocTerrain"]
+	path = ext/tysocTerrain
+	url = git@github.com:wpumacay/tysocTerrain.git

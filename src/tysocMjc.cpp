@@ -156,6 +156,12 @@ namespace tysocMjc
         // initialize all underlying base resources
         initialize();
 
+        // Initialize wrappers
+        for( size_t i = 0; i < m_terrainGenWrappers.size(); i++ )
+        {
+            m_terrainGenWrappers[i]->initialize();
+        }
+
         return true;
     }
 

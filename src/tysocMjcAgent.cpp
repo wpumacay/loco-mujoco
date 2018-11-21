@@ -9,10 +9,14 @@ namespace tysocMjc
 
 
     TMjcAgentWrapper::TMjcAgentWrapper( const std::string& name,
-                                        mjcf::GenericElement* modelElmPtr )
+                                        mjcf::GenericElement* modelElmPtr,
+                                        float posX, float posY, float posZ )
     {
         m_name = name;
         m_modelElmPtr = modelElmPtr;
+        m_startX = posX;
+        m_startY = posY;
+        m_startZ = posZ;
 
         // create wrapped agent object
         _createWrappedAgentObj();
@@ -73,7 +77,14 @@ namespace tysocMjc
 
             m_agentPtr->addBody( _bname );
 
-            // Add a 
+            // @HACK: for floor and root bodies, change the
+            // starting position to the one given by the user
+            // @TODO: This should be removed by the initialization ...
+            // using the mjcint helper functions
+            if ( _bname.find( "root" ) != std::string::npos )
+            {
+                elm->setAttributeVec3( "pos", { m_startX, m_startY, m_startZ } );
+            }
         }
         else if ( elm->etype == "geom" )
         {
@@ -85,6 +96,15 @@ namespace tysocMjc
             // @CHECK
             float _size[3] = { _gsize.buff[0], _gsize.buff[1], _gsize.buff[2] };
             m_agentPtr->addGeom( _gname, _gtype, _size );
+
+            // @HACK: for floor and root bodies, change the
+            // starting position to the one given by the user
+            // @TODO: This should be removed by the initialization ...
+            // using the mjcint helper functions
+            if ( _gname.find( "floor" ) != std::string::npos )
+            {
+                elm->setAttributeVec3( "pos", { m_startX, m_startY, 0.0f } );
+            }
         }
         else if ( elm->etype == "joint" )
         {
@@ -126,6 +146,7 @@ namespace tysocMjc
         auto _worldBodyElm = mjcf::findFirstChildByType( m_modelElmPtr, "worldbody" );
         auto _actuatorsElm = mjcf::findFirstChildByType( m_modelElmPtr, "actuator" );
 
+        // actuators also link to the joint name, so we should replace that too
         mjcf::replaceNameRecursive( _actuatorsElm, m_name, "joint" );
 
         root->children.push_back( _worldBodyElm );

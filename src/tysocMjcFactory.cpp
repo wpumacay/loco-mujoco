@@ -90,7 +90,8 @@ namespace tysocMjc
     }
 
     TMjcAgentWrapper* TMjcFactory::createAgent( const std::string& name,
-                                                const std::string& modelname )
+                                                const std::string& modelname,
+                                                float startX, float startY, float startZ )
     {
         if ( m_cachedModels.find( modelname ) == m_cachedModels.end() )
         {
@@ -108,22 +109,49 @@ namespace tysocMjc
         mjcf::deepCopy( _modelElm, _modelTemplateElm );
         mjcf::replaceNameRecursive( _modelElm, name );
 
-        auto _agentWrapper = new TMjcAgentWrapper( name, _modelElm );
+        auto _agentWrapper = new TMjcAgentWrapper( name, _modelElm,
+                                                   startX, startY, startZ );
 
         return _agentWrapper;
     }
 
     TMjcTerrainGenWrapper* TMjcFactory::createTerrainGen( const std::string& name,
-                                                          const std::string& type )
+                                                          const std::string& type,
+                                                          const TGenericParams& params )
     {
         tysocterrain::TTerrainGenerator* _terrainGenerator = NULL;
 
         if ( type == "procedural" )
         {
-            auto _sineProfileGenerator = new tysocterrain::TSineProfileGenerator( 2.0f, 10.0f, 1.57f );
+            tysocterrain::TProfileGenerator* _profileGenerator;
+            if ( params.getString( "profiler", "sine" ) == "sine" )
+            {
+                float _ampl     = params.getFloat( "sineProfileAmplitude", 2.0f );
+                float _period   = params.getFloat( "sineProfilePeriod", 10.0f );
+                float _phase    = params.getFloat( "sineProfilePhase", 1.57f );
+                _profileGenerator = new tysocterrain::TSineProfileGenerator( _ampl, 
+                                                                             _period, 
+                                                                             _phase );
+            }
+            else
+            {
+                _profileGenerator = new tysocterrain::TSineProfileGenerator( 2.0f, 10.0f, 1.57f );
+            }
+
+            float _deltaX   = params.getFloat( "profileDeltaX", 0.5f );
+            float _depth    = params.getFloat( "profileDepth", 1.0f );
+            float _tickness = params.getFloat( "profileTickness", 0.01f );
+
+            mjcf::Vec3 _startPosition = params.getVec3( "startPosition" );
+
             _terrainGenerator = new tysocterrain::TPathTerrainGenerator( name, 
-                                                                         _sineProfileGenerator,
-                                                                         0.5f, 3.0f, 0.01f );
+                                                                         _profileGenerator,
+                                                                         _deltaX, 
+                                                                         _depth, 
+                                                                         _tickness,
+                                                                         _startPosition.x,
+                                                                         _startPosition.y,
+                                                                         _startPosition.z );
         }
 
         auto _terrainGeneratorWrapper = new TMjcTerrainGenWrapper( name, _terrainGenerator );

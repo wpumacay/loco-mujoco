@@ -26,10 +26,15 @@ namespace tysocMjc
         void _collectBodyGeometryOrJoint( mjcf::GenericElement* elm );
         void _collectActuator( mjcf::GenericElement* elm );
 
+        float m_startX;
+        float m_startY;
+        float m_startZ;
+
         public :
 
         TMjcAgentWrapper( const std::string& name,
-                          mjcf::GenericElement* modelElmPtr );
+                          mjcf::GenericElement* modelElmPtr,
+                          float posX, float posY, float posZ );
         ~TMjcAgentWrapper();
 
         void setMjcModel( mjModel* mjcModelPtr );

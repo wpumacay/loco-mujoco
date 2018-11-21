@@ -61,6 +61,17 @@ namespace tysocMjc
         m_mjcTerrainPrimitives.clear();
     }
 
+    void TMjcTerrainGenWrapper::initialize()
+    {
+        // collect starting info from generator
+        _collectFromGenerator();
+    }
+
+    void TMjcTerrainGenWrapper::setMjcModel( mjModel* mjcModelPtr )
+    {
+        m_mjcModelPtr = mjcModelPtr;
+    }
+
     void TMjcTerrainGenWrapper::injectMjcResources( mjcf::GenericElement* root )
     {
         // create a worldbody element to inject into the root element
@@ -89,12 +100,21 @@ namespace tysocMjc
         root->children.push_back( _worldbody );
     }
 
-    void TMjcTerrainGenWrapper::setMjcModel( mjModel* mjcModelPtr )
+    void TMjcTerrainGenWrapper::preStep()
     {
-        m_mjcModelPtr = mjcModelPtr;
+        _collectFromGenerator();
+
+        // update the properties of all objects (if they have a primitive as reference)
+        for ( size_t i = 0; i < m_mjcTerrainPrimitives.size(); i++ )
+        {
+            if ( m_mjcTerrainPrimitives[i]->tysocPrimitiveObj )
+            {
+                _updateProperties( m_mjcTerrainPrimitives[i] );
+            }
+        }
     }
 
-    void TMjcTerrainGenWrapper::preStep()
+    void TMjcTerrainGenWrapper::_collectFromGenerator()
     {
         auto _newPrimitivesQueue = m_terrainGenPtr->getJustCreated();
 
@@ -108,15 +128,6 @@ namespace tysocMjc
 
         // flush the creation queue to avoid double references everywhere
         m_terrainGenPtr->flushJustCreatedQueue();
-
-        // update the properties of all objects (if they have a primitive as reference)
-        for ( size_t i = 0; i < m_mjcTerrainPrimitives.size(); i++ )
-        {
-            if ( m_mjcTerrainPrimitives[i]->tysocPrimitiveObj )
-            {
-                _updateProperties( m_mjcTerrainPrimitives[i] );
-            }
-        }
     }
 
     void TMjcTerrainGenWrapper::_updateProperties( TMjcTerrainPrimitive* mjcTerrainPritimivePtr )

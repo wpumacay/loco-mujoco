@@ -119,18 +119,55 @@ int main() /* @ADD: removed main params */
 
     auto _factory = new tysocMjc::TMjcFactory();
 
-    auto _agent1 = _factory->createAgent( "agent1",
-                                          "walker" );
-    auto _agent2 = _factory->createAgent( "agent2",
-                                          "walker" );
-    auto _terrain1 = _factory->createTerrainGen( "terrain1",
-                                                 "procedural" );
-    auto _scenario = new tysoc::TScenario();
+    // auto _agent1 = _factory->createAgent( "agent1",
+    //                                       "walker",
+    //                                       0.0f, 0.0f, 1.3f );
+    // auto _agent2 = _factory->createAgent( "agent2",
+    //                                       "walker",
+    //                                       0.0f, 3.0f, 1.3f );
+    // auto _terrain1 = _factory->createTerrainGen( "terrain1",
+    //                                              "procedural" );
+    // auto _scenario = new tysoc::TScenario();
 
+    // g_tysocApi->setScenario( _scenario );
+    // g_tysocApi->addAgentWrapper( _agent1 );
+    // g_tysocApi->addAgentWrapper( _agent2 );
+    // g_tysocApi->addTerrainGenWrapper( _terrain1 );
+
+    tysocMjc::TGenericParams _terrainParams;
+    _terrainParams.set( "sineProfileAmplitude", 2.0f );
+    _terrainParams.set( "sineProfilePeriod", 10.0f );
+    _terrainParams.set( "sineProfilePhase", 1.57f );
+    _terrainParams.set( "profileDeltaX", 0.5f );
+    _terrainParams.set( "profileDepth", 1.0f );
+    _terrainParams.set( "profileTickness", 0.01f );
+
+
+    for ( size_t i = 0; i < 10; i++ )
+    {
+        // create agent wrapper
+        auto _agent = _factory->createAgent( std::string( "walker_" ) + std::to_string( i ),
+                                             "walker",
+                                             0.0f, i * 2.5f, 1.3f );
+
+        // create agent wrapper
+        mjcf::Vec3 _startPosition = { 0.0f, i * 2.5f, 0.0f };
+        _terrainParams.set( "startPosition", _startPosition );
+        auto _terrain = _factory->createTerrainGen( std::string( "terrain_proc" ) + std::to_string( i ),
+                                                    "procedural", _terrainParams );
+        
+        auto _terrainGen        = _terrain->terrainGenerator();
+        auto _terrainGenInfo    = _terrainGen->generatorInfo();
+        _terrainGenInfo->trackingpoint.x = 0.0f;
+        _terrainGenInfo->trackingpoint.y = i * 2.5f;
+        _terrainGenInfo->trackingpoint.z = 0.0f;
+
+        g_tysocApi->addAgentWrapper( _agent );
+        g_tysocApi->addTerrainGenWrapper( _terrain );
+    }
+
+    auto _scenario = new tysoc::TScenario();
     g_tysocApi->setScenario( _scenario );
-    g_tysocApi->addAgentWrapper( _agent1 );
-    g_tysocApi->addAgentWrapper( _agent2 );
-    g_tysocApi->addTerrainGenWrapper( _terrain1 );
 
     if ( !g_tysocApi->initializeMjcApi() )
     {

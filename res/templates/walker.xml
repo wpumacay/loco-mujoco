@@ -1,15 +1,15 @@
 <mujoco model="template_walker">
 
   <worldbody>
-    <!--<geom name="mjcgeom_###_floor" type="plane" contype="1" conaffinity="1" pos="248 0 0" size="250 1.25 .2" material="grid" zaxis="0 0 1" friction=".7 .1 .1"/>-->
-    <body name="mjcbody_###_torso" pos="0 0 1.3" >
+    <geom name="mjcgeom_###_floor" type="plane" contype="1" conaffinity="1" pos="0 0 0" size="1 1 .2" material="grid" zaxis="0 0 1" friction=".7 .1 .1"/>
+    <body name="mjcbody_###_root" pos="0 0 1.3" >
       <light name="mjclight_###_light" pos="0 0 2" mode="trackcom"/>
       <camera name="mjccam_###_side" pos="0 -2 .7" euler="60 0 0" mode="trackcom"/>
       <camera name="mjccam_###_back" pos="-2 0 .5" xyaxes="0 -1 0 1 0 3" mode="trackcom"/>
       <joint name="mjcjoint_###_rootz" axis="0 0 1" type="slide" limited="false" armature="0" damping="0" solimplimit="0 .99 .01"/>
       <joint name="mjcjoint_###_rootx" axis="1 0 0" type="slide" limited="false" armature="0" damping="0" solimplimit="0 .99 .01"/>
       <joint name="mjcjoint_###_rooty" axis="0 1 0" type="hinge" limited="false" armature="0" damping="0" solimplimit="0 .99 .01"/>
-      <geom name="mjcgeom_###_torso" material="self" type="capsule" size="0.07 0.3" contype="1" conaffinity="0" friction=".7 .1 .1"/>
+      <geom name="mjcgeom_###_root" material="self" type="capsule" size="0.07 0.3" contype="1" conaffinity="0" friction=".7 .1 .1"/>
       <body name="mjcbody_###_right_thigh" pos="0 -.05 -0.3">
         <joint name="mjcjoint_###_right_hip" axis="0 -1 0" range="-20 100" damping=".1" armature="0.01" limited="true" solimplimit="0 .99 .01"/>
         <geom name="mjcgeom_###_right_thigh" material="self" type="capsule" pos="0 0 -0.225" size="0.05 0.225" contype="1" conaffinity="0" friction=".7 .1 .1"/>
@@ -38,7 +38,7 @@
   </worldbody>
 
   <sensor>
-    <subtreelinvel name="mjcsensor_###_torso_subtreelinvel" body="mjcbody_###_torso"/>
+    <subtreelinvel name="mjcsensor_###_root_subtreelinvel" body="mjcbody_###_root"/>
   </sensor>
 
   <actuator>

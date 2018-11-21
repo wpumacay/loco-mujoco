@@ -4,6 +4,7 @@
   <include file="materials.xml"/>
 
   <option timestep="0.0025"/>
+  <size njmax="4000" nconmax="1000"/>
 
   <statistic extent="2" center="0 0 1"/>
 

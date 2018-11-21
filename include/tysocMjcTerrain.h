@@ -52,6 +52,7 @@ namespace tysocMjc
         // name for this agentwrapper (and underlying agent as well)
         std::string m_name;
 
+        void _collectFromGenerator();
         void _wrapNewPrimitive( tysocterrain::TTerrainPrimitive* primitivePtr );
         void _updateProperties( TMjcTerrainPrimitive* mjcTerrainPritimivePtr );
 
@@ -61,6 +62,7 @@ namespace tysocMjc
                                tysocterrain::TTerrainGenerator* terrainGenPtr );
         ~TMjcTerrainGenWrapper();
 
+        void initialize();
         void setMjcModel( mjModel* mjcModelPtr );
 
         std::string name() { return m_name; }

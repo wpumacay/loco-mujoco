@@ -33,7 +33,8 @@ add_library( tysocMjc
 target_link_libraries( tysocMjc
 					   cat1
 					   mjcppnogl
-					   tysocterrain )
+                       mjcpp
+					   tysoc )
 
 # ****************************************************************************
 

@@ -3,7 +3,7 @@
 
 #include <mjcf/mjcf_api.h>
 #include <mjcint/mjcint_api.h>
-#include <terrains/terrain_sections.h>
+#include <terrain/terrain.h>
 
 #include <map>
 #include <vector>
@@ -26,7 +26,7 @@ namespace mjterrain
         std::string                             objType;
         mjcf::Sizef                             objSize;
         bool                                    available;
-        tysocterrain::TConnectedPathSection*    sectionObj;
+        tysocterrain::TPathTerrainPrimitive*    sectionObj;
     };
 
     // @TODO: Check and refactor if needed. Is it ok bridge pattern here?
@@ -57,12 +57,12 @@ namespace mjterrain
         TerrainHandler( tysocterrain::TScenario* scenarioObj );
         virtual ~TerrainHandler();
         
-        void initialize( tysocterrain::TScenarioContext* scenarioContext,
+        void initialize( tysocterrain::TGeneratorInfo* scenarioContext,
                          mjModel* model, 
                          mjData* data );
         void saveResourcesIntoMjcf( mjcf::GenericElement* root );
 
-        virtual void update( tysocterrain::TScenarioContext* scenarioContext ) = 0;
+        virtual void update( tysocterrain::TGeneratorInfo* scenarioContext ) = 0;
     };
 
     class TerrainConnectedPathHandler : public TerrainHandler
@@ -71,13 +71,13 @@ namespace mjterrain
         
         void _updateProperties( TerrainObj* terrainObj );
                                 
-        void _createSection( tysocterrain::TConnectedPathSection* section );
+        void _createSection( tysocterrain::TPathTerrainPrimitive* section );
 
         public :
 
         TerrainConnectedPathHandler( tysocterrain::TScenarioConnectedPath* scenarioObj );
         
-        void update( tysocterrain::TScenarioContext* scenarioContext ) override;
+        void update( tysocterrain::TGeneratorInfo* scenarioContext ) override;
 
     }; 
 

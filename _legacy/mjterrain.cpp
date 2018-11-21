@@ -71,7 +71,7 @@ namespace mjterrain
         m_terrainObjs.clear();
     }
 
-    void TerrainHandler::initialize( tysocterrain::TScenarioContext* scenarioContext,
+    void TerrainHandler::initialize( tysocterrain::TGeneratorInfo* scenarioContext,
                                      mjModel* model, 
                                      mjData* data )
     {
@@ -119,7 +119,7 @@ namespace mjterrain
         // Make some extra stuff if needed
     }
 
-    void TerrainConnectedPathHandler::update( tysocterrain::TScenarioContext* scenarioContext )
+    void TerrainConnectedPathHandler::update( tysocterrain::TGeneratorInfo* scenarioContext )
     {
         m_scenarioObj->update( scenarioContext );
 
@@ -167,7 +167,7 @@ namespace mjterrain
                            _sectionObj->rbound );
     }
 
-    void TerrainConnectedPathHandler::_createSection( tysocterrain::TConnectedPathSection* section )
+    void TerrainConnectedPathHandler::_createSection( tysocterrain::TPathTerrainPrimitive* section )
     {
         // if the pool is empty, recycle the last object
         if ( m_availableObjs.empty() )

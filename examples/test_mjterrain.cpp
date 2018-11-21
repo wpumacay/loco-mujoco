@@ -135,7 +135,7 @@ int main() /* @ADD: removed main params */
     
     // Create the terrain handler
     tysocterrain::TScenarioConnectedPath* _scenario         = NULL;
-    tysocterrain::TScenarioContext* _scenarioContext        = NULL;
+    tysocterrain::TGeneratorInfo* _scenarioContext        = NULL;
     mjterrain::TerrainConnectedPathHandler* _terrainHandler = NULL;
 
     {
@@ -143,7 +143,7 @@ int main() /* @ADD: removed main params */
         _scenario = new tysocterrain::TScenarioConnectedPath( _sineProfileGenerator,
                                                               0.5f, 3.0f, 0.01f );
 
-        _scenarioContext = new tysocterrain::TScenarioContext();
+        _scenarioContext = new tysocterrain::TGeneratorInfo();
         _scenarioContext->trackingpoint = { 0.0f, 0.0f, 0.0f };
         _scenarioContext->time = 0.0f;
         _scenarioContext->deltatime = 0.0f;

@@ -150,10 +150,23 @@ int main( int argc, const char** argv ) /* @ADD: removed main params */
     // g_tysocApi->addTerrainGenWrapper( _terrain1 );
 
     tysocMjc::TGenericParams _terrainParams;
-    _terrainParams.set( "sineProfileAmplitude", 2.0f );
-    _terrainParams.set( "sineProfilePeriod", 10.0f );
-    _terrainParams.set( "sineProfilePhase", 1.57f );
-    _terrainParams.set( "profileDeltaX", 0.5f );
+    // perlin params
+    {
+        _terrainParams.set( "profiler", "perlin" );
+        _terrainParams.set( "perlinProfileOctaves", 4 );
+        _terrainParams.set( "perlinProfilePersistance", 0.5f );
+        _terrainParams.set( "perlinProfileLacunarity", 2.0f );
+        _terrainParams.set( "perlinProfileNoiseScale", 10.0f );
+    }
+    // sine params
+    {
+        // _terrainParams.set( "profiler", "sine" )
+        // _terrainParams.set( "sineProfileAmplitude", 2.0f );
+        // _terrainParams.set( "sineProfilePeriod", 10.0f );
+        // _terrainParams.set( "sineProfilePhase", 1.57f );
+    }
+
+    _terrainParams.set( "profileDeltaX", 0.25f );
     _terrainParams.set( "profileDepth", 1.0f );
     _terrainParams.set( "profileTickness", 0.01f );
 

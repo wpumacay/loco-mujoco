@@ -124,7 +124,7 @@ namespace tysocMjc
         if ( type == "procedural" )
         {
             tysocterrain::TProfileGenerator* _profileGenerator;
-            if ( params.getString( "profiler", "sine" ) == "sine" )
+            if ( params.getString( "profiler" ) == "sine" )
             {
                 float _ampl     = params.getFloat( "sineProfileAmplitude", 2.0f );
                 float _period   = params.getFloat( "sineProfilePeriod", 10.0f );
@@ -132,6 +132,17 @@ namespace tysocMjc
                 _profileGenerator = new tysocterrain::TSineProfileGenerator( _ampl, 
                                                                              _period, 
                                                                              _phase );
+            }
+            else if ( params.getString( "profiler" ) == "perlin" )
+            {
+                int _octaves        = params.getInt( "perlinProfileOctaves", 4 );
+                float _persistance  = params.getFloat( "perlinProfilePersistance", 0.5f );
+                float _lacunarity   = params.getFloat( "perlinProfileLacunarity", 2.0f );
+                float _noiseScale   = params.getFloat( "perlinProfileNoiseScale", 10.0f );
+                _profileGenerator = new tysocterrain::TPerlin1DProfileGenerator( _octaves,
+                                                                                 _persistance,
+                                                                                 _lacunarity,
+                                                                                 _noiseScale );
             }
             else
             {

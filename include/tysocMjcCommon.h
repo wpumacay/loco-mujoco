@@ -13,6 +13,7 @@
 #include <vector>
 #include <queue>
 #include <cmath>
+#include <random>
 
 #ifndef TYSOCMJC_RESOURCES_PATH
     #define TYSOCMJC_RESOURCES_PATH "../res"

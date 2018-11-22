@@ -1,0 +1,102 @@
+<mujoco model="Humanoid">
+
+    <worldbody>
+        <!--<geom name="mjcgeom_###_floor" pos="0 0 0" size="0 0 .25" type="plane" material="matplane" condim="3"/>-->
+
+        <light directional="false" diffuse=".2 .2 .2" specular="0 0 0" pos="0 0 5" dir="0 0 -1" castshadow="false"/>
+        <light mode="targetbodycom" target="mjcbody_###_tmjcroot" directional="false" diffuse=".8 .8 .8" specular="0.3 0.3 0.3" pos="0 0 4.0" dir="0 0 -1"/>
+
+        <body name="mjcbody_###_tmjcroot" pos="0 0 1.4">
+            <freejoint name="mjcjoint_###_root" /><!--armature="0"-->
+            <geom condim="1" material="matgeom" name="mjcgeom_###_torso1" type="capsule" fromto="0 -0.07 0 0 .07 0"  size="0.07"/>
+            <geom condim="1" material="matgeom" name="mjcgeom_###_head" type="sphere" pos="0 0 .19" size=".09"/>
+            <geom condim="1" material="matgeom" name="mjcgeom_###_uwaist" type="capsule" fromto="-0.01 -0.06 -0.12 -0.01 .06 -0.12" size="0.06"/>
+            <body name="mjcbody_###_lwaist" pos="-0.01 0 -0.260" quat="1.000 0 -0.002 0" >
+                <geom condim="1" material="matgeom" name="mjcgeom_###_lwaist" type="capsule" fromto="0 -0.06 0 0 .06 0"  size="0.06" />
+                <joint name="mjcjoint_###_abdomen_z" type="hinge" pos="0 0 0.065" axis="0 0 1" range="-45 45" damping="5" stiffness="20" armature="0.02" limited="true" />
+                <joint name="mjcjoint_###_abdomen_y" type="hinge" pos="0 0 0.065" axis="0 1 0" range="-75 30" damping="5" stiffness="10" armature="0.02" limited="true" />
+                <body name="mjcbody_###_pelvis" pos="0 0 -0.165" quat="1.000 0 -0.002 0" >
+                    <joint name="mjcjoint_###_abdomen_x" type="hinge" pos="0 0 0.1" axis="1 0 0" range="-35 35" damping="5" stiffness="10" armature="0.02" limited="true" />
+                    <geom condim="1" material="matgeom" name="mjcgeom_###_butt" type="capsule" fromto="-0.02 -0.07 0 -0.02 .07 0"  size="0.09" />
+                    <body name="mjcbody_###_right_thigh" pos="0 -0.1 -0.04" >
+                        <joint name="mjcjoint_###_right_hip_x" type="hinge" pos="0 0 0" axis="1 0 0" range="-25 5"   damping="5" stiffness="10" armature="0.01" limited="true" />
+                        <joint name="mjcjoint_###_right_hip_z" type="hinge" pos="0 0 0" axis="0 0 1" range="-60 35"  damping="5" stiffness="10" armature="0.01" limited="true" />
+                        <joint name="mjcjoint_###_right_hip_y" type="hinge" pos="0 0 0" axis="0 1 0" range="-120 20" damping="5" stiffness="20" armature="0.01" limited="true" />
+                        <geom condim="1" material="matgeom" name="mjcgeom_###_right_thigh1" type="capsule" fromto="0 0 0 0 0.01 -0.34"  size="0.06" />
+                        <body name="mjcbody_###_right_shin" pos="0 0.01 -0.403" >
+                            <joint name="mjcjoint_###_right_knee" type="hinge" pos="0 0 .02" axis="0 -1 0" range="-160 -2" stiffness="1" armature="0.0060" limited="true" damping="1" />
+                            <geom condim="1" material="matgeom" name="mjcgeom_###_right_shin1" type="capsule" fromto="0 0 0 0 0 -0.3"   size="0.049" />
+                            <body name="mjcbody_###_right_foot" pos="0 0 -0.39" >
+                                <joint name="mjcjoint_###_right_ankle_y" type="hinge" pos="0 0 0.08" axis="0 1 0"   range="-50 50" stiffness="4" armature="0.0008" limited="true" damping="1" />
+                                <joint name="mjcjoint_###_right_ankle_x" type="hinge" pos="0 0 0.04" axis="1 0 0.5" range="-50 50" stiffness="1"  armature="0.0006" limited="true" damping="1" />
+                                <geom condim="1" material="matgeom" name="mjcgeom_###_right_foot_cap1" type="capsule" fromto="-0.07 -0.02 0 0.14 -0.04 0"  size="0.027" />
+                                <geom condim="1" material="matgeom" name="mjcgeom_###_right_foot_cap2" type="capsule" fromto="-0.07 0 0 0.14  0.02 0"  size="0.027" />
+                            </body>
+                        </body>
+                    </body>
+                    <body name="mjcbody_###_left_thigh" pos="0 0.1 -0.04" >
+                        <joint name="mjcjoint_###_left_hip_x" type="hinge" pos="0 0 0" axis="-1 0 0" range="-25 5"  damping="5" stiffness="10" armature="0.01" limited="true" />
+                        <joint name="mjcjoint_###_left_hip_z" type="hinge" pos="0 0 0" axis="0 0 -1" range="-60 35" damping="5" stiffness="10" armature="0.01" limited="true" />
+                        <joint name="mjcjoint_###_left_hip_y" type="hinge" pos="0 0 0" axis="0 1 0" range="-120 20" damping="5" stiffness="20" armature="0.01" limited="true" />
+                        <geom condim="1" material="matgeom" name="mjcgeom_###_left_thigh1" type="capsule" fromto="0 0 0 0 -0.01 -0.34"  size="0.06" />
+                        <body name="mjcbody_###_left_shin" pos="0 -0.01 -0.403" >
+                            <joint name="mjcjoint_###_left_knee" type="hinge" pos="0 0 .02" axis="0 -1 0" range="-160 -2" stiffness="1" armature="0.0060" limited="true" damping="1" />
+                            <geom condim="1" material="matgeom" name="mjcgeom_###_left_shin1" type="capsule" fromto="0 0 0 0 0 -0.3"   size="0.049" />
+                            <body name="mjcbody_###_left_foot" pos="0 0 -0.39" >
+                                <joint name="mjcjoint_###_left_ankle_y" type="hinge" pos="0 0 0.08" axis="0 1 0"   range="-50 50"  stiffness="4" armature="0.0008" limited="true" damping="1" />
+                                <joint name="mjcjoint_###_left_ankle_x" type="hinge" pos="0 0 0.04" axis="1 0 0.5" range="-50 50"  stiffness="1"  armature="0.0006" limited="true" damping="1" />
+                                <geom condim="1" material="matgeom" name="mjcgeom_###_left_foot_cap1" type="capsule" fromto="-0.07 0.02 0 0.14 0.04 0"  size="0.027" />
+                                <geom condim="1" material="matgeom" name="mjcgeom_###_left_foot_cap2" type="capsule" fromto="-0.07 0 0 0.14  -0.02 0"  size="0.027" />
+                            </body>
+                        </body>
+                    </body>
+                </body>
+            </body>
+            <body name="mjcbody_###_right_upper_arm" pos="0 -0.17 0.06" >
+                <joint name="mjcjoint_###_right_shoulder1" type="hinge" pos="0 0 0" axis="2 1 1"  range="-85 60" stiffness="1" armature="0.0068" limited="true" damping="1" />
+                <joint name="mjcjoint_###_right_shoulder2" type="hinge" pos="0 0 0" axis="0 -1 1" range="-85 60" stiffness="1"  armature="0.0051" limited="true" damping="1" />
+                <geom condim="1" material="matgeom" name="mjcgeom_###_right_uarm1" type="capsule" fromto="0 0 0 .16 -0.16 -0.16"  size="0.04 0.16" />
+                <body name="mjcbody_###_right_lower_arm" pos=".18 -0.18 -0.18" >
+                    <joint name="mjcjoint_###_right_elbow" type="hinge" pos="0 0 0" axis="0 -1 1" range="-90 50"  stiffness="0" armature="0.0028" limited="true" damping="1" />
+                    <geom condim="1" material="matgeom" name="mjcgeom_###_right_larm" type="capsule" fromto="0.01 0.01 0.01 .17 .17 .17"  size="0.031" />
+                    <geom condim="1" material="matgeom" name="mjcgeom_###_right_hand" type="sphere" pos=".18 .18 .18"  size="0.04"/>
+                </body>
+            </body>
+            <body name="mjcbody_###_left_upper_arm" pos="0 0.17 0.06" >
+                <joint name="mjcjoint_###_left_shoulder1" type="hinge" pos="0 0 0" axis="2 -1 1" range="-60 85" stiffness="1" armature="0.0068" limited="true" damping="1" />
+                <joint name="mjcjoint_###_left_shoulder2" type="hinge" pos="0 0 0" axis="0 1 1" range="-60 85"  stiffness="1" armature="0.0051" limited="true" damping="1" />
+                <geom condim="1" material="matgeom" name="mjcgeom_###_left_uarm1" type="capsule" fromto="0 0 0 .16 .16 -0.16"  size="0.04 0.16" />
+                <body name="mjcbody_###_left_lower_arm" pos=".18 .18 -0.18" >
+                    <joint name="mjcjoint_###_left_elbow" type="hinge" pos="0 0 0" axis="0 -1 -1" range="-90 50" stiffness="0" armature="0.0028" limited="true" damping="1" />
+                    <geom condim="1" material="matgeom" name="mjcgeom_###_left_larm" type="capsule" fromto="0.01 -0.01 0.01 .17 -0.17 .17"  size="0.031" />
+                    <geom condim="1" material="matgeom" name="mjcgeom_###_left_hand" type="sphere" pos=".18 -0.18 .18"  size="0.04"/>
+                </body>
+            </body>
+        </body>
+    </worldbody>
+
+    <actuator>
+        <motor name="mjcact_###_abdomen_y"       gear="200" joint="mjcjoint_###_abdomen_y"       ctrlrange="-0.4 .4" ctrllimited="true" />
+        <motor name="mjcact_###_abdomen_z"       gear="200" joint="mjcjoint_###_abdomen_z"       ctrlrange="-0.4 .4" ctrllimited="true" />
+        <motor name="mjcact_###_abdomen_x"       gear="200" joint="mjcjoint_###_abdomen_x"       ctrlrange="-0.4 .4" ctrllimited="true" />
+        <motor name="mjcact_###_right_hip_x"     gear="200" joint="mjcjoint_###_right_hip_x"     ctrlrange="-0.4 .4" ctrllimited="true" />
+        <motor name="mjcact_###_right_hip_z"     gear="200" joint="mjcjoint_###_right_hip_z"     ctrlrange="-0.4 .4" ctrllimited="true" />
+        <motor name="mjcact_###_right_hip_y"     gear="600" joint="mjcjoint_###_right_hip_y"     ctrlrange="-0.4 .4" ctrllimited="true" />
+        <motor name="mjcact_###_right_knee"      gear="400" joint="mjcjoint_###_right_knee"      ctrlrange="-0.4 .4" ctrllimited="true" />
+        <motor name="mjcact_###_right_ankle_x"   gear="100" joint="mjcjoint_###_right_ankle_x"   ctrlrange="-0.4 .4" ctrllimited="true" />
+        <motor name="mjcact_###_right_ankle_y"   gear="100" joint="mjcjoint_###_right_ankle_y"   ctrlrange="-0.4 .4" ctrllimited="true" />
+        <motor name="mjcact_###_left_hip_x"      gear="200" joint="mjcjoint_###_left_hip_x"      ctrlrange="-0.4 .4" ctrllimited="true" />
+        <motor name="mjcact_###_left_hip_z"      gear="200" joint="mjcjoint_###_left_hip_z"      ctrlrange="-0.4 .4" ctrllimited="true" />
+        <motor name="mjcact_###_left_hip_y"      gear="600" joint="mjcjoint_###_left_hip_y"      ctrlrange="-0.4 .4" ctrllimited="true" />
+        <motor name="mjcact_###_left_knee"       gear="400" joint="mjcjoint_###_left_knee"       ctrlrange="-0.4 .4" ctrllimited="true" />
+        <motor name="mjcact_###_left_ankle_x"    gear="100" joint="mjcjoint_###_left_ankle_x"    ctrlrange="-0.4 .4" ctrllimited="true" />
+        <motor name="mjcact_###_left_ankle_y"    gear="100" joint="mjcjoint_###_left_ankle_y"    ctrlrange="-0.4 .4" ctrllimited="true" />
+        <motor name="mjcact_###_right_shoulder1" gear="100" joint="mjcjoint_###_right_shoulder1" ctrlrange="-0.4 .4" ctrllimited="true" />
+        <motor name="mjcact_###_right_shoulder2" gear="100" joint="mjcjoint_###_right_shoulder2" ctrlrange="-0.4 .4" ctrllimited="true" />
+        <motor name="mjcact_###_right_elbow"     gear="200" joint="mjcjoint_###_right_elbow"     ctrlrange="-0.4 .4" ctrllimited="true" />
+        <motor name="mjcact_###_left_shoulder1"  gear="100" joint="mjcjoint_###_left_shoulder1"  ctrlrange="-0.4 .4" ctrllimited="true" />
+        <motor name="mjcact_###_left_shoulder2"  gear="100" joint="mjcjoint_###_left_shoulder2"  ctrlrange="-0.4 .4" ctrllimited="true" />
+        <motor name="mjcact_###_left_elbow"      gear="200" joint="mjcjoint_###_left_elbow"      ctrlrange="-0.4 .4" ctrllimited="true" />
+    </actuator>
+
+</mujoco>

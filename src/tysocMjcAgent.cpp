@@ -81,7 +81,7 @@ namespace tysocMjc
             // starting position to the one given by the user
             // @TODO: This should be removed by the initialization ...
             // using the mjcint helper functions
-            if ( _bname.find( "root" ) != std::string::npos )
+            if ( _bname.find( "tmjcroot" ) != std::string::npos )
             {
                 elm->setAttributeVec3( "pos", { m_startX, m_startY, m_startZ } );
             }
@@ -148,6 +148,7 @@ namespace tysocMjc
 
         // actuators also link to the joint name, so we should replace that too
         mjcf::replaceNameRecursive( _actuatorsElm, m_name, "joint" );
+        mjcf::replaceNameRecursive( _worldBodyElm, m_name, "target" );
 
         root->children.push_back( _worldBodyElm );
         root->children.push_back( _actuatorsElm );

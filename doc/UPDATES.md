@@ -28,6 +28,18 @@
 
 ![design-v0](../_imgs/img_tysoc_design_v0.jpg)
 
-## 14, nov, 2018
+## 21, nov, 2018
 
-@TODO: Should have finished removing the mujoco visualizer dependency and adding/integrating my custom gl engine.
+![terrain-progress-3](../_imgs/gif_terrain_progress_3.gif)
+
+![terrain-progress-4](../_imgs/gif_terrain_progress_4.gif)
+
+![terrain-progress-5](../_imgs/gif_terrain_progress_5.gif)
+
+![terrain-progress-6](../_imgs/gif_terrain_progress_6.gif)
+
+* Implemented framework :
+
+    1. Implemented the full base framework and added wrappers for mujoco
+    2. Added perlin noise generator
+    3. Added walker and humanoid template

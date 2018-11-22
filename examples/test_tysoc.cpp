@@ -160,7 +160,7 @@ int main( int argc, const char** argv ) /* @ADD: removed main params */
     }
     // sine params
     {
-        // _terrainParams.set( "profiler", "sine" )
+        // _terrainParams.set( "profiler", "sine" );
         // _terrainParams.set( "sineProfileAmplitude", 2.0f );
         // _terrainParams.set( "sineProfilePeriod", 10.0f );
         // _terrainParams.set( "sineProfilePhase", 1.57f );
@@ -175,7 +175,7 @@ int main( int argc, const char** argv ) /* @ADD: removed main params */
     {
         // create agent wrapper
         auto _agent = _factory->createAgent( std::string( "walker_" ) + std::to_string( i ),
-                                             "walker",
+                                             "humanoid",
                                              1.0f, i * 2.5f, 4.5f );
 
         // create agent wrapper

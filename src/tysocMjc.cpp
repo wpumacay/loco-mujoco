@@ -139,6 +139,7 @@ namespace tysocMjc
         for ( size_t i = 0; i < m_terrainGenWrappers.size(); i++ )
         {
             m_terrainGenWrappers[i]->setMjcModel( m_mjcModelPtr );
+            m_terrainGenWrappers[i]->setMjcScene( m_mjcScenePtr );
             m_scenarioPtr->addTerrainGenerator( m_terrainGenWrappers[i]->terrainGenerator() );
         }
 

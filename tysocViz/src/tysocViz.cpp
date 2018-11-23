@@ -31,9 +31,12 @@ namespace tysocViz
                                                     engine::LVec3( -1, -1, -1 ) );
         _light->setVirtualPosition( engine::LVec3( 5, 0, 5 ) );
 
+        auto _skybox = new engine::LSkybox( "starfield" );
+
         // add these components to the scene
         _scene->addCamera( _camera );
         _scene->addLight( _light );
+        _scene->addSkybox( _skybox );
     }
 
     TVisualizer::~TVisualizer()
@@ -159,6 +162,23 @@ namespace tysocViz
         }
     }
 
+    void TVisualizer::_setColor( engine::LMesh* meshPtr, float* color )
+    {
+        auto _material = meshPtr->getMaterial();
+
+        _material->ambient.x = color[0];
+        _material->ambient.y = color[1];
+        _material->ambient.z = color[2];
+
+        _material->diffuse.x = color[0];
+        _material->diffuse.y = color[1];
+        _material->diffuse.z = color[2];
+
+        _material->specular.x = color[0];
+        _material->specular.y = color[1];
+        _material->specular.z = color[2];
+    }
+
     void TVisualizer::_cacheTerrainGeometry( tysocterrain::TTerrainPrimitive* terrainGeomPtr )
     {
         engine::LMesh* _glMesh = NULL;
@@ -250,6 +270,11 @@ namespace tysocViz
 
     void TVisualizer::_updateAgentWrapper( TVizAgentMeshWrapper* agentWrapperPtr )
     {
+        float _color[3] = { agentWrapperPtr->geometry->color.r,
+                            agentWrapperPtr->geometry->color.g,
+                            agentWrapperPtr->geometry->color.b };
+        _setColor( agentWrapperPtr->glMesh, _color );
+
         agentWrapperPtr->glMesh->pos.x = agentWrapperPtr->geometry->pos.x;
         agentWrapperPtr->glMesh->pos.y = agentWrapperPtr->geometry->pos.y;
         agentWrapperPtr->glMesh->pos.z = agentWrapperPtr->geometry->pos.z;
@@ -268,6 +293,11 @@ namespace tysocViz
     void TVisualizer::_updateTerrainWrapper( TVizTerrainMeshWrapper* terrainWrapperPtr )
     {
         _resizeMesh( terrainWrapperPtr->glMesh, terrainWrapperPtr->geometry );
+
+        float _color[3] = { terrainWrapperPtr->geometry->color.r,
+                            terrainWrapperPtr->geometry->color.g,
+                            terrainWrapperPtr->geometry->color.b };
+        _setColor( terrainWrapperPtr->glMesh, _color );
 
         terrainWrapperPtr->glMesh->setVisibility( terrainWrapperPtr->geometry->inUse );
 

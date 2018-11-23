@@ -50,6 +50,8 @@ namespace tysocViz
         void _resizeMesh( engine::LMesh* meshPtr, 
                           tysocterrain::TTerrainPrimitive* terrainGeomPtr );
 
+        void _setColor( engine::LMesh* meshPtr, float* color );
+
         public :
 
         TVisualizer( tysoc::TTysocCommonApi* api );

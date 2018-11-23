@@ -12,6 +12,7 @@ namespace tysocMjc
         m_name = name;
         m_terrainGenPtr = terrainGenPtr;
         m_mjcModelPtr = NULL;
+        m_mjcScenePtr = NULL;
 
         // initialize mujoco resources
         for ( size_t i = 0; i < MJC_TERRAIN_POOL_SIZE; i++ )
@@ -42,6 +43,7 @@ namespace tysocMjc
         }
 
         m_mjcModelPtr = NULL;
+        m_mjcScenePtr = NULL;
 
         while ( !m_mjcAvailablePrimitives.empty() )
         {
@@ -70,6 +72,11 @@ namespace tysocMjc
     void TMjcTerrainGenWrapper::setMjcModel( mjModel* mjcModelPtr )
     {
         m_mjcModelPtr = mjcModelPtr;
+    }
+
+    void TMjcTerrainGenWrapper::setMjcScene( mjvScene* mjcScenePtr )
+    {
+        m_mjcScenePtr = mjcScenePtr;
     }
 
     void TMjcTerrainGenWrapper::injectMjcResources( mjcf::GenericElement* root )
@@ -151,6 +158,15 @@ namespace tysocMjc
                            mjcTerrainPritimivePtr->mjcBodyName,
                            _primitiveObj->rbound );
 
+        float _color[3];
+        mjcint::getGeometryColor( m_mjcModelPtr,
+                                  m_mjcScenePtr,
+                                  mjcTerrainPritimivePtr->mjcBodyName,
+                                  _color );
+
+        _primitiveObj->color.r = _color[0];
+        _primitiveObj->color.g = _color[1];
+        _primitiveObj->color.b = _color[2];
     }
 
     void TMjcTerrainGenWrapper::_wrapNewPrimitive( tysocterrain::TTerrainPrimitive* primitivePtr )

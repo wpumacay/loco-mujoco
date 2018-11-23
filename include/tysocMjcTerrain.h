@@ -48,6 +48,7 @@ namespace tysocMjc
 
         // a reference to the mujoco model
         mjModel* m_mjcModelPtr;
+        mjvScene* m_mjcScenePtr;
 
         // name for this agentwrapper (and underlying agent as well)
         std::string m_name;
@@ -64,6 +65,7 @@ namespace tysocMjc
 
         void initialize();
         void setMjcModel( mjModel* mjcModelPtr );
+        void setMjcScene( mjvScene* mjcScenePtr );
 
         std::string name() { return m_name; }
         tysocterrain::TTerrainGenerator* terrainGenerator() { return m_terrainGenPtr; }

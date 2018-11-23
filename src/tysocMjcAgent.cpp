@@ -335,6 +335,16 @@ namespace tysocMjc
             it->second->rotmat[6] = _rotmat[6];
             it->second->rotmat[7] = _rotmat[7];
             it->second->rotmat[8] = _rotmat[8];
+
+            float _color[3];
+            mjcint::getGeometryColor( m_mjcModelPtr,
+                                      m_mjcScenePtr,
+                                      it->second->name,
+                                      _color );
+
+            it->second->color.r = _color[0];
+            it->second->color.g = _color[1];
+            it->second->color.b = _color[2];
         }
 
         // do nothing with the joints, seems we need sensors here instead

@@ -53,7 +53,7 @@ int main( int argc, const char** argv )
     {
         // create agent wrapper
         auto _agent = _factory->createAgent( std::string( "walker_" ) + std::to_string( i ),
-                                             "ball",
+                                             "humanoid",
                                              2.0f, i * 2.5f, 1.5f );
 
         // create agent wrapper
@@ -69,14 +69,19 @@ int main( int argc, const char** argv )
         _terrainGenInfo->trackingpoint.z = 0.0f;
 
         // create a sensor
-        auto _sensorName = std::string( "walker_sensor_" ) + std::to_string( i ) + std::string( "_pathterrain" );
-        auto _sensor = new tysocsensor::TPathTerrainSensor( _sensorName,
-                                                            (tysocterrain::TPathTerrainGenerator*)_terrain->terrainGenerator(),
-                                                            _agent->agent(), true );
+        auto _sensor1Name = std::string( "walker_sensor_" ) + std::to_string( i ) + std::string( "_pathterrain" );
+        auto _sensor1 = new tysocsensor::TPathTerrainSensor( _sensor1Name,
+                                                             (tysocterrain::TPathTerrainGenerator*)_terrain->terrainGenerator(),
+                                                             _agent->agent(), false );
+
+        auto _sensor2Name = std::string( "walker_sensor_" ) + std::to_string( i ) + std::string( "_intrinsics" );
+        auto _sensor2 = new tysocsensor::TAgentIntrinsicsSensor( _sensor2Name,
+                                                                 _agent->agent() );
 
         _tysocApi->addAgentWrapper( _agent );
         _tysocApi->addTerrainGenWrapper( _terrain );
-        _tysocApi->getScenario()->addSensor( _sensor );
+        _tysocApi->getScenario()->addSensor( _sensor1 );
+        _tysocApi->getScenario()->addSensor( _sensor2 );
     }
 
     if ( !_tysocApi->initializeMjcApi() )
@@ -102,12 +107,12 @@ int main( int argc, const char** argv )
 
         _currentX += 0.025f;
 
-        // auto _terrainGens = _tysocApi->getTerrainGenerators();
-        // for ( size_t i = 0; i < _terrainGens.size(); i++ )
-        // {
-        //     auto _genInfoPtr = _terrainGens[i]->generatorInfo();
-        //     _genInfoPtr->trackingpoint.x = _currentX;
-        // }
+        auto _terrainGens = _tysocApi->getTerrainGenerators();
+        for ( size_t i = 0; i < _terrainGens.size(); i++ )
+        {
+            auto _genInfoPtr = _terrainGens[i]->generatorInfo();
+            _genInfoPtr->trackingpoint.x = _currentX;
+        }
 
 
         // for ( size_t i = 0; i < NUM_AGENTS; i++ )

@@ -225,6 +225,30 @@ namespace tysocViz
 
             engine::DebugSystem::drawLinesBatch( _lines );
         }
+        else if ( _measurement->type == "AgentIntrinsicsMeasurement" )
+        {
+            auto _agentMeasurement = reinterpret_cast< tysocsensor::TAgentIntrinsicsSensorMeasurement* >
+                                        ( _measurement );
+
+            std::vector< engine::LLine > _lines;
+            for ( size_t i = 0; i < ( _agentMeasurement->bodiesRelativePosition.size() / 3 ); i++ )
+            {
+                engine::LLine _pline;
+
+                _pline.start.x = _agentMeasurement->rootPosition.x;
+                _pline.start.y = _agentMeasurement->rootPosition.y;
+                _pline.start.z = _agentMeasurement->rootPosition.z;
+
+                _pline.end.x = _pline.start.x + _agentMeasurement->bodiesRelativePosition[3 * i + 0];
+                _pline.end.y = _pline.start.y + _agentMeasurement->bodiesRelativePosition[3 * i + 1];
+                _pline.end.z = _pline.start.z + _agentMeasurement->bodiesRelativePosition[3 * i + 2];
+
+
+                _lines.push_back( _pline );
+            }
+
+            engine::DebugSystem::drawLinesBatch( _lines, { 1.0f, 0.1f, 0.0f } );
+        }
     }
 
     void TVisualizer::_cacheTerrainGeometry( tysocterrain::TTerrainPrimitive* terrainGeomPtr )

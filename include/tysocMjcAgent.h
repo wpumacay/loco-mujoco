@@ -47,6 +47,9 @@ namespace tysocMjc
         std::string name();
         tysocagent::TAgent* agent() { return m_agentPtr; }
 
+        void getPosition( float &x, float &y, float &z );
+        void setPosition( float x, float y, float z );
+
         void injectMjcResources( mjcf::GenericElement* root );
 
         void preStep();// actuator controls

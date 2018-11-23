@@ -166,6 +166,23 @@ namespace tysocMjc
         return true;
     }
 
+    void TTysocMjcApi::setAgentPosition( const std::string& name,
+                                         float x, float y, float z )
+    {
+        if ( m_agentWrappers.find( name ) != m_agentWrappers.end() )
+        {
+            m_agentWrappers[ name ]->setPosition( x, y, z );
+        }
+    }
+    void TTysocMjcApi::getAgentPosition( const std::string& name,
+                                         float &x, float &y, float &z )
+    {
+        if ( m_agentWrappers.find( name ) != m_agentWrappers.end() )
+        {
+            m_agentWrappers[ name ]->getPosition( x, y, z );
+        }
+    }
+
     void TTysocMjcApi::_preStep()
     {
         // collect terrain generaion info by letting ...

@@ -51,8 +51,8 @@ int main( int argc, const char** argv )
     {
         // create agent wrapper
         auto _agent = _factory->createAgent( std::string( "walker_" ) + std::to_string( i ),
-                                             "walker",
-                                             1.0f, i * 2.5f, 4.5f );
+                                             "ball",
+                                             1.0f, i * 2.5f, 1.5f );
 
         // create agent wrapper
         mjcf::Vec3 _startPosition = { 0.0f, i * 2.5f, 0.0f };
@@ -84,6 +84,8 @@ int main( int argc, const char** argv )
     auto _viz = new tysocViz::TVisualizer( _tysocApi );
     _viz->initialize();
 
+    float _currentX = 0.0f;
+
     while( _viz->isActive() )
     {
         // update api
@@ -92,18 +94,29 @@ int main( int argc, const char** argv )
         // update visualizer
         _viz->update();
 
+        _currentX += 0.025f;
+
         auto _terrainGens = _tysocApi->getTerrainGenerators();
         for ( size_t i = 0; i < _terrainGens.size(); i++ )
         {
             auto _genInfoPtr = _terrainGens[i]->generatorInfo();
-            _genInfoPtr->trackingpoint.x += 0.025f;
+            _genInfoPtr->trackingpoint.x = _currentX;
         }
 
-        for ( size_t i = 0; i < NUM_AGENTS; i++ )
+
+        // for ( size_t i = 0; i < NUM_AGENTS; i++ )
+        // {
+        //     auto _agentName = std::string( "walker_" ) + std::to_string( i );
+        //     auto _actuatorName = std::string( "mjcact_" ) + _agentName + std::string( "_right_hip" );
+        //     _tysocApi->setAgentAction( _agentName, _actuatorName, std::cos( _tysocApi->getMjcData()->time ) );
+        // }
+
+        auto _agents = _tysocApi->getAgents();
+        for ( auto it = _agents.begin(); it != _agents.end(); it++ )
         {
-            auto _agentName = std::string( "walker_" ) + std::to_string( i );
-            auto _actuatorName = std::string( "mjcact_" ) + _agentName + std::string( "_right_hip" );
-            _tysocApi->setAgentAction( _agentName, _actuatorName, std::cos( _tysocApi->getMjcData()->time ) );
+            float x, y, z;
+            _tysocApi->getAgentPosition( it->first, x, y, z );
+            _tysocApi->setAgentPosition( it->first, _currentX - 0.5f, y, z );
         }
 
     }

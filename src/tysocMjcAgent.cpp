@@ -64,8 +64,14 @@ namespace tysocMjc
         // @TODO: Adde sensors as well
 
         // collect bodies, geometries and joints from the worldbody
-        _collectBodyGeometryOrJoint( _worldBodyElm );
-        _collectActuator( _actuatorsElm );
+        if ( _worldBodyElm )
+        {
+            _collectBodyGeometryOrJoint( _worldBodyElm );
+        }
+        if ( _actuatorsElm )
+        {
+            _collectActuator( _actuatorsElm );
+        }
     }
 
     void TMjcAgentWrapper::_collectBodyGeometryOrJoint( mjcf::GenericElement* elm )
@@ -283,17 +289,42 @@ namespace tysocMjc
         }
     }
 
+    void TMjcAgentWrapper::getPosition( float &x, float &y, float &z )
+    {
+        auto _tmjcRootName = std::string( "mjcbody_" ) + m_name + std::string( "_tmjcroot" );
+
+        auto _pos = mjcint::getBodyPosition( m_mjcModelPtr, _tmjcRootName );
+
+        x = _pos.x; y = _pos.y; z = _pos.z;
+    }
+
+    void TMjcAgentWrapper::setPosition( float x, float y, float z )
+    {
+        auto _tmjcRootName = std::string( "mjcbody_" ) + m_name + std::string( "_tmjcroot" );
+
+        mjcint::setBodyPosition( m_mjcModelPtr,
+                                 _tmjcRootName,
+                                 { x, y, z } );
+    }
+
     void TMjcAgentWrapper::injectMjcResources( mjcf::GenericElement* root )
     {
         auto _worldBodyElm = mjcf::findFirstChildByType( m_modelElmPtr, "worldbody" );
         auto _actuatorsElm = mjcf::findFirstChildByType( m_modelElmPtr, "actuator" );
 
         // actuators also link to the joint name, so we should replace that too
-        mjcf::replaceNameRecursive( _actuatorsElm, m_name, "joint" );
-        mjcf::replaceNameRecursive( _worldBodyElm, m_name, "target" );
 
-        root->children.push_back( _worldBodyElm );
-        root->children.push_back( _actuatorsElm );
+        if ( _actuatorsElm )
+        {
+            mjcf::replaceNameRecursive( _actuatorsElm, m_name, "joint" );
+            root->children.push_back( _actuatorsElm );
+        }
+
+        if ( _worldBodyElm )
+        {
+            mjcf::replaceNameRecursive( _worldBodyElm, m_name, "target" );
+            root->children.push_back( _worldBodyElm );
+        }
     }
 
     void TMjcAgentWrapper::preStep()

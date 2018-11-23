@@ -88,6 +88,11 @@ namespace tysocMjc
 
         bool initializeMjcApi();
 
+        void setAgentPosition( const std::string& name,
+                               float x, float y, float z );
+        void getAgentPosition( const std::string& name,
+                               float &x, float &y, float &z );
+
         mjModel* getMjcModel() { return m_mjcModelPtr; }
         mjData* getMjcData() { return m_mjcDataPtr; }
         mjvScene* getMjcScene() { return m_mjcScenePtr; }

@@ -4,7 +4,7 @@
 #include <tysocMjcCommon.h>
 
 // Pool size for the number of mjc bodies to use
-#define MJC_TERRAIN_POOL_SIZE 30
+#define MJC_TERRAIN_POOL_SIZE PROCEDURAL_TERRAIN_POOL_SIZE - 1
 // Default parameters for the connected-paths section
 #define MJC_TERRAIN_PATH_DEFAULT_WIDTH 0.5f
 #define MJC_TERRAIN_PATH_DEFAULT_DEPTH 2.0f

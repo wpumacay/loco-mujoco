@@ -14,7 +14,7 @@ mjData* g_data;
 
 int main()
 {
-    mj_activate( "/home/gregor/.mujoco/mjkey.txt" );
+    mj_activate( "~/.mujoco/mjkey.txt" );
 
     std::string _modelPath( TYSOCMJC_RESOURCES_PATH );
     _modelPath += "xml/basic.xml";

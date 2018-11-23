@@ -20,7 +20,6 @@
 #include "string.h"
 #include <iostream>
 
-
 #include <tysocMjc.h>
 
 mjrContext con;                     // custom GPU context
@@ -175,7 +174,7 @@ int main( int argc, const char** argv ) /* @ADD: removed main params */
     {
         // create agent wrapper
         auto _agent = _factory->createAgent( std::string( "walker_" ) + std::to_string( i ),
-                                             "humanoid",
+                                             "walker",
                                              1.0f, i * 2.5f, 4.5f );
 
         // create agent wrapper

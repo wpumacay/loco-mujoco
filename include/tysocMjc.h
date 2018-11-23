@@ -8,6 +8,10 @@
 // abstract api to extend from
 #include <api_adapter.h>
 
+#ifndef MUJOCO_LICENSE_FILE
+    #define MUJOCO_LICENSE_FILE "~/.mujoco/mjkey.txt"
+#endif
+
 namespace tysocMjc
 {
 

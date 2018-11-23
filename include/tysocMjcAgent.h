@@ -26,6 +26,9 @@ namespace tysocMjc
         void _collectBodyGeometryOrJoint( mjcf::GenericElement* elm );
         void _collectActuator( mjcf::GenericElement* elm );
 
+        void _extractStandardSize( mjcf::GenericElement* geomElm,
+                                   float* targetSize );
+
         float m_startX;
         float m_startY;
         float m_startZ;

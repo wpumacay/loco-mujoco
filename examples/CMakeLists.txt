@@ -11,3 +11,9 @@ add_executable( test_tysoc
                 test_tysoc.cpp )
 target_link_libraries( test_tysoc
                        tysocMjc )
+
+# test_viz example
+add_executable( test_viz
+                test_viz.cpp )
+target_link_libraries( test_viz
+                       tysocMjc )

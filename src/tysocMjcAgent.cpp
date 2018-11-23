@@ -94,7 +94,10 @@ namespace tysocMjc
             auto _gsize = elm->getAttributeArrayFloat( "size" );
 
             // @CHECK
-            float _size[3] = { _gsize.buff[0], _gsize.buff[1], _gsize.buff[2] };
+            // needed for the glengine, but it should be ...
+            // easily used for other engines as well
+            float _size[3] = { 0.0f, 0.0f, 0.0f };
+            _extractStandardSize( elm, _size );
             m_agentPtr->addGeom( _gname, _gtype, _size );
 
             // @HACK: for floor and root bodies, change the
@@ -138,6 +141,145 @@ namespace tysocMjc
         for ( size_t i = 0; i < elm->children.size(); i++ )
         {
             _collectActuator( elm->children[i] );
+        }
+    }
+
+    void TMjcAgentWrapper::_extractStandardSize( mjcf::GenericElement* geomElm,
+                                                 float* targetSize )
+    {
+        auto _gname     = geomElm->getAttributeString( "name" );
+        auto _gtype     = geomElm->getAttributeString( "type" );
+        auto _gsize     = geomElm->getAttributeArrayFloat( "size" );
+        auto _gfromto   = geomElm->getAttributeArrayFloat( "fromto" );
+
+        if ( _gtype == "plane" )
+        {
+            // should normalize sizes accordingly
+            float _width, _depth;
+            if ( _gsize.ndim == 0 )
+            {
+                // This is weird, but just in case make some default dimenions
+                std::cout << "WARNING> the plane " <<  _gname << " has no size :/" << std::endl;
+                _width = 3.0f;
+                _depth = 3.0f;
+            }
+            else if ( _gsize.ndim == 1 )
+            {
+                // the dimensions should be repeated
+                _width = _depth = _gsize.buff[0];
+            }
+            else if ( _gsize.ndim >= 2 )
+            {
+                // each dimensiones has a separate field
+                _width = _gsize.buff[0];
+                _depth = _gsize.buff[1];
+                // third is spacing
+            }
+
+            targetSize[0] = _width;
+            targetSize[1] = _depth;
+        }
+        else if ( _gtype == "sphere" )
+        {
+            float _radius;
+
+            if ( _gsize.ndim == 0 )
+            {
+                // This is weird, but just in case make some default dimenions
+                std::cout << "WARNING> the sphere " << _gname  << " has no size :/" << std::endl;
+                _radius = 0.1f;
+            }
+            else if ( _gsize.ndim == 1 )
+            {
+                _radius = _gsize.buff[0];
+            }
+            else
+            {
+                // just in case, if someone passed more parameters than needed
+                // it's like ... "thanks, but no thanks xD", so just use the first two
+                std::cout << "WARNING> the sphere "<< _gname << " has more parameters than needed" << std::endl;
+                _radius = _gsize.buff[0];
+            }
+
+            targetSize[0] = _radius;
+        }
+        else if ( _gtype == "capsule" ||
+                  _gtype == "cylinder" )
+        {
+            float _radius, _length;
+
+            // This one is a bit trick, because it might have a fromto
+            if ( _gfromto.ndim == 6 ) // use fromto
+            {
+                /*   _____________________
+                *   |                     |
+                *  |  s                 e  |
+                *   |_____________________|
+                */
+                // first 3 are start point (s)
+                float _x1 = _gfromto.buff[0];
+                float _y1 = _gfromto.buff[1];
+                float _z1 = _gfromto.buff[2];
+                // second 3 are the end point (e)
+                float _x2 = _gfromto.buff[3];
+                float _y2 = _gfromto.buff[4];
+                float _z2 = _gfromto.buff[5];
+                // get the length of the capsule (the space orientation is ...
+                // computed from the scene, so we just use that one)
+                float _dx = ( _x2 - _x1 );
+                float _dy = ( _y2 - _y1 );
+                float _dz = ( _z2 - _z1 );
+                _length = sqrtf( _dx * _dx + _dy * _dy + _dz * _dz );
+
+                // get the radius from the size param
+                if ( _gsize.ndim >= 1 )
+                {
+                    _radius = _gsize.buff[0];
+                }
+                else
+                {
+                    std::cout << "WARNING> the capsule/cylinder " << _gname << " has wrong size dim for fromto" << std::endl;
+                    _radius = 0.25f * _length;
+                }
+            }
+            else
+            {
+                if ( _gsize.ndim == 2 )
+                {
+                    _radius = _gsize.buff[0];
+                    _length = 2.0f * _gsize.buff[1];
+                }
+                else
+                {
+                    // default, just in case passed less than (radius,length)
+                    std::cout << "WARNING> the capsule/cylinder " << _gname << " has wrong size dim" << std::endl;
+                    _radius = 0.05f;
+                    _length = 0.1f;
+                }
+            }
+
+            targetSize[0] = _radius;
+            targetSize[1] = _length;
+        }
+        else if ( _gtype == "box" )
+        {
+            float _hwidth, _hdepth, _hheight;
+
+            if ( _gsize.ndim == 3 )
+            {
+                _hwidth  = _gsize.buff[0];
+                _hdepth  = _gsize.buff[1];
+                _hheight = _gsize.buff[2];
+            }
+            else
+            {
+                std::cout << "WARNING> the box " << _gname << " has wrong dims for creation" << std::endl;
+                _hwidth = _hdepth = _hheight = 0.1f;
+            }
+
+            targetSize[0] = 2 * _hwidth;
+            targetSize[1] = 2 * _hdepth;
+            targetSize[2] = 2 * _hheight;
         }
     }
 

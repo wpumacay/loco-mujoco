@@ -106,7 +106,7 @@ namespace tysocMjc
 
         // Initialize mujoco ***********************************************
 
-        mj_activate( "/home/gregor/.mujoco/mjkey.txt" );
+        mj_activate( MUJOCO_LICENSE_FILE );
 
         char _error[1000];
         m_mjcModelPtr = mj_loadXML( _workspaceModelPath.c_str(), NULL, _error, 1000 );

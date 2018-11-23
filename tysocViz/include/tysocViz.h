@@ -52,6 +52,8 @@ namespace tysocViz
 
         void _setColor( engine::LMesh* meshPtr, float* color );
 
+        void _updateSensor( tysocsensor::TSensor* sensorPtr );
+
         public :
 
         TVisualizer( tysoc::TTysocCommonApi* api );

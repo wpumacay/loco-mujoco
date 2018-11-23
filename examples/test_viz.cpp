@@ -46,13 +46,15 @@ int main( int argc, const char** argv )
     _terrainParams.set( "profileDepth", 1.0f );
     _terrainParams.set( "profileTickness", 0.01f );
 
+    auto _scenario = new tysoc::TScenario();
+    _tysocApi->setScenario( _scenario );
 
     for ( size_t i = 0; i < NUM_AGENTS; i++ )
     {
         // create agent wrapper
         auto _agent = _factory->createAgent( std::string( "walker_" ) + std::to_string( i ),
                                              "ball",
-                                             1.0f, i * 2.5f, 1.5f );
+                                             2.0f, i * 2.5f, 1.5f );
 
         // create agent wrapper
         mjcf::Vec3 _startPosition = { 0.0f, i * 2.5f, 0.0f };
@@ -66,12 +68,16 @@ int main( int argc, const char** argv )
         _terrainGenInfo->trackingpoint.y = i * 2.5f;
         _terrainGenInfo->trackingpoint.z = 0.0f;
 
+        // create a sensor
+        auto _sensorName = std::string( "walker_sensor_" ) + std::to_string( i ) + std::string( "_pathterrain" );
+        auto _sensor = new tysocsensor::TPathTerrainSensor( _sensorName,
+                                                            (tysocterrain::TPathTerrainGenerator*)_terrain->terrainGenerator(),
+                                                            _agent->agent(), true );
+
         _tysocApi->addAgentWrapper( _agent );
         _tysocApi->addTerrainGenWrapper( _terrain );
+        _tysocApi->getScenario()->addSensor( _sensor );
     }
-
-    auto _scenario = new tysoc::TScenario();
-    _tysocApi->setScenario( _scenario );
 
     if ( !_tysocApi->initializeMjcApi() )
     {
@@ -96,12 +102,12 @@ int main( int argc, const char** argv )
 
         _currentX += 0.025f;
 
-        auto _terrainGens = _tysocApi->getTerrainGenerators();
-        for ( size_t i = 0; i < _terrainGens.size(); i++ )
-        {
-            auto _genInfoPtr = _terrainGens[i]->generatorInfo();
-            _genInfoPtr->trackingpoint.x = _currentX;
-        }
+        // auto _terrainGens = _tysocApi->getTerrainGenerators();
+        // for ( size_t i = 0; i < _terrainGens.size(); i++ )
+        // {
+        //     auto _genInfoPtr = _terrainGens[i]->generatorInfo();
+        //     _genInfoPtr->trackingpoint.x = _currentX;
+        // }
 
 
         // for ( size_t i = 0; i < NUM_AGENTS; i++ )
@@ -111,13 +117,13 @@ int main( int argc, const char** argv )
         //     _tysocApi->setAgentAction( _agentName, _actuatorName, std::cos( _tysocApi->getMjcData()->time ) );
         // }
 
-        auto _agents = _tysocApi->getAgents();
-        for ( auto it = _agents.begin(); it != _agents.end(); it++ )
-        {
-            float x, y, z;
-            _tysocApi->getAgentPosition( it->first, x, y, z );
-            _tysocApi->setAgentPosition( it->first, _currentX - 0.5f, y, z );
-        }
+        // auto _agents = _tysocApi->getAgents();
+        // for ( auto it = _agents.begin(); it != _agents.end(); it++ )
+        // {
+        //     float x, y, z;
+        //     _tysocApi->getAgentPosition( it->first, x, y, z );
+        //     _tysocApi->setAgentPosition( it->first, _currentX - 2.25f, y, z );
+        // }
 
     }
 

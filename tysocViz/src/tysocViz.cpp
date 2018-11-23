@@ -179,6 +179,54 @@ namespace tysocViz
         _material->specular.z = color[2];
     }
 
+    void TVisualizer::_updateSensor( tysocsensor::TSensor* sensorPtr )
+    {
+        auto _measurement = sensorPtr->getSensorMeasurement();
+
+        // @TODO: Move this part to a separate module (kind of ...
+        // delegate the functionality of rendering specifics to
+        // other submodules of the visualizer)
+
+        if ( _measurement->type == "PathTerrainMeasurement" )
+        {
+            // draw profile from sensor reading
+            auto _pathMeasurement = reinterpret_cast< tysocsensor::TPathTerrainSensorMeasurement* >
+                                        ( _measurement );
+
+            std::vector< engine::LLine > _lines;
+            for ( size_t i = 0; i < ( _pathMeasurement->profile.size() / 3 ); i++ )
+            {
+                engine::LLine _pline;
+
+
+                if ( !_pathMeasurement->usesComplement )
+                {
+                    _pline.start.x = _pathMeasurement->profile[3 * i + 0];
+                    _pline.start.y = _pathMeasurement->profile[3 * i + 1];
+                    _pline.start.z = _pathMeasurement->agentProjection.z;
+                    
+                    _pline.end.x = _pathMeasurement->profile[3 * i + 0];
+                    _pline.end.y = _pathMeasurement->profile[3 * i + 1];
+                    _pline.end.z = _pline.start.z + _pathMeasurement->profile[3 * i + 2];
+                }
+                else
+                {
+                    _pline.start.x = _pathMeasurement->profile[3 * i + 0];
+                    _pline.start.y = _pathMeasurement->profile[3 * i + 1];
+                    _pline.start.z = _pathMeasurement->agentPosition.z;
+
+                    _pline.end.x = _pathMeasurement->profile[3 * i + 0];
+                    _pline.end.y = _pathMeasurement->profile[3 * i + 1];
+                    _pline.end.z = _pline.start.z - _pathMeasurement->profile[3 * i + 2];
+                }
+
+                _lines.push_back( _pline );
+            }
+
+            engine::DebugSystem::drawLinesBatch( _lines );
+        }
+    }
+
     void TVisualizer::_cacheTerrainGeometry( tysocterrain::TTerrainPrimitive* terrainGeomPtr )
     {
         engine::LMesh* _glMesh = NULL;
@@ -259,6 +307,15 @@ namespace tysocViz
         // {
         //     m_terrainMeshWrappers[i]->geometry = NULL;
         // }
+
+        // render sensors readings
+        auto _scenarioPtr = m_tysocApiPtr->getScenario();
+        auto _sensors = _scenarioPtr->getSensors();
+
+        for ( auto it = _sensors.begin(); it != _sensors.end(); it++ )
+        {
+            _updateSensor( it->second );
+        }
 
         m_glAppPtr->update();
     }

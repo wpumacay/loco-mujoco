@@ -24,11 +24,11 @@ namespace tysocViz
         //                                            engine::LICamera::UP_Z );
 
         // make a sample light source
-        auto _light = new engine::LLightDirectional( engine::LVec3( 0.2, 0.2, 0.2 ), 
-                                                    engine::LVec3( 0.8, 0.8, 0.8 ),
-                                                    engine::LVec3( 0.15, 0.15, 0.15 ), 
+        auto _light = new engine::LLightDirectional( engine::LVec3( 0.8, 0.8, 0.8 ), 
+                                                     engine::LVec3( 0.8, 0.8, 0.8 ),
+                                                     engine::LVec3( 0.3, 0.3, 0.3 ), 
                                                     0, 
-                                                    engine::LVec3( -1, -1, -1 ) );
+                                                    engine::LVec3( 0, 0, -1 ) );
         _light->setVirtualPosition( engine::LVec3( 5, 0, 5 ) );
 
         auto _skybox = new engine::LSkybox( "starfield" );

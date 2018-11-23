@@ -43,3 +43,11 @@
     1. Implemented the full base framework and added wrappers for mujoco
     2. Added perlin noise generator
     3. Added walker and humanoid template
+
+## 23, nov, 2018
+
+* Integrated custom rendering engine into a decoupled visualizer : the visualizer is working and is decoupled of the concrete physics engine used. It updates its data from the underlying data being used by the abstract API, whose contents are written by the concrete implementations.
+
+![terrain-progress-7](../_imgs/gif_terrain_progress_7.gif)
+
+![terrain-progress-8](../_imgs/gif_terrain_progress_8.gif)

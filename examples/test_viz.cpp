@@ -42,9 +42,9 @@ int main( int argc, const char** argv )
         // _terrainParams.set( "sineProfilePhase", 1.57f );
     }
 
-    _terrainParams.set( "profileDeltaX", 0.25f );
-    _terrainParams.set( "profileDepth", 1.0f );
-    _terrainParams.set( "profileTickness", 0.01f );
+    _terrainParams.set( "sectionDepth", 1.0f );
+    _terrainParams.set( "componentsSpacingX", 0.25f );
+    _terrainParams.set( "componentsThickness", 0.01f );
 
     auto _scenario = new tysoc::TScenario();
     _tysocApi->setScenario( _scenario );

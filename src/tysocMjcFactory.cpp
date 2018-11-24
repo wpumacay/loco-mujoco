@@ -149,20 +149,20 @@ namespace tysocMjc
                 _profileGenerator = new tysocterrain::TSineProfileGenerator( 2.0f, 10.0f, 1.57f );
             }
 
-            float _deltaX   = params.getFloat( "profileDeltaX", 0.5f );
-            float _depth    = params.getFloat( "profileDepth", 1.0f );
-            float _tickness = params.getFloat( "profileTickness", 0.01f );
+            float _sectionDepth         = params.getFloat( "sectionDepth", 1.0f );
+            float _componentsSpacingX   = params.getFloat( "componentsSpacingX", 0.5f );
+            float _componentsThickness  = params.getFloat( "componentsThickness", 0.01f );
 
             mjcf::Vec3 _startPosition = params.getVec3( "startPosition" );
 
             _terrainGenerator = new tysocterrain::TPathTerrainGenerator( name, 
-                                                                         _profileGenerator,
-                                                                         _deltaX, 
-                                                                         _depth, 
-                                                                         _tickness,
                                                                          _startPosition.x,
                                                                          _startPosition.y,
-                                                                         _startPosition.z );
+                                                                         _startPosition.z,
+                                                                         _sectionDepth,
+                                                                         _componentsSpacingX,
+                                                                         _componentsThickness,
+                                                                         _profileGenerator );
         }
 
         auto _terrainGeneratorWrapper = new TMjcTerrainGenWrapper( name, _terrainGenerator );

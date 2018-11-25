@@ -51,3 +51,25 @@
 ![terrain-progress-7](../_imgs/gif_terrain_progress_7.gif)
 
 ![terrain-progress-8](../_imgs/gif_terrain_progress_8.gif)
+
+## 24, nov, 2018
+
+* Added sensors (agent intrinsic and terrain extrinsic) to the library
+
+![terrain-progress-9](../_imgs/gif_terrain_progress_9.gif)
+
+![terrain-progress-10](../_imgs/gif_terrain_progress_10.gif)
+
+## 25, nov, 2018
+
+* Added terrain generators to replicate the environments from [here](https://www.youtube.com/watch?v=hx_bgoTF7bs)
+
+![terrain-progress-11](../_imgs/gif_terrain_progress_11.gif)
+
+![terrain-progress-12](../_imgs/gif_terrain_progress_12.gif)
+
+![terrain-progress-13](../_imgs/gif_terrain_progress_13.gif)
+
+![terrain-progress-14](../_imgs/gif_terrain_progress_14.gif)
+
+![terrain-progress-15](../_imgs/gif_terrain_progress_15.gif)

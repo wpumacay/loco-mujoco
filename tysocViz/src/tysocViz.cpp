@@ -14,7 +14,7 @@ namespace tysocViz
         auto _scene = m_glScenePtr = _app->scene();
 
         auto _camera = new engine::LFpsCamera( "fps",
-                                               engine::LVec3( 1.0f, 2.0f, -1.0f ),
+                                               engine::LVec3( 1.0f, 2.0f, 1.0f ),
                                                engine::LVec3( -2.0f, -4.0f, -2.0f ),
                                                engine::LICamera::UP_Z );
 
@@ -190,7 +190,7 @@ namespace tysocViz
         if ( _measurement->type == "PathTerrainMeasurement" )
         {
             // draw profile from sensor reading
-            auto _pathMeasurement = reinterpret_cast< tysocsensor::TPathTerrainSensorMeasurement* >
+            auto _pathMeasurement = reinterpret_cast< tysocsensor::TSectionsTerrainSensorMeasurement* >
                                         ( _measurement );
 
             std::vector< engine::LLine > _lines;

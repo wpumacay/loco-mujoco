@@ -67,6 +67,7 @@ namespace tysocMjc
     {
         // collect starting info from generator
         _collectFromGenerator();
+        _collectFixedFromGenerator();
     }
 
     void TMjcTerrainGenWrapper::setMjcModel( mjModel* mjcModelPtr )
@@ -130,11 +131,27 @@ namespace tysocMjc
             auto _newPrimitive = _newPrimitivesQueue.front();
             _newPrimitivesQueue.pop();
 
-            _wrapNewPrimitive( _newPrimitive );
+            _wrapNewPrimitive( _newPrimitive, true );
         }
 
         // flush the creation queue to avoid double references everywhere
         m_terrainGenPtr->flushJustCreatedQueue();
+    }
+
+    void TMjcTerrainGenWrapper::_collectFixedFromGenerator()
+    {
+        auto _fixedPrimitivesQueue = m_terrainGenPtr->getFixed();
+
+        while ( !_fixedPrimitivesQueue.empty() )
+        {
+            auto _fixedPrimitive = _fixedPrimitivesQueue.front();
+            _fixedPrimitivesQueue.pop();
+
+            _wrapNewPrimitive( _fixedPrimitive, false );
+        }
+
+        // flush the fixed queue to avoid double references (the wrapper now holds the ref.)
+        m_terrainGenPtr->flushFixedQueue();
     }
 
     void TMjcTerrainGenWrapper::_updateProperties( TMjcTerrainPrimitive* mjcTerrainPritimivePtr )
@@ -158,18 +175,21 @@ namespace tysocMjc
                            mjcTerrainPritimivePtr->mjcBodyName,
                            _primitiveObj->rbound );
 
-        float _color[3];
-        mjcint::getGeometryColor( m_mjcModelPtr,
-                                  m_mjcScenePtr,
-                                  mjcTerrainPritimivePtr->mjcBodyName,
-                                  _color );
+        if ( !_primitiveObj->useCustomColor )
+        {
+            float _color[3];
+            mjcint::getGeometryColor( m_mjcModelPtr,
+                                      m_mjcScenePtr,
+                                      mjcTerrainPritimivePtr->mjcBodyName,
+                                      _color );
 
-        _primitiveObj->color.r = _color[0];
-        _primitiveObj->color.g = _color[1];
-        _primitiveObj->color.b = _color[2];
+            _primitiveObj->color.r = _color[0];
+            _primitiveObj->color.g = _color[1];
+            _primitiveObj->color.b = _color[2];
+        }
     }
 
-    void TMjcTerrainGenWrapper::_wrapNewPrimitive( tysocterrain::TTerrainPrimitive* primitivePtr )
+    void TMjcTerrainGenWrapper::_wrapNewPrimitive( tysocterrain::TTerrainPrimitive* primitivePtr, bool isReusable )
     {
         // if the pool is empty, force to recycle the last object
         if ( m_mjcAvailablePrimitives.empty() )
@@ -191,9 +211,15 @@ namespace tysocMjc
         // link an object from the working queue with the requested new primitive
         _mjcPrimitive->tysocPrimitiveObj = primitivePtr;
 
-        // put it into the working queue
-        m_mjcWorkingPrimitives.push( _mjcPrimitive );
+        if ( isReusable )
+        {
+            // put it into the working queue
+            m_mjcWorkingPrimitives.push( _mjcPrimitive );
+        }
+        else
+        {
+            // put it into the fixed queue
+            m_mjcFixedPrimitives.push( _mjcPrimitive );
+        }
     }
-
-
 }

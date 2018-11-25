@@ -39,6 +39,7 @@ namespace tysocMjc
         // working queues for the logic
         std::queue< TMjcTerrainPrimitive* > m_mjcAvailablePrimitives;
         std::queue< TMjcTerrainPrimitive* > m_mjcWorkingPrimitives;
+        std::queue< TMjcTerrainPrimitive* > m_mjcFixedPrimitives;
 
         // terrain generator to wrap
         tysocterrain::TTerrainGenerator* m_terrainGenPtr;
@@ -53,8 +54,9 @@ namespace tysocMjc
         // name for this agentwrapper (and underlying agent as well)
         std::string m_name;
 
-        void _collectFromGenerator();
-        void _wrapNewPrimitive( tysocterrain::TTerrainPrimitive* primitivePtr );
+        void _collectFromGenerator();// collects primitives that can be reused and rewrapped in the lifetime of the generator
+        void _collectFixedFromGenerator();// collects primitives that are single in the lifetime of the generator
+        void _wrapNewPrimitive( tysocterrain::TTerrainPrimitive* primitivePtr, bool isReusable );
         void _updateProperties( TMjcTerrainPrimitive* mjcTerrainPritimivePtr );
 
         public :

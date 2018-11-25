@@ -3,7 +3,9 @@
 #include <tysocViz.h>
 
 
-static int NUM_AGENTS = 5;
+static int NUM_AGENTS = 2;
+
+#define SECTION_DEPTH 3.0f
 
 int main( int argc, const char** argv )
 {
@@ -26,25 +28,48 @@ int main( int argc, const char** argv )
     auto _factory = new tysocMjc::TMjcFactory();
 
     tysocMjc::TGenericParams _terrainParams;
-    // perlin params
+    // // sections - path - perlin profile
+    // {
+    //     _terrainParams.set( "sectionType", "path" );
+    //     _terrainParams.set( "sectionDepth", SECTION_DEPTH );
+    //     _terrainParams.set( "pathProfile", "perlin" );
+    //     _terrainParams.set( "perlinProfileOctaves", 4 );
+    //     _terrainParams.set( "perlinProfilePersistance", 0.5f );
+    //     _terrainParams.set( "perlinProfileLacunarity", 2.0f );
+    //     _terrainParams.set( "perlinProfileNoiseScale", 10.0f );
+    // }
+    // // sections - path - sine profile
+    // {
+    //     _terrainParams.set( "sectionType", "path" );
+    //     _terrainParams.set( "sectionDepth", SECTION_DEPTH );
+    //     _terrainParams.set( "pathProfile", "sine" );
+    //     _terrainParams.set( "sineProfileAmplitude", 1.0f );
+    //     _terrainParams.set( "sineProfilePeriod", 10.0f );
+    //     _terrainParams.set( "sineProfilePhase", 1.57f );
+    // }
+    // sections - blocky
     {
-        _terrainParams.set( "profiler", "perlin" );
-        _terrainParams.set( "perlinProfileOctaves", 4 );
-        _terrainParams.set( "perlinProfilePersistance", 0.5f );
-        _terrainParams.set( "perlinProfileLacunarity", 2.0f );
-        _terrainParams.set( "perlinProfileNoiseScale", 10.0f );
-    }
-    // sine params
-    {
-        // _terrainParams.set( "profiler", "sine" );
-        // _terrainParams.set( "sineProfileAmplitude", 2.0f );
-        // _terrainParams.set( "sineProfilePeriod", 10.0f );
-        // _terrainParams.set( "sineProfilePhase", 1.57f );
+        _terrainParams.set( "sectionType", "blocky" );
+        _terrainParams.set( "sectionDepth", SECTION_DEPTH );
+        _terrainParams.set( "sectionLength", 250.0f );
+        _terrainParams.set( "sectionUsesBase", 1 );
+        _terrainParams.set( "sectionUsesSides", 1 );
+        _terrainParams.set( "sectionBlockyBaseHeight", 0.5f );
+        _terrainParams.set( "sectionBlockyBaseWidth", 0.25f );
+        _terrainParams.set( "sectionBlockyBaseSpacingX", 4.0f );
+        _terrainParams.set( "sectionBlockyBaseOffsetZ", 0.0f );
+        _terrainParams.set( "sectionBlockyPercentDepthMin", 0.25f );//1.0f
+        _terrainParams.set( "sectionBlockyPercentDepthMax", 0.75f );//1.0f
+        _terrainParams.set( "sectionBlockyPercentHeightMin", 0.75f );
+        _terrainParams.set( "sectionBlockyPercentHeightMax", 1.25f );
+        _terrainParams.set( "sectionBlockyPercentWidthMin", 0.5f );
+        _terrainParams.set( "sectionBlockyPercentWidthMax", 2.0f );
+        _terrainParams.set( "sectionBlockyPercentSpacingXMin", 0.9f );
+        _terrainParams.set( "sectionBlockyPercentSpacingXMax", 1.1f );
+        _terrainParams.set( "sectionBlockyPercentOffsetZMin", 1.0f );
+        _terrainParams.set( "sectionBlockyPercentOffsetZMax", 1.0f );
     }
 
-    _terrainParams.set( "sectionDepth", 1.0f );
-    _terrainParams.set( "componentsSpacingX", 0.25f );
-    _terrainParams.set( "componentsThickness", 0.01f );
 
     auto _scenario = new tysoc::TScenario();
     _tysocApi->setScenario( _scenario );
@@ -53,11 +78,11 @@ int main( int argc, const char** argv )
     {
         // create agent wrapper
         auto _agent = _factory->createAgent( std::string( "walker_" ) + std::to_string( i ),
-                                             "ball",
-                                             2.0f, i * 2.5f, 1.5f );
+                                             "walker",
+                                             2.0f, i * ( SECTION_DEPTH + 1.0f ), 1.5f );
 
         // create agent wrapper
-        mjcf::Vec3 _startPosition = { 0.0f, i * 2.5f, 0.0f };
+        mjcf::Vec3 _startPosition = { 0.0f, i * ( SECTION_DEPTH + 1.0f ), 0.0f };
         _terrainParams.set( "startPosition", _startPosition );
         auto _terrain = _factory->createTerrainGen( std::string( "terrain_proc" ) + std::to_string( i ),
                                                     "procedural", _terrainParams );
@@ -65,14 +90,14 @@ int main( int argc, const char** argv )
         auto _terrainGen        = _terrain->terrainGenerator();
         auto _terrainGenInfo    = _terrainGen->generatorInfo();
         _terrainGenInfo->trackingpoint.x = 0.0f;
-        _terrainGenInfo->trackingpoint.y = i * 2.5f;
+        _terrainGenInfo->trackingpoint.y = i * ( SECTION_DEPTH + 1.0f );
         _terrainGenInfo->trackingpoint.z = 0.0f;
 
         // create a sensor
         auto _sensor1Name = std::string( "walker_sensor_" ) + std::to_string( i ) + std::string( "_pathterrain" );
         auto _sensor1 = new tysocsensor::TSectionsTerrainSensor( _sensor1Name,
-                                                             (tysocterrain::TPathTerrainGenerator*)_terrain->terrainGenerator(),
-                                                             _agent->agent(), false );
+                                                                 ( tysocterrain::TSectionsTerrainGenerator* )_terrain->terrainGenerator(),
+                                                                 _agent->agent(), true );
 
         auto _sensor2Name = std::string( "walker_sensor_" ) + std::to_string( i ) + std::string( "_intrinsics" );
         auto _sensor2 = new tysocsensor::TAgentIntrinsicsSensor( _sensor2Name,
@@ -115,12 +140,12 @@ int main( int argc, const char** argv )
         }
 
 
-        // for ( size_t i = 0; i < NUM_AGENTS; i++ )
-        // {
-        //     auto _agentName = std::string( "walker_" ) + std::to_string( i );
-        //     auto _actuatorName = std::string( "mjcact_" ) + _agentName + std::string( "_right_hip" );
-        //     _tysocApi->setAgentAction( _agentName, _actuatorName, std::cos( _tysocApi->getMjcData()->time ) );
-        // }
+        for ( size_t i = 0; i < NUM_AGENTS; i++ )
+        {
+            auto _agentName = std::string( "walker_" ) + std::to_string( i );
+            auto _actuatorName = std::string( "mjcact_" ) + _agentName + std::string( "_right_hip" );
+            _tysocApi->setAgentAction( _agentName, _actuatorName, std::cos( _tysocApi->getMjcData()->time ) );
+        }
 
         // auto _agents = _tysocApi->getAgents();
         // for ( auto it = _agents.begin(); it != _agents.end(); it++ )

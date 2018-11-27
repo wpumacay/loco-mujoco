@@ -65,14 +65,14 @@ namespace tysocMjc
                                tysocterrain::TTerrainGenerator* terrainGenPtr );
         ~TMjcTerrainGenWrapper();
 
-        void initialize();
+        void injectMjcResources( mjcf::GenericElement* root );
         void setMjcModel( mjModel* mjcModelPtr );
         void setMjcScene( mjvScene* mjcScenePtr );
+        void initialize();
 
         std::string name() { return m_name; }
         tysocterrain::TTerrainGenerator* terrainGenerator() { return m_terrainGenPtr; }
 
-        void injectMjcResources( mjcf::GenericElement* root );
 
         // update the wrapper by collecting all ...
         // information needed for stages on top of ...

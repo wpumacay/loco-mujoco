@@ -3,6 +3,7 @@
 
 #include <tysocMjcTerrain.h>
 #include <tysocMjcAgent.h>
+#include <tysocMjcKinTreeAgent.h>
 
 #include <dirent.h>
 
@@ -142,12 +143,14 @@ namespace tysocMjc
         TMjcFactory();
         ~TMjcFactory();
 
-        // @TODO: Should add support for loading from non-cached file?
         TMjcAgentWrapper* createAgent( const std::string& name,
                                        const std::string& modelname,
                                        float startX, float startY, float startZ );
 
-        // @TODO: Make a generic build object which has all params?
+        tysoc::agent::TMjcKinTreeAgentWrapper* createKinTreeAgentFromMjcf( const std::string& name,
+                                                                           const std::string& modelname,
+                                                                           float startX, float startY, float startZ );
+
         TMjcTerrainGenWrapper* createTerrainGen( const std::string& name,
                                                  const std::string& type,
                                                  const TGenericParams& params );

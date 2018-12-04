@@ -5,6 +5,7 @@
 #include <mujoco.h>
 
 // extra helper functionality
+#include <tysoc_common.h>
 #include <mjcf/mjcf_api.h>
 #include <mjcint/mjcint_api.h>
 

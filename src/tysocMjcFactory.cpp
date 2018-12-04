@@ -115,6 +115,30 @@ namespace tysocMjc
         return _agentWrapper;
     }
 
+    tysoc::agent::TMjcKinTreeAgentWrapper* TMjcFactory::createKinTreeAgentFromMjcf( const std::string& name,
+                                                                                    const std::string& modelname,
+                                                                                    float startX, float startY, float startZ )
+    {
+        if ( m_cachedModels.find( modelname ) == m_cachedModels.end() )
+        {
+            std::cout << "WARNING> agent " << name << " "
+                      << "cannot be created because modelname " << modelname << " "
+                      << "is not a templated model or wasn't cached" << std::endl;
+
+            return NULL;
+        }
+
+        // grab the template model and its components
+        auto _modelTemplateElm = m_cachedModels[ modelname ];
+        // and create the wrapper (it handles everything inside)
+
+        auto _kinTreeAgentWrapper = new tysoc::agent::TMjcKinTreeAgentWrapper( name,
+                                                                               _modelTemplateElm,
+                                                                               { startX, startY, startZ } );
+
+        return _kinTreeAgentWrapper;
+    }
+
     TMjcTerrainGenWrapper* TMjcFactory::createTerrainGen( const std::string& name,
                                                           const std::string& type,
                                                           const TGenericParams& params )

@@ -10,6 +10,8 @@
 
 // tysocBaseApi functionality
 #include <api_adapter.h>
+// and some specific viz wrappers
+#include <tysocVizKinTree.h>
 
 namespace tysocViz
 {
@@ -36,15 +38,19 @@ namespace tysocViz
         std::vector< TVizTerrainMeshWrapper* > m_terrainMeshWrappers;
         std::vector< TVizAgentMeshWrapper* > m_agentMeshWrappers;
 
+        std::vector< tysoc::viz::TVizKinTree* > m_vizKinTreeWrappers;
+
         tysoc::TTysocCommonApi* m_tysocApiPtr;
 
         void _collectAgentResources( tysocagent::TAgent* agentPtr );
         void _cacheAgentGeometry( tysocagent::TAgentGeom* agentGeomPtr );
+        void _collectKinTreeAgent( tysoc::agent::TAgentKinTree* kinTreeAgentPtr );
 
         void _collectTerrainGenResources( tysocterrain::TTerrainGenerator* terrainGenPtr );
         void _cacheTerrainGeometry( tysocterrain::TTerrainPrimitive* terrainGeomPtr );
 
         void _updateAgentWrapper( TVizAgentMeshWrapper* agentWrapperPtr );
+        void _updateVizKinTree( tysoc::viz::TVizKinTree* vizKinTreePtr );
         void _updateTerrainWrapper( TVizTerrainMeshWrapper* terrainWrapperPtr );
 
         void _resizeMesh( engine::LMesh* meshPtr, 

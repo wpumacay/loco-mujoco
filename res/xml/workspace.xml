@@ -137,14 +137,141 @@
             <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_18" type="box"/>
         </body>
     </worldbody>
+    <actuator>
+        <motor ctrlrange="-1.000000 1.000000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_0_right_hip" name="mjcact_walker_0_right_hip"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="50.000000" ctrllimited="true" joint="mjcjoint_walker_0_right_knee" name="mjcact_walker_0_right_knee"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="20.000000" ctrllimited="true" joint="mjcjoint_walker_0_right_ankle" name="mjcact_walker_0_right_ankle"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_0_left_hip" name="mjcact_walker_0_left_hip"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="50.000000" ctrllimited="true" joint="mjcjoint_walker_0_left_knee" name="mjcact_walker_0_left_knee"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="20.000000" ctrllimited="true" joint="mjcjoint_walker_0_left_ankle" name="mjcact_walker_0_left_ankle"/>
+    </actuator>
     <worldbody>
         <body pos="2.000000 0.000000 1.500000" name="mjcbody_walker_0_tmjcroot">
-            <geom size="0.100000" material="self" name="mjcgeom_walker_0_tmjcroot" type="sphere"/>
+            <light pos="0.000000 0.000000 2.000000" mode="trackcom" name="mjclight_walker_0_light"/>
+            <camera euler="60.000000 0.000000 0.000000" pos="0.000000 -2.000000 0.700000" mode="trackcom" name="mjccam_walker_0_side"/>
+            <camera pos="-2.000000 0.000000 0.500000" xyaxes="0.000000 -1.000000 0.000000 1.000000 0.000000 3.000000" mode="trackcom" name="mjccam_walker_0_back"/>
+            <joint armature="0.000000" damping="0.000000" axis="0.000000 0.000000 1.000000" solimplimit="0.000000 0.990000 0.010000" limited="false" name="mjcjoint_walker_0_tmjcrootz" type="slide"/>
+            <joint armature="0.000000" damping="0.000000" axis="1.000000 0.000000 0.000000" solimplimit="0.000000 0.990000 0.010000" limited="false" name="mjcjoint_walker_0_tmjcrootx" type="slide"/>
+            <joint armature="0.000000" damping="0.000000" axis="0.000000 1.000000 0.000000" solimplimit="0.000000 0.990000 0.010000" limited="false" name="mjcjoint_walker_0_tmjcrooty" type="hinge"/>
+            <geom conaffinity="0" contype="1" friction="0.700000 0.100000 0.100000" size="0.070000 0.300000" material="self" name="mjcgeom_walker_0_tmjcroot" type="capsule"/>
+            <body pos="0.000000 -0.050000 -0.300000" name="mjcbody_walker_0_right_thigh">
+                <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" range="-20.000000 100.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="mjcjoint_walker_0_right_hip"/>
+                <geom conaffinity="0" contype="1" friction="0.700000 0.100000 0.100000" pos="0.000000 0.000000 -0.225000" size="0.050000 0.225000" material="self" name="mjcgeom_walker_0_right_thigh" type="capsule"/>
+                <body pos="0.000000 0.000000 -0.700000" name="mjcbody_walker_0_right_leg">
+                    <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.250000" range="-150.000000 0.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="mjcjoint_walker_0_right_knee"/>
+                    <geom conaffinity="0" contype="1" friction="0.700000 0.100000 0.100000" size="0.040000 0.250000" material="self" name="mjcgeom_walker_0_right_leg" type="capsule"/>
+                    <body pos="0.060000 0.000000 -0.250000" name="mjcbody_walker_0_right_foot">
+                        <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="-0.060000 0.000000 0.000000" range="-45.000000 45.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="mjcjoint_walker_0_right_ankle"/>
+                        <geom conaffinity="0" contype="1" friction="0.700000 0.100000 0.100000" size="0.050000 0.100000" zaxis="1.000000 0.000000 0.000000" material="self" name="mjcgeom_walker_0_right_foot" type="capsule"/>
+                    </body>
+                </body>
+            </body>
+            <body pos="0.000000 0.050000 -0.300000" name="mjcbody_walker_0_left_thigh">
+                <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" range="-20.000000 100.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="mjcjoint_walker_0_left_hip"/>
+                <geom conaffinity="0" contype="1" friction="0.700000 0.100000 0.100000" pos="0.000000 0.000000 -0.225000" size="0.050000 0.225000" material="self" name="mjcgeom_walker_0_left_thigh" type="capsule"/>
+                <body pos="0.000000 0.000000 -0.700000" name="mjcbody_walker_0_left_leg">
+                    <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.250000" range="-150.000000 0.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="mjcjoint_walker_0_left_knee"/>
+                    <geom conaffinity="0" contype="1" friction="0.700000 0.100000 0.100000" size="0.040000 0.250000" material="self" name="mjcgeom_walker_0_left_leg" type="capsule"/>
+                    <body pos="0.060000 0.000000 -0.250000" name="mjcbody_walker_0_left_foot">
+                        <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="-0.060000 0.000000 0.000000" range="-45.000000 45.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="mjcjoint_walker_0_left_ankle"/>
+                        <geom conaffinity="0" contype="1" friction="0.700000 0.100000 0.100000" size="0.050000 0.100000" zaxis="1.000000 0.000000 0.000000" material="self" name="mjcgeom_walker_0_left_foot" type="capsule"/>
+                    </body>
+                </body>
+            </body>
         </body>
     </worldbody>
     <worldbody>
-        <body pos="2.000000 4.000000 1.500000" name="mjcbody_walker_1_tmjcroot">
-            <geom size="0.100000" material="self" name="mjcgeom_walker_1_tmjcroot" type="sphere"/>
+        <light diffuse="0.200000 0.200000 0.200000" dir="0.000000 0.000000 -1.000000" pos="0.000000 0.000000 5.000000" specular="0.000000 0.000000 0.000000" castshadow="false" directional="false"/>
+        <light diffuse="0.800000 0.800000 0.800000" dir="0.000000 0.000000 -1.000000" pos="0.000000 0.000000 4.000000" specular="0.300000 0.300000 0.300000" directional="false" mode="targetbodycom" target="mjcbody_walker_1_tmjcroot"/>
+        <body pos="0.000000 0.000000 1.400000" name="mjcbody_walker_1_tmjcroot">
+            <freejoint name="mjcjoint_walker_1_root"/>
+            <geom condim="1" fromto="0.000000 -0.070000 0.000000 0.000000 0.070000 0.000000" size="0.070000" material="matgeom" name="mjcgeom_walker_1_tmjcroot" type="capsule"/>
+            <geom condim="1" pos="0.000000 0.000000 0.190000" size="0.090000" material="matgeom" name="mjcgeom_walker_1_head" type="sphere"/>
+            <geom condim="1" fromto="-0.010000 -0.060000 -0.120000 -0.010000 0.060000 -0.120000" size="0.060000" material="matgeom" name="mjcgeom_walker_1_uwaist" type="capsule"/>
+            <body pos="-0.010000 0.000000 -0.260000" quat="1.000000 0.000000 -0.002000 0.000000" name="mjcbody_walker_1_lwaist">
+                <geom condim="1" fromto="0.000000 -0.060000 0.000000 0.000000 0.060000 0.000000" size="0.060000" material="matgeom" name="mjcgeom_walker_1_lwaist" type="capsule"/>
+                <joint armature="0.020000" damping="5.000000" stiffness="20.000000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.065000" range="-45.000000 45.000000" limited="true" name="mjcjoint_walker_1_abdomen_z" type="hinge"/>
+                <joint armature="0.020000" damping="5.000000" stiffness="10.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.065000" range="-75.000000 30.000000" limited="true" name="mjcjoint_walker_1_abdomen_y" type="hinge"/>
+                <body pos="0.000000 0.000000 -0.165000" quat="1.000000 0.000000 -0.002000 0.000000" name="mjcbody_walker_1_pelvis">
+                    <joint armature="0.020000" damping="5.000000" stiffness="10.000000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.100000" range="-35.000000 35.000000" limited="true" name="mjcjoint_walker_1_abdomen_x" type="hinge"/>
+                    <geom condim="1" fromto="-0.020000 -0.070000 0.000000 -0.020000 0.070000 0.000000" size="0.090000" material="matgeom" name="mjcgeom_walker_1_butt" type="capsule"/>
+                    <body pos="0.000000 -0.100000 -0.040000" name="mjcbody_walker_1_right_thigh">
+                        <joint armature="0.010000" damping="5.000000" stiffness="10.000000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-25.000000 5.000000" limited="true" name="mjcjoint_walker_1_right_hip_x" type="hinge"/>
+                        <joint armature="0.010000" damping="5.000000" stiffness="10.000000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-60.000000 35.000000" limited="true" name="mjcjoint_walker_1_right_hip_z" type="hinge"/>
+                        <joint armature="0.010000" damping="5.000000" stiffness="20.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-120.000000 20.000000" limited="true" name="mjcjoint_walker_1_right_hip_y" type="hinge"/>
+                        <geom condim="1" fromto="0.000000 0.000000 0.000000 0.000000 0.010000 -0.340000" size="0.060000" material="matgeom" name="mjcgeom_walker_1_right_thigh1" type="capsule"/>
+                        <body pos="0.000000 0.010000 -0.403000" name="mjcbody_walker_1_right_shin">
+                            <joint armature="0.006000" damping="1.000000" stiffness="1.000000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.020000" range="-160.000000 -2.000000" limited="true" name="mjcjoint_walker_1_right_knee" type="hinge"/>
+                            <geom condim="1" fromto="0.000000 0.000000 0.000000 0.000000 0.000000 -0.300000" size="0.049000" material="matgeom" name="mjcgeom_walker_1_right_shin1" type="capsule"/>
+                            <body pos="0.000000 0.000000 -0.390000" name="mjcbody_walker_1_right_foot">
+                                <joint armature="0.000800" damping="1.000000" stiffness="4.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.080000" range="-50.000000 50.000000" limited="true" name="mjcjoint_walker_1_right_ankle_y" type="hinge"/>
+                                <joint armature="0.000600" damping="1.000000" stiffness="1.000000" axis="1.000000 0.000000 0.500000" pos="0.000000 0.000000 0.040000" range="-50.000000 50.000000" limited="true" name="mjcjoint_walker_1_right_ankle_x" type="hinge"/>
+                                <geom condim="1" fromto="-0.070000 -0.020000 0.000000 0.140000 -0.040000 0.000000" size="0.027000" material="matgeom" name="mjcgeom_walker_1_right_foot_cap1" type="capsule"/>
+                                <geom condim="1" fromto="-0.070000 0.000000 0.000000 0.140000 0.020000 0.000000" size="0.027000" material="matgeom" name="mjcgeom_walker_1_right_foot_cap2" type="capsule"/>
+                            </body>
+                        </body>
+                    </body>
+                    <body pos="0.000000 0.100000 -0.040000" name="mjcbody_walker_1_left_thigh">
+                        <joint armature="0.010000" damping="5.000000" stiffness="10.000000" axis="-1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-25.000000 5.000000" limited="true" name="mjcjoint_walker_1_left_hip_x" type="hinge"/>
+                        <joint armature="0.010000" damping="5.000000" stiffness="10.000000" axis="0.000000 0.000000 -1.000000" pos="0.000000 0.000000 0.000000" range="-60.000000 35.000000" limited="true" name="mjcjoint_walker_1_left_hip_z" type="hinge"/>
+                        <joint armature="0.010000" damping="5.000000" stiffness="20.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-120.000000 20.000000" limited="true" name="mjcjoint_walker_1_left_hip_y" type="hinge"/>
+                        <geom condim="1" fromto="0.000000 0.000000 0.000000 0.000000 -0.010000 -0.340000" size="0.060000" material="matgeom" name="mjcgeom_walker_1_left_thigh1" type="capsule"/>
+                        <body pos="0.000000 -0.010000 -0.403000" name="mjcbody_walker_1_left_shin">
+                            <joint armature="0.006000" damping="1.000000" stiffness="1.000000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.020000" range="-160.000000 -2.000000" limited="true" name="mjcjoint_walker_1_left_knee" type="hinge"/>
+                            <geom condim="1" fromto="0.000000 0.000000 0.000000 0.000000 0.000000 -0.300000" size="0.049000" material="matgeom" name="mjcgeom_walker_1_left_shin1" type="capsule"/>
+                            <body pos="0.000000 0.000000 -0.390000" name="mjcbody_walker_1_left_foot">
+                                <joint armature="0.000800" damping="1.000000" stiffness="4.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.080000" range="-50.000000 50.000000" limited="true" name="mjcjoint_walker_1_left_ankle_y" type="hinge"/>
+                                <joint armature="0.000600" damping="1.000000" stiffness="1.000000" axis="1.000000 0.000000 0.500000" pos="0.000000 0.000000 0.040000" range="-50.000000 50.000000" limited="true" name="mjcjoint_walker_1_left_ankle_x" type="hinge"/>
+                                <geom condim="1" fromto="-0.070000 0.020000 0.000000 0.140000 0.040000 0.000000" size="0.027000" material="matgeom" name="mjcgeom_walker_1_left_foot_cap1" type="capsule"/>
+                                <geom condim="1" fromto="-0.070000 0.000000 0.000000 0.140000 -0.020000 0.000000" size="0.027000" material="matgeom" name="mjcgeom_walker_1_left_foot_cap2" type="capsule"/>
+                            </body>
+                        </body>
+                    </body>
+                </body>
+            </body>
+            <body pos="0.000000 -0.170000 0.060000" name="mjcbody_walker_1_right_upper_arm">
+                <joint armature="0.006800" damping="1.000000" stiffness="1.000000" axis="2.000000 1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-85.000000 60.000000" limited="true" name="mjcjoint_walker_1_right_shoulder1" type="hinge"/>
+                <joint armature="0.005100" damping="1.000000" stiffness="1.000000" axis="0.000000 -1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-85.000000 60.000000" limited="true" name="mjcjoint_walker_1_right_shoulder2" type="hinge"/>
+                <geom condim="1" fromto="0.000000 0.000000 0.000000 0.160000 -0.160000 -0.160000" size="0.040000 0.160000" material="matgeom" name="mjcgeom_walker_1_right_uarm1" type="capsule"/>
+                <body pos="0.180000 -0.180000 -0.180000" name="mjcbody_walker_1_right_lower_arm">
+                    <joint armature="0.002800" damping="1.000000" stiffness="0.000000" axis="0.000000 -1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-90.000000 50.000000" limited="true" name="mjcjoint_walker_1_right_elbow" type="hinge"/>
+                    <geom condim="1" fromto="0.010000 0.010000 0.010000 0.170000 0.170000 0.170000" size="0.031000" material="matgeom" name="mjcgeom_walker_1_right_larm" type="capsule"/>
+                    <geom condim="1" pos="0.180000 0.180000 0.180000" size="0.040000" material="matgeom" name="mjcgeom_walker_1_right_hand" type="sphere"/>
+                </body>
+            </body>
+            <body pos="0.000000 0.170000 0.060000" name="mjcbody_walker_1_left_upper_arm">
+                <joint armature="0.006800" damping="1.000000" stiffness="1.000000" axis="2.000000 -1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-60.000000 85.000000" limited="true" name="mjcjoint_walker_1_left_shoulder1" type="hinge"/>
+                <joint armature="0.005100" damping="1.000000" stiffness="1.000000" axis="0.000000 1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-60.000000 85.000000" limited="true" name="mjcjoint_walker_1_left_shoulder2" type="hinge"/>
+                <geom condim="1" fromto="0.000000 0.000000 0.000000 0.160000 0.160000 -0.160000" size="0.040000 0.160000" material="matgeom" name="mjcgeom_walker_1_left_uarm1" type="capsule"/>
+                <body pos="0.180000 0.180000 -0.180000" name="mjcbody_walker_1_left_lower_arm">
+                    <joint armature="0.002800" damping="1.000000" stiffness="0.000000" axis="0.000000 -1.000000 -1.000000" pos="0.000000 0.000000 0.000000" range="-90.000000 50.000000" limited="true" name="mjcjoint_walker_1_left_elbow" type="hinge"/>
+                    <geom condim="1" fromto="0.010000 -0.010000 0.010000 0.170000 -0.170000 0.170000" size="0.031000" material="matgeom" name="mjcgeom_walker_1_left_larm" type="capsule"/>
+                    <geom condim="1" pos="0.180000 -0.180000 0.180000" size="0.040000" material="matgeom" name="mjcgeom_walker_1_left_hand" type="sphere"/>
+                </body>
+            </body>
         </body>
     </worldbody>
+    <actuator>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_1_abdomen_y" name="mjcact_walker_1_abdomen_y"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_1_abdomen_z" name="mjcact_walker_1_abdomen_z"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_1_abdomen_x" name="mjcact_walker_1_abdomen_x"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_1_right_hip_x" name="mjcact_walker_1_right_hip_x"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_1_right_hip_z" name="mjcact_walker_1_right_hip_z"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="600.000000" ctrllimited="true" joint="mjcjoint_walker_1_right_hip_y" name="mjcact_walker_1_right_hip_y"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="400.000000" ctrllimited="true" joint="mjcjoint_walker_1_right_knee" name="mjcact_walker_1_right_knee"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_1_right_ankle_x" name="mjcact_walker_1_right_ankle_x"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_1_right_ankle_y" name="mjcact_walker_1_right_ankle_y"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_hip_x" name="mjcact_walker_1_left_hip_x"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_hip_z" name="mjcact_walker_1_left_hip_z"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="600.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_hip_y" name="mjcact_walker_1_left_hip_y"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="400.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_knee" name="mjcact_walker_1_left_knee"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_ankle_x" name="mjcact_walker_1_left_ankle_x"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_ankle_y" name="mjcact_walker_1_left_ankle_y"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_1_right_shoulder1" name="mjcact_walker_1_right_shoulder1"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_1_right_shoulder2" name="mjcact_walker_1_right_shoulder2"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_1_right_elbow" name="mjcact_walker_1_right_elbow"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_shoulder1" name="mjcact_walker_1_left_shoulder1"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_shoulder2" name="mjcact_walker_1_left_shoulder2"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_elbow" name="mjcact_walker_1_left_elbow"/>
+    </actuator>
 </mujoco>

@@ -64,6 +64,11 @@ namespace tysocMjc
         m_agentWrappers[ agentWrapperPtr->name() ] = agentWrapperPtr;
     }
 
+    void TTysocMjcApi::addKinTreeAgentWrapper( tysoc::agent::TMjcKinTreeAgentWrapper* agentKinTreeWrapperPtr )
+    {
+        m_kinTreeAgentWrappers.push_back( agentKinTreeWrapperPtr );
+    }
+
     void TTysocMjcApi::addTerrainGenWrapper( TMjcTerrainGenWrapper* terrainGenWrapperPtr )
     {
         m_terrainGenWrappers.push_back( terrainGenWrapperPtr );
@@ -96,6 +101,11 @@ namespace tysocMjc
               it++ )
         {
             it->second->injectMjcResources( _root );
+        }
+
+        for ( size_t i = 0; i < m_kinTreeAgentWrappers.size(); i++ )
+        {
+            m_kinTreeAgentWrappers[i]->injectMjcResources( _root );
         }
 
         std::string _workspaceModelPath( TYSOCMJC_RESOURCES_PATH );
@@ -152,6 +162,15 @@ namespace tysocMjc
             it->second->setMjcScene( m_mjcScenePtr );
 
             m_scenarioPtr->addAgent( it->second->agent() );
+        }
+
+        for ( size_t i = 0; i < m_kinTreeAgentWrappers.size(); i++ )
+        {
+            m_kinTreeAgentWrappers[i]->setMjcModel( m_mjcModelPtr );
+            m_kinTreeAgentWrappers[i]->setMjcData( m_mjcDataPtr );
+            m_kinTreeAgentWrappers[i]->setMjcScene( m_mjcScenePtr );
+
+            m_scenarioPtr->addIAgent( m_kinTreeAgentWrappers[i]->agent() );
         }
 
         // initialize all underlying base resources

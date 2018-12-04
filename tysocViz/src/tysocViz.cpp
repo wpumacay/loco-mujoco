@@ -19,7 +19,7 @@ namespace tysocViz
                                                engine::LICamera::UP_Z );
 
         // auto _camera = new engine::LFixedCamera3d( "fixed",
-        //                                            engine::LVec3( 2.0f, 4.0f, 2.0f ),
+        //                                            engine::LVec3( 4.0f, 8.0f, 4.0f ),
         //                                            engine::LVec3( 0.0f, 0.0f, 0.0f ),
         //                                            engine::LICamera::UP_Z );
 
@@ -61,6 +61,17 @@ namespace tysocViz
         for ( size_t i = 0; i < _terrainGenMaps.size(); i++ )
         {
             _collectTerrainGenResources( _terrainGenMaps[i] );
+        }
+
+        // collect all kintree type agents
+        auto _IAgents = m_tysocApiPtr->getIAgents();
+
+        for ( size_t i = 0; i < _IAgents.size(); i++ )
+        {
+            if ( _IAgents[i]->getType() == "kintree" )
+            {
+                _collectKinTreeAgent( (tysoc::agent::TAgentKinTree*) _IAgents[i] );
+            }
         }
     }
 
@@ -119,6 +130,15 @@ namespace tysocViz
             // add it to the wrappers list for later usage
             m_agentMeshWrappers.push_back( _meshWrapper );
         }
+    }
+
+    void TVisualizer::_collectKinTreeAgent( tysoc::agent::TAgentKinTree* kinTreeAgentPtr )
+    {
+        // create the kintree viz wrapper
+        auto _vizKinTreeWrapper = new tysoc::viz::TVizKinTree( kinTreeAgentPtr,
+                                                               m_glScenePtr );
+        // and add it to the buffer of kintree vizs
+        m_vizKinTreeWrappers.push_back( _vizKinTreeWrapper );
     }
 
     void TVisualizer::_collectTerrainGenResources( tysocterrain::TTerrainGenerator* terrainGenPtr )
@@ -322,6 +342,10 @@ namespace tysocViz
         {
             _updateTerrainWrapper( m_terrainMeshWrappers[i] );
         }
+        for ( size_t i = 0; i < m_vizKinTreeWrappers.size(); i++ )
+        {
+            _updateVizKinTree( m_vizKinTreeWrappers[i] );
+        }
 
         // @CHECK: For now I will just create a pool for the terrain objects, and reuse it
         // The idea is to first disconnect everything and make the connections every frame as ...
@@ -397,5 +421,8 @@ namespace tysocViz
         terrainWrapperPtr->glMesh->rotation.set( 2, 2, terrainWrapperPtr->geometry->rotmat[8] );
     }
 
-
+    void TVisualizer::_updateVizKinTree( tysoc::viz::TVizKinTree* vizKinTreePtr )
+    {
+        vizKinTreePtr->update();
+    }
 }

@@ -23,3 +23,9 @@ add_executable( test_sections
                 test_sections.cpp )
 target_link_libraries( test_sections
                        tysocMjc )
+
+# test_kintree example
+add_executable( test_kintree
+                test_kintree.cpp )
+target_link_libraries( test_kintree
+                       tysocMjc )

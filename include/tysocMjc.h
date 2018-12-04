@@ -4,6 +4,7 @@
 #include <tysocMjcTerrain.h>
 #include <tysocMjcAgent.h>
 #include <tysocMjcFactory.h>
+#include <tysocMjcKinTreeAgent.h>
 
 // abstract api to extend from
 #include <api_adapter.h>
@@ -63,8 +64,9 @@ namespace tysocMjc
 
         private :
 
-        std::vector< TMjcTerrainGenWrapper* >       m_terrainGenWrappers;
-        std::map< std::string, TMjcAgentWrapper* >  m_agentWrappers;
+        std::vector< TMjcTerrainGenWrapper* >                   m_terrainGenWrappers;
+        std::map< std::string, TMjcAgentWrapper* >              m_agentWrappers;
+        std::vector< tysoc::agent::TMjcKinTreeAgentWrapper* >   m_kinTreeAgentWrappers;
 
         mjModel*    m_mjcModelPtr;
         mjData*     m_mjcDataPtr;
@@ -84,6 +86,7 @@ namespace tysocMjc
         ~TTysocMjcApi();
 
         void addAgentWrapper( TMjcAgentWrapper* agentWrapperPtr );
+        void addKinTreeAgentWrapper( tysoc::agent::TMjcKinTreeAgentWrapper* agentKinTreeWrapperPtr );
         void addTerrainGenWrapper( TMjcTerrainGenWrapper* terrainGenWrapperPtr );
 
         bool initializeMjcApi();

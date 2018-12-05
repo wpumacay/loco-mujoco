@@ -9,10 +9,11 @@ namespace tysocMjc
     TMjcTerrainGenWrapper::TMjcTerrainGenWrapper( const std::string& name,
                                                   tysocterrain::TTerrainGenerator* terrainGenPtr )
     {
-        m_name = name;
+        m_name          = name;
         m_terrainGenPtr = terrainGenPtr;
-        m_mjcModelPtr = NULL;
-        m_mjcScenePtr = NULL;
+        m_mjcModelPtr   = NULL;
+        m_mjcDataPtr    = NULL;
+        m_mjcScenePtr   = NULL;
 
         // initialize mujoco resources
         for ( size_t i = 0; i < MJC_TERRAIN_POOL_SIZE; i++ )
@@ -42,8 +43,9 @@ namespace tysocMjc
             m_terrainGenPtr = NULL;
         }
 
-        m_mjcModelPtr = NULL;
-        m_mjcScenePtr = NULL;
+        m_mjcModelPtr   = NULL;
+        m_mjcDataPtr    = NULL;
+        m_mjcScenePtr   = NULL;
 
         while ( !m_mjcAvailablePrimitives.empty() )
         {
@@ -73,6 +75,11 @@ namespace tysocMjc
     void TMjcTerrainGenWrapper::setMjcModel( mjModel* mjcModelPtr )
     {
         m_mjcModelPtr = mjcModelPtr;
+    }
+
+    void TMjcTerrainGenWrapper::setMjcData( mjData* mjcDataPtr )
+    {
+        m_mjcDataPtr = mjcDataPtr;
     }
 
     void TMjcTerrainGenWrapper::setMjcScene( mjvScene* mjcScenePtr )
@@ -159,13 +166,15 @@ namespace tysocMjc
         auto _primitiveObj = mjcTerrainPritimivePtr->tysocPrimitiveObj;
 
 
-        mjcint::setBodyPosition( m_mjcModelPtr, 
-                                 mjcTerrainPritimivePtr->mjcBodyName,
-                                 { _primitiveObj->pos.x, _primitiveObj->pos.y, _primitiveObj->pos.z } );
+        mjcint::setTerrainBodyPosition( m_mjcModelPtr, 
+                                        m_mjcDataPtr,
+                                        mjcTerrainPritimivePtr->mjcBodyName,
+                                        { _primitiveObj->pos.x, _primitiveObj->pos.y, _primitiveObj->pos.z } );
 
-        mjcint::setBodyOrientation( m_mjcModelPtr,
-                                    mjcTerrainPritimivePtr->mjcBodyName,
-                                    _primitiveObj->rotmat );
+        mjcint::setTerrainBodyOrientation( m_mjcModelPtr,
+                                           m_mjcDataPtr,
+                                           mjcTerrainPritimivePtr->mjcBodyName,
+                                           _primitiveObj->rotmat );
 
         mjcint::changeSize( m_mjcModelPtr,
                             mjcTerrainPritimivePtr->mjcBodyName,

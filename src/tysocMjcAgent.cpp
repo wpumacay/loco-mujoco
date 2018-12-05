@@ -293,7 +293,7 @@ namespace tysocMjc
     {
         auto _tmjcRootName = std::string( "mjcbody_" ) + m_name + std::string( "_tmjcroot" );
 
-        auto _pos = mjcint::getBodyPosition( m_mjcModelPtr, _tmjcRootName );
+        auto _pos = mjcint::getBodyPosition( m_mjcModelPtr, m_mjcDataPtr, _tmjcRootName );
 
         x = _pos.x; y = _pos.y; z = _pos.z;
     }
@@ -303,6 +303,7 @@ namespace tysocMjc
         auto _tmjcRootName = std::string( "mjcbody_" ) + m_name + std::string( "_tmjcroot" );
 
         mjcint::setBodyPosition( m_mjcModelPtr,
+                                 m_mjcDataPtr,
                                  _tmjcRootName,
                                  { x, y, z } );
     }
@@ -385,7 +386,7 @@ namespace tysocMjc
 
         for ( auto it = _bodies.begin(); it != _bodies.end(); it++ )
         {
-            auto _pos = mjcint::getBodyPosition( m_mjcModelPtr, it->second->name );
+            auto _pos = mjcint::getBodyPosition( m_mjcModelPtr, m_mjcDataPtr, it->second->name );
 
             it->second->pos = { _pos.x, _pos.y, _pos.z };
         }

@@ -78,7 +78,7 @@ namespace viz{
         _collectKinJoints();
         _collectKinActuators();
         _collectKinSensors();
-        _collectKinVisuals();
+        // _collectKinVisuals();
         _collectKinCollisions();
     }
 

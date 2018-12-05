@@ -69,10 +69,38 @@ namespace agent {
         return m_kinTreeAgentPtr;
     }
 
+    bool TMjcKinTreeAgentWrapper::_findAndReplaceRootStartingPos( mjcf::GenericElement* elmPtr )
+    {
+        if ( elmPtr->etype == "body" )
+        {
+            auto _bname = elmPtr->getAttributeString( "name" );
+            if ( _bname.find( "tmjcroot" ) != std::string::npos )
+            {
+                auto _pos = m_kinTreeAgentPtr->getPosition();
+                elmPtr->setAttributeVec3( "pos", 
+                                          { _pos.x, _pos.y, _pos.z } );
+                return true;
+            }
+        }
+
+        for ( size_t i = 0; i < elmPtr->children.size(); i++ )
+        {
+            if ( _findAndReplaceRootStartingPos( elmPtr->children[i] ) )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     void TMjcKinTreeAgentWrapper::injectMjcResources( mjcf::GenericElement* root )
     {
         // grab the resources to inject, namely the worldbody
         auto _worldBodyElmPtr = mjcf::findFirstChildByType( m_modelElmPtr, "worldbody" );
+        // and set the starting position
+        _findAndReplaceRootStartingPos( _worldBodyElmPtr );
+
         // and the actuators as well
         auto _actuatorsElmPtr = mjcf::findFirstChildByType( m_modelElmPtr, "actuator" );
         // @TODO: should also place custom sensors (for all joints)
@@ -90,7 +118,44 @@ namespace agent {
 
     void TMjcKinTreeAgentWrapper::postStep()
     {
-        
+        auto _kinBodies = m_kinTreeAgentPtr->getKinTreeBodies();
+        for ( size_t i = 0; i < _kinBodies.size(); i++ )
+        {
+            // grab the position from the mujoco backend
+            auto _pos = mjcint::getBodyPosition( m_mjcModelPtr,
+                                                 m_mjcDataPtr,
+                                                 _kinBodies[i]->name );
+            // and the rotation as well
+            float _rot[9];
+            mjcint::getBodyOrientation( m_mjcModelPtr,
+                                        m_mjcDataPtr,
+                                        _kinBodies[i]->name, _rot );
+
+            // convert the position/rotation data to our format
+            TVec3 _position;
+            TMat3 _rotation;
+
+            _position.x = _pos.x;
+            _position.y = _pos.y;
+            _position.z = _pos.z;
+
+            _rotation.buff[0] = _rot[0];
+            _rotation.buff[1] = _rot[1];
+            _rotation.buff[2] = _rot[2];
+            _rotation.buff[3] = _rot[3];
+            _rotation.buff[4] = _rot[4];
+            _rotation.buff[5] = _rot[5];
+            _rotation.buff[6] = _rot[6];
+            _rotation.buff[7] = _rot[7];
+            _rotation.buff[8] = _rot[8];
+
+            // then set it to the body's worldtransform
+            _kinBodies[i]->worldTransform.setPosition( _position );
+            _kinBodies[i]->worldTransform.setRotation( _rotation );
+        }
+
+        // and then request an update of the kintree
+        m_kinTreeAgentPtr->update( 0 );
     }
 
 }}

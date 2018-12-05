@@ -49,6 +49,7 @@ namespace tysocMjc
 
         // a reference to the mujoco model
         mjModel* m_mjcModelPtr;
+        mjData* m_mjcDataPtr;
         mjvScene* m_mjcScenePtr;
 
         // name for this agentwrapper (and underlying agent as well)
@@ -67,6 +68,7 @@ namespace tysocMjc
 
         void injectMjcResources( mjcf::GenericElement* root );
         void setMjcModel( mjModel* mjcModelPtr );
+        void setMjcData( mjData* mjcDataPtr );
         void setMjcScene( mjvScene* mjcScenePtr );
         void initialize();
 

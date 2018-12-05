@@ -155,7 +155,7 @@ int main( int argc, const char** argv )
             // create legacy agents
             auto _agent = _factory->createAgent( std::string( "walker_" ) + std::to_string( i ),
                                                  "walker",
-                                                 2.0f, i * ( SECTION_DEPTH + 1.0f ), 1.5f );
+                                                 2.0f, i * ( SECTION_DEPTH + 1.0f ), 10.5f );
 
             // create some sensors
             auto _sensor1Name = std::string( "walker_sensor_" ) + std::to_string( i ) + std::string( "_pathterrain" );
@@ -176,8 +176,8 @@ int main( int argc, const char** argv )
         {
             // create kintree agents
             auto _agent = _factory->createKinTreeAgentFromMjcf( std::string( "walker_" ) + std::to_string( i ),
-                                                                "humanoid",
-                                                                2.0f, i * ( SECTION_DEPTH + 1.0f ), 1.5f );
+                                                                "walker",
+                                                                2.0f, i * ( SECTION_DEPTH + 1.0f ), 10.5f );
 
             // and add it to the runtime
             _tysocApi->addKinTreeAgentWrapper( _agent );

@@ -24,6 +24,8 @@ namespace agent {
         mjData*     m_mjcDataPtr;
         mjvScene*   m_mjcScenePtr;
 
+        bool _findAndReplaceRootStartingPos( mjcf::GenericElement* elmPtr );
+
         public :
 
         /**

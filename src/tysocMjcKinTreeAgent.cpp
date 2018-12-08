@@ -22,6 +22,8 @@ namespace agent {
         mjcf::replaceNameRecursive( m_modelElmPtr, m_name, "body" );// all body attribs (some sensors)
         mjcf::replaceNameRecursive( m_modelElmPtr, m_name, "site" );// all site attribs (some sensors)
         mjcf::replaceNameRecursive( m_modelElmPtr, m_name, "objname");// all objname attribs (some sensors)
+        mjcf::replaceNameRecursive( m_modelElmPtr, m_name, "body1" );// for contacts - body1 tag
+        mjcf::replaceNameRecursive( m_modelElmPtr, m_name, "body2" );// for contacts - body2 tag
         // and set default to make not wild undefined pointers
         m_mjcModelPtr   = NULL;
         m_mjcDataPtr    = NULL;
@@ -94,6 +96,66 @@ namespace agent {
         return false;
     }
 
+    void TMjcKinTreeAgentWrapper::_injectMjcAssets( mjcf::GenericElement* root )
+    {
+        if ( !mjcf::findFirstChildByType( m_modelElmPtr, "asset" ) )
+        {
+            // no assets to get here
+            return;
+        }
+
+        // grab the target element where we are going to place our assets
+        auto _targetAssetsElmPtr    = mjcf::findFirstChildByType( root, "asset" );
+        auto _assetsInTarget        = _targetAssetsElmPtr->children;
+        // and grab the assets used by our model template
+        auto _srcAssetsElmPtr   = mjcf::findFirstChildByType( m_modelElmPtr, "asset" );
+        auto _assetsInSrc       = _srcAssetsElmPtr->children;
+
+        // create a set out of the current elements in the target assets list
+        std::map< std::string, mjcf::GenericElement* > _currentAssetsMap;
+        for ( size_t i = 0; i < _assetsInTarget.size(); i++ )
+        {
+            auto _assetElmPtr   = _assetsInTarget[i];
+            auto _assetElmName  = _assetsInTarget[i]->getAttributeString( "name" );
+
+            _currentAssetsMap[ _assetElmName ] = _assetElmPtr;
+        }
+
+        // and place the src assets that are not already there
+        for ( size_t i = 0; i < _assetsInSrc.size(); i++ )
+        {
+            auto _assetElmPtr   = _assetsInSrc[i];
+            auto _assetElmName  = _assetsInSrc[i]->getAttributeString( "name" );
+
+            if ( _currentAssetsMap.find( _assetElmName ) == _currentAssetsMap.end() )
+            {
+                // if not in the current assets map, the we can go ahead
+                _targetAssetsElmPtr->children.push_back( _assetElmPtr );
+            }
+        }
+    }
+
+    void TMjcKinTreeAgentWrapper::_injectMjcContacts( mjcf::GenericElement* root )
+    {
+        if ( !mjcf::findFirstChildByType( m_modelElmPtr, "contact" ) )
+        {
+            // no contacts to grab here
+            return;
+        }
+
+        // grab the target element where we are going to place our contacts
+        auto _targetContactsElmPtr = mjcf::findFirstChildByType( root, "contact" );
+        // and grab the contacts defined by our model template
+        auto _srcContactsElmPtr = mjcf::findFirstChildByType( m_modelElmPtr, "contact" );
+
+        // now place them inside the target contacts element
+        auto _srcContacts = _srcContactsElmPtr->children;
+        for ( size_t i = 0; i < _srcContacts.size(); i++ )
+        {
+            _targetContactsElmPtr->children.push_back( _srcContacts[i] );
+        }
+    }
+
     void TMjcKinTreeAgentWrapper::injectMjcResources( mjcf::GenericElement* root )
     {
         // grab the resources to inject, namely the worldbody
@@ -109,11 +171,24 @@ namespace agent {
         root->children.push_back( _worldBodyElmPtr );
         root->children.push_back( _actuatorsElmPtr );
         // @TODO: should also place custom sensors (for all joints)
+
+        // also, inject the assets used
+        _injectMjcAssets( root );
+        // as well as the contacts
+        _injectMjcContacts( root );
     }
 
     void TMjcKinTreeAgentWrapper::preStep()
     {
+        auto _kinActuators = m_kinTreeAgentPtr->getKinTreeActuators();
 
+        for ( size_t i = 0; i < _kinActuators.size(); i++ )
+        {
+            mjcint::setActuatorCtrl( m_mjcModelPtr,
+                                     m_mjcDataPtr,
+                                     _kinActuators[i]->name,
+                                     _kinActuators[i]->ctrlValue );
+        }
     }
 
     void TMjcKinTreeAgentWrapper::postStep()
@@ -156,6 +231,25 @@ namespace agent {
 
         // and then request an update of the kintree
         m_kinTreeAgentPtr->update( 0 );
+
+        // @TODO: and get the colors
+        auto _kinVisuals = m_kinTreeAgentPtr->getKinTreeVisuals();
+        for ( size_t i = 0; i < _kinVisuals.size(); i++ )
+        {
+            float _color[3];
+            mjcint::getGeometryColor( m_mjcModelPtr,
+                                      m_mjcScenePtr,
+                                      _kinVisuals[i]->name,
+                                      _color );
+
+            _kinVisuals[i]->material.diffuse.x = _color[0];
+            _kinVisuals[i]->material.diffuse.y = _color[1];
+            _kinVisuals[i]->material.diffuse.z = _color[2];
+
+            _kinVisuals[i]->material.specular.x = _color[0];
+            _kinVisuals[i]->material.specular.y = _color[1];
+            _kinVisuals[i]->material.specular.z = _color[2];
+        }
     }
 
 }}

@@ -3,9 +3,9 @@
 #include <tysocViz.h>
 
 
-static int NUM_AGENTS = 2;
+static int NUM_AGENTS = 3;
 
-#define SECTION_DEPTH 3.0f
+#define SECTION_DEPTH 2.0f
 
 int main( int argc, const char** argv )
 {
@@ -28,25 +28,27 @@ int main( int argc, const char** argv )
     auto _factory = new tysocMjc::TMjcFactory();
 
     tysocMjc::TGenericParams _terrainParams;
-    // sections - path - perlin profile
-    {
-        // _terrainParams.set( "sectionType", "path" );
-        // _terrainParams.set( "sectionDepth", SECTION_DEPTH );
-        // _terrainParams.set( "pathProfile", "perlin" );
-        // _terrainParams.set( "perlinProfileOctaves", 4 );
-        // _terrainParams.set( "perlinProfilePersistance", 0.5f );
-        // _terrainParams.set( "perlinProfileLacunarity", 2.0f );
-        // _terrainParams.set( "perlinProfileNoiseScale", 10.0f );
-    }
-    // // sections - path - sine profile
+    // // sections - path - perlin profile
     // {
     //     _terrainParams.set( "sectionType", "path" );
     //     _terrainParams.set( "sectionDepth", SECTION_DEPTH );
-    //     _terrainParams.set( "pathProfile", "sine" );
-    //     _terrainParams.set( "sineProfileAmplitude", 1.0f );
-    //     _terrainParams.set( "sineProfilePeriod", 10.0f );
-    //     _terrainParams.set( "sineProfilePhase", 1.57f );
+    //     _terrainParams.set( "pathProfile", "perlin" );
+    //     _terrainParams.set( "componentsSpacingX", 0.25f );
+    //     _terrainParams.set( "componentsThickness", 0.01f );
+    //     _terrainParams.set( "perlinProfileOctaves", 4 );
+    //     _terrainParams.set( "perlinProfilePersistance", 0.5f );
+    //     _terrainParams.set( "perlinProfileLacunarity", 2.0f );
+    //     _terrainParams.set( "perlinProfileNoiseScale", 10.0f );
     // }
+    // sections - path - sine profile
+    {
+        _terrainParams.set( "sectionType", "path" );
+        _terrainParams.set( "sectionDepth", SECTION_DEPTH );
+        _terrainParams.set( "pathProfile", "sine" );
+        _terrainParams.set( "sineProfileAmplitude", 1.0f );
+        _terrainParams.set( "sineProfilePeriod", 10.0f );
+        _terrainParams.set( "sineProfilePhase", 1.57f );
+    }
     // sections - blocky
     {
         // _terrainParams.set( "sectionType", "blocky" );
@@ -69,25 +71,25 @@ int main( int argc, const char** argv )
         // _terrainParams.set( "sectionBlockyPercentOffsetZMin", 1.0f );
         // _terrainParams.set( "sectionBlockyPercentOffsetZMax", 1.0f );
 
-        _terrainParams.set( "sectionType", "blocky" );
-        _terrainParams.set( "sectionDepth", SECTION_DEPTH );
-        _terrainParams.set( "sectionLength", 250.0f );
-        _terrainParams.set( "sectionUsesBase", 1 );
-        _terrainParams.set( "sectionUsesSides", 0 );
-        _terrainParams.set( "sectionBlockyBaseHeight", 0.5f );
-        _terrainParams.set( "sectionBlockyBaseWidth", 0.25f );
-        _terrainParams.set( "sectionBlockyBaseSpacingX", 4.0f );
-        _terrainParams.set( "sectionBlockyBaseOffsetZ", 0.0f );
-        _terrainParams.set( "sectionBlockyPercentDepthMin", 1.0f );
-        _terrainParams.set( "sectionBlockyPercentDepthMax", 1.0f );
-        _terrainParams.set( "sectionBlockyPercentHeightMin", 0.75f );
-        _terrainParams.set( "sectionBlockyPercentHeightMax", 1.25f );
-        _terrainParams.set( "sectionBlockyPercentWidthMin", 0.5f );
-        _terrainParams.set( "sectionBlockyPercentWidthMax", 2.0f );
-        _terrainParams.set( "sectionBlockyPercentSpacingXMin", 0.9f );
-        _terrainParams.set( "sectionBlockyPercentSpacingXMax", 1.1f );
-        _terrainParams.set( "sectionBlockyPercentOffsetZMin", 1.0f );
-        _terrainParams.set( "sectionBlockyPercentOffsetZMax", 1.0f );
+        // _terrainParams.set( "sectionType", "blocky" );
+        // _terrainParams.set( "sectionDepth", SECTION_DEPTH );
+        // _terrainParams.set( "sectionLength", 250.0f );
+        // _terrainParams.set( "sectionUsesBase", 1 );
+        // _terrainParams.set( "sectionUsesSides", 0 );
+        // _terrainParams.set( "sectionBlockyBaseHeight", 0.5f );
+        // _terrainParams.set( "sectionBlockyBaseWidth", 0.25f );
+        // _terrainParams.set( "sectionBlockyBaseSpacingX", 4.0f );
+        // _terrainParams.set( "sectionBlockyBaseOffsetZ", 0.0f );
+        // _terrainParams.set( "sectionBlockyPercentDepthMin", 1.0f );
+        // _terrainParams.set( "sectionBlockyPercentDepthMax", 1.0f );
+        // _terrainParams.set( "sectionBlockyPercentHeightMin", 0.75f );
+        // _terrainParams.set( "sectionBlockyPercentHeightMax", 1.25f );
+        // _terrainParams.set( "sectionBlockyPercentWidthMin", 0.5f );
+        // _terrainParams.set( "sectionBlockyPercentWidthMax", 2.0f );
+        // _terrainParams.set( "sectionBlockyPercentSpacingXMin", 0.9f );
+        // _terrainParams.set( "sectionBlockyPercentSpacingXMax", 1.1f );
+        // _terrainParams.set( "sectionBlockyPercentOffsetZMin", 1.0f );
+        // _terrainParams.set( "sectionBlockyPercentOffsetZMax", 1.0f );
 
         // _terrainParams.set( "sectionType", "blocky" );
         // _terrainParams.set( "sectionDepth", SECTION_DEPTH );
@@ -150,18 +152,18 @@ int main( int argc, const char** argv )
 
         _tysocApi->addTerrainGenWrapper( _terrain );
 
-        if ( i % 2 == 0 )
+        if ( true )
         {
             // create legacy agents
             auto _agent = _factory->createAgent( std::string( "walker_" ) + std::to_string( i ),
-                                                 "walker",
-                                                 2.0f, i * ( SECTION_DEPTH + 1.0f ), 10.5f );
+                                                 "humanoid",
+                                                 2.0f, i * ( SECTION_DEPTH + 1.0f ), 2.5f );
 
             // create some sensors
             auto _sensor1Name = std::string( "walker_sensor_" ) + std::to_string( i ) + std::string( "_pathterrain" );
             auto _sensor1 = new tysocsensor::TSectionsTerrainSensor( _sensor1Name,
                                                                      ( tysocterrain::TSectionsTerrainGenerator* )_terrain->terrainGenerator(),
-                                                                     _agent->agent(), true );
+                                                                     _agent->agent(), false );
 
             auto _sensor2Name = std::string( "walker_sensor_" ) + std::to_string( i ) + std::string( "_intrinsics" );
             auto _sensor2 = new tysocsensor::TAgentIntrinsicsSensor( _sensor2Name,
@@ -172,12 +174,22 @@ int main( int argc, const char** argv )
             _tysocApi->getScenario()->addSensor( _sensor1 );
             _tysocApi->getScenario()->addSensor( _sensor2 );
         }
+        else if ( i % 3 == 1 )
+        {
+            // create kintree agents
+            auto _agent = _factory->createKinTreeAgentFromMjcf( std::string( "walker_" ) + std::to_string( i ),
+                                                                "humanoid",
+                                                                2.0f, i * ( SECTION_DEPTH + 1.0f ), 2.5f );
+
+            // and add it to the runtime
+            _tysocApi->addKinTreeAgentWrapper( _agent );
+        }
         else
         {
             // create kintree agents
             auto _agent = _factory->createKinTreeAgentFromMjcf( std::string( "walker_" ) + std::to_string( i ),
-                                                                "walker",
-                                                                2.0f, i * ( SECTION_DEPTH + 1.0f ), 10.5f );
+                                                                "baxter",
+                                                                2.0f, i * ( SECTION_DEPTH + 1.0f ), 2.5f );
 
             // and add it to the runtime
             _tysocApi->addKinTreeAgentWrapper( _agent );
@@ -214,15 +226,28 @@ int main( int argc, const char** argv )
             _genInfoPtr->trackingpoint.x = _currentX;
         }
 
-        for ( size_t i = 0; i < NUM_AGENTS; i++ )
-        {
-            if ( i % 2 == 0 )
-            {
-                auto _agentName = std::string( "walker_" ) + std::to_string( i );
-                auto _actuatorName = std::string( "mjcact_" ) + _agentName + std::string( "_right_hip" );
-                _tysocApi->setAgentAction( _agentName, _actuatorName, std::cos( _tysocApi->getMjcData()->time ) );
-            }
-        }
+        // for ( size_t i = 0; i < NUM_AGENTS; i++ )
+        // {
+        //     if ( true )
+        //     {
+        //         auto _agentName = std::string( "walker_" ) + std::to_string( i );
+        //         auto _actuatorName = std::string( "mjcact_" ) + _agentName + std::string( "_right_hip" );
+        //         _tysocApi->setAgentAction( _agentName, _actuatorName, std::cos( _tysocApi->getMjcData()->time ) );
+        //     }
+        // }
+
+        // auto _iagents = _tysocApi->getIAgents();
+        // for ( size_t i = 0; i < _iagents.size(); i++ )
+        // {
+        //     if ( _iagents[i]->getType() != "kintree" )
+        //     {
+        //         continue;
+        //     }
+        //     auto _iagent = reinterpret_cast< tysoc::agent::TAgentKinTree* >( _iagents[i] );
+        //     _iagent->setActions( tysoc::generateRandomArray( _iagent->getActionDim(),
+        //                                                      -0.15, 
+        //                                                      0.15 ) );
+        // }
     }
 
     delete _viz;

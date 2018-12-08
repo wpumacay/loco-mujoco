@@ -26,6 +26,9 @@ namespace agent {
 
         bool _findAndReplaceRootStartingPos( mjcf::GenericElement* elmPtr );
 
+        void _injectMjcAssets( mjcf::GenericElement* root );
+        void _injectMjcContacts( mjcf::GenericElement* root );
+
         public :
 
         /**

@@ -220,19 +220,24 @@ namespace tysocMjc
         {
             it->second->preStep();
         }
+
+        for ( size_t i = 0; i < m_kinTreeAgentWrappers.size(); i++ )
+        {
+            m_kinTreeAgentWrappers[i]->preStep();
+        }
     }
 
     void TTysocMjcApi::_updateStep()
     {
         mjtNum _simstart = m_mjcDataPtr->time;
-        //int _steps = 0;
+        // int _steps = 0;
         while ( m_mjcDataPtr->time - _simstart < 1.0 / 60.0 )
         {
-            //_steps++;
+            // _steps++;
             mj_step( m_mjcModelPtr, m_mjcDataPtr );
         }
 
-        //std::cout << "nsteps: " << _steps << std::endl;
+        // std::cout << "nsteps: " << _steps << std::endl;
 
         mjv_updateScene( m_mjcModelPtr, 
                          m_mjcDataPtr, 

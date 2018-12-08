@@ -1,6 +1,9 @@
 
 #include <tysocVizKinTree.h>
 
+#ifndef TYSOCMJC_RESOURCES_PATH
+    #define TYSOCMJC_RESOURCES_PATH "../../res/xml"
+#endif
 
 namespace tysoc{
 namespace viz{
@@ -74,12 +77,15 @@ namespace viz{
             return;
         }
 
-        _collectKinBodies();
-        _collectKinJoints();
-        _collectKinActuators();
-        _collectKinSensors();
-        // _collectKinVisuals();
-        _collectKinCollisions();
+        // @TODO: Change render calls to debug objects (frames, etc) to a ...
+        // separate simmple renderer, as it should not cast shadow, not anything
+
+        // _collectKinBodies();
+        // _collectKinJoints();
+        // _collectKinActuators();
+        // _collectKinSensors();
+        _collectKinVisuals();
+        // _collectKinCollisions();
     }
 
 
@@ -262,8 +268,10 @@ namespace viz{
         }
         else if ( type == "mesh" )
         {
-            _renderable = engine::LMeshBuilder::createModelFromFile( filename,
+            auto _meshFilePath = std::string( TYSOCMJC_RESOURCES_PATH ) + std::string( "xml/" ) + filename;
+            _renderable = engine::LMeshBuilder::createModelFromFile( _meshFilePath,
                                                                      "" );
+            std::cout << "mesh created: " << filename << std::endl;
         }
 
         if ( _renderable )
@@ -273,6 +281,14 @@ namespace viz{
             _renderable->getMaterial()->specular    = { cSpecular.x, cSpecular.y, cSpecular.z };
 
             m_scenePtr->addRenderable( _renderable );
+        }
+        else
+        {
+            std::cout << "WARNING> could not create mesh of type: " << type << std::endl;
+            if ( type == "mesh" )
+            {
+                std::cout << "WARNING> filename of mesh: " << filename << std::endl;
+            }
         }
 
         return _renderable;
@@ -391,6 +407,40 @@ namespace viz{
 
         kinVisual.axesPtr->pos        = _position;
         kinVisual.axesPtr->rotation   = _rotation;
+
+        // and update the color as well
+        if ( kinVisual.meshPtr->getType() != RENDERABLE_TYPE_MODEL )
+        {
+            kinVisual.meshPtr->getMaterial()->ambient.x = kinVisual.visualPtr->material.diffuse.x;
+            kinVisual.meshPtr->getMaterial()->ambient.y = kinVisual.visualPtr->material.diffuse.y;
+            kinVisual.meshPtr->getMaterial()->ambient.z = kinVisual.visualPtr->material.diffuse.z;
+
+            kinVisual.meshPtr->getMaterial()->diffuse.x = kinVisual.visualPtr->material.diffuse.x;
+            kinVisual.meshPtr->getMaterial()->diffuse.y = kinVisual.visualPtr->material.diffuse.y;
+            kinVisual.meshPtr->getMaterial()->diffuse.z = kinVisual.visualPtr->material.diffuse.z;
+
+            kinVisual.meshPtr->getMaterial()->specular.x = kinVisual.visualPtr->material.specular.x;
+            kinVisual.meshPtr->getMaterial()->specular.y = kinVisual.visualPtr->material.specular.y;
+            kinVisual.meshPtr->getMaterial()->specular.z = kinVisual.visualPtr->material.specular.z;
+        }
+        else
+        {
+            auto _children = reinterpret_cast< engine::LModel* >( kinVisual.meshPtr )->getMeshes();
+            for ( size_t i = 0; i < _children.size(); i++ )
+            {
+                _children[i]->getMaterial()->ambient.x = kinVisual.visualPtr->material.diffuse.x;
+                _children[i]->getMaterial()->ambient.y = kinVisual.visualPtr->material.diffuse.y;
+                _children[i]->getMaterial()->ambient.z = kinVisual.visualPtr->material.diffuse.z;
+
+                _children[i]->getMaterial()->diffuse.x = kinVisual.visualPtr->material.diffuse.x;
+                _children[i]->getMaterial()->diffuse.y = kinVisual.visualPtr->material.diffuse.y;
+                _children[i]->getMaterial()->diffuse.z = kinVisual.visualPtr->material.diffuse.z;
+
+                _children[i]->getMaterial()->specular.x = kinVisual.visualPtr->material.specular.x;
+                _children[i]->getMaterial()->specular.y = kinVisual.visualPtr->material.specular.y;
+                _children[i]->getMaterial()->specular.z = kinVisual.visualPtr->material.specular.z;
+            }
+        }
     }
 
     void TVizKinTree::_updateActuator( TVizKinActuator& kinActuator )

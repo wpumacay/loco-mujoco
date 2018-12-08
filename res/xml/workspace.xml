@@ -1,17 +1,9 @@
 <mujoco>
-    <include file="visual.xml"/>
-    <include file="skybox.xml"/>
     <include file="materials.xml"/>
-    <compiler angle="degree" inertiafromgeom="true"/>
+    <compiler angle="degree" coordinate="local" inertiafromgeom="true"/>
     <option iterations="50" timestep="0.005000" tolerance="0.000000" cone="pyramidal" jacobian="dense" solver="Newton"/>
     <size nconmax="4000" njmax="8000"/>
     <statistic extent="2.000000" center="0.000000 0.000000 1.000000"/>
-    <visual>
-        <map force="0.100000" zfar="30.000000"/>
-        <rgba haze="0.150000 0.250000 0.350000 1.000000"/>
-        <quality shadowsize="2048"/>
-        <global offheight="800" offwidth="800"/>
-    </visual>
     <asset>
         <texture height="512" width="512" rgb1="0.300000 0.500000 0.700000" rgb2="0.000000 0.000000 0.000000" builtin="gradient" type="skybox"/>
         <texture height="512" width="512" markrgb="0.800000 0.800000 0.800000" rgb1="0.200000 0.300000 0.400000" rgb2="0.100000 0.150000 0.200000" builtin="checker" mark="cross" name="texplane" type="2d"/>
@@ -19,6 +11,13 @@
         <material reflectance="0.300000" texrepeat="1.000000 1.000000" name="matplane" texture="texplane" texuniform="true"/>
         <material rgba="0.800000 0.600000 0.400000 1.000000" name="matgeom" texture="texgeom" texuniform="true"/>
     </asset>
+    <contact/>
+    <visual>
+        <map force="0.100000" zfar="30.000000"/>
+        <rgba haze="0.150000 0.250000 0.350000 1.000000"/>
+        <quality shadowsize="2048"/>
+        <global offheight="800" offwidth="800"/>
+    </visual>
     <worldbody>
         <body pos="0.000000 0.000000 100.000000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_0">
             <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_0" type="box"/>
@@ -76,6 +75,246 @@
         </body>
         <body pos="0.000000 0.000000 118.449997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_18">
             <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_18" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 119.474998" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_19">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_19" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 120.500000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_20">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_20" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 121.525002" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_21">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_21" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 122.550003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_22">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_22" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 123.574997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_23">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_23" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 124.599998" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_24">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_24" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 125.625000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_25">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_25" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 126.650002" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_26">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_26" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 127.675003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_27">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_27" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 128.699997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_28">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_28" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 129.725006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_29">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_29" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 130.750000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_30">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_30" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 131.774994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_31">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_31" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 132.800003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_32">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_32" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 133.824997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_33">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_33" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 134.850006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_34">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_34" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 135.875000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_35">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_35" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 136.899994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_36">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_36" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 137.925003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_37">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_37" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 138.949997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_38">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_38" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 139.975006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_39">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_39" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 141.000000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_40">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_40" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 142.024994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_41">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_41" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 143.050003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_42">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_42" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 144.074997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_43">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_43" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 145.100006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_44">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_44" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 146.125000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_45">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_45" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 147.149994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_46">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_46" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 148.175003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_47">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_47" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 149.199997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_48">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_48" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 150.225006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_49">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_49" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 151.250000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_50">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_50" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 152.274994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_51">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_51" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 153.300003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_52">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_52" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 154.324997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_53">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_53" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 155.350006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_54">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_54" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 156.375000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_55">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_55" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 157.399994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_56">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_56" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 158.425003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_57">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_57" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 159.449997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_58">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_58" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 160.475006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_59">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_59" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 161.500000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_60">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_60" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 162.524994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_61">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_61" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 163.550003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_62">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_62" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 164.574997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_63">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_63" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 165.600006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_64">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_64" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 166.625000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_65">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_65" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 167.649994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_66">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_66" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 168.674988" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_67">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_67" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 169.699997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_68">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_68" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 170.725006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_69">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_69" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 171.750000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_70">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_70" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 172.774994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_71">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_71" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 173.799988" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_72">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_72" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 174.824997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_73">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_73" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 175.850006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_74">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_74" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 176.875000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_75">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_75" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 177.899994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_76">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_76" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 178.924988" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_77">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_77" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 179.949997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_78">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_78" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 180.975006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_79">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_79" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 182.000000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_80">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_80" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 183.024994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_81">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_81" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 184.049988" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_82">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_82" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 185.074997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_83">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_83" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 186.100006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_84">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_84" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 187.125000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_85">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_85" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 188.149994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_86">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_86" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 189.174988" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_87">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_87" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 190.199997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_88">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_88" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 191.225006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_89">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_89" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 192.250000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_90">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_90" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 193.274994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_91">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_91" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 194.299988" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_92">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_92" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 195.324997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_93">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_93" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 196.350006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_94">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_94" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 197.375000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_95">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_95" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 198.399994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_96">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_96" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 199.424988" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_97">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_97" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 200.449997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc0_98">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc0_98" type="box"/>
         </body>
     </worldbody>
     <worldbody>
@@ -136,91 +375,826 @@
         <body pos="0.000000 0.000000 118.449997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_18">
             <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_18" type="box"/>
         </body>
+        <body pos="0.000000 0.000000 119.474998" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_19">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_19" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 120.500000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_20">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_20" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 121.525002" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_21">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_21" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 122.550003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_22">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_22" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 123.574997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_23">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_23" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 124.599998" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_24">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_24" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 125.625000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_25">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_25" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 126.650002" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_26">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_26" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 127.675003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_27">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_27" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 128.699997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_28">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_28" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 129.725006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_29">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_29" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 130.750000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_30">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_30" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 131.774994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_31">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_31" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 132.800003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_32">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_32" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 133.824997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_33">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_33" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 134.850006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_34">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_34" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 135.875000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_35">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_35" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 136.899994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_36">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_36" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 137.925003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_37">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_37" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 138.949997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_38">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_38" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 139.975006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_39">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_39" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 141.000000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_40">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_40" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 142.024994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_41">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_41" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 143.050003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_42">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_42" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 144.074997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_43">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_43" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 145.100006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_44">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_44" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 146.125000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_45">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_45" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 147.149994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_46">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_46" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 148.175003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_47">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_47" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 149.199997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_48">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_48" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 150.225006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_49">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_49" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 151.250000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_50">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_50" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 152.274994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_51">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_51" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 153.300003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_52">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_52" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 154.324997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_53">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_53" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 155.350006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_54">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_54" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 156.375000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_55">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_55" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 157.399994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_56">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_56" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 158.425003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_57">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_57" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 159.449997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_58">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_58" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 160.475006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_59">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_59" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 161.500000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_60">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_60" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 162.524994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_61">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_61" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 163.550003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_62">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_62" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 164.574997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_63">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_63" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 165.600006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_64">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_64" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 166.625000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_65">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_65" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 167.649994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_66">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_66" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 168.674988" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_67">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_67" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 169.699997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_68">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_68" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 170.725006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_69">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_69" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 171.750000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_70">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_70" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 172.774994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_71">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_71" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 173.799988" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_72">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_72" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 174.824997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_73">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_73" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 175.850006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_74">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_74" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 176.875000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_75">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_75" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 177.899994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_76">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_76" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 178.924988" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_77">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_77" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 179.949997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_78">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_78" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 180.975006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_79">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_79" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 182.000000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_80">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_80" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 183.024994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_81">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_81" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 184.049988" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_82">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_82" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 185.074997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_83">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_83" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 186.100006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_84">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_84" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 187.125000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_85">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_85" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 188.149994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_86">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_86" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 189.174988" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_87">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_87" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 190.199997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_88">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_88" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 191.225006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_89">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_89" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 192.250000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_90">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_90" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 193.274994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_91">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_91" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 194.299988" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_92">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_92" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 195.324997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_93">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_93" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 196.350006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_94">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_94" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 197.375000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_95">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_95" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 198.399994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_96">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_96" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 199.424988" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_97">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_97" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 200.449997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc1_98">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc1_98" type="box"/>
+        </body>
+    </worldbody>
+    <worldbody>
+        <body pos="0.000000 0.000000 100.000000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_0">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_0" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 101.025002" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_1">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_1" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 102.050003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_2">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_2" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 103.074997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_3">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_3" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 104.099998" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_4">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_4" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 105.125000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_5">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_5" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 106.150002" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_6">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_6" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 107.175003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_7">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_7" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 108.199997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_8">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_8" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 109.224998" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_9">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_9" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 110.250000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_10">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_10" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 111.275002" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_11">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_11" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 112.300003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_12">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_12" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 113.324997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_13">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_13" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 114.349998" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_14">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_14" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 115.375000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_15">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_15" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 116.400002" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_16">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_16" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 117.425003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_17">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_17" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 118.449997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_18">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_18" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 119.474998" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_19">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_19" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 120.500000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_20">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_20" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 121.525002" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_21">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_21" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 122.550003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_22">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_22" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 123.574997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_23">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_23" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 124.599998" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_24">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_24" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 125.625000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_25">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_25" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 126.650002" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_26">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_26" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 127.675003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_27">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_27" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 128.699997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_28">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_28" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 129.725006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_29">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_29" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 130.750000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_30">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_30" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 131.774994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_31">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_31" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 132.800003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_32">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_32" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 133.824997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_33">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_33" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 134.850006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_34">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_34" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 135.875000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_35">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_35" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 136.899994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_36">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_36" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 137.925003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_37">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_37" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 138.949997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_38">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_38" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 139.975006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_39">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_39" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 141.000000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_40">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_40" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 142.024994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_41">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_41" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 143.050003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_42">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_42" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 144.074997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_43">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_43" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 145.100006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_44">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_44" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 146.125000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_45">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_45" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 147.149994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_46">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_46" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 148.175003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_47">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_47" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 149.199997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_48">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_48" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 150.225006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_49">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_49" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 151.250000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_50">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_50" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 152.274994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_51">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_51" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 153.300003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_52">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_52" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 154.324997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_53">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_53" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 155.350006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_54">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_54" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 156.375000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_55">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_55" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 157.399994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_56">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_56" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 158.425003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_57">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_57" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 159.449997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_58">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_58" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 160.475006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_59">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_59" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 161.500000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_60">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_60" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 162.524994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_61">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_61" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 163.550003" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_62">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_62" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 164.574997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_63">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_63" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 165.600006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_64">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_64" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 166.625000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_65">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_65" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 167.649994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_66">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_66" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 168.674988" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_67">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_67" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 169.699997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_68">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_68" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 170.725006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_69">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_69" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 171.750000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_70">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_70" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 172.774994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_71">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_71" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 173.799988" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_72">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_72" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 174.824997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_73">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_73" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 175.850006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_74">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_74" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 176.875000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_75">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_75" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 177.899994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_76">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_76" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 178.924988" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_77">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_77" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 179.949997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_78">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_78" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 180.975006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_79">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_79" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 182.000000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_80">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_80" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 183.024994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_81">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_81" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 184.049988" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_82">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_82" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 185.074997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_83">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_83" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 186.100006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_84">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_84" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 187.125000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_85">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_85" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 188.149994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_86">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_86" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 189.174988" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_87">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_87" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 190.199997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_88">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_88" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 191.225006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_89">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_89" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 192.250000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_90">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_90" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 193.274994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_91">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_91" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 194.299988" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_92">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_92" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 195.324997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_93">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_93" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 196.350006" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_94">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_94" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 197.375000" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_95">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_95" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 198.399994" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_96">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_96" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 199.424988" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_97">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_97" type="box"/>
+        </body>
+        <body pos="0.000000 0.000000 200.449997" quat="0.000000 0.000000 0.000000 1.000000" name="terrainGen_terrain_proc2_98">
+            <geom conaffinity="1" contype="0" mass="1.000000" pos="0.000000 0.000000 0.000000" quat="0.000000 0.000000 0.000000 1.000000" size="0.250000 1.000000 0.012500" name="terrainGen_terrain_proc2_98" type="box"/>
+        </body>
     </worldbody>
     <actuator>
-        <motor ctrlrange="-1.000000 1.000000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_0_right_hip" name="mjcact_walker_0_right_hip"/>
-        <motor ctrlrange="-1.000000 1.000000" gear="50.000000" ctrllimited="true" joint="mjcjoint_walker_0_right_knee" name="mjcact_walker_0_right_knee"/>
-        <motor ctrlrange="-1.000000 1.000000" gear="20.000000" ctrllimited="true" joint="mjcjoint_walker_0_right_ankle" name="mjcact_walker_0_right_ankle"/>
-        <motor ctrlrange="-1.000000 1.000000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_0_left_hip" name="mjcact_walker_0_left_hip"/>
-        <motor ctrlrange="-1.000000 1.000000" gear="50.000000" ctrllimited="true" joint="mjcjoint_walker_0_left_knee" name="mjcact_walker_0_left_knee"/>
-        <motor ctrlrange="-1.000000 1.000000" gear="20.000000" ctrllimited="true" joint="mjcjoint_walker_0_left_ankle" name="mjcact_walker_0_left_ankle"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_0_abdomen_y" name="mjcact_walker_0_abdomen_y"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_0_abdomen_z" name="mjcact_walker_0_abdomen_z"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_0_abdomen_x" name="mjcact_walker_0_abdomen_x"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_0_right_hip_x" name="mjcact_walker_0_right_hip_x"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_0_right_hip_z" name="mjcact_walker_0_right_hip_z"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="600.000000" ctrllimited="true" joint="mjcjoint_walker_0_right_hip_y" name="mjcact_walker_0_right_hip_y"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="400.000000" ctrllimited="true" joint="mjcjoint_walker_0_right_knee" name="mjcact_walker_0_right_knee"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_0_right_ankle_x" name="mjcact_walker_0_right_ankle_x"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_0_right_ankle_y" name="mjcact_walker_0_right_ankle_y"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_0_left_hip_x" name="mjcact_walker_0_left_hip_x"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_0_left_hip_z" name="mjcact_walker_0_left_hip_z"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="600.000000" ctrllimited="true" joint="mjcjoint_walker_0_left_hip_y" name="mjcact_walker_0_left_hip_y"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="400.000000" ctrllimited="true" joint="mjcjoint_walker_0_left_knee" name="mjcact_walker_0_left_knee"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_0_left_ankle_x" name="mjcact_walker_0_left_ankle_x"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_0_left_ankle_y" name="mjcact_walker_0_left_ankle_y"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_0_right_shoulder1" name="mjcact_walker_0_right_shoulder1"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_0_right_shoulder2" name="mjcact_walker_0_right_shoulder2"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_0_right_elbow" name="mjcact_walker_0_right_elbow"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_0_left_shoulder1" name="mjcact_walker_0_left_shoulder1"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_0_left_shoulder2" name="mjcact_walker_0_left_shoulder2"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_0_left_elbow" name="mjcact_walker_0_left_elbow"/>
     </actuator>
     <worldbody>
-        <body pos="2.000000 0.000000 10.500000" name="mjcbody_walker_0_tmjcroot">
-            <light pos="0.000000 0.000000 2.000000" mode="trackcom" name="mjclight_walker_0_light"/>
-            <camera euler="60.000000 0.000000 0.000000" pos="0.000000 -2.000000 0.700000" mode="trackcom" name="mjccam_walker_0_side"/>
-            <camera pos="-2.000000 0.000000 0.500000" xyaxes="0.000000 -1.000000 0.000000 1.000000 0.000000 3.000000" mode="trackcom" name="mjccam_walker_0_back"/>
-            <joint armature="0.000000" damping="0.000000" axis="0.000000 0.000000 1.000000" solimplimit="0.000000 0.990000 0.010000" limited="false" name="mjcjoint_walker_0_tmjcrootz" type="slide"/>
-            <joint armature="0.000000" damping="0.000000" axis="1.000000 0.000000 0.000000" solimplimit="0.000000 0.990000 0.010000" limited="false" name="mjcjoint_walker_0_tmjcrootx" type="slide"/>
-            <joint armature="0.000000" damping="0.000000" axis="0.000000 1.000000 0.000000" solimplimit="0.000000 0.990000 0.010000" limited="false" name="mjcjoint_walker_0_tmjcrooty" type="hinge"/>
-            <geom conaffinity="0" contype="1" friction="0.700000 0.100000 0.100000" size="0.070000 0.300000" material="self" name="mjcgeom_walker_0_tmjcroot" type="capsule"/>
-            <body pos="0.000000 -0.050000 -0.300000" name="mjcbody_walker_0_right_thigh">
-                <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" range="-20.000000 100.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="mjcjoint_walker_0_right_hip"/>
-                <geom conaffinity="0" contype="1" friction="0.700000 0.100000 0.100000" pos="0.000000 0.000000 -0.225000" size="0.050000 0.225000" material="self" name="mjcgeom_walker_0_right_thigh" type="capsule"/>
-                <body pos="0.000000 0.000000 -0.700000" name="mjcbody_walker_0_right_leg">
-                    <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.250000" range="-150.000000 0.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="mjcjoint_walker_0_right_knee"/>
-                    <geom conaffinity="0" contype="1" friction="0.700000 0.100000 0.100000" size="0.040000 0.250000" material="self" name="mjcgeom_walker_0_right_leg" type="capsule"/>
-                    <body pos="0.060000 0.000000 -0.250000" name="mjcbody_walker_0_right_foot">
-                        <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="-0.060000 0.000000 0.000000" range="-45.000000 45.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="mjcjoint_walker_0_right_ankle"/>
-                        <geom conaffinity="0" contype="1" friction="0.700000 0.100000 0.100000" size="0.050000 0.100000" zaxis="1.000000 0.000000 0.000000" material="self" name="mjcgeom_walker_0_right_foot" type="capsule"/>
+        <light diffuse="0.200000 0.200000 0.200000" dir="0.000000 0.000000 -1.000000" pos="0.000000 0.000000 5.000000" specular="0.000000 0.000000 0.000000" castshadow="false" directional="false"/>
+        <light diffuse="0.800000 0.800000 0.800000" dir="0.000000 0.000000 -1.000000" pos="0.000000 0.000000 4.000000" specular="0.300000 0.300000 0.300000" directional="false" mode="targetbodycom" target="mjcbody_walker_0_tmjcroot"/>
+        <body pos="2.000000 0.000000 2.500000" name="mjcbody_walker_0_tmjcroot">
+            <freejoint name="mjcjoint_walker_0_root"/>
+            <geom condim="1" fromto="0.000000 -0.070000 0.000000 0.000000 0.070000 0.000000" size="0.070000" material="matgeom" name="mjcgeom_walker_0_tmjcroot" type="capsule"/>
+            <geom condim="1" pos="0.000000 0.000000 0.190000" size="0.090000" material="matgeom" name="mjcgeom_walker_0_head" type="sphere"/>
+            <geom condim="1" fromto="-0.010000 -0.060000 -0.120000 -0.010000 0.060000 -0.120000" size="0.060000" material="matgeom" name="mjcgeom_walker_0_uwaist" type="capsule"/>
+            <body pos="-0.010000 0.000000 -0.260000" quat="1.000000 0.000000 -0.002000 0.000000" name="mjcbody_walker_0_lwaist">
+                <geom condim="1" fromto="0.000000 -0.060000 0.000000 0.000000 0.060000 0.000000" size="0.060000" material="matgeom" name="mjcgeom_walker_0_lwaist" type="capsule"/>
+                <joint armature="0.020000" damping="5.000000" stiffness="20.000000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.065000" range="-45.000000 45.000000" limited="true" name="mjcjoint_walker_0_abdomen_z" type="hinge"/>
+                <joint armature="0.020000" damping="5.000000" stiffness="10.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.065000" range="-75.000000 30.000000" limited="true" name="mjcjoint_walker_0_abdomen_y" type="hinge"/>
+                <body pos="0.000000 0.000000 -0.165000" quat="1.000000 0.000000 -0.002000 0.000000" name="mjcbody_walker_0_pelvis">
+                    <joint armature="0.020000" damping="5.000000" stiffness="10.000000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.100000" range="-35.000000 35.000000" limited="true" name="mjcjoint_walker_0_abdomen_x" type="hinge"/>
+                    <geom condim="1" fromto="-0.020000 -0.070000 0.000000 -0.020000 0.070000 0.000000" size="0.090000" material="matgeom" name="mjcgeom_walker_0_butt" type="capsule"/>
+                    <body pos="0.000000 -0.100000 -0.040000" name="mjcbody_walker_0_right_thigh">
+                        <joint armature="0.010000" damping="5.000000" stiffness="10.000000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-25.000000 5.000000" limited="true" name="mjcjoint_walker_0_right_hip_x" type="hinge"/>
+                        <joint armature="0.010000" damping="5.000000" stiffness="10.000000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-60.000000 35.000000" limited="true" name="mjcjoint_walker_0_right_hip_z" type="hinge"/>
+                        <joint armature="0.010000" damping="5.000000" stiffness="20.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-120.000000 20.000000" limited="true" name="mjcjoint_walker_0_right_hip_y" type="hinge"/>
+                        <geom condim="1" fromto="0.000000 0.000000 0.000000 0.000000 0.010000 -0.340000" size="0.060000" material="matgeom" name="mjcgeom_walker_0_right_thigh1" type="capsule"/>
+                        <body pos="0.000000 0.010000 -0.403000" name="mjcbody_walker_0_right_shin">
+                            <joint armature="0.006000" damping="1.000000" stiffness="1.000000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.020000" range="-160.000000 -2.000000" limited="true" name="mjcjoint_walker_0_right_knee" type="hinge"/>
+                            <geom condim="1" fromto="0.000000 0.000000 0.000000 0.000000 0.000000 -0.300000" size="0.049000" material="matgeom" name="mjcgeom_walker_0_right_shin1" type="capsule"/>
+                            <body pos="0.000000 0.000000 -0.390000" name="mjcbody_walker_0_right_foot">
+                                <joint armature="0.000800" damping="1.000000" stiffness="4.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.080000" range="-50.000000 50.000000" limited="true" name="mjcjoint_walker_0_right_ankle_y" type="hinge"/>
+                                <joint armature="0.000600" damping="1.000000" stiffness="1.000000" axis="1.000000 0.000000 0.500000" pos="0.000000 0.000000 0.040000" range="-50.000000 50.000000" limited="true" name="mjcjoint_walker_0_right_ankle_x" type="hinge"/>
+                                <geom condim="1" fromto="-0.070000 -0.020000 0.000000 0.140000 -0.040000 0.000000" size="0.027000" material="matgeom" name="mjcgeom_walker_0_right_foot_cap1" type="capsule"/>
+                                <geom condim="1" fromto="-0.070000 0.000000 0.000000 0.140000 0.020000 0.000000" size="0.027000" material="matgeom" name="mjcgeom_walker_0_right_foot_cap2" type="capsule"/>
+                            </body>
+                        </body>
+                    </body>
+                    <body pos="0.000000 0.100000 -0.040000" name="mjcbody_walker_0_left_thigh">
+                        <joint armature="0.010000" damping="5.000000" stiffness="10.000000" axis="-1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-25.000000 5.000000" limited="true" name="mjcjoint_walker_0_left_hip_x" type="hinge"/>
+                        <joint armature="0.010000" damping="5.000000" stiffness="10.000000" axis="0.000000 0.000000 -1.000000" pos="0.000000 0.000000 0.000000" range="-60.000000 35.000000" limited="true" name="mjcjoint_walker_0_left_hip_z" type="hinge"/>
+                        <joint armature="0.010000" damping="5.000000" stiffness="20.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-120.000000 20.000000" limited="true" name="mjcjoint_walker_0_left_hip_y" type="hinge"/>
+                        <geom condim="1" fromto="0.000000 0.000000 0.000000 0.000000 -0.010000 -0.340000" size="0.060000" material="matgeom" name="mjcgeom_walker_0_left_thigh1" type="capsule"/>
+                        <body pos="0.000000 -0.010000 -0.403000" name="mjcbody_walker_0_left_shin">
+                            <joint armature="0.006000" damping="1.000000" stiffness="1.000000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.020000" range="-160.000000 -2.000000" limited="true" name="mjcjoint_walker_0_left_knee" type="hinge"/>
+                            <geom condim="1" fromto="0.000000 0.000000 0.000000 0.000000 0.000000 -0.300000" size="0.049000" material="matgeom" name="mjcgeom_walker_0_left_shin1" type="capsule"/>
+                            <body pos="0.000000 0.000000 -0.390000" name="mjcbody_walker_0_left_foot">
+                                <joint armature="0.000800" damping="1.000000" stiffness="4.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.080000" range="-50.000000 50.000000" limited="true" name="mjcjoint_walker_0_left_ankle_y" type="hinge"/>
+                                <joint armature="0.000600" damping="1.000000" stiffness="1.000000" axis="1.000000 0.000000 0.500000" pos="0.000000 0.000000 0.040000" range="-50.000000 50.000000" limited="true" name="mjcjoint_walker_0_left_ankle_x" type="hinge"/>
+                                <geom condim="1" fromto="-0.070000 0.020000 0.000000 0.140000 0.040000 0.000000" size="0.027000" material="matgeom" name="mjcgeom_walker_0_left_foot_cap1" type="capsule"/>
+                                <geom condim="1" fromto="-0.070000 0.000000 0.000000 0.140000 -0.020000 0.000000" size="0.027000" material="matgeom" name="mjcgeom_walker_0_left_foot_cap2" type="capsule"/>
+                            </body>
+                        </body>
                     </body>
                 </body>
             </body>
-            <body pos="0.000000 0.050000 -0.300000" name="mjcbody_walker_0_left_thigh">
-                <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" range="-20.000000 100.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="mjcjoint_walker_0_left_hip"/>
-                <geom conaffinity="0" contype="1" friction="0.700000 0.100000 0.100000" pos="0.000000 0.000000 -0.225000" size="0.050000 0.225000" material="self" name="mjcgeom_walker_0_left_thigh" type="capsule"/>
-                <body pos="0.000000 0.000000 -0.700000" name="mjcbody_walker_0_left_leg">
-                    <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.250000" range="-150.000000 0.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="mjcjoint_walker_0_left_knee"/>
-                    <geom conaffinity="0" contype="1" friction="0.700000 0.100000 0.100000" size="0.040000 0.250000" material="self" name="mjcgeom_walker_0_left_leg" type="capsule"/>
-                    <body pos="0.060000 0.000000 -0.250000" name="mjcbody_walker_0_left_foot">
-                        <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="-0.060000 0.000000 0.000000" range="-45.000000 45.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="mjcjoint_walker_0_left_ankle"/>
-                        <geom conaffinity="0" contype="1" friction="0.700000 0.100000 0.100000" size="0.050000 0.100000" zaxis="1.000000 0.000000 0.000000" material="self" name="mjcgeom_walker_0_left_foot" type="capsule"/>
-                    </body>
+            <body pos="0.000000 -0.170000 0.060000" name="mjcbody_walker_0_right_upper_arm">
+                <joint armature="0.006800" damping="1.000000" stiffness="1.000000" axis="2.000000 1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-85.000000 60.000000" limited="true" name="mjcjoint_walker_0_right_shoulder1" type="hinge"/>
+                <joint armature="0.005100" damping="1.000000" stiffness="1.000000" axis="0.000000 -1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-85.000000 60.000000" limited="true" name="mjcjoint_walker_0_right_shoulder2" type="hinge"/>
+                <geom condim="1" fromto="0.000000 0.000000 0.000000 0.160000 -0.160000 -0.160000" size="0.040000 0.160000" material="matgeom" name="mjcgeom_walker_0_right_uarm1" type="capsule"/>
+                <body pos="0.180000 -0.180000 -0.180000" name="mjcbody_walker_0_right_lower_arm">
+                    <joint armature="0.002800" damping="1.000000" stiffness="0.000000" axis="0.000000 -1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-90.000000 50.000000" limited="true" name="mjcjoint_walker_0_right_elbow" type="hinge"/>
+                    <geom condim="1" fromto="0.010000 0.010000 0.010000 0.170000 0.170000 0.170000" size="0.031000" material="matgeom" name="mjcgeom_walker_0_right_larm" type="capsule"/>
+                    <geom condim="1" pos="0.180000 0.180000 0.180000" size="0.040000" material="matgeom" name="mjcgeom_walker_0_right_hand" type="sphere"/>
+                </body>
+            </body>
+            <body pos="0.000000 0.170000 0.060000" name="mjcbody_walker_0_left_upper_arm">
+                <joint armature="0.006800" damping="1.000000" stiffness="1.000000" axis="2.000000 -1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-60.000000 85.000000" limited="true" name="mjcjoint_walker_0_left_shoulder1" type="hinge"/>
+                <joint armature="0.005100" damping="1.000000" stiffness="1.000000" axis="0.000000 1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-60.000000 85.000000" limited="true" name="mjcjoint_walker_0_left_shoulder2" type="hinge"/>
+                <geom condim="1" fromto="0.000000 0.000000 0.000000 0.160000 0.160000 -0.160000" size="0.040000 0.160000" material="matgeom" name="mjcgeom_walker_0_left_uarm1" type="capsule"/>
+                <body pos="0.180000 0.180000 -0.180000" name="mjcbody_walker_0_left_lower_arm">
+                    <joint armature="0.002800" damping="1.000000" stiffness="0.000000" axis="0.000000 -1.000000 -1.000000" pos="0.000000 0.000000 0.000000" range="-90.000000 50.000000" limited="true" name="mjcjoint_walker_0_left_elbow" type="hinge"/>
+                    <geom condim="1" fromto="0.010000 -0.010000 0.010000 0.170000 -0.170000 0.170000" size="0.031000" material="matgeom" name="mjcgeom_walker_0_left_larm" type="capsule"/>
+                    <geom condim="1" pos="0.180000 -0.180000 0.180000" size="0.040000" material="matgeom" name="mjcgeom_walker_0_left_hand" type="sphere"/>
                 </body>
             </body>
         </body>
     </worldbody>
+    <actuator>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_1_abdomen_y" name="mjcact_walker_1_abdomen_y"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_1_abdomen_z" name="mjcact_walker_1_abdomen_z"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_1_abdomen_x" name="mjcact_walker_1_abdomen_x"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_1_right_hip_x" name="mjcact_walker_1_right_hip_x"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_1_right_hip_z" name="mjcact_walker_1_right_hip_z"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="600.000000" ctrllimited="true" joint="mjcjoint_walker_1_right_hip_y" name="mjcact_walker_1_right_hip_y"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="400.000000" ctrllimited="true" joint="mjcjoint_walker_1_right_knee" name="mjcact_walker_1_right_knee"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_1_right_ankle_x" name="mjcact_walker_1_right_ankle_x"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_1_right_ankle_y" name="mjcact_walker_1_right_ankle_y"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_hip_x" name="mjcact_walker_1_left_hip_x"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_hip_z" name="mjcact_walker_1_left_hip_z"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="600.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_hip_y" name="mjcact_walker_1_left_hip_y"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="400.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_knee" name="mjcact_walker_1_left_knee"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_ankle_x" name="mjcact_walker_1_left_ankle_x"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_ankle_y" name="mjcact_walker_1_left_ankle_y"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_1_right_shoulder1" name="mjcact_walker_1_right_shoulder1"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_1_right_shoulder2" name="mjcact_walker_1_right_shoulder2"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_1_right_elbow" name="mjcact_walker_1_right_elbow"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_shoulder1" name="mjcact_walker_1_left_shoulder1"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_shoulder2" name="mjcact_walker_1_left_shoulder2"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_elbow" name="mjcact_walker_1_left_elbow"/>
+    </actuator>
     <worldbody>
-        <body pos="2.000000 4.000000 10.500000" name="mjcbody_walker_1_tmjcroot">
-            <light pos="0.000000 0.000000 2.000000" mode="trackcom" name="mjclight_walker_1_light"/>
-            <camera euler="60.000000 0.000000 0.000000" pos="0.000000 -2.000000 0.700000" mode="trackcom" name="mjccam_walker_1_side"/>
-            <camera pos="-2.000000 0.000000 0.500000" xyaxes="0.000000 -1.000000 0.000000 1.000000 0.000000 3.000000" mode="trackcom" name="mjccam_walker_1_back"/>
-            <joint armature="0.000000" damping="0.000000" axis="0.000000 0.000000 1.000000" solimplimit="0.000000 0.990000 0.010000" limited="false" name="mjcjoint_walker_1_tmjcrootz" type="slide"/>
-            <joint armature="0.000000" damping="0.000000" axis="1.000000 0.000000 0.000000" solimplimit="0.000000 0.990000 0.010000" limited="false" name="mjcjoint_walker_1_tmjcrootx" type="slide"/>
-            <joint armature="0.000000" damping="0.000000" axis="0.000000 1.000000 0.000000" solimplimit="0.000000 0.990000 0.010000" limited="false" name="mjcjoint_walker_1_tmjcrooty" type="hinge"/>
-            <geom conaffinity="0" contype="1" friction="0.700000 0.100000 0.100000" size="0.070000 0.300000" material="self" name="mjcgeom_walker_1_tmjcroot" type="capsule"/>
-            <body pos="0.000000 -0.050000 -0.300000" name="mjcbody_walker_1_right_thigh">
-                <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" range="-20.000000 100.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="mjcjoint_walker_1_right_hip"/>
-                <geom conaffinity="0" contype="1" friction="0.700000 0.100000 0.100000" pos="0.000000 0.000000 -0.225000" size="0.050000 0.225000" material="self" name="mjcgeom_walker_1_right_thigh" type="capsule"/>
-                <body pos="0.000000 0.000000 -0.700000" name="mjcbody_walker_1_right_leg">
-                    <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.250000" range="-150.000000 0.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="mjcjoint_walker_1_right_knee"/>
-                    <geom conaffinity="0" contype="1" friction="0.700000 0.100000 0.100000" size="0.040000 0.250000" material="self" name="mjcgeom_walker_1_right_leg" type="capsule"/>
-                    <body pos="0.060000 0.000000 -0.250000" name="mjcbody_walker_1_right_foot">
-                        <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="-0.060000 0.000000 0.000000" range="-45.000000 45.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="mjcjoint_walker_1_right_ankle"/>
-                        <geom conaffinity="0" contype="1" friction="0.700000 0.100000 0.100000" size="0.050000 0.100000" zaxis="1.000000 0.000000 0.000000" material="self" name="mjcgeom_walker_1_right_foot" type="capsule"/>
+        <light diffuse="0.200000 0.200000 0.200000" dir="0.000000 0.000000 -1.000000" pos="0.000000 0.000000 5.000000" specular="0.000000 0.000000 0.000000" castshadow="false" directional="false"/>
+        <light diffuse="0.800000 0.800000 0.800000" dir="0.000000 0.000000 -1.000000" pos="0.000000 0.000000 4.000000" specular="0.300000 0.300000 0.300000" directional="false" mode="targetbodycom" target="mjcbody_walker_1_tmjcroot"/>
+        <body pos="2.000000 3.000000 2.500000" name="mjcbody_walker_1_tmjcroot">
+            <freejoint name="mjcjoint_walker_1_root"/>
+            <geom condim="1" fromto="0.000000 -0.070000 0.000000 0.000000 0.070000 0.000000" size="0.070000" material="matgeom" name="mjcgeom_walker_1_tmjcroot" type="capsule"/>
+            <geom condim="1" pos="0.000000 0.000000 0.190000" size="0.090000" material="matgeom" name="mjcgeom_walker_1_head" type="sphere"/>
+            <geom condim="1" fromto="-0.010000 -0.060000 -0.120000 -0.010000 0.060000 -0.120000" size="0.060000" material="matgeom" name="mjcgeom_walker_1_uwaist" type="capsule"/>
+            <body pos="-0.010000 0.000000 -0.260000" quat="1.000000 0.000000 -0.002000 0.000000" name="mjcbody_walker_1_lwaist">
+                <geom condim="1" fromto="0.000000 -0.060000 0.000000 0.000000 0.060000 0.000000" size="0.060000" material="matgeom" name="mjcgeom_walker_1_lwaist" type="capsule"/>
+                <joint armature="0.020000" damping="5.000000" stiffness="20.000000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.065000" range="-45.000000 45.000000" limited="true" name="mjcjoint_walker_1_abdomen_z" type="hinge"/>
+                <joint armature="0.020000" damping="5.000000" stiffness="10.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.065000" range="-75.000000 30.000000" limited="true" name="mjcjoint_walker_1_abdomen_y" type="hinge"/>
+                <body pos="0.000000 0.000000 -0.165000" quat="1.000000 0.000000 -0.002000 0.000000" name="mjcbody_walker_1_pelvis">
+                    <joint armature="0.020000" damping="5.000000" stiffness="10.000000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.100000" range="-35.000000 35.000000" limited="true" name="mjcjoint_walker_1_abdomen_x" type="hinge"/>
+                    <geom condim="1" fromto="-0.020000 -0.070000 0.000000 -0.020000 0.070000 0.000000" size="0.090000" material="matgeom" name="mjcgeom_walker_1_butt" type="capsule"/>
+                    <body pos="0.000000 -0.100000 -0.040000" name="mjcbody_walker_1_right_thigh">
+                        <joint armature="0.010000" damping="5.000000" stiffness="10.000000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-25.000000 5.000000" limited="true" name="mjcjoint_walker_1_right_hip_x" type="hinge"/>
+                        <joint armature="0.010000" damping="5.000000" stiffness="10.000000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-60.000000 35.000000" limited="true" name="mjcjoint_walker_1_right_hip_z" type="hinge"/>
+                        <joint armature="0.010000" damping="5.000000" stiffness="20.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-120.000000 20.000000" limited="true" name="mjcjoint_walker_1_right_hip_y" type="hinge"/>
+                        <geom condim="1" fromto="0.000000 0.000000 0.000000 0.000000 0.010000 -0.340000" size="0.060000" material="matgeom" name="mjcgeom_walker_1_right_thigh1" type="capsule"/>
+                        <body pos="0.000000 0.010000 -0.403000" name="mjcbody_walker_1_right_shin">
+                            <joint armature="0.006000" damping="1.000000" stiffness="1.000000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.020000" range="-160.000000 -2.000000" limited="true" name="mjcjoint_walker_1_right_knee" type="hinge"/>
+                            <geom condim="1" fromto="0.000000 0.000000 0.000000 0.000000 0.000000 -0.300000" size="0.049000" material="matgeom" name="mjcgeom_walker_1_right_shin1" type="capsule"/>
+                            <body pos="0.000000 0.000000 -0.390000" name="mjcbody_walker_1_right_foot">
+                                <joint armature="0.000800" damping="1.000000" stiffness="4.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.080000" range="-50.000000 50.000000" limited="true" name="mjcjoint_walker_1_right_ankle_y" type="hinge"/>
+                                <joint armature="0.000600" damping="1.000000" stiffness="1.000000" axis="1.000000 0.000000 0.500000" pos="0.000000 0.000000 0.040000" range="-50.000000 50.000000" limited="true" name="mjcjoint_walker_1_right_ankle_x" type="hinge"/>
+                                <geom condim="1" fromto="-0.070000 -0.020000 0.000000 0.140000 -0.040000 0.000000" size="0.027000" material="matgeom" name="mjcgeom_walker_1_right_foot_cap1" type="capsule"/>
+                                <geom condim="1" fromto="-0.070000 0.000000 0.000000 0.140000 0.020000 0.000000" size="0.027000" material="matgeom" name="mjcgeom_walker_1_right_foot_cap2" type="capsule"/>
+                            </body>
+                        </body>
+                    </body>
+                    <body pos="0.000000 0.100000 -0.040000" name="mjcbody_walker_1_left_thigh">
+                        <joint armature="0.010000" damping="5.000000" stiffness="10.000000" axis="-1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-25.000000 5.000000" limited="true" name="mjcjoint_walker_1_left_hip_x" type="hinge"/>
+                        <joint armature="0.010000" damping="5.000000" stiffness="10.000000" axis="0.000000 0.000000 -1.000000" pos="0.000000 0.000000 0.000000" range="-60.000000 35.000000" limited="true" name="mjcjoint_walker_1_left_hip_z" type="hinge"/>
+                        <joint armature="0.010000" damping="5.000000" stiffness="20.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-120.000000 20.000000" limited="true" name="mjcjoint_walker_1_left_hip_y" type="hinge"/>
+                        <geom condim="1" fromto="0.000000 0.000000 0.000000 0.000000 -0.010000 -0.340000" size="0.060000" material="matgeom" name="mjcgeom_walker_1_left_thigh1" type="capsule"/>
+                        <body pos="0.000000 -0.010000 -0.403000" name="mjcbody_walker_1_left_shin">
+                            <joint armature="0.006000" damping="1.000000" stiffness="1.000000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.020000" range="-160.000000 -2.000000" limited="true" name="mjcjoint_walker_1_left_knee" type="hinge"/>
+                            <geom condim="1" fromto="0.000000 0.000000 0.000000 0.000000 0.000000 -0.300000" size="0.049000" material="matgeom" name="mjcgeom_walker_1_left_shin1" type="capsule"/>
+                            <body pos="0.000000 0.000000 -0.390000" name="mjcbody_walker_1_left_foot">
+                                <joint armature="0.000800" damping="1.000000" stiffness="4.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.080000" range="-50.000000 50.000000" limited="true" name="mjcjoint_walker_1_left_ankle_y" type="hinge"/>
+                                <joint armature="0.000600" damping="1.000000" stiffness="1.000000" axis="1.000000 0.000000 0.500000" pos="0.000000 0.000000 0.040000" range="-50.000000 50.000000" limited="true" name="mjcjoint_walker_1_left_ankle_x" type="hinge"/>
+                                <geom condim="1" fromto="-0.070000 0.020000 0.000000 0.140000 0.040000 0.000000" size="0.027000" material="matgeom" name="mjcgeom_walker_1_left_foot_cap1" type="capsule"/>
+                                <geom condim="1" fromto="-0.070000 0.000000 0.000000 0.140000 -0.020000 0.000000" size="0.027000" material="matgeom" name="mjcgeom_walker_1_left_foot_cap2" type="capsule"/>
+                            </body>
+                        </body>
                     </body>
                 </body>
             </body>
-            <body pos="0.000000 0.050000 -0.300000" name="mjcbody_walker_1_left_thigh">
-                <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" range="-20.000000 100.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="mjcjoint_walker_1_left_hip"/>
-                <geom conaffinity="0" contype="1" friction="0.700000 0.100000 0.100000" pos="0.000000 0.000000 -0.225000" size="0.050000 0.225000" material="self" name="mjcgeom_walker_1_left_thigh" type="capsule"/>
-                <body pos="0.000000 0.000000 -0.700000" name="mjcbody_walker_1_left_leg">
-                    <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.250000" range="-150.000000 0.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="mjcjoint_walker_1_left_knee"/>
-                    <geom conaffinity="0" contype="1" friction="0.700000 0.100000 0.100000" size="0.040000 0.250000" material="self" name="mjcgeom_walker_1_left_leg" type="capsule"/>
-                    <body pos="0.060000 0.000000 -0.250000" name="mjcbody_walker_1_left_foot">
-                        <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="-0.060000 0.000000 0.000000" range="-45.000000 45.000000" solimplimit="0.000000 0.990000 0.010000" limited="true" name="mjcjoint_walker_1_left_ankle"/>
-                        <geom conaffinity="0" contype="1" friction="0.700000 0.100000 0.100000" size="0.050000 0.100000" zaxis="1.000000 0.000000 0.000000" material="self" name="mjcgeom_walker_1_left_foot" type="capsule"/>
-                    </body>
+            <body pos="0.000000 -0.170000 0.060000" name="mjcbody_walker_1_right_upper_arm">
+                <joint armature="0.006800" damping="1.000000" stiffness="1.000000" axis="2.000000 1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-85.000000 60.000000" limited="true" name="mjcjoint_walker_1_right_shoulder1" type="hinge"/>
+                <joint armature="0.005100" damping="1.000000" stiffness="1.000000" axis="0.000000 -1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-85.000000 60.000000" limited="true" name="mjcjoint_walker_1_right_shoulder2" type="hinge"/>
+                <geom condim="1" fromto="0.000000 0.000000 0.000000 0.160000 -0.160000 -0.160000" size="0.040000 0.160000" material="matgeom" name="mjcgeom_walker_1_right_uarm1" type="capsule"/>
+                <body pos="0.180000 -0.180000 -0.180000" name="mjcbody_walker_1_right_lower_arm">
+                    <joint armature="0.002800" damping="1.000000" stiffness="0.000000" axis="0.000000 -1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-90.000000 50.000000" limited="true" name="mjcjoint_walker_1_right_elbow" type="hinge"/>
+                    <geom condim="1" fromto="0.010000 0.010000 0.010000 0.170000 0.170000 0.170000" size="0.031000" material="matgeom" name="mjcgeom_walker_1_right_larm" type="capsule"/>
+                    <geom condim="1" pos="0.180000 0.180000 0.180000" size="0.040000" material="matgeom" name="mjcgeom_walker_1_right_hand" type="sphere"/>
+                </body>
+            </body>
+            <body pos="0.000000 0.170000 0.060000" name="mjcbody_walker_1_left_upper_arm">
+                <joint armature="0.006800" damping="1.000000" stiffness="1.000000" axis="2.000000 -1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-60.000000 85.000000" limited="true" name="mjcjoint_walker_1_left_shoulder1" type="hinge"/>
+                <joint armature="0.005100" damping="1.000000" stiffness="1.000000" axis="0.000000 1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-60.000000 85.000000" limited="true" name="mjcjoint_walker_1_left_shoulder2" type="hinge"/>
+                <geom condim="1" fromto="0.000000 0.000000 0.000000 0.160000 0.160000 -0.160000" size="0.040000 0.160000" material="matgeom" name="mjcgeom_walker_1_left_uarm1" type="capsule"/>
+                <body pos="0.180000 0.180000 -0.180000" name="mjcbody_walker_1_left_lower_arm">
+                    <joint armature="0.002800" damping="1.000000" stiffness="0.000000" axis="0.000000 -1.000000 -1.000000" pos="0.000000 0.000000 0.000000" range="-90.000000 50.000000" limited="true" name="mjcjoint_walker_1_left_elbow" type="hinge"/>
+                    <geom condim="1" fromto="0.010000 -0.010000 0.010000 0.170000 -0.170000 0.170000" size="0.031000" material="matgeom" name="mjcgeom_walker_1_left_larm" type="capsule"/>
+                    <geom condim="1" pos="0.180000 -0.180000 0.180000" size="0.040000" material="matgeom" name="mjcgeom_walker_1_left_hand" type="sphere"/>
                 </body>
             </body>
         </body>
     </worldbody>
     <actuator>
-        <motor ctrlrange="-1.000000 1.000000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_1_right_hip" name="mjcact_walker_1_right_hip"/>
-        <motor ctrlrange="-1.000000 1.000000" gear="50.000000" ctrllimited="true" joint="mjcjoint_walker_1_right_knee" name="mjcact_walker_1_right_knee"/>
-        <motor ctrlrange="-1.000000 1.000000" gear="20.000000" ctrllimited="true" joint="mjcjoint_walker_1_right_ankle" name="mjcact_walker_1_right_ankle"/>
-        <motor ctrlrange="-1.000000 1.000000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_hip" name="mjcact_walker_1_left_hip"/>
-        <motor ctrlrange="-1.000000 1.000000" gear="50.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_knee" name="mjcact_walker_1_left_knee"/>
-        <motor ctrlrange="-1.000000 1.000000" gear="20.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_ankle" name="mjcact_walker_1_left_ankle"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_2_abdomen_y" name="mjcact_walker_2_abdomen_y"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_2_abdomen_z" name="mjcact_walker_2_abdomen_z"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_2_abdomen_x" name="mjcact_walker_2_abdomen_x"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_2_right_hip_x" name="mjcact_walker_2_right_hip_x"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_2_right_hip_z" name="mjcact_walker_2_right_hip_z"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="600.000000" ctrllimited="true" joint="mjcjoint_walker_2_right_hip_y" name="mjcact_walker_2_right_hip_y"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="400.000000" ctrllimited="true" joint="mjcjoint_walker_2_right_knee" name="mjcact_walker_2_right_knee"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_2_right_ankle_x" name="mjcact_walker_2_right_ankle_x"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_2_right_ankle_y" name="mjcact_walker_2_right_ankle_y"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_2_left_hip_x" name="mjcact_walker_2_left_hip_x"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_2_left_hip_z" name="mjcact_walker_2_left_hip_z"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="600.000000" ctrllimited="true" joint="mjcjoint_walker_2_left_hip_y" name="mjcact_walker_2_left_hip_y"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="400.000000" ctrllimited="true" joint="mjcjoint_walker_2_left_knee" name="mjcact_walker_2_left_knee"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_2_left_ankle_x" name="mjcact_walker_2_left_ankle_x"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_2_left_ankle_y" name="mjcact_walker_2_left_ankle_y"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_2_right_shoulder1" name="mjcact_walker_2_right_shoulder1"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_2_right_shoulder2" name="mjcact_walker_2_right_shoulder2"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_2_right_elbow" name="mjcact_walker_2_right_elbow"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_2_left_shoulder1" name="mjcact_walker_2_left_shoulder1"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_2_left_shoulder2" name="mjcact_walker_2_left_shoulder2"/>
+        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_2_left_elbow" name="mjcact_walker_2_left_elbow"/>
     </actuator>
+    <worldbody>
+        <light diffuse="0.200000 0.200000 0.200000" dir="0.000000 0.000000 -1.000000" pos="0.000000 0.000000 5.000000" specular="0.000000 0.000000 0.000000" castshadow="false" directional="false"/>
+        <light diffuse="0.800000 0.800000 0.800000" dir="0.000000 0.000000 -1.000000" pos="0.000000 0.000000 4.000000" specular="0.300000 0.300000 0.300000" directional="false" mode="targetbodycom" target="mjcbody_walker_2_tmjcroot"/>
+        <body pos="2.000000 6.000000 2.500000" name="mjcbody_walker_2_tmjcroot">
+            <freejoint name="mjcjoint_walker_2_root"/>
+            <geom condim="1" fromto="0.000000 -0.070000 0.000000 0.000000 0.070000 0.000000" size="0.070000" material="matgeom" name="mjcgeom_walker_2_tmjcroot" type="capsule"/>
+            <geom condim="1" pos="0.000000 0.000000 0.190000" size="0.090000" material="matgeom" name="mjcgeom_walker_2_head" type="sphere"/>
+            <geom condim="1" fromto="-0.010000 -0.060000 -0.120000 -0.010000 0.060000 -0.120000" size="0.060000" material="matgeom" name="mjcgeom_walker_2_uwaist" type="capsule"/>
+            <body pos="-0.010000 0.000000 -0.260000" quat="1.000000 0.000000 -0.002000 0.000000" name="mjcbody_walker_2_lwaist">
+                <geom condim="1" fromto="0.000000 -0.060000 0.000000 0.000000 0.060000 0.000000" size="0.060000" material="matgeom" name="mjcgeom_walker_2_lwaist" type="capsule"/>
+                <joint armature="0.020000" damping="5.000000" stiffness="20.000000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.065000" range="-45.000000 45.000000" limited="true" name="mjcjoint_walker_2_abdomen_z" type="hinge"/>
+                <joint armature="0.020000" damping="5.000000" stiffness="10.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.065000" range="-75.000000 30.000000" limited="true" name="mjcjoint_walker_2_abdomen_y" type="hinge"/>
+                <body pos="0.000000 0.000000 -0.165000" quat="1.000000 0.000000 -0.002000 0.000000" name="mjcbody_walker_2_pelvis">
+                    <joint armature="0.020000" damping="5.000000" stiffness="10.000000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.100000" range="-35.000000 35.000000" limited="true" name="mjcjoint_walker_2_abdomen_x" type="hinge"/>
+                    <geom condim="1" fromto="-0.020000 -0.070000 0.000000 -0.020000 0.070000 0.000000" size="0.090000" material="matgeom" name="mjcgeom_walker_2_butt" type="capsule"/>
+                    <body pos="0.000000 -0.100000 -0.040000" name="mjcbody_walker_2_right_thigh">
+                        <joint armature="0.010000" damping="5.000000" stiffness="10.000000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-25.000000 5.000000" limited="true" name="mjcjoint_walker_2_right_hip_x" type="hinge"/>
+                        <joint armature="0.010000" damping="5.000000" stiffness="10.000000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-60.000000 35.000000" limited="true" name="mjcjoint_walker_2_right_hip_z" type="hinge"/>
+                        <joint armature="0.010000" damping="5.000000" stiffness="20.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-120.000000 20.000000" limited="true" name="mjcjoint_walker_2_right_hip_y" type="hinge"/>
+                        <geom condim="1" fromto="0.000000 0.000000 0.000000 0.000000 0.010000 -0.340000" size="0.060000" material="matgeom" name="mjcgeom_walker_2_right_thigh1" type="capsule"/>
+                        <body pos="0.000000 0.010000 -0.403000" name="mjcbody_walker_2_right_shin">
+                            <joint armature="0.006000" damping="1.000000" stiffness="1.000000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.020000" range="-160.000000 -2.000000" limited="true" name="mjcjoint_walker_2_right_knee" type="hinge"/>
+                            <geom condim="1" fromto="0.000000 0.000000 0.000000 0.000000 0.000000 -0.300000" size="0.049000" material="matgeom" name="mjcgeom_walker_2_right_shin1" type="capsule"/>
+                            <body pos="0.000000 0.000000 -0.390000" name="mjcbody_walker_2_right_foot">
+                                <joint armature="0.000800" damping="1.000000" stiffness="4.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.080000" range="-50.000000 50.000000" limited="true" name="mjcjoint_walker_2_right_ankle_y" type="hinge"/>
+                                <joint armature="0.000600" damping="1.000000" stiffness="1.000000" axis="1.000000 0.000000 0.500000" pos="0.000000 0.000000 0.040000" range="-50.000000 50.000000" limited="true" name="mjcjoint_walker_2_right_ankle_x" type="hinge"/>
+                                <geom condim="1" fromto="-0.070000 -0.020000 0.000000 0.140000 -0.040000 0.000000" size="0.027000" material="matgeom" name="mjcgeom_walker_2_right_foot_cap1" type="capsule"/>
+                                <geom condim="1" fromto="-0.070000 0.000000 0.000000 0.140000 0.020000 0.000000" size="0.027000" material="matgeom" name="mjcgeom_walker_2_right_foot_cap2" type="capsule"/>
+                            </body>
+                        </body>
+                    </body>
+                    <body pos="0.000000 0.100000 -0.040000" name="mjcbody_walker_2_left_thigh">
+                        <joint armature="0.010000" damping="5.000000" stiffness="10.000000" axis="-1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-25.000000 5.000000" limited="true" name="mjcjoint_walker_2_left_hip_x" type="hinge"/>
+                        <joint armature="0.010000" damping="5.000000" stiffness="10.000000" axis="0.000000 0.000000 -1.000000" pos="0.000000 0.000000 0.000000" range="-60.000000 35.000000" limited="true" name="mjcjoint_walker_2_left_hip_z" type="hinge"/>
+                        <joint armature="0.010000" damping="5.000000" stiffness="20.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-120.000000 20.000000" limited="true" name="mjcjoint_walker_2_left_hip_y" type="hinge"/>
+                        <geom condim="1" fromto="0.000000 0.000000 0.000000 0.000000 -0.010000 -0.340000" size="0.060000" material="matgeom" name="mjcgeom_walker_2_left_thigh1" type="capsule"/>
+                        <body pos="0.000000 -0.010000 -0.403000" name="mjcbody_walker_2_left_shin">
+                            <joint armature="0.006000" damping="1.000000" stiffness="1.000000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.020000" range="-160.000000 -2.000000" limited="true" name="mjcjoint_walker_2_left_knee" type="hinge"/>
+                            <geom condim="1" fromto="0.000000 0.000000 0.000000 0.000000 0.000000 -0.300000" size="0.049000" material="matgeom" name="mjcgeom_walker_2_left_shin1" type="capsule"/>
+                            <body pos="0.000000 0.000000 -0.390000" name="mjcbody_walker_2_left_foot">
+                                <joint armature="0.000800" damping="1.000000" stiffness="4.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.080000" range="-50.000000 50.000000" limited="true" name="mjcjoint_walker_2_left_ankle_y" type="hinge"/>
+                                <joint armature="0.000600" damping="1.000000" stiffness="1.000000" axis="1.000000 0.000000 0.500000" pos="0.000000 0.000000 0.040000" range="-50.000000 50.000000" limited="true" name="mjcjoint_walker_2_left_ankle_x" type="hinge"/>
+                                <geom condim="1" fromto="-0.070000 0.020000 0.000000 0.140000 0.040000 0.000000" size="0.027000" material="matgeom" name="mjcgeom_walker_2_left_foot_cap1" type="capsule"/>
+                                <geom condim="1" fromto="-0.070000 0.000000 0.000000 0.140000 -0.020000 0.000000" size="0.027000" material="matgeom" name="mjcgeom_walker_2_left_foot_cap2" type="capsule"/>
+                            </body>
+                        </body>
+                    </body>
+                </body>
+            </body>
+            <body pos="0.000000 -0.170000 0.060000" name="mjcbody_walker_2_right_upper_arm">
+                <joint armature="0.006800" damping="1.000000" stiffness="1.000000" axis="2.000000 1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-85.000000 60.000000" limited="true" name="mjcjoint_walker_2_right_shoulder1" type="hinge"/>
+                <joint armature="0.005100" damping="1.000000" stiffness="1.000000" axis="0.000000 -1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-85.000000 60.000000" limited="true" name="mjcjoint_walker_2_right_shoulder2" type="hinge"/>
+                <geom condim="1" fromto="0.000000 0.000000 0.000000 0.160000 -0.160000 -0.160000" size="0.040000 0.160000" material="matgeom" name="mjcgeom_walker_2_right_uarm1" type="capsule"/>
+                <body pos="0.180000 -0.180000 -0.180000" name="mjcbody_walker_2_right_lower_arm">
+                    <joint armature="0.002800" damping="1.000000" stiffness="0.000000" axis="0.000000 -1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-90.000000 50.000000" limited="true" name="mjcjoint_walker_2_right_elbow" type="hinge"/>
+                    <geom condim="1" fromto="0.010000 0.010000 0.010000 0.170000 0.170000 0.170000" size="0.031000" material="matgeom" name="mjcgeom_walker_2_right_larm" type="capsule"/>
+                    <geom condim="1" pos="0.180000 0.180000 0.180000" size="0.040000" material="matgeom" name="mjcgeom_walker_2_right_hand" type="sphere"/>
+                </body>
+            </body>
+            <body pos="0.000000 0.170000 0.060000" name="mjcbody_walker_2_left_upper_arm">
+                <joint armature="0.006800" damping="1.000000" stiffness="1.000000" axis="2.000000 -1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-60.000000 85.000000" limited="true" name="mjcjoint_walker_2_left_shoulder1" type="hinge"/>
+                <joint armature="0.005100" damping="1.000000" stiffness="1.000000" axis="0.000000 1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-60.000000 85.000000" limited="true" name="mjcjoint_walker_2_left_shoulder2" type="hinge"/>
+                <geom condim="1" fromto="0.000000 0.000000 0.000000 0.160000 0.160000 -0.160000" size="0.040000 0.160000" material="matgeom" name="mjcgeom_walker_2_left_uarm1" type="capsule"/>
+                <body pos="0.180000 0.180000 -0.180000" name="mjcbody_walker_2_left_lower_arm">
+                    <joint armature="0.002800" damping="1.000000" stiffness="0.000000" axis="0.000000 -1.000000 -1.000000" pos="0.000000 0.000000 0.000000" range="-90.000000 50.000000" limited="true" name="mjcjoint_walker_2_left_elbow" type="hinge"/>
+                    <geom condim="1" fromto="0.010000 -0.010000 0.010000 0.170000 -0.170000 0.170000" size="0.031000" material="matgeom" name="mjcgeom_walker_2_left_larm" type="capsule"/>
+                    <geom condim="1" pos="0.180000 -0.180000 0.180000" size="0.040000" material="matgeom" name="mjcgeom_walker_2_left_hand" type="sphere"/>
+                </body>
+            </body>
+        </body>
+    </worldbody>
 </mujoco>

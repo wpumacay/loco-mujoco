@@ -129,6 +129,9 @@ namespace tysocViz
             m_glScenePtr->addRenderable( _glMesh );
             // add it to the wrappers list for later usage
             m_agentMeshWrappers.push_back( _meshWrapper );
+
+            // @DEMO: set as wireframe
+            _glMesh->setWireframeMode( true );
         }
     }
 

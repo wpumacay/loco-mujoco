@@ -40,15 +40,15 @@ int main( int argc, const char** argv )
     //     _terrainParams.set( "perlinProfileLacunarity", 2.0f );
     //     _terrainParams.set( "perlinProfileNoiseScale", 10.0f );
     // }
-    // sections - path - sine profile
-    {
-        _terrainParams.set( "sectionType", "path" );
-        _terrainParams.set( "sectionDepth", SECTION_DEPTH );
-        _terrainParams.set( "pathProfile", "sine" );
-        _terrainParams.set( "sineProfileAmplitude", 1.0f );
-        _terrainParams.set( "sineProfilePeriod", 10.0f );
-        _terrainParams.set( "sineProfilePhase", 1.57f );
-    }
+    // // sections - path - sine profile
+    // {
+    //     _terrainParams.set( "sectionType", "path" );
+    //     _terrainParams.set( "sectionDepth", SECTION_DEPTH );
+    //     _terrainParams.set( "pathProfile", "sine" );
+    //     _terrainParams.set( "sineProfileAmplitude", 1.0f );
+    //     _terrainParams.set( "sineProfilePeriod", 10.0f );
+    //     _terrainParams.set( "sineProfilePhase", 1.57f );
+    // }
     // sections - blocky
     {
         // _terrainParams.set( "sectionType", "blocky" );
@@ -111,25 +111,25 @@ int main( int argc, const char** argv )
         // _terrainParams.set( "sectionBlockyPercentOffsetZMin", 1.0f );
         // _terrainParams.set( "sectionBlockyPercentOffsetZMax", 1.0f );
 
-        // _terrainParams.set( "sectionType", "blocky" );
-        // _terrainParams.set( "sectionDepth", SECTION_DEPTH );
-        // _terrainParams.set( "sectionLength", 250.0f );
-        // _terrainParams.set( "sectionUsesBase", 1 );
-        // _terrainParams.set( "sectionUsesSides", 1 );
-        // _terrainParams.set( "sectionBlockyBaseHeight", 0.05f );
-        // _terrainParams.set( "sectionBlockyBaseWidth", 0.75f );
-        // _terrainParams.set( "sectionBlockyBaseSpacingX", 4.0f );
-        // _terrainParams.set( "sectionBlockyBaseOffsetZ", 0.75f );
-        // _terrainParams.set( "sectionBlockyPercentDepthMin", 0.5f );
-        // _terrainParams.set( "sectionBlockyPercentDepthMax", 0.75f );
-        // _terrainParams.set( "sectionBlockyPercentHeightMin", 0.75f );
-        // _terrainParams.set( "sectionBlockyPercentHeightMax", 1.25f );
-        // _terrainParams.set( "sectionBlockyPercentWidthMin", 0.5f );
-        // _terrainParams.set( "sectionBlockyPercentWidthMax", 2.0f );
-        // _terrainParams.set( "sectionBlockyPercentSpacingXMin", 0.9f );
-        // _terrainParams.set( "sectionBlockyPercentSpacingXMax", 1.1f );
-        // _terrainParams.set( "sectionBlockyPercentOffsetZMin", 0.75f );
-        // _terrainParams.set( "sectionBlockyPercentOffsetZMax", 1.25f );
+        _terrainParams.set( "sectionType", "blocky" );
+        _terrainParams.set( "sectionDepth", SECTION_DEPTH );
+        _terrainParams.set( "sectionLength", 250.0f );
+        _terrainParams.set( "sectionUsesBase", 1 );
+        _terrainParams.set( "sectionUsesSides", 1 );
+        _terrainParams.set( "sectionBlockyBaseHeight", 0.05f );
+        _terrainParams.set( "sectionBlockyBaseWidth", 0.75f );
+        _terrainParams.set( "sectionBlockyBaseSpacingX", 4.0f );
+        _terrainParams.set( "sectionBlockyBaseOffsetZ", 0.75f );
+        _terrainParams.set( "sectionBlockyPercentDepthMin", 0.5f );
+        _terrainParams.set( "sectionBlockyPercentDepthMax", 0.75f );
+        _terrainParams.set( "sectionBlockyPercentHeightMin", 0.75f );
+        _terrainParams.set( "sectionBlockyPercentHeightMax", 1.25f );
+        _terrainParams.set( "sectionBlockyPercentWidthMin", 0.5f );
+        _terrainParams.set( "sectionBlockyPercentWidthMax", 2.0f );
+        _terrainParams.set( "sectionBlockyPercentSpacingXMin", 0.9f );
+        _terrainParams.set( "sectionBlockyPercentSpacingXMax", 1.1f );
+        _terrainParams.set( "sectionBlockyPercentOffsetZMin", 0.75f );
+        _terrainParams.set( "sectionBlockyPercentOffsetZMax", 1.25f );
     }
 
 
@@ -152,7 +152,7 @@ int main( int argc, const char** argv )
 
         _tysocApi->addTerrainGenWrapper( _terrain );
 
-        if ( true )
+        if ( i % 3 == 0 ) 
         {
             // create legacy agents
             auto _agent = _factory->createAgent( std::string( "walker_" ) + std::to_string( i ),
@@ -219,16 +219,16 @@ int main( int argc, const char** argv )
 
         _currentX += 0.025f;
 
-        auto _terrainGens = _tysocApi->getTerrainGenerators();
-        for ( size_t i = 0; i < _terrainGens.size(); i++ )
-        {
-            auto _genInfoPtr = _terrainGens[i]->generatorInfo();
-            _genInfoPtr->trackingpoint.x = _currentX;
-        }
+        // auto _terrainGens = _tysocApi->getTerrainGenerators();
+        // for ( size_t i = 0; i < _terrainGens.size(); i++ )
+        // {
+        //     auto _genInfoPtr = _terrainGens[i]->generatorInfo();
+        //     _genInfoPtr->trackingpoint.x = _currentX;
+        // }
 
         // for ( size_t i = 0; i < NUM_AGENTS; i++ )
         // {
-        //     if ( true )
+        //     if ( i % 3 == 0 ) 
         //     {
         //         auto _agentName = std::string( "walker_" ) + std::to_string( i );
         //         auto _actuatorName = std::string( "mjcact_" ) + _agentName + std::string( "_right_hip" );

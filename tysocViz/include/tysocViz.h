@@ -13,6 +13,8 @@
 // and some specific viz wrappers
 #include <tysocVizKinTree.h>
 
+#include <tysocUI.h>
+
 namespace tysocViz
 {
 
@@ -59,6 +61,10 @@ namespace tysocViz
         void _setColor( engine::LMesh* meshPtr, float* color );
 
         void _updateSensor( tysocsensor::TSensor* sensorPtr );
+
+        // UI functionality
+        tysoc::ui::TVizUiContext m_uiContext;
+        void _renderUI();
 
         public :
 

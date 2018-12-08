@@ -37,6 +37,10 @@ namespace tysocViz
         _scene->addCamera( _camera );
         _scene->addLight( _light );
         _scene->addSkybox( _skybox );
+
+        // Initialize UI
+        m_uiContext.glfwWindowPtr   = m_glAppPtr->window()->getGLFWwindow();
+        tysoc::ui::initUI( m_uiContext );
     }
 
     TVisualizer::~TVisualizer()
@@ -322,6 +326,13 @@ namespace tysocViz
 
     }
 
+    void TVisualizer::_renderUI()
+    {
+        m_uiContext.vizKinTreePtrs  = m_vizKinTreeWrappers;
+
+        tysoc::ui::renderUI( m_uiContext );
+    }
+
     void TVisualizer::update()
     {
         // @CHECK: I'm assuming all geometries are known at initialization.
@@ -368,7 +379,24 @@ namespace tysocViz
             _updateSensor( it->second );
         }
 
+        if ( engine::InputSystem::isKeyDown( GLFW_KEY_SPACE ) )
+        {
+            m_glScenePtr->getCurrentCamera()->setActiveMode( false );
+            m_glAppPtr->window()->enableCursor();
+        }
+        else if ( engine::InputSystem::isKeyDown( GLFW_KEY_ENTER ) )
+        {
+            m_glScenePtr->getCurrentCamera()->setActiveMode( true );
+            m_glAppPtr->window()->disableCursor();
+        }
+
+        m_glAppPtr->begin();
         m_glAppPtr->update();
+
+        // render the UI
+        _renderUI();
+
+        m_glAppPtr->end();
     }
 
     bool TVisualizer::isActive()
@@ -428,4 +456,5 @@ namespace tysocViz
     {
         vizKinTreePtr->update();
     }
+
 }

@@ -80,12 +80,12 @@ namespace viz{
         // @TODO: Change render calls to debug objects (frames, etc) to a ...
         // separate simmple renderer, as it should not cast shadow, not anything
 
-        // _collectKinBodies();
-        // _collectKinJoints();
-        // _collectKinActuators();
-        // _collectKinSensors();
+        _collectKinBodies();
+        _collectKinJoints();
+        _collectKinActuators();
+        _collectKinSensors();
         _collectKinVisuals();
-        // _collectKinCollisions();
+        _collectKinCollisions();
     }
 
 
@@ -110,6 +110,8 @@ namespace viz{
             m_scenePtr->addRenderable( _vizBody.axesPtr );
             // and add it to the bodies buffer
             m_vizBodies.push_back( _vizBody );
+
+            _vizBody.axesPtr->debug = true;
         }
     }
 
@@ -134,6 +136,8 @@ namespace viz{
             m_scenePtr->addRenderable( _vizJoint.axesPtr );
             // and add it to the joints buffer
             m_vizJoints.push_back( _vizJoint );
+
+            _vizJoint.axesPtr->debug = true;
         }
     }
 
@@ -158,6 +162,8 @@ namespace viz{
             m_scenePtr->addRenderable( _vizActuator.axesPtr );
             // and add it to the actuators buffer
             m_vizActuators.push_back( _vizActuator );
+
+            _vizActuator.axesPtr->debug = true;
         }
     }
 
@@ -182,6 +188,8 @@ namespace viz{
             m_scenePtr->addRenderable( _vizSensor.axesPtr );
             // and add it to the sensors buffer
             m_vizSensors.push_back( _vizSensor );
+
+            _vizSensor.axesPtr->debug = true;
         }
     }
 
@@ -208,6 +216,9 @@ namespace viz{
             m_scenePtr->addRenderable( _vizVisual.axesPtr );
             // and add it to the visuals buffer
             m_vizVisuals.push_back( _vizVisual );
+
+            // make axes ptr as debug @DIRTY
+            _vizVisual.axesPtr->debug = true;
         }
     }
 
@@ -235,6 +246,10 @@ namespace viz{
             m_scenePtr->addRenderable( _vizCollision.axesPtr );
             // and add it to the collisions buffer
             m_vizCollisions.push_back( _vizCollision );
+
+            // @DIRTY
+            _vizCollision.axesPtr->debug = true;
+            _vizCollision.meshPtr->debug = true;
         }
     }
 
@@ -296,39 +311,63 @@ namespace viz{
 
     void TVizKinTree::update()
     {
+        // update draw state
+        for ( size_t i = 0; i < m_vizVisuals.size(); i++ )
+        {
+            m_vizVisuals[i].meshPtr->setWireframeMode( drawState.drawAsWireframe );
+        }
+
         // update bodies
         for ( size_t i = 0; i < m_vizBodies.size(); i++ )
         {
+            m_vizBodies[i].meshPtr->setVisibility( drawState.showBodies );
+            m_vizBodies[i].axesPtr->setVisibility( drawState.drawFrameAxes &&
+                                                    drawState.showBodies );
             _updateBody( m_vizBodies[i] );
         }
 
         // update joints
         for ( size_t i = 0; i < m_vizJoints.size(); i++ )
         {
+            m_vizJoints[i].meshPtr->setVisibility( drawState.showJoints );
+            m_vizJoints[i].axesPtr->setVisibility( drawState.drawFrameAxes &&
+                                                    drawState.showJoints );
             _updateJoint( m_vizJoints[i] );
         }
 
         // update  sensors
         for ( size_t i = 0; i < m_vizSensors.size(); i++ )
         {
+            m_vizSensors[i].meshPtr->setVisibility( drawState.showSensors );
+            m_vizSensors[i].axesPtr->setVisibility( drawState.drawFrameAxes &&
+                                                    drawState.showSensors );
             _updateSensor( m_vizSensors[i] );
         }
 
         // update visuals
         for ( size_t i = 0; i < m_vizVisuals.size(); i++ )
         {
+            m_vizVisuals[i].meshPtr->setVisibility( drawState.showVisuals );
+            m_vizVisuals[i].axesPtr->setVisibility( drawState.drawFrameAxes &&
+                                                    drawState.showVisuals );
             _updateVisual( m_vizVisuals[i] );
         }
 
         // update actuator
         for ( size_t i = 0; i < m_vizActuators.size(); i++ )
         {
+            m_vizActuators[i].meshPtr->setVisibility( drawState.showActuators );
+            m_vizActuators[i].axesPtr->setVisibility( drawState.drawFrameAxes &&
+                                                    drawState.showActuators );
             _updateActuator( m_vizActuators[i] );
         }
 
         // update collision
         for ( size_t i = 0; i < m_vizCollisions.size(); i++ )
         {
+            m_vizCollisions[i].meshPtr->setVisibility( drawState.showCollisions );
+            m_vizCollisions[i].axesPtr->setVisibility( drawState.drawFrameAxes &&
+                                                    drawState.showCollisions );
             _updateCollision( m_vizCollisions[i] );
         }
     }
@@ -481,6 +520,9 @@ namespace viz{
         kinCollision.axesPtr->rotation   = _rotation;
     }
 
-
+    agent::TAgentKinTree* TVizKinTree::getKinTreePtr()
+    {
+        return m_agentKinTreePtr;
+    }
 
 }}

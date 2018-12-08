@@ -79,6 +79,30 @@ namespace viz{
         agent::TKinTreeBody*    bodyPtr;
     };
 
+    struct TVizDrawState
+    {
+        bool drawAsWireframe;
+        bool drawFrameAxes;
+        bool showBodies;
+        bool showVisuals;
+        bool showCollisions;
+        bool showJoints;
+        bool showSensors;
+        bool showActuators;
+
+        TVizDrawState()
+        {
+            drawAsWireframe     = false;
+            drawFrameAxes       = false;
+            showBodies          = false;
+            showVisuals         = true;
+            showCollisions      = false;
+            showSensors         = false;
+            showJoints          = false;
+            showActuators       = false;
+        }
+    };
+
     /**
     * This is a wrapper on top of a kintree for our ...
     * visualizer. This will construct the engine-mesh data ...
@@ -129,8 +153,10 @@ namespace viz{
                      engine::LScene* scenePtr );
         ~TVizKinTree();
 
-        void update();
+        TVizDrawState drawState;
 
+        void update();
+        agent::TAgentKinTree* getKinTreePtr();
     };
 
 

@@ -328,6 +328,26 @@ namespace tysocViz
 
     void TVisualizer::_renderUI()
     {
+        // @DIRTY: Change-Refactor this part
+
+        if ( engine::InputSystem::isKeyDown( GLFW_KEY_SPACE ) )
+        {
+            // @CHECK: Should apply globally, as some cameras will not listen
+            m_glScenePtr->getCurrentCamera()->setActiveMode( false );
+            m_glAppPtr->window()->enableCursor();
+
+            // @DIRTY: enable UI
+            m_uiContext.isUiActive = true;
+        }
+        else if ( engine::InputSystem::isKeyDown( GLFW_KEY_ENTER ) )
+        {
+            m_glScenePtr->getCurrentCamera()->setActiveMode( true );
+            m_glAppPtr->window()->disableCursor();
+
+            // @DIRTY: enable UI
+            m_uiContext.isUiActive = false;
+        }
+
         m_uiContext.vizKinTreePtrs  = m_vizKinTreeWrappers;
 
         tysoc::ui::renderUI( m_uiContext );
@@ -377,17 +397,6 @@ namespace tysocViz
         for ( auto it = _sensors.begin(); it != _sensors.end(); it++ )
         {
             _updateSensor( it->second );
-        }
-
-        if ( engine::InputSystem::isKeyDown( GLFW_KEY_SPACE ) )
-        {
-            m_glScenePtr->getCurrentCamera()->setActiveMode( false );
-            m_glAppPtr->window()->enableCursor();
-        }
-        else if ( engine::InputSystem::isKeyDown( GLFW_KEY_ENTER ) )
-        {
-            m_glScenePtr->getCurrentCamera()->setActiveMode( true );
-            m_glAppPtr->window()->disableCursor();
         }
 
         m_glAppPtr->begin();

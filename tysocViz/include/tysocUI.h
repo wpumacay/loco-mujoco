@@ -15,6 +15,7 @@ namespace ui{
     struct TVizUiContext
     {
         GLFWwindow*                         glfwWindowPtr;
+        bool                                isUiActive;
         bool                                isSimulationActive;
         std::vector< viz::TVizKinTree* >    vizKinTreePtrs;
         viz::TVizKinTree*                   vizCurrentKinTreePtr;
@@ -23,6 +24,7 @@ namespace ui{
 
         TVizUiContext()
         {
+            isUiActive              = false;
             isSimulationActive      = true;
             glfwWindowPtr           = NULL;
             vizCurrentKinTreeName   = "";

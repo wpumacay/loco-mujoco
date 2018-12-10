@@ -18,6 +18,11 @@ namespace ui{
 
     void renderUI( TVizUiContext& uiContext )
     {
+        if ( !uiContext.isUiActive )
+        {
+            return;
+        }
+
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();

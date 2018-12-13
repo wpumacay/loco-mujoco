@@ -1124,6 +1124,29 @@
         <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_shoulder2" name="mjcact_walker_1_left_shoulder2"/>
         <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="mjcjoint_walker_1_left_elbow" name="mjcact_walker_1_left_elbow"/>
     </actuator>
+    <sensor>
+        <jointpos joint="mjcjoint_walker_1_abdomen_z" name="mjc_sensor_walker_1_j_0"/>
+        <jointpos joint="mjcjoint_walker_1_abdomen_y" name="mjc_sensor_walker_1_j_1"/>
+        <jointpos joint="mjcjoint_walker_1_abdomen_x" name="mjc_sensor_walker_1_j_2"/>
+        <jointpos joint="mjcjoint_walker_1_right_hip_x" name="mjc_sensor_walker_1_j_3"/>
+        <jointpos joint="mjcjoint_walker_1_right_hip_z" name="mjc_sensor_walker_1_j_4"/>
+        <jointpos joint="mjcjoint_walker_1_right_hip_y" name="mjc_sensor_walker_1_j_5"/>
+        <jointpos joint="mjcjoint_walker_1_right_knee" name="mjc_sensor_walker_1_j_6"/>
+        <jointpos joint="mjcjoint_walker_1_right_ankle_y" name="mjc_sensor_walker_1_j_7"/>
+        <jointpos joint="mjcjoint_walker_1_right_ankle_x" name="mjc_sensor_walker_1_j_8"/>
+        <jointpos joint="mjcjoint_walker_1_left_hip_x" name="mjc_sensor_walker_1_j_9"/>
+        <jointpos joint="mjcjoint_walker_1_left_hip_z" name="mjc_sensor_walker_1_j_10"/>
+        <jointpos joint="mjcjoint_walker_1_left_hip_y" name="mjc_sensor_walker_1_j_11"/>
+        <jointpos joint="mjcjoint_walker_1_left_knee" name="mjc_sensor_walker_1_j_12"/>
+        <jointpos joint="mjcjoint_walker_1_left_ankle_y" name="mjc_sensor_walker_1_j_13"/>
+        <jointpos joint="mjcjoint_walker_1_left_ankle_x" name="mjc_sensor_walker_1_j_14"/>
+        <jointpos joint="mjcjoint_walker_1_right_shoulder1" name="mjc_sensor_walker_1_j_15"/>
+        <jointpos joint="mjcjoint_walker_1_right_shoulder2" name="mjc_sensor_walker_1_j_16"/>
+        <jointpos joint="mjcjoint_walker_1_right_elbow" name="mjc_sensor_walker_1_j_17"/>
+        <jointpos joint="mjcjoint_walker_1_left_shoulder1" name="mjc_sensor_walker_1_j_18"/>
+        <jointpos joint="mjcjoint_walker_1_left_shoulder2" name="mjc_sensor_walker_1_j_19"/>
+        <jointpos joint="mjcjoint_walker_1_left_elbow" name="mjc_sensor_walker_1_j_20"/>
+    </sensor>
     <worldbody>
         <body pos="2.000000 6.000000 2.500000" name="mjcbody_walker_2_tmjcroot">
             <freejoint name="mjcjoint_walker_2_root"/>
@@ -1263,4 +1286,21 @@
         <velocity kv="5.000000" ctrlrange="-4.000000 4.000000" ctrllimited="true" joint="mjcjoint_walker_2_left_w1" name="mjcact_walker_2_left_w1"/>
         <velocity kv="5.000000" ctrlrange="-4.000000 4.000000" ctrllimited="true" joint="mjcjoint_walker_2_left_w2" name="mjcact_walker_2_left_w2"/>
     </actuator>
+    <sensor>
+        <jointpos joint="mjcjoint_walker_2_head_pan" name="mjc_sensor_walker_2_j_0"/>
+        <jointpos joint="mjcjoint_walker_2_right_s0" name="mjc_sensor_walker_2_j_1"/>
+        <jointpos joint="mjcjoint_walker_2_right_s1" name="mjc_sensor_walker_2_j_2"/>
+        <jointpos joint="mjcjoint_walker_2_right_e0" name="mjc_sensor_walker_2_j_3"/>
+        <jointpos joint="mjcjoint_walker_2_right_e1" name="mjc_sensor_walker_2_j_4"/>
+        <jointpos joint="mjcjoint_walker_2_right_w0" name="mjc_sensor_walker_2_j_5"/>
+        <jointpos joint="mjcjoint_walker_2_right_w1" name="mjc_sensor_walker_2_j_6"/>
+        <jointpos joint="mjcjoint_walker_2_right_w2" name="mjc_sensor_walker_2_j_7"/>
+        <jointpos joint="mjcjoint_walker_2_left_s0" name="mjc_sensor_walker_2_j_8"/>
+        <jointpos joint="mjcjoint_walker_2_left_s1" name="mjc_sensor_walker_2_j_9"/>
+        <jointpos joint="mjcjoint_walker_2_left_e0" name="mjc_sensor_walker_2_j_10"/>
+        <jointpos joint="mjcjoint_walker_2_left_e1" name="mjc_sensor_walker_2_j_11"/>
+        <jointpos joint="mjcjoint_walker_2_left_w0" name="mjc_sensor_walker_2_j_12"/>
+        <jointpos joint="mjcjoint_walker_2_left_w1" name="mjc_sensor_walker_2_j_13"/>
+        <jointpos joint="mjcjoint_walker_2_left_w2" name="mjc_sensor_walker_2_j_14"/>
+    </sensor>
 </mujoco>

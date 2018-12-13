@@ -28,6 +28,7 @@ namespace agent {
 
         void _injectMjcAssets( mjcf::GenericElement* root );
         void _injectMjcContacts( mjcf::GenericElement* root );
+        void _injectMjcSensors( mjcf::GenericElement* root );
 
         public :
 

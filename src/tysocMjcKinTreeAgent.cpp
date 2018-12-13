@@ -152,7 +152,48 @@ namespace agent {
         auto _srcContacts = _srcContactsElmPtr->children;
         for ( size_t i = 0; i < _srcContacts.size(); i++ )
         {
+            // @CHECK: I'm passing the pointer reference. Perhaps should pass a deep fresh copy
             _targetContactsElmPtr->children.push_back( _srcContacts[i] );
+        }
+    }
+
+    // @CHECK: Maybe sensor should be created abstractly, and the backend should ...
+    // update its internals on each prestep requested to the concrete kintreeagent
+    void TMjcKinTreeAgentWrapper::_injectMjcSensors( mjcf::GenericElement* root )
+    {
+        // Generate for each joint an appropiate sensor, and ...
+        // add it to the model element if it has one, or create it if not
+        auto _srcSensorsElmPtr = mjcf::findFirstChildByType( m_modelElmPtr, "sensor" );
+        if ( !_srcSensorsElmPtr )
+        {
+            _srcSensorsElmPtr = new mjcf::GenericElement( "sensor" );
+            m_modelElmPtr->children.push_back( _srcSensorsElmPtr );
+        }
+
+        // create a brand new sensors-tag for this model sensor resources
+        auto _targetSensorsElmPtr = new mjcf::GenericElement( "sensor" );
+        // and add it to te root target model
+        root->children.push_back( _targetSensorsElmPtr );
+        // now, create the sensors and add them to both target and src
+        // @CHECK: Same as above, perhaps should pass a fresh new copy
+        auto _kinJoints = m_kinTreeAgentPtr->getKinTreeJoints();
+        for ( size_t i = 0; i < _kinJoints.size(); i++ )
+        {
+            auto _jointMjcSensorResource = new mjcf::GenericElement( "jointpos" );
+            // set the necessary properties
+            _jointMjcSensorResource->setAttributeString( "name", std::string( "mjc_sensor_" ) + 
+                                                                 m_kinTreeAgentPtr->getName() + 
+                                                                 std::string( "_j_" ) +
+                                                                 std::to_string( i ) );
+            _jointMjcSensorResource->setAttributeString( "joint", _kinJoints[i]->name );
+            // add this to the sensor element
+            _srcSensorsElmPtr->children.push_back( _jointMjcSensorResource );
+        }
+
+        // finally, copy all sensor elements from src to target element
+        for ( size_t i = 0; i < _srcSensorsElmPtr->children.size(); i++ )
+        {
+            _targetSensorsElmPtr->children.push_back( _srcSensorsElmPtr->children[i] );
         }
     }
 
@@ -176,6 +217,8 @@ namespace agent {
         _injectMjcAssets( root );
         // as well as the contacts
         _injectMjcContacts( root );
+        // and the sensors
+        _injectMjcSensors( root );  
     }
 
     void TMjcKinTreeAgentWrapper::preStep()

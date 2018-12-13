@@ -39,4 +39,6 @@ namespace ui{
     void _handleMainMenu( TVizUiContext& uiContext );
     void _handleKinTreeMenu( TVizUiContext& uiContext );
 
+    void _handlePlot( const std::string& name );
+
 }}

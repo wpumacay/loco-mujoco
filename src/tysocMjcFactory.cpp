@@ -1,8 +1,8 @@
 
 #include <tysocMjcFactory.h>
 
-namespace tysocMjc
-{
+namespace tysoc {
+namespace mujoco {
 
 
     TMjcFactory::TMjcFactory()
@@ -143,7 +143,7 @@ namespace tysocMjc
                                                           const std::string& type,
                                                           const TGenericParams& params )
     {
-        tysocterrain::TTerrainGenerator* _terrainGenerator = NULL;
+        tysoc::terrain::TTerrainGenerator* _terrainGenerator = NULL;
 
         if ( type == "procedural" )
         {
@@ -151,13 +151,13 @@ namespace tysocMjc
 
             if ( _sectionsType == "path" )
             {
-                tysocterrain::TProfileGenerator* _profileGenerator;
+                tysoc::terrain::TProfileGenerator* _profileGenerator;
                 if ( params.getString( "pathProfile" ) == "sine" )
                 {
                     float _ampl     = params.getFloat( "sineProfileAmplitude", 2.0f );
                     float _period   = params.getFloat( "sineProfilePeriod", 10.0f );
                     float _phase    = params.getFloat( "sineProfilePhase", 1.57f );
-                    _profileGenerator = new tysocterrain::TSineProfileGenerator( _ampl, 
+                    _profileGenerator = new tysoc::terrain::TSineProfileGenerator( _ampl, 
                                                                                  _period, 
                                                                                  _phase );
                 }
@@ -167,14 +167,14 @@ namespace tysocMjc
                     float _persistance  = params.getFloat( "perlinProfilePersistance", 0.5f );
                     float _lacunarity   = params.getFloat( "perlinProfileLacunarity", 2.0f );
                     float _noiseScale   = params.getFloat( "perlinProfileNoiseScale", 10.0f );
-                    _profileGenerator = new tysocterrain::TPerlin1DProfileGenerator( _octaves,
+                    _profileGenerator = new tysoc::terrain::TPerlin1DProfileGenerator( _octaves,
                                                                                      _persistance,
                                                                                      _lacunarity,
                                                                                      _noiseScale );
                 }
                 else
                 {
-                    _profileGenerator = new tysocterrain::TSineProfileGenerator( 2.0f, 10.0f, 1.57f );
+                    _profileGenerator = new tysoc::terrain::TSineProfileGenerator( 2.0f, 10.0f, 1.57f );
                 }
 
                 float _sectionDepth         = params.getFloat( "sectionDepth", 1.0f );
@@ -183,7 +183,7 @@ namespace tysocMjc
 
                 mjcf::Vec3 _startPosition = params.getVec3( "startPosition" );
 
-                _terrainGenerator = new tysocterrain::TPathTerrainGenerator( name, 
+                _terrainGenerator = new tysoc::terrain::TPathTerrainGenerator( name, 
                                                                              _startPosition.x,
                                                                              _startPosition.y,
                                                                              _startPosition.z,
@@ -194,7 +194,7 @@ namespace tysocMjc
             }
             else
             {
-                tysocterrain::TBlockyParams _bparams;
+                tysoc::terrain::TBlockyParams _bparams;
 
                 _bparams.usesBase               = params.getInt( "sectionUsesBase" ) == 1;
                 _bparams.usesSides              = params.getInt( "sectionUsesSides" ) == 1;
@@ -217,7 +217,7 @@ namespace tysocMjc
 
                 mjcf::Vec3 _startPosition = params.getVec3( "startPosition" );
 
-                _terrainGenerator = new tysocterrain::TBlockyTerrainGenerator( name,
+                _terrainGenerator = new tysoc::terrain::TBlockyTerrainGenerator( name,
                                                                                _startPosition.x,
                                                                                _startPosition.y,
                                                                                _startPosition.z,
@@ -229,4 +229,6 @@ namespace tysocMjc
 
         return _terrainGeneratorWrapper;
     }
-}
+
+
+}}

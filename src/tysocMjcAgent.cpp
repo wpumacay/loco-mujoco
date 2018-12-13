@@ -3,10 +3,8 @@
 
 
 
-
-namespace tysocMjc
-{
-
+namespace tysoc {
+namespace mujoco {
 
     TMjcAgentWrapper::TMjcAgentWrapper( const std::string& name,
                                         mjcf::GenericElement* modelElmPtr,
@@ -57,7 +55,7 @@ namespace tysocMjc
 
     void TMjcAgentWrapper::_createWrappedAgentObj()
     {
-        m_agentPtr = new tysocagent::TAgent( m_name );
+        m_agentPtr = new tysoc::agent::TAgent( m_name );
 
         auto _worldBodyElm = mjcf::findFirstChildByType( m_modelElmPtr, "worldbody" );
         auto _actuatorsElm = mjcf::findFirstChildByType( m_modelElmPtr, "actuator" );
@@ -392,4 +390,4 @@ namespace tysocMjc
         }
     }
 
-}
+}}

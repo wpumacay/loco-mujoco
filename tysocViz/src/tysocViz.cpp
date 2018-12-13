@@ -3,8 +3,8 @@
 
 
 
-namespace tysocViz
-{
+namespace tysoc {
+namespace viz {
 
     TVisualizer::TVisualizer( tysoc::TTysocCommonApi* api )
     {
@@ -79,7 +79,7 @@ namespace tysocViz
         }
     }
 
-    void TVisualizer::_collectAgentResources( tysocagent::TAgent* agentPtr )
+    void TVisualizer::_collectAgentResources( tysoc::agent::TAgent* agentPtr )
     {
         auto _geometries = agentPtr->geometries();
         for ( auto it = _geometries.begin(); it != _geometries.end(); it++ )
@@ -88,7 +88,7 @@ namespace tysocViz
         }
     }
 
-    void TVisualizer::_cacheAgentGeometry( tysocagent::TAgentGeom* agentGeomPtr )
+    void TVisualizer::_cacheAgentGeometry( tysoc::agent::TAgentGeom* agentGeomPtr )
     {
         engine::LMesh* _glMesh = NULL;
 
@@ -148,7 +148,7 @@ namespace tysocViz
         m_vizKinTreeWrappers.push_back( _vizKinTreeWrapper );
     }
 
-    void TVisualizer::_collectTerrainGenResources( tysocterrain::TTerrainGenerator* terrainGenPtr )
+    void TVisualizer::_collectTerrainGenResources( tysoc::terrain::TTerrainGenerator* terrainGenPtr )
     {
         auto _geometries = terrainGenPtr->getPrimitives();
         for ( size_t i = 0; i < _geometries.size(); i++ )
@@ -158,7 +158,7 @@ namespace tysocViz
     }
 
     void TVisualizer::_resizeMesh( engine::LMesh* meshPtr, 
-                                   tysocterrain::TTerrainPrimitive* terrainGeomPtr )
+                                   tysoc::terrain::TTerrainPrimitive* terrainGeomPtr )
     {
         if ( terrainGeomPtr->geomType == "plane" )
         {
@@ -206,7 +206,7 @@ namespace tysocViz
         _material->specular.z = color[2];
     }
 
-    void TVisualizer::_updateSensor( tysocsensor::TSensor* sensorPtr )
+    void TVisualizer::_updateSensor( tysoc::sensor::TSensor* sensorPtr )
     {
         auto _measurement = sensorPtr->getSensorMeasurement();
 
@@ -217,7 +217,7 @@ namespace tysocViz
         if ( _measurement->type == "PathTerrainMeasurement" )
         {
             // draw profile from sensor reading
-            auto _pathMeasurement = reinterpret_cast< tysocsensor::TSectionsTerrainSensorMeasurement* >
+            auto _pathMeasurement = reinterpret_cast< tysoc::sensor::TSectionsTerrainSensorMeasurement* >
                                         ( _measurement );
 
             std::vector< engine::LLine > _lines;
@@ -254,7 +254,7 @@ namespace tysocViz
         }
         else if ( _measurement->type == "AgentIntrinsicsMeasurement" )
         {
-            auto _agentMeasurement = reinterpret_cast< tysocsensor::TAgentIntrinsicsSensorMeasurement* >
+            auto _agentMeasurement = reinterpret_cast< tysoc::sensor::TAgentIntrinsicsSensorMeasurement* >
                                         ( _measurement );
 
             std::vector< engine::LLine > _lines;
@@ -278,7 +278,7 @@ namespace tysocViz
         }
     }
 
-    void TVisualizer::_cacheTerrainGeometry( tysocterrain::TTerrainPrimitive* terrainGeomPtr )
+    void TVisualizer::_cacheTerrainGeometry( tysoc::terrain::TTerrainPrimitive* terrainGeomPtr )
     {
         engine::LMesh* _glMesh = NULL;
 
@@ -466,4 +466,4 @@ namespace tysocViz
         vizKinTreePtr->update();
     }
 
-}
+}}

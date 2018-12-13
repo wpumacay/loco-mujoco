@@ -15,18 +15,22 @@
 
 #include <tysocUI.h>
 
-namespace tysocViz
-{
+namespace tysoc {
+namespace viz {
+
+    // @TODO|CHECK: This should be the abstraction, and the concretions ...
+    // should be the mujoco integrated visualizer, and my own visualizer, such ...
+    // that we can think ahead to see if we can accomodate other rendering engines
 
     struct TVizAgentMeshWrapper
     {
-        tysocagent::TAgentGeom* geometry;
+        tysoc::agent::TAgentGeom* geometry;
         engine::LMesh* glMesh;
     };
 
     struct TVizTerrainMeshWrapper
     {
-        tysocterrain::TTerrainPrimitive* geometry;
+        tysoc::terrain::TTerrainPrimitive* geometry;
         engine::LMesh* glMesh;
     };
 
@@ -44,23 +48,23 @@ namespace tysocViz
 
         tysoc::TTysocCommonApi* m_tysocApiPtr;
 
-        void _collectAgentResources( tysocagent::TAgent* agentPtr );
-        void _cacheAgentGeometry( tysocagent::TAgentGeom* agentGeomPtr );
+        void _collectAgentResources( tysoc::agent::TAgent* agentPtr );
+        void _cacheAgentGeometry( tysoc::agent::TAgentGeom* agentGeomPtr );
         void _collectKinTreeAgent( tysoc::agent::TAgentKinTree* kinTreeAgentPtr );
 
-        void _collectTerrainGenResources( tysocterrain::TTerrainGenerator* terrainGenPtr );
-        void _cacheTerrainGeometry( tysocterrain::TTerrainPrimitive* terrainGeomPtr );
+        void _collectTerrainGenResources( tysoc::terrain::TTerrainGenerator* terrainGenPtr );
+        void _cacheTerrainGeometry( tysoc::terrain::TTerrainPrimitive* terrainGeomPtr );
 
         void _updateAgentWrapper( TVizAgentMeshWrapper* agentWrapperPtr );
         void _updateVizKinTree( tysoc::viz::TVizKinTree* vizKinTreePtr );
         void _updateTerrainWrapper( TVizTerrainMeshWrapper* terrainWrapperPtr );
 
         void _resizeMesh( engine::LMesh* meshPtr, 
-                          tysocterrain::TTerrainPrimitive* terrainGeomPtr );
+                          tysoc::terrain::TTerrainPrimitive* terrainGeomPtr );
 
         void _setColor( engine::LMesh* meshPtr, float* color );
 
-        void _updateSensor( tysocsensor::TSensor* sensorPtr );
+        void _updateSensor( tysoc::sensor::TSensor* sensorPtr );
 
         // UI functionality
         tysoc::ui::TVizUiContext m_uiContext;
@@ -76,4 +80,4 @@ namespace tysocViz
         bool isActive();
     };
 
-}
+}}

@@ -9,8 +9,8 @@
 
 #include <tysocVizKinTree.h>
 
-namespace tysoc{
-namespace ui{
+namespace tysoc {
+namespace ui {
 
     struct TVizUiContext
     {

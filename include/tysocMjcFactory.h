@@ -9,8 +9,8 @@
 
 // @TODO: Add comments-docs for doxygen
 
-namespace tysocMjc
-{
+namespace tysoc {
+namespace mujoco {
 
     class TGenericParams
     {
@@ -158,5 +158,4 @@ namespace tysocMjc
     };
 
 
-
-}
+}}

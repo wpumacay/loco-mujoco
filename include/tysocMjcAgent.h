@@ -4,8 +4,8 @@
 #include <tysocMjcCommon.h>
 #include <agent/agent.h>
 
-namespace tysocMjc
-{
+namespace tysoc {
+namespace mujoco {
 
     class TMjcAgentWrapper
     {
@@ -14,7 +14,7 @@ namespace tysocMjc
 
         std::string m_name;
 
-        tysocagent::TAgent* m_agentPtr;
+        agent::TAgent* m_agentPtr;
 
         mjcf::GenericElement* m_modelElmPtr;
 
@@ -45,7 +45,7 @@ namespace tysocMjc
         void setMjcScene( mjvScene* mjcScenePtr );
 
         std::string name();
-        tysocagent::TAgent* agent() { return m_agentPtr; }
+        agent::TAgent* agent() { return m_agentPtr; }
 
         void getPosition( float &x, float &y, float &z );
         void setPosition( float x, float y, float z );
@@ -56,4 +56,4 @@ namespace tysocMjc
         void postStep();// updates the bodies and joints
     };
 
-}
+}}

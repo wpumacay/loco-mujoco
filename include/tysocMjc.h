@@ -13,8 +13,8 @@
     #define MUJOCO_LICENSE_FILE "~/.mujoco/mjkey.txt"
 #endif
 
-namespace tysocMjc
-{
+namespace tysoc {
+namespace mujoco {
 
     // @TODO: Mode main generic description to generic api
     // @TODO: Update the description here to describe the specifics
@@ -59,14 +59,14 @@ namespace tysocMjc
     */
 
 
-    class TTysocMjcApi : public tysoc::TTysocCommonApi
+    class TTysocMjcApi : public TTysocCommonApi
     {
 
         private :
 
         std::vector< TMjcTerrainGenWrapper* >                   m_terrainGenWrappers;
         std::map< std::string, TMjcAgentWrapper* >              m_agentWrappers;
-        std::vector< tysoc::agent::TMjcKinTreeAgentWrapper* >   m_kinTreeAgentWrappers;
+        std::vector< agent::TMjcKinTreeAgentWrapper* >          m_kinTreeAgentWrappers;
 
         mjModel*    m_mjcModelPtr;
         mjData*     m_mjcDataPtr;
@@ -86,7 +86,7 @@ namespace tysocMjc
         ~TTysocMjcApi();
 
         void addAgentWrapper( TMjcAgentWrapper* agentWrapperPtr );
-        void addKinTreeAgentWrapper( tysoc::agent::TMjcKinTreeAgentWrapper* agentKinTreeWrapperPtr );
+        void addKinTreeAgentWrapper( agent::TMjcKinTreeAgentWrapper* agentKinTreeWrapperPtr );
         void addTerrainGenWrapper( TMjcTerrainGenWrapper* terrainGenWrapperPtr );
 
         bool initializeMjcApi();
@@ -105,4 +105,4 @@ namespace tysocMjc
 
 
     
-}
+}}

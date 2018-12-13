@@ -20,9 +20,9 @@
     #define TYSOCMJC_RESOURCES_PATH "../res"
 #endif
 
-namespace tysocMjc
-{
+namespace tysoc {
+namespace mujoco {
 
     // @TODO: Here there be dragons
 
-}
+}}

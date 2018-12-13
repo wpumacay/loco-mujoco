@@ -2,12 +2,12 @@
 #include <tysocMjcTerrain.h>
 
 
-namespace tysocMjc
-{
+namespace tysoc {
+namespace mujoco {
 
 
     TMjcTerrainGenWrapper::TMjcTerrainGenWrapper( const std::string& name,
-                                                  tysocterrain::TTerrainGenerator* terrainGenPtr )
+                                                  tysoc::terrain::TTerrainGenerator* terrainGenPtr )
     {
         m_name          = name;
         m_terrainGenPtr = terrainGenPtr;
@@ -198,7 +198,7 @@ namespace tysocMjc
         }
     }
 
-    void TMjcTerrainGenWrapper::_wrapNewPrimitive( tysocterrain::TTerrainPrimitive* primitivePtr, bool isReusable )
+    void TMjcTerrainGenWrapper::_wrapNewPrimitive( tysoc::terrain::TTerrainPrimitive* primitivePtr, bool isReusable )
     {
         // if the pool is empty, force to recycle the last object
         if ( m_mjcAvailablePrimitives.empty() )
@@ -231,4 +231,6 @@ namespace tysocMjc
             m_mjcFixedPrimitives.push( _mjcPrimitive );
         }
     }
-}
+
+
+}}

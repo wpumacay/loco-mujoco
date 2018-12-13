@@ -24,10 +24,10 @@ int main( int argc, const char** argv )
     }
 
     /* ***************************************************************************/
-    auto _tysocApi = new tysocMjc::TTysocMjcApi();
-    auto _factory = new tysocMjc::TMjcFactory();
+    auto _tysocApi = new tysoc::mujoco::TTysocMjcApi();
+    auto _factory = new tysoc::mujoco::TMjcFactory();
 
-    tysocMjc::TGenericParams _terrainParams;
+    tysoc::mujoco::TGenericParams _terrainParams;
     // sections - path - perlin profile
     {
         // _terrainParams.set( "sectionType", "path" );
@@ -155,12 +155,12 @@ int main( int argc, const char** argv )
 
         // create a sensor
         auto _sensor1Name = std::string( "walker_sensor_" ) + std::to_string( i ) + std::string( "_pathterrain" );
-        auto _sensor1 = new tysocsensor::TSectionsTerrainSensor( _sensor1Name,
-                                                                 ( tysocterrain::TSectionsTerrainGenerator* )_terrain->terrainGenerator(),
+        auto _sensor1 = new tysoc::sensor::TSectionsTerrainSensor( _sensor1Name,
+                                                                 ( tysoc::terrain::TSectionsTerrainGenerator* )_terrain->terrainGenerator(),
                                                                  _agent->agent(), true );
 
         auto _sensor2Name = std::string( "walker_sensor_" ) + std::to_string( i ) + std::string( "_intrinsics" );
-        auto _sensor2 = new tysocsensor::TAgentIntrinsicsSensor( _sensor2Name,
+        auto _sensor2 = new tysoc::sensor::TAgentIntrinsicsSensor( _sensor2Name,
                                                                  _agent->agent() );
 
         _tysocApi->addAgentWrapper( _agent );
@@ -177,7 +177,7 @@ int main( int argc, const char** argv )
 
     /* ***************************************************************************/
 
-    auto _viz = new tysocViz::TVisualizer( _tysocApi );
+    auto _viz = new tysoc::viz::TVisualizer( _tysocApi );
     _viz->initialize();
 
     float _currentX = 0.0f;

@@ -31,7 +31,7 @@ bool button_right =  false;
 double lastx = 0;
 double lasty = 0;
 
-tysocMjc::TTysocMjcApi* g_tysocApi = NULL;
+tysoc::mujoco::TTysocMjcApi* g_tysocApi = NULL;
 
 static int NUM_AGENTS = 5;
 
@@ -129,9 +129,9 @@ int main( int argc, const char** argv ) /* @ADD: removed main params */
     }
 
     /* ***************************************************************************/
-    g_tysocApi = new tysocMjc::TTysocMjcApi();
+    g_tysocApi = new tysoc::mujoco::TTysocMjcApi();
 
-    auto _factory = new tysocMjc::TMjcFactory();
+    auto _factory = new tysoc::mujoco::TMjcFactory();
 
     // auto _agent1 = _factory->createAgent( "agent1",
     //                                       "walker",
@@ -148,7 +148,7 @@ int main( int argc, const char** argv ) /* @ADD: removed main params */
     // g_tysocApi->addAgentWrapper( _agent2 );
     // g_tysocApi->addTerrainGenWrapper( _terrain1 );
 
-    tysocMjc::TGenericParams _terrainParams;
+    tysoc::mujoco::TGenericParams _terrainParams;
     // perlin params
     {
         _terrainParams.set( "profiler", "perlin" );

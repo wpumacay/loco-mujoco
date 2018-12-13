@@ -3,8 +3,8 @@
 
 
 
-namespace tysocMjc
-{
+namespace tysoc {
+namespace mujoco {
 
 
     TTysocMjcApi::TTysocMjcApi()
@@ -263,4 +263,5 @@ namespace tysocMjc
             m_kinTreeAgentWrappers[i]->postStep();
         }
     }
-}
+    
+}}

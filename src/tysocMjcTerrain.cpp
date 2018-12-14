@@ -7,7 +7,7 @@ namespace mujoco {
 
 
     TMjcTerrainGenWrapper::TMjcTerrainGenWrapper( const std::string& name,
-                                                  tysoc::terrain::TTerrainGenerator* terrainGenPtr )
+                                                  tysoc::terrain::TITerrainGenerator* terrainGenPtr )
     {
         m_name          = name;
         m_terrainGenPtr = terrainGenPtr;

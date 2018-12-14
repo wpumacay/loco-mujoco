@@ -89,35 +89,9 @@ namespace mujoco {
         std::cout << "INFO> Precached template model: " << _modelName << std::endl;
     }
 
-    TMjcAgentWrapper* TMjcFactory::createAgent( const std::string& name,
-                                                const std::string& modelname,
-                                                float startX, float startY, float startZ )
-    {
-        if ( m_cachedModels.find( modelname ) == m_cachedModels.end() )
-        {
-            std::cout << "WARNING> agent " << name << " "
-                      << "cannot be created because modelname " << modelname << " "
-                      << "is not a templated model or wasn't cached" << std::endl;
-
-            return NULL;
-        }
-
-        // grab the template model and its components
-        auto _modelTemplateElm = m_cachedModels[ modelname ];
-        // create a new genericelement with the names changed
-        auto _modelElm = new mjcf::GenericElement();
-        mjcf::deepCopy( _modelElm, _modelTemplateElm );
-        mjcf::replaceNameRecursive( _modelElm, name );
-
-        auto _agentWrapper = new TMjcAgentWrapper( name, _modelElm,
-                                                   startX, startY, startZ );
-
-        return _agentWrapper;
-    }
-
-    tysoc::agent::TMjcKinTreeAgentWrapper* TMjcFactory::createKinTreeAgentFromMjcf( const std::string& name,
-                                                                                    const std::string& modelname,
-                                                                                    float startX, float startY, float startZ )
+    TMjcKinTreeAgentWrapper* TMjcFactory::createKinTreeAgentFromMjcf( const std::string& name,
+                                                                      const std::string& modelname,
+                                                                      float startX, float startY, float startZ )
     {
         if ( m_cachedModels.find( modelname ) == m_cachedModels.end() )
         {
@@ -132,9 +106,9 @@ namespace mujoco {
         auto _modelTemplateElm = m_cachedModels[ modelname ];
         // and create the wrapper (it handles everything inside)
 
-        auto _kinTreeAgentWrapper = new tysoc::agent::TMjcKinTreeAgentWrapper( name,
-                                                                               _modelTemplateElm,
-                                                                               { startX, startY, startZ } );
+        auto _kinTreeAgentWrapper = new TMjcKinTreeAgentWrapper( name,
+                                                                 _modelTemplateElm,
+                                                                 { startX, startY, startZ } );
 
         return _kinTreeAgentWrapper;
     }
@@ -143,7 +117,7 @@ namespace mujoco {
                                                           const std::string& type,
                                                           const TGenericParams& params )
     {
-        tysoc::terrain::TTerrainGenerator* _terrainGenerator = NULL;
+        terrain::TITerrainGenerator* _terrainGenerator = NULL;
 
         if ( type == "procedural" )
         {
@@ -151,15 +125,15 @@ namespace mujoco {
 
             if ( _sectionsType == "path" )
             {
-                tysoc::terrain::TProfileGenerator* _profileGenerator;
+                terrain::TProfileGenerator* _profileGenerator;
                 if ( params.getString( "pathProfile" ) == "sine" )
                 {
                     float _ampl     = params.getFloat( "sineProfileAmplitude", 2.0f );
                     float _period   = params.getFloat( "sineProfilePeriod", 10.0f );
                     float _phase    = params.getFloat( "sineProfilePhase", 1.57f );
-                    _profileGenerator = new tysoc::terrain::TSineProfileGenerator( _ampl, 
-                                                                                 _period, 
-                                                                                 _phase );
+                    _profileGenerator = new terrain::TSineProfileGenerator( _ampl, 
+                                                                            _period, 
+                                                                            _phase );
                 }
                 else if ( params.getString( "pathProfile" ) == "perlin" )
                 {
@@ -167,14 +141,14 @@ namespace mujoco {
                     float _persistance  = params.getFloat( "perlinProfilePersistance", 0.5f );
                     float _lacunarity   = params.getFloat( "perlinProfileLacunarity", 2.0f );
                     float _noiseScale   = params.getFloat( "perlinProfileNoiseScale", 10.0f );
-                    _profileGenerator = new tysoc::terrain::TPerlin1DProfileGenerator( _octaves,
-                                                                                     _persistance,
-                                                                                     _lacunarity,
-                                                                                     _noiseScale );
+                    _profileGenerator = new terrain::TPerlin1DProfileGenerator( _octaves,
+                                                                                _persistance,
+                                                                                _lacunarity,
+                                                                                _noiseScale );
                 }
                 else
                 {
-                    _profileGenerator = new tysoc::terrain::TSineProfileGenerator( 2.0f, 10.0f, 1.57f );
+                    _profileGenerator = new terrain::TSineProfileGenerator( 2.0f, 10.0f, 1.57f );
                 }
 
                 float _sectionDepth         = params.getFloat( "sectionDepth", 1.0f );
@@ -183,18 +157,18 @@ namespace mujoco {
 
                 mjcf::Vec3 _startPosition = params.getVec3( "startPosition" );
 
-                _terrainGenerator = new tysoc::terrain::TPathTerrainGenerator( name, 
-                                                                             _startPosition.x,
-                                                                             _startPosition.y,
-                                                                             _startPosition.z,
-                                                                             _sectionDepth,
-                                                                             _componentsSpacingX,
-                                                                             _componentsThickness,
-                                                                             _profileGenerator );
+                _terrainGenerator = new terrain::TPathTerrainGenerator( name, 
+                                                                        _startPosition.x,
+                                                                        _startPosition.y,
+                                                                        _startPosition.z,
+                                                                        _sectionDepth,
+                                                                        _componentsSpacingX,
+                                                                        _componentsThickness,
+                                                                        _profileGenerator );
             }
             else
             {
-                tysoc::terrain::TBlockyParams _bparams;
+                terrain::TBlockyParams _bparams;
 
                 _bparams.usesBase               = params.getInt( "sectionUsesBase" ) == 1;
                 _bparams.usesSides              = params.getInt( "sectionUsesSides" ) == 1;
@@ -217,11 +191,11 @@ namespace mujoco {
 
                 mjcf::Vec3 _startPosition = params.getVec3( "startPosition" );
 
-                _terrainGenerator = new tysoc::terrain::TBlockyTerrainGenerator( name,
-                                                                               _startPosition.x,
-                                                                               _startPosition.y,
-                                                                               _startPosition.z,
-                                                                               _bparams );
+                _terrainGenerator = new terrain::TBlockyTerrainGenerator( name,
+                                                                          _startPosition.x,
+                                                                          _startPosition.y,
+                                                                          _startPosition.z,
+                                                                          _bparams );
             }
         }
 

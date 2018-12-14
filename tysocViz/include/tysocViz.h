@@ -12,7 +12,7 @@
 #include <api_adapter.h>
 // and some specific viz wrappers
 #include <tysocVizKinTree.h>
-
+// and also the current UI functionality (WIP)
 #include <tysocUI.h>
 
 namespace tysoc {
@@ -22,12 +22,9 @@ namespace viz {
     // should be the mujoco integrated visualizer, and my own visualizer, such ...
     // that we can think ahead to see if we can accomodate other rendering engines
 
-    struct TVizAgentMeshWrapper
-    {
-        tysoc::agent::TAgentGeom* geometry;
-        engine::LMesh* glMesh;
-    };
-
+    // @TODO|@CHECK: Abstract away the mesh wrapping functionality, the same way ...
+    // I did for the agent kintree wrapping functionality. It should be cleaner and ...
+    // leave the abstract visualization interface without wrapping jargon from concretions.
     struct TVizTerrainMeshWrapper
     {
         tysoc::terrain::TTerrainPrimitive* geometry;
@@ -42,20 +39,16 @@ namespace viz {
         engine::LScene* m_glScenePtr;
 
         std::vector< TVizTerrainMeshWrapper* > m_terrainMeshWrappers;
-        std::vector< TVizAgentMeshWrapper* > m_agentMeshWrappers;
 
         std::vector< tysoc::viz::TVizKinTree* > m_vizKinTreeWrappers;
 
         tysoc::TTysocCommonApi* m_tysocApiPtr;
 
-        void _collectAgentResources( tysoc::agent::TAgent* agentPtr );
-        void _cacheAgentGeometry( tysoc::agent::TAgentGeom* agentGeomPtr );
         void _collectKinTreeAgent( tysoc::agent::TAgentKinTree* kinTreeAgentPtr );
 
-        void _collectTerrainGenResources( tysoc::terrain::TTerrainGenerator* terrainGenPtr );
+        void _collectTerrainGenResources( tysoc::terrain::TITerrainGenerator* terrainGenPtr );
         void _cacheTerrainGeometry( tysoc::terrain::TTerrainPrimitive* terrainGeomPtr );
 
-        void _updateAgentWrapper( TVizAgentMeshWrapper* agentWrapperPtr );
         void _updateVizKinTree( tysoc::viz::TVizKinTree* vizKinTreePtr );
         void _updateTerrainWrapper( TVizTerrainMeshWrapper* terrainWrapperPtr );
 
@@ -64,7 +57,7 @@ namespace viz {
 
         void _setColor( engine::LMesh* meshPtr, float* color );
 
-        void _updateSensor( tysoc::sensor::TSensor* sensorPtr );
+        void _updateSensor( tysoc::sensor::TISensor* sensorPtr );
 
         // UI functionality
         tysoc::ui::TVizUiContext m_uiContext;

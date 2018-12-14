@@ -27,13 +27,11 @@ namespace mujoco {
         }
         m_terrainGenWrappers.clear();
 
-        for ( auto it = m_agentWrappers.begin();
-              it != m_agentWrappers.end();
-              it++ )
+        for ( size_t i = 0; i < m_kinTreeAgentWrappers.size(); i++ )
         {
-            delete it->second;
+            delete m_kinTreeAgentWrappers[i];
         }
-        m_agentWrappers.clear();
+        m_kinTreeAgentWrappers.clear();
 
         if ( m_mjcScenePtr )
         {
@@ -59,12 +57,7 @@ namespace mujoco {
         mj_deactivate();
     }
 
-    void TTysocMjcApi::addAgentWrapper( TMjcAgentWrapper* agentWrapperPtr )
-    {
-        m_agentWrappers[ agentWrapperPtr->name() ] = agentWrapperPtr;
-    }
-
-    void TTysocMjcApi::addKinTreeAgentWrapper( tysoc::agent::TMjcKinTreeAgentWrapper* agentKinTreeWrapperPtr )
+    void TTysocMjcApi::addKinTreeAgentWrapper( TMjcKinTreeAgentWrapper* agentKinTreeWrapperPtr )
     {
         m_kinTreeAgentWrappers.push_back( agentKinTreeWrapperPtr );
     }
@@ -94,13 +87,6 @@ namespace mujoco {
         for ( size_t i = 0; i < m_terrainGenWrappers.size(); i++ )
         {
             m_terrainGenWrappers[i]->injectMjcResources( _root );
-        }
-
-        for ( auto it = m_agentWrappers.begin();
-              it != m_agentWrappers.end();
-              it++ )
-        {
-            it->second->injectMjcResources( _root );
         }
 
         for ( size_t i = 0; i < m_kinTreeAgentWrappers.size(); i++ )
@@ -154,24 +140,13 @@ namespace mujoco {
             m_scenarioPtr->addTerrainGenerator( m_terrainGenWrappers[i]->terrainGenerator() );
         }
 
-        for ( auto it = m_agentWrappers.begin();
-              it != m_agentWrappers.end();
-              it++ )
-        {
-            it->second->setMjcModel( m_mjcModelPtr );
-            it->second->setMjcData( m_mjcDataPtr );
-            it->second->setMjcScene( m_mjcScenePtr );
-
-            m_scenarioPtr->addAgent( it->second->agent() );
-        }
-
         for ( size_t i = 0; i < m_kinTreeAgentWrappers.size(); i++ )
         {
             m_kinTreeAgentWrappers[i]->setMjcModel( m_mjcModelPtr );
             m_kinTreeAgentWrappers[i]->setMjcData( m_mjcDataPtr );
             m_kinTreeAgentWrappers[i]->setMjcScene( m_mjcScenePtr );
 
-            m_scenarioPtr->addIAgent( m_kinTreeAgentWrappers[i]->agent() );
+            m_scenarioPtr->addAgent( m_kinTreeAgentWrappers[i]->agent() );
         }
 
         // initialize all underlying base resources
@@ -186,23 +161,6 @@ namespace mujoco {
         return true;
     }
 
-    void TTysocMjcApi::setAgentPosition( const std::string& name,
-                                         float x, float y, float z )
-    {
-        if ( m_agentWrappers.find( name ) != m_agentWrappers.end() )
-        {
-            m_agentWrappers[ name ]->setPosition( x, y, z );
-        }
-    }
-    void TTysocMjcApi::getAgentPosition( const std::string& name,
-                                         float &x, float &y, float &z )
-    {
-        if ( m_agentWrappers.find( name ) != m_agentWrappers.end() )
-        {
-            m_agentWrappers[ name ]->getPosition( x, y, z );
-        }
-    }
-
     void TTysocMjcApi::_preStep()
     {
         // collect terrain generaion info by letting ...
@@ -213,14 +171,7 @@ namespace mujoco {
         }
 
         // Collect actuator controls by letting ...
-        // the agent wrappers do the job
-        for ( auto it = m_agentWrappers.begin();
-              it != m_agentWrappers.end();
-              it++ )
-        {
-            it->second->preStep();
-        }
-
+        // the kintree agent wrappers do the job
         for ( size_t i = 0; i < m_kinTreeAgentWrappers.size(); i++ )
         {
             m_kinTreeAgentWrappers[i]->preStep();
@@ -250,14 +201,6 @@ namespace mujoco {
 
     void TTysocMjcApi::_postStep()
     {
-        // collect bodies and joints information
-        for ( auto it = m_agentWrappers.begin();
-              it != m_agentWrappers.end();
-              it++ )
-        {
-            it->second->postStep();
-        }
-
         for ( size_t i = 0; i < m_kinTreeAgentWrappers.size(); i++ )
         {
             m_kinTreeAgentWrappers[i]->postStep();

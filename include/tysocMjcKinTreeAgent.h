@@ -7,7 +7,7 @@
 // #include <agent/types/agent_kintree_urdf.h> -> @TODO: urdf as well
 
 namespace tysoc { 
-namespace agent {
+namespace mujoco {
 
     // @TODO: Add base adapters to inherit easily and expose common API
 
@@ -16,9 +16,9 @@ namespace agent {
 
         private :
 
-        std::string                     m_name;
-        mjcf::GenericElement*           m_modelElmPtr;
-        tysoc::agent::TAgentKinTree*    m_kinTreeAgentPtr;
+        std::string             m_name;
+        mjcf::GenericElement*   m_modelElmPtr;
+        agent::TAgentKinTree*   m_kinTreeAgentPtr;
 
         mjModel*    m_mjcModelPtr;
         mjData*     m_mjcDataPtr;
@@ -49,7 +49,7 @@ namespace agent {
         void setMjcScene( mjvScene* mjcScenePtr );
 
         std::string name();
-        tysoc::agent::TAgentKinTree* agent();
+        agent::TAgentKinTree* agent();
 
         void injectMjcResources( mjcf::GenericElement* root );
 

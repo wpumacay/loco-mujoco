@@ -2,7 +2,7 @@
 #include <tysocMjcKinTreeAgent.h>
 
 namespace tysoc {
-namespace agent {
+namespace mujoco {
 
 
     TMjcKinTreeAgentWrapper::TMjcKinTreeAgentWrapper( const std::string& name,
@@ -30,7 +30,7 @@ namespace agent {
         m_mjcScenePtr   = NULL;
 
         // and create the kintree agent that uses mjcf
-        m_kinTreeAgentPtr = new TAgentKinTreeMjcf( name, position, m_modelElmPtr );
+        m_kinTreeAgentPtr = new agent::TAgentKinTreeMjcf( name, position, m_modelElmPtr );
     }
 
     TMjcKinTreeAgentWrapper::~TMjcKinTreeAgentWrapper()
@@ -66,7 +66,7 @@ namespace agent {
         return m_name;
     }
 
-    tysoc::agent::TAgentKinTree* TMjcKinTreeAgentWrapper::agent()
+    agent::TAgentKinTree* TMjcKinTreeAgentWrapper::agent()
     {
         return m_kinTreeAgentPtr;
     }
@@ -182,7 +182,7 @@ namespace agent {
             auto _jointMjcSensorResource = new mjcf::GenericElement( "jointpos" );
             // set the necessary properties
             _jointMjcSensorResource->setAttributeString( "name", std::string( "mjc_sensor_" ) + 
-                                                                 m_kinTreeAgentPtr->getName() + 
+                                                                 m_kinTreeAgentPtr->name() + 
                                                                  std::string( "_j_" ) +
                                                                  std::to_string( i ) );
             _jointMjcSensorResource->setAttributeString( "joint", _kinJoints[i]->name );

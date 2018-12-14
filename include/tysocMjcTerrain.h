@@ -42,7 +42,7 @@ namespace mujoco {
         std::queue< TMjcTerrainPrimitive* > m_mjcFixedPrimitives;
 
         // terrain generator to wrap
-        tysoc::terrain::TTerrainGenerator* m_terrainGenPtr;
+        tysoc::terrain::TITerrainGenerator* m_terrainGenPtr;
 
         // mujoco resources to inject into workspace
         mjcf::GenericElement* m_modelElmPtr;
@@ -63,7 +63,7 @@ namespace mujoco {
         public :
 
         TMjcTerrainGenWrapper( const std::string& name,
-                               tysoc::terrain::TTerrainGenerator* terrainGenPtr );
+                               tysoc::terrain::TITerrainGenerator* terrainGenPtr );
         ~TMjcTerrainGenWrapper();
 
         void injectMjcResources( mjcf::GenericElement* root );
@@ -73,7 +73,7 @@ namespace mujoco {
         void initialize();
 
         std::string name() { return m_name; }
-        tysoc::terrain::TTerrainGenerator* terrainGenerator() { return m_terrainGenPtr; }
+        tysoc::terrain::TITerrainGenerator* terrainGenerator() { return m_terrainGenPtr; }
 
 
         // update the wrapper by collecting all ...

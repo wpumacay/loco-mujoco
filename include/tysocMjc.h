@@ -2,7 +2,6 @@
 #pragma once
 
 #include <tysocMjcTerrain.h>
-#include <tysocMjcAgent.h>
 #include <tysocMjcFactory.h>
 #include <tysocMjcKinTreeAgent.h>
 
@@ -64,9 +63,8 @@ namespace mujoco {
 
         private :
 
-        std::vector< TMjcTerrainGenWrapper* >                   m_terrainGenWrappers;
-        std::map< std::string, TMjcAgentWrapper* >              m_agentWrappers;
-        std::vector< agent::TMjcKinTreeAgentWrapper* >          m_kinTreeAgentWrappers;
+        std::vector< TMjcTerrainGenWrapper* >       m_terrainGenWrappers;
+        std::vector< TMjcKinTreeAgentWrapper* >     m_kinTreeAgentWrappers;
 
         mjModel*    m_mjcModelPtr;
         mjData*     m_mjcDataPtr;
@@ -85,16 +83,10 @@ namespace mujoco {
         TTysocMjcApi();
         ~TTysocMjcApi();
 
-        void addAgentWrapper( TMjcAgentWrapper* agentWrapperPtr );
-        void addKinTreeAgentWrapper( agent::TMjcKinTreeAgentWrapper* agentKinTreeWrapperPtr );
+        void addKinTreeAgentWrapper( TMjcKinTreeAgentWrapper* agentKinTreeWrapperPtr );
         void addTerrainGenWrapper( TMjcTerrainGenWrapper* terrainGenWrapperPtr );
 
         bool initializeMjcApi();
-
-        void setAgentPosition( const std::string& name,
-                               float x, float y, float z );
-        void getAgentPosition( const std::string& name,
-                               float &x, float &y, float &z );
 
         mjModel* getMjcModel() { return m_mjcModelPtr; }
         mjData* getMjcData() { return m_mjcDataPtr; }

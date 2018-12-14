@@ -3,7 +3,7 @@
 #include <tysocViz.h>
 
 
-static int NUM_AGENTS = 3;
+static int NUM_AGENTS = 4;
 
 #define SECTION_DEPTH 2.0f
 
@@ -152,37 +152,27 @@ int main( int argc, const char** argv )
 
         _tysocApi->addTerrainGenWrapper( _terrain );
 
-        if ( i % 3 == 0 ) 
-        {
-            // create legacy agents
-            auto _agent = _factory->createAgent( std::string( "walker_" ) + std::to_string( i ),
-                                                 "humanoid",
-                                                 2.0f, i * ( SECTION_DEPTH + 1.0f ), 2.5f );
-
-            // create some sensors
-            auto _sensor1Name = std::string( "walker_sensor_" ) + std::to_string( i ) + std::string( "_pathterrain" );
-            auto _sensor1 = new tysoc::sensor::TSectionsTerrainSensor( _sensor1Name,
-                                                                     ( tysoc::terrain::TSectionsTerrainGenerator* )_terrain->terrainGenerator(),
-                                                                     _agent->agent(), false );
-
-            auto _sensor2Name = std::string( "walker_sensor_" ) + std::to_string( i ) + std::string( "_intrinsics" );
-            auto _sensor2 = new tysoc::sensor::TAgentIntrinsicsSensor( _sensor2Name,
-                                                                     _agent->agent() );
-
-            // and add everything to the runtime
-            _tysocApi->addAgentWrapper( _agent );
-            _tysocApi->getScenario()->addSensor( _sensor1 );
-            _tysocApi->getScenario()->addSensor( _sensor2 );
-        }
-        else if ( i % 3 == 1 )
+        if ( i % 2 == 0 )
         {
             // create kintree agents
             auto _agent = _factory->createKinTreeAgentFromMjcf( std::string( "walker_" ) + std::to_string( i ),
                                                                 "humanoid",
                                                                 2.0f, i * ( SECTION_DEPTH + 1.0f ), 2.5f );
 
+            // // create some sensors
+            // auto _sensor1Name = std::string( "walker_sensor_" ) + std::to_string( i ) + std::string( "_pathterrain" );
+            // auto _sensor1 = new tysoc::sensor::TSectionsTerrainSensor( _sensor1Name,
+            //                                                          ( tysoc::terrain::TSectionsTerrainGenerator* )_terrain->terrainGenerator(),
+            //                                                          _agent->agent(), false );
+
+            // auto _sensor2Name = std::string( "walker_sensor_" ) + std::to_string( i ) + std::string( "_intrinsics" );
+            // auto _sensor2 = new tysoc::sensor::TAgentIntrinsicsSensor( _sensor2Name,
+            //                                                          _agent->agent() );
+
             // and add it to the runtime
             _tysocApi->addKinTreeAgentWrapper( _agent );
+            // _tysocApi->getScenario()->addSensor( _sensor1 );
+            // _tysocApi->getScenario()->addSensor( _sensor2 );
         }
         else
         {
@@ -219,24 +209,14 @@ int main( int argc, const char** argv )
 
         _currentX += 0.025f;
 
-        // auto _terrainGens = _tysocApi->getTerrainGenerators();
+        // auto _terrainGens = _tysocApi->getScenario()->getTerrainGenerators();
         // for ( size_t i = 0; i < _terrainGens.size(); i++ )
         // {
         //     auto _genInfoPtr = _terrainGens[i]->generatorInfo();
         //     _genInfoPtr->trackingpoint.x = _currentX;
         // }
 
-        // for ( size_t i = 0; i < NUM_AGENTS; i++ )
-        // {
-        //     if ( i % 3 == 0 ) 
-        //     {
-        //         auto _agentName = std::string( "walker_" ) + std::to_string( i );
-        //         auto _actuatorName = std::string( "mjcact_" ) + _agentName + std::string( "_right_hip" );
-        //         _tysocApi->setAgentAction( _agentName, _actuatorName, std::cos( _tysocApi->getMjcData()->time ) );
-        //     }
-        // }
-
-        // auto _iagents = _tysocApi->getIAgents();
+        // auto _iagents = _tysocApi->getAgents();
         // for ( size_t i = 0; i < _iagents.size(); i++ )
         // {
         //     if ( _iagents[i]->getType() != "kintree" )

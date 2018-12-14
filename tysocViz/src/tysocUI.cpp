@@ -47,7 +47,7 @@ namespace ui{
         {
             for ( size_t i = 0; i < uiContext.vizKinTreePtrs.size(); i++ )
             {
-                auto _vizKinTreeName = uiContext.vizKinTreePtrs[i]->getKinTreePtr()->getName();
+                auto _vizKinTreeName = uiContext.vizKinTreePtrs[i]->getKinTreePtr()->name();
                 bool _isSelected = ( _vizKinTreeName == uiContext.vizCurrentKinTreeName );
                 if ( ImGui::Selectable( _vizKinTreeName.c_str(), _isSelected ) )
                 {

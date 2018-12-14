@@ -2,7 +2,6 @@
 #pragma once
 
 #include <tysocMjcTerrain.h>
-#include <tysocMjcAgent.h>
 #include <tysocMjcKinTreeAgent.h>
 
 #include <dirent.h>
@@ -143,13 +142,12 @@ namespace mujoco {
         TMjcFactory();
         ~TMjcFactory();
 
-        TMjcAgentWrapper* createAgent( const std::string& name,
-                                       const std::string& modelname,
-                                       float startX, float startY, float startZ );
+        // @TODO|@CHECK: should add functionality for general ...
+        // agent creation not just kintree based agents. 
 
-        tysoc::agent::TMjcKinTreeAgentWrapper* createKinTreeAgentFromMjcf( const std::string& name,
-                                                                           const std::string& modelname,
-                                                                           float startX, float startY, float startZ );
+        TMjcKinTreeAgentWrapper* createKinTreeAgentFromMjcf( const std::string& name,
+                                                             const std::string& modelname,
+                                                             float startX, float startY, float startZ );
 
         TMjcTerrainGenWrapper* createTerrainGen( const std::string& name,
                                                  const std::string& type,

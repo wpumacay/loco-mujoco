@@ -3,8 +3,8 @@
 
 
 
-namespace tysocViz
-{
+namespace tysoc {
+namespace viz {
 
     TVisualizer::TVisualizer( tysoc::TTysocCommonApi* api )
     {
@@ -19,7 +19,7 @@ namespace tysocViz
                                                engine::LICamera::UP_Z );
 
         // auto _camera = new engine::LFixedCamera3d( "fixed",
-        //                                            engine::LVec3( 2.0f, 4.0f, 2.0f ),
+        //                                            engine::LVec3( 4.0f, 8.0f, 4.0f ),
         //                                            engine::LVec3( 0.0f, 0.0f, 0.0f ),
         //                                            engine::LICamera::UP_Z );
 
@@ -37,6 +37,10 @@ namespace tysocViz
         _scene->addCamera( _camera );
         _scene->addLight( _light );
         _scene->addSkybox( _skybox );
+
+        // Initialize UI
+        m_uiContext.glfwWindowPtr   = m_glAppPtr->window()->getGLFWwindow();
+        tysoc::ui::initUI( m_uiContext );
     }
 
     TVisualizer::~TVisualizer()
@@ -46,82 +50,37 @@ namespace tysocViz
 
     void TVisualizer::initialize()
     {
-        // Collect geoetries from the agents
-        auto _agentsMap = m_tysocApiPtr->getAgents();
-
-        for ( auto it = _agentsMap.begin(); it != _agentsMap.end(); it++ )
-        {
-            _collectAgentResources( it->second );
-        }
-
         // Collect geometries from the terrain gens
         // @CHECK: this actually change, but
-        auto _terrainGenMaps = m_tysocApiPtr->getTerrainGenerators();
+        auto _terrainGenMaps = m_tysocApiPtr->getScenario()->getTerrainGenerators();
 
         for ( size_t i = 0; i < _terrainGenMaps.size(); i++ )
         {
             _collectTerrainGenResources( _terrainGenMaps[i] );
         }
+
+        // collect all kintree type agents
+        auto _IAgents = m_tysocApiPtr->getScenario()->getAgents();
+
+        for ( size_t i = 0; i < _IAgents.size(); i++ )
+        {
+            if ( _IAgents[i]->type() == "kintree" )
+            {
+                _collectKinTreeAgent( (tysoc::agent::TAgentKinTree*) _IAgents[i] );
+            }
+        }
     }
 
-    void TVisualizer::_collectAgentResources( tysocagent::TAgent* agentPtr )
+    void TVisualizer::_collectKinTreeAgent( tysoc::agent::TAgentKinTree* kinTreeAgentPtr )
     {
-        auto _geometries = agentPtr->geometries();
-        for ( auto it = _geometries.begin(); it != _geometries.end(); it++ )
-        {
-            _cacheAgentGeometry( it->second );
-        }
+        // create the kintree viz wrapper
+        auto _vizKinTreeWrapper = new tysoc::viz::TVizKinTree( kinTreeAgentPtr,
+                                                               m_glScenePtr );
+        // and add it to the buffer of kintree vizs
+        m_vizKinTreeWrappers.push_back( _vizKinTreeWrapper );
     }
 
-    void TVisualizer::_cacheAgentGeometry( tysocagent::TAgentGeom* agentGeomPtr )
-    {
-        engine::LMesh* _glMesh = NULL;
-
-        if ( agentGeomPtr->type == "plane" )
-        {
-            _glMesh = engine::LMeshBuilder::createPlane( agentGeomPtr->size.x,
-                                                         agentGeomPtr->size.y );
-        }
-        else if ( agentGeomPtr->type == "sphere" )
-        {
-            _glMesh = engine::LMeshBuilder::createSphere( agentGeomPtr->size.x );
-        }
-        else if ( agentGeomPtr->type == "capsule" )
-        {
-            _glMesh = engine::LMeshBuilder::createCapsule( agentGeomPtr->size.x,
-                                                           agentGeomPtr->size.y );
-        }
-        else if ( agentGeomPtr->type == "cylinder" )
-        {
-            _glMesh = engine::LMeshBuilder::createCylinder( agentGeomPtr->size.x,
-                                                            agentGeomPtr->size.y );
-        }
-        else if ( agentGeomPtr->type == "box" )
-        {
-            _glMesh = engine::LMeshBuilder::createBox( agentGeomPtr->size.x,
-                                                       agentGeomPtr->size.y,
-                                                       agentGeomPtr->size.z );
-        }
-        else
-        {
-            std::cout << "WARNING> Could not create geometry : " << agentGeomPtr->name << std::endl;
-            _glMesh = NULL;
-        }
-
-        if ( _glMesh )
-        {
-            // ok, we can create the wrapper now
-            auto _meshWrapper = new TVizAgentMeshWrapper();
-            _meshWrapper->glMesh = _glMesh;
-            _meshWrapper->geometry = agentGeomPtr;
-            // add mesh to glengine's scene
-            m_glScenePtr->addRenderable( _glMesh );
-            // add it to the wrappers list for later usage
-            m_agentMeshWrappers.push_back( _meshWrapper );
-        }
-    }
-
-    void TVisualizer::_collectTerrainGenResources( tysocterrain::TTerrainGenerator* terrainGenPtr )
+    void TVisualizer::_collectTerrainGenResources( tysoc::terrain::TITerrainGenerator* terrainGenPtr )
     {
         auto _geometries = terrainGenPtr->getPrimitives();
         for ( size_t i = 0; i < _geometries.size(); i++ )
@@ -131,7 +90,7 @@ namespace tysocViz
     }
 
     void TVisualizer::_resizeMesh( engine::LMesh* meshPtr, 
-                                   tysocterrain::TTerrainPrimitive* terrainGeomPtr )
+                                   tysoc::terrain::TTerrainPrimitive* terrainGeomPtr )
     {
         if ( terrainGeomPtr->geomType == "plane" )
         {
@@ -179,7 +138,7 @@ namespace tysocViz
         _material->specular.z = color[2];
     }
 
-    void TVisualizer::_updateSensor( tysocsensor::TSensor* sensorPtr )
+    void TVisualizer::_updateSensor( tysoc::sensor::TISensor* sensorPtr )
     {
         auto _measurement = sensorPtr->getSensorMeasurement();
 
@@ -190,7 +149,7 @@ namespace tysocViz
         if ( _measurement->type == "PathTerrainMeasurement" )
         {
             // draw profile from sensor reading
-            auto _pathMeasurement = reinterpret_cast< tysocsensor::TSectionsTerrainSensorMeasurement* >
+            auto _pathMeasurement = reinterpret_cast< tysoc::sensor::TSectionsTerrainSensorMeasurement* >
                                         ( _measurement );
 
             std::vector< engine::LLine > _lines;
@@ -227,7 +186,7 @@ namespace tysocViz
         }
         else if ( _measurement->type == "AgentIntrinsicsMeasurement" )
         {
-            auto _agentMeasurement = reinterpret_cast< tysocsensor::TAgentIntrinsicsSensorMeasurement* >
+            auto _agentMeasurement = reinterpret_cast< tysoc::sensor::TAgentIntrinsicsSensorMeasurement* >
                                         ( _measurement );
 
             std::vector< engine::LLine > _lines;
@@ -251,7 +210,7 @@ namespace tysocViz
         }
     }
 
-    void TVisualizer::_cacheTerrainGeometry( tysocterrain::TTerrainPrimitive* terrainGeomPtr )
+    void TVisualizer::_cacheTerrainGeometry( tysoc::terrain::TTerrainPrimitive* terrainGeomPtr )
     {
         engine::LMesh* _glMesh = NULL;
 
@@ -299,6 +258,33 @@ namespace tysocViz
 
     }
 
+    void TVisualizer::_renderUI()
+    {
+        // @DIRTY: Change-Refactor this part
+
+        if ( engine::InputSystem::isKeyDown( GLFW_KEY_SPACE ) )
+        {
+            // @CHECK: Should apply globally, as some cameras will not listen
+            m_glScenePtr->getCurrentCamera()->setActiveMode( false );
+            m_glAppPtr->window()->enableCursor();
+
+            // @DIRTY: enable UI
+            m_uiContext.isUiActive = true;
+        }
+        else if ( engine::InputSystem::isKeyDown( GLFW_KEY_ENTER ) )
+        {
+            m_glScenePtr->getCurrentCamera()->setActiveMode( true );
+            m_glAppPtr->window()->disableCursor();
+
+            // @DIRTY: enable UI
+            m_uiContext.isUiActive = false;
+        }
+
+        m_uiContext.vizKinTreePtrs  = m_vizKinTreeWrappers;
+
+        tysoc::ui::renderUI( m_uiContext );
+    }
+
     void TVisualizer::update()
     {
         // @CHECK: I'm assuming all geometries are known at initialization.
@@ -314,13 +300,13 @@ namespace tysocViz
         // underlying objects (if they are requested for usage, like the terrain primitives with its inUse flag)
 
         // Update cached primitives
-        for ( size_t i = 0; i < m_agentMeshWrappers.size(); i++ )
-        {
-            _updateAgentWrapper( m_agentMeshWrappers[i] );
-        }
         for ( size_t i = 0; i < m_terrainMeshWrappers.size(); i++ )
         {
             _updateTerrainWrapper( m_terrainMeshWrappers[i] );
+        }
+        for ( size_t i = 0; i < m_vizKinTreeWrappers.size(); i++ )
+        {
+            _updateVizKinTree( m_vizKinTreeWrappers[i] );
         }
 
         // @CHECK: For now I will just create a pool for the terrain objects, and reuse it
@@ -336,39 +322,23 @@ namespace tysocViz
         auto _scenarioPtr = m_tysocApiPtr->getScenario();
         auto _sensors = _scenarioPtr->getSensors();
 
-        for ( auto it = _sensors.begin(); it != _sensors.end(); it++ )
+        for ( size_t i = 0; i < _sensors.size(); i++ )
         {
-            _updateSensor( it->second );
+            _updateSensor( _sensors[i] );
         }
 
+        m_glAppPtr->begin();
         m_glAppPtr->update();
+
+        // render the UI
+        _renderUI();
+
+        m_glAppPtr->end();
     }
 
     bool TVisualizer::isActive()
     {
         return engine::LApp::GetInstance()->isActive();
-    }
-
-    void TVisualizer::_updateAgentWrapper( TVizAgentMeshWrapper* agentWrapperPtr )
-    {
-        float _color[3] = { agentWrapperPtr->geometry->color.r,
-                            agentWrapperPtr->geometry->color.g,
-                            agentWrapperPtr->geometry->color.b };
-        _setColor( agentWrapperPtr->glMesh, _color );
-
-        agentWrapperPtr->glMesh->pos.x = agentWrapperPtr->geometry->pos.x;
-        agentWrapperPtr->glMesh->pos.y = agentWrapperPtr->geometry->pos.y;
-        agentWrapperPtr->glMesh->pos.z = agentWrapperPtr->geometry->pos.z;
-        
-        agentWrapperPtr->glMesh->rotation.set( 0, 0, agentWrapperPtr->geometry->rotmat[0] );
-        agentWrapperPtr->glMesh->rotation.set( 0, 1, agentWrapperPtr->geometry->rotmat[1] );
-        agentWrapperPtr->glMesh->rotation.set( 0, 2, agentWrapperPtr->geometry->rotmat[2] );
-        agentWrapperPtr->glMesh->rotation.set( 1, 0, agentWrapperPtr->geometry->rotmat[3] );
-        agentWrapperPtr->glMesh->rotation.set( 1, 1, agentWrapperPtr->geometry->rotmat[4] );
-        agentWrapperPtr->glMesh->rotation.set( 1, 2, agentWrapperPtr->geometry->rotmat[5] );
-        agentWrapperPtr->glMesh->rotation.set( 2, 0, agentWrapperPtr->geometry->rotmat[6] );
-        agentWrapperPtr->glMesh->rotation.set( 2, 1, agentWrapperPtr->geometry->rotmat[7] );
-        agentWrapperPtr->glMesh->rotation.set( 2, 2, agentWrapperPtr->geometry->rotmat[8] );
     }
 
     void TVisualizer::_updateTerrainWrapper( TVizTerrainMeshWrapper* terrainWrapperPtr )
@@ -397,5 +367,9 @@ namespace tysocViz
         terrainWrapperPtr->glMesh->rotation.set( 2, 2, terrainWrapperPtr->geometry->rotmat[8] );
     }
 
+    void TVisualizer::_updateVizKinTree( tysoc::viz::TVizKinTree* vizKinTreePtr )
+    {
+        vizKinTreePtr->update();
+    }
 
-}
+}}

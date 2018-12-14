@@ -2,8 +2,8 @@
 #pragma once
 
 #include <tysocMjcTerrain.h>
-#include <tysocMjcAgent.h>
 #include <tysocMjcFactory.h>
+#include <tysocMjcKinTreeAgent.h>
 
 // abstract api to extend from
 #include <api_adapter.h>
@@ -12,8 +12,8 @@
     #define MUJOCO_LICENSE_FILE "~/.mujoco/mjkey.txt"
 #endif
 
-namespace tysocMjc
-{
+namespace tysoc {
+namespace mujoco {
 
     // @TODO: Mode main generic description to generic api
     // @TODO: Update the description here to describe the specifics
@@ -58,13 +58,13 @@ namespace tysocMjc
     */
 
 
-    class TTysocMjcApi : public tysoc::TTysocCommonApi
+    class TTysocMjcApi : public TTysocCommonApi
     {
 
         private :
 
         std::vector< TMjcTerrainGenWrapper* >       m_terrainGenWrappers;
-        std::map< std::string, TMjcAgentWrapper* >  m_agentWrappers;
+        std::vector< TMjcKinTreeAgentWrapper* >     m_kinTreeAgentWrappers;
 
         mjModel*    m_mjcModelPtr;
         mjData*     m_mjcDataPtr;
@@ -83,15 +83,10 @@ namespace tysocMjc
         TTysocMjcApi();
         ~TTysocMjcApi();
 
-        void addAgentWrapper( TMjcAgentWrapper* agentWrapperPtr );
+        void addKinTreeAgentWrapper( TMjcKinTreeAgentWrapper* agentKinTreeWrapperPtr );
         void addTerrainGenWrapper( TMjcTerrainGenWrapper* terrainGenWrapperPtr );
 
         bool initializeMjcApi();
-
-        void setAgentPosition( const std::string& name,
-                               float x, float y, float z );
-        void getAgentPosition( const std::string& name,
-                               float &x, float &y, float &z );
 
         mjModel* getMjcModel() { return m_mjcModelPtr; }
         mjData* getMjcData() { return m_mjcDataPtr; }
@@ -102,4 +97,4 @@ namespace tysocMjc
 
 
     
-}
+}}

@@ -12,8 +12,8 @@
 
 #include <terrain/terrain.h>
 
-namespace tysocMjc
-{
+namespace tysoc {
+namespace mujoco {
 
     /**
     * This is a wrapper on top of the primitives...
@@ -26,7 +26,7 @@ namespace tysocMjc
         std::string                 mjcGeomType;
         mjcf::Sizef                 mjcGeomSize;
         bool                        isAvailable;
-        tysocterrain::TTerrainPrimitive*   tysocPrimitiveObj;
+        tysoc::terrain::TTerrainPrimitive*   tysocPrimitiveObj;
     };
 
 
@@ -42,13 +42,14 @@ namespace tysocMjc
         std::queue< TMjcTerrainPrimitive* > m_mjcFixedPrimitives;
 
         // terrain generator to wrap
-        tysocterrain::TTerrainGenerator* m_terrainGenPtr;
+        tysoc::terrain::TITerrainGenerator* m_terrainGenPtr;
 
         // mujoco resources to inject into workspace
         mjcf::GenericElement* m_modelElmPtr;
 
         // a reference to the mujoco model
         mjModel* m_mjcModelPtr;
+        mjData* m_mjcDataPtr;
         mjvScene* m_mjcScenePtr;
 
         // name for this agentwrapper (and underlying agent as well)
@@ -56,22 +57,23 @@ namespace tysocMjc
 
         void _collectFromGenerator();// collects primitives that can be reused and rewrapped in the lifetime of the generator
         void _collectFixedFromGenerator();// collects primitives that are single in the lifetime of the generator
-        void _wrapNewPrimitive( tysocterrain::TTerrainPrimitive* primitivePtr, bool isReusable );
+        void _wrapNewPrimitive( tysoc::terrain::TTerrainPrimitive* primitivePtr, bool isReusable );
         void _updateProperties( TMjcTerrainPrimitive* mjcTerrainPritimivePtr );
 
         public :
 
         TMjcTerrainGenWrapper( const std::string& name,
-                               tysocterrain::TTerrainGenerator* terrainGenPtr );
+                               tysoc::terrain::TITerrainGenerator* terrainGenPtr );
         ~TMjcTerrainGenWrapper();
 
         void injectMjcResources( mjcf::GenericElement* root );
         void setMjcModel( mjModel* mjcModelPtr );
+        void setMjcData( mjData* mjcDataPtr );
         void setMjcScene( mjvScene* mjcScenePtr );
         void initialize();
 
         std::string name() { return m_name; }
-        tysocterrain::TTerrainGenerator* terrainGenerator() { return m_terrainGenPtr; }
+        tysoc::terrain::TITerrainGenerator* terrainGenerator() { return m_terrainGenPtr; }
 
 
         // update the wrapper by collecting all ...
@@ -80,4 +82,4 @@ namespace tysocMjc
         void preStep();
     };
 
-}
+}}

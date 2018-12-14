@@ -6,20 +6,8 @@ find_package( GLEW REQUIRED )
 
 include_directories( ${GLEW_INCLUDE_DIRS} )
 
-# test_tysoc example
-add_executable( test_tysoc
-                test_tysoc.cpp )
-target_link_libraries( test_tysoc
-                       tysocMjc )
-
-# test_viz example
-add_executable( test_viz
-                test_viz.cpp )
-target_link_libraries( test_viz
-                       tysocMjc )
-
-# test_sections example
-add_executable( test_sections
-                test_sections.cpp )
-target_link_libraries( test_sections
+# test_kintree example
+add_executable( test_kintree
+                test_kintree.cpp )
+target_link_libraries( test_kintree
                        tysocMjc )

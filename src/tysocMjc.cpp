@@ -3,8 +3,8 @@
 
 
 
-namespace tysocMjc
-{
+namespace tysoc {
+namespace mujoco {
 
 
     TTysocMjcApi::TTysocMjcApi()
@@ -27,13 +27,11 @@ namespace tysocMjc
         }
         m_terrainGenWrappers.clear();
 
-        for ( auto it = m_agentWrappers.begin();
-              it != m_agentWrappers.end();
-              it++ )
+        for ( size_t i = 0; i < m_kinTreeAgentWrappers.size(); i++ )
         {
-            delete it->second;
+            delete m_kinTreeAgentWrappers[i];
         }
-        m_agentWrappers.clear();
+        m_kinTreeAgentWrappers.clear();
 
         if ( m_mjcScenePtr )
         {
@@ -59,9 +57,9 @@ namespace tysocMjc
         mj_deactivate();
     }
 
-    void TTysocMjcApi::addAgentWrapper( TMjcAgentWrapper* agentWrapperPtr )
+    void TTysocMjcApi::addKinTreeAgentWrapper( TMjcKinTreeAgentWrapper* agentKinTreeWrapperPtr )
     {
-        m_agentWrappers[ agentWrapperPtr->name() ] = agentWrapperPtr;
+        m_kinTreeAgentWrappers.push_back( agentKinTreeWrapperPtr );
     }
 
     void TTysocMjcApi::addTerrainGenWrapper( TMjcTerrainGenWrapper* terrainGenWrapperPtr )
@@ -91,11 +89,9 @@ namespace tysocMjc
             m_terrainGenWrappers[i]->injectMjcResources( _root );
         }
 
-        for ( auto it = m_agentWrappers.begin();
-              it != m_agentWrappers.end();
-              it++ )
+        for ( size_t i = 0; i < m_kinTreeAgentWrappers.size(); i++ )
         {
-            it->second->injectMjcResources( _root );
+            m_kinTreeAgentWrappers[i]->injectMjcResources( _root );
         }
 
         std::string _workspaceModelPath( TYSOCMJC_RESOURCES_PATH );
@@ -139,19 +135,18 @@ namespace tysocMjc
         for ( size_t i = 0; i < m_terrainGenWrappers.size(); i++ )
         {
             m_terrainGenWrappers[i]->setMjcModel( m_mjcModelPtr );
+            m_terrainGenWrappers[i]->setMjcData( m_mjcDataPtr );
             m_terrainGenWrappers[i]->setMjcScene( m_mjcScenePtr );
             m_scenarioPtr->addTerrainGenerator( m_terrainGenWrappers[i]->terrainGenerator() );
         }
 
-        for ( auto it = m_agentWrappers.begin();
-              it != m_agentWrappers.end();
-              it++ )
+        for ( size_t i = 0; i < m_kinTreeAgentWrappers.size(); i++ )
         {
-            it->second->setMjcModel( m_mjcModelPtr );
-            it->second->setMjcData( m_mjcDataPtr );
-            it->second->setMjcScene( m_mjcScenePtr );
+            m_kinTreeAgentWrappers[i]->setMjcModel( m_mjcModelPtr );
+            m_kinTreeAgentWrappers[i]->setMjcData( m_mjcDataPtr );
+            m_kinTreeAgentWrappers[i]->setMjcScene( m_mjcScenePtr );
 
-            m_scenarioPtr->addAgent( it->second->agent() );
+            m_scenarioPtr->addAgent( m_kinTreeAgentWrappers[i]->agent() );
         }
 
         // initialize all underlying base resources
@@ -166,23 +161,6 @@ namespace tysocMjc
         return true;
     }
 
-    void TTysocMjcApi::setAgentPosition( const std::string& name,
-                                         float x, float y, float z )
-    {
-        if ( m_agentWrappers.find( name ) != m_agentWrappers.end() )
-        {
-            m_agentWrappers[ name ]->setPosition( x, y, z );
-        }
-    }
-    void TTysocMjcApi::getAgentPosition( const std::string& name,
-                                         float &x, float &y, float &z )
-    {
-        if ( m_agentWrappers.find( name ) != m_agentWrappers.end() )
-        {
-            m_agentWrappers[ name ]->getPosition( x, y, z );
-        }
-    }
-
     void TTysocMjcApi::_preStep()
     {
         // collect terrain generaion info by letting ...
@@ -193,26 +171,24 @@ namespace tysocMjc
         }
 
         // Collect actuator controls by letting ...
-        // the agent wrappers do the job
-        for ( auto it = m_agentWrappers.begin();
-              it != m_agentWrappers.end();
-              it++ )
+        // the kintree agent wrappers do the job
+        for ( size_t i = 0; i < m_kinTreeAgentWrappers.size(); i++ )
         {
-            it->second->preStep();
+            m_kinTreeAgentWrappers[i]->preStep();
         }
     }
 
     void TTysocMjcApi::_updateStep()
     {
         mjtNum _simstart = m_mjcDataPtr->time;
-        //int _steps = 0;
+        // int _steps = 0;
         while ( m_mjcDataPtr->time - _simstart < 1.0 / 60.0 )
         {
-            //_steps++;
+            // _steps++;
             mj_step( m_mjcModelPtr, m_mjcDataPtr );
         }
 
-        //std::cout << "nsteps: " << _steps << std::endl;
+        // std::cout << "nsteps: " << _steps << std::endl;
 
         mjv_updateScene( m_mjcModelPtr, 
                          m_mjcDataPtr, 
@@ -225,12 +201,10 @@ namespace tysocMjc
 
     void TTysocMjcApi::_postStep()
     {
-        // collect bodies and joints information
-        for ( auto it = m_agentWrappers.begin();
-              it != m_agentWrappers.end();
-              it++ )
+        for ( size_t i = 0; i < m_kinTreeAgentWrappers.size(); i++ )
         {
-            it->second->postStep();
+            m_kinTreeAgentWrappers[i]->postStep();
         }
     }
-}
+    
+}}

@@ -10,19 +10,24 @@
 
 // tysocBaseApi functionality
 #include <api_adapter.h>
+// and some specific viz wrappers
+#include <tysocVizKinTree.h>
+// and also the current UI functionality (WIP)
+#include <tysocUI.h>
 
-namespace tysocViz
-{
+namespace tysoc {
+namespace viz {
 
-    struct TVizAgentMeshWrapper
-    {
-        tysocagent::TAgentGeom* geometry;
-        engine::LMesh* glMesh;
-    };
+    // @TODO|CHECK: This should be the abstraction, and the concretions ...
+    // should be the mujoco integrated visualizer, and my own visualizer, such ...
+    // that we can think ahead to see if we can accomodate other rendering engines
 
+    // @TODO|@CHECK: Abstract away the mesh wrapping functionality, the same way ...
+    // I did for the agent kintree wrapping functionality. It should be cleaner and ...
+    // leave the abstract visualization interface without wrapping jargon from concretions.
     struct TVizTerrainMeshWrapper
     {
-        tysocterrain::TTerrainPrimitive* geometry;
+        tysoc::terrain::TTerrainPrimitive* geometry;
         engine::LMesh* glMesh;
     };
 
@@ -34,25 +39,29 @@ namespace tysocViz
         engine::LScene* m_glScenePtr;
 
         std::vector< TVizTerrainMeshWrapper* > m_terrainMeshWrappers;
-        std::vector< TVizAgentMeshWrapper* > m_agentMeshWrappers;
+
+        std::vector< tysoc::viz::TVizKinTree* > m_vizKinTreeWrappers;
 
         tysoc::TTysocCommonApi* m_tysocApiPtr;
 
-        void _collectAgentResources( tysocagent::TAgent* agentPtr );
-        void _cacheAgentGeometry( tysocagent::TAgentGeom* agentGeomPtr );
+        void _collectKinTreeAgent( tysoc::agent::TAgentKinTree* kinTreeAgentPtr );
 
-        void _collectTerrainGenResources( tysocterrain::TTerrainGenerator* terrainGenPtr );
-        void _cacheTerrainGeometry( tysocterrain::TTerrainPrimitive* terrainGeomPtr );
+        void _collectTerrainGenResources( tysoc::terrain::TITerrainGenerator* terrainGenPtr );
+        void _cacheTerrainGeometry( tysoc::terrain::TTerrainPrimitive* terrainGeomPtr );
 
-        void _updateAgentWrapper( TVizAgentMeshWrapper* agentWrapperPtr );
+        void _updateVizKinTree( tysoc::viz::TVizKinTree* vizKinTreePtr );
         void _updateTerrainWrapper( TVizTerrainMeshWrapper* terrainWrapperPtr );
 
         void _resizeMesh( engine::LMesh* meshPtr, 
-                          tysocterrain::TTerrainPrimitive* terrainGeomPtr );
+                          tysoc::terrain::TTerrainPrimitive* terrainGeomPtr );
 
         void _setColor( engine::LMesh* meshPtr, float* color );
 
-        void _updateSensor( tysocsensor::TSensor* sensorPtr );
+        void _updateSensor( tysoc::sensor::TISensor* sensorPtr );
+
+        // UI functionality
+        tysoc::ui::TVizUiContext m_uiContext;
+        void _renderUI();
 
         public :
 
@@ -64,4 +73,4 @@ namespace tysocViz
         bool isActive();
     };
 
-}
+}}

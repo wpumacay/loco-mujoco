@@ -5,6 +5,7 @@
 #include <mujoco.h>
 
 // extra helper functionality
+#include <tysoc_common.h>
 #include <mjcf/mjcf_api.h>
 #include <mjcint/mjcint_api.h>
 
@@ -19,9 +20,9 @@
     #define TYSOCMJC_RESOURCES_PATH "../res"
 #endif
 
-namespace tysocMjc
-{
+namespace tysoc {
+namespace mujoco {
 
     // @TODO: Here there be dragons
 
-}
+}}

@@ -134,16 +134,16 @@ int main() /* @ADD: removed main params */
     auto _root = mjcf::loadGenericModel( &_schema, _modelPath );;
     
     // Create the terrain handler
-    tysocterrain::TScenarioConnectedPath* _scenario         = NULL;
-    tysocterrain::TGeneratorInfo* _scenarioContext        = NULL;
+    tysoc::terrain::TScenarioConnectedPath* _scenario         = NULL;
+    tysoc::terrain::TGeneratorInfo* _scenarioContext        = NULL;
     mjterrain::TerrainConnectedPathHandler* _terrainHandler = NULL;
 
     {
-        auto _sineProfileGenerator = new tysocterrain::TSineProfileGenerator( 2.0f, 10.0f, 1.57f );
-        _scenario = new tysocterrain::TScenarioConnectedPath( _sineProfileGenerator,
+        auto _sineProfileGenerator = new tysoc::terrain::TSineProfileGenerator( 2.0f, 10.0f, 1.57f );
+        _scenario = new tysoc::terrain::TScenarioConnectedPath( _sineProfileGenerator,
                                                               0.5f, 3.0f, 0.01f );
 
-        _scenarioContext = new tysocterrain::TGeneratorInfo();
+        _scenarioContext = new tysoc::terrain::TGeneratorInfo();
         _scenarioContext->trackingpoint = { 0.0f, 0.0f, 0.0f };
         _scenarioContext->time = 0.0f;
         _scenarioContext->deltatime = 0.0f;

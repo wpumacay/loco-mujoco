@@ -21,6 +21,8 @@ include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/include/" )
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/ext/cat1/include" )
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/ext/mjCpp/include" )
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/ext/tysocTerrain/include" )
+include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/ext/imgui" )
+include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/ext/imgui/examples" )
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/tysocViz/include" )
 
 # mujoco dependencies

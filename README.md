@@ -23,3 +23,7 @@ The abstract functionality should include these :
 I'm currently working on this library and will be on heavy development for the next 8 months. The features will be updated in the corresponding dependency repos, and updated here as well. The updates will be documented in the [UPDATES.md](https://github.com/wpumacay/tysocMjc/blob/master/doc/UPDATES.md) file.
 
 I will be adding more documentation as I develop the library, and sorry in advance as I might forget to update the docs from time to time. However, one main objective is to write comprehensive documentation, and I will be doing it on the go. If you have any suggestions/issues, just post an issue or contact me at wpumacay@gmail.com .
+
+## Roadmap
+
+The current roadmap and features being in my todolist can be found in [this](https://trello.com/b/pLkqprwU) trello board.

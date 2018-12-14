@@ -1,5 +1,13 @@
 # tysocMjc :A C++ wrapper for mujoco, and some other stuff
 
+![intro-1](_imgs/gif_tysocMjc_progress_1_1.gif) ![intro-2](_imgs/gif_tysocMjc_progress_1_2.gif) ![intro-3](_imgs/gif_tysocMjc_progress_1_3.gif)
+
+![intro-3](_imgs/img_tysocmjc_terrains.png)
+
+![intro-4](_imgs/img_tysocmjc_sensors.png)
+
+![intro-5](_imgs/img_tysocmjc_agents.png)
+
 ## Objective
 
 The main goal of this library is to serve as a framework for DeepRL research in locomotion. It's inspired in [dm_control](https://github.com/deepmind/dm_control), but I try to follow a different approach. This library is a concretion of an abstract framework for DeepRL, in the sense that most of the functionality is written in engine-agnostic dependencies (added in dev as submodules), and then making the necessary adapters to make it work with the specific physics engines (not porting everything again for every engine to be used). This is one specific concretion for the mujoco engine. I'm making the same for bullet and dart.

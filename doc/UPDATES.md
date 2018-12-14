@@ -73,3 +73,19 @@
 ![terrain-progress-14](../_imgs/gif_terrain_progress_14.gif)
 
 ![terrain-progress-15](../_imgs/gif_terrain_progress_15.gif)
+
+## 13, dic, 2018
+
+* Made various changes after poster presentation :
+
+    1. Implemented Kinematic tree agents
+    2. Modified agent API
+    3. Added small UI
+    4. Fixed sensors for new agent API
+    5. Refactored a bit
+
+![tysoc-mjc-progress-1](../_imgs/gif_tysocMjc_progress_1_1.gif)
+
+![tysoc-mjc-progress-2](../_imgs/gif_tysocMjc_progress_1_2.gif)
+
+![tysoc-mjc-progress-3](../_imgs/gif_tysocMjc_progress_1_3.gif)

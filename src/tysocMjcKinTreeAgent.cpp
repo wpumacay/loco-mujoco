@@ -174,20 +174,61 @@ namespace mujoco {
         auto _targetSensorsElmPtr = new mjcf::GenericElement( "sensor" );
         // and add it to te root target model
         root->children.push_back( _targetSensorsElmPtr );
-        // now, create the sensors and add them to both target and src
+        // now, create the mjcf sensor entries and add them to both target and src
         // @CHECK: Same as above, perhaps should pass a fresh new copy
-        auto _kinJoints = m_kinTreeAgentPtr->getKinTreeJoints();
-        for ( size_t i = 0; i < _kinJoints.size(); i++ )
+        auto _kinSensors = m_kinTreeAgentPtr->getKinTreeSensors();
+        for ( size_t i = 0; i < _kinSensors.size(); i++ )
         {
-            auto _jointMjcSensorResource = new mjcf::GenericElement( "jointpos" );
-            // set the necessary properties
-            _jointMjcSensorResource->setAttributeString( "name", std::string( "mjc_sensor_" ) + 
-                                                                 m_kinTreeAgentPtr->name() + 
-                                                                 std::string( "_j_" ) +
-                                                                 std::to_string( i ) );
-            _jointMjcSensorResource->setAttributeString( "joint", _kinJoints[i]->name );
-            // add this to the sensor element
-            _srcSensorsElmPtr->children.push_back( _jointMjcSensorResource );
+            if ( _kinSensors[i]->type == "joint" )
+            {
+                // cast to the sensor type
+                auto _kinJointSensor = reinterpret_cast< agent::TKinTreeJointSensor* >( _kinSensors[i] );
+                // grab the jointsensor name
+                auto _sensorName = _kinJointSensor->name;
+                // and the target joint name
+                auto _targetJointName = _kinJointSensor->jointName;
+
+                // create a jointpos sensor and a jointvel sensor
+                auto _jointPosMjcSensorResource = new mjcf::GenericElement( "jointpos" );
+                auto _jointVelMjcSensorResource = new mjcf::GenericElement( "jointvel" );
+
+                // set the necessary properties
+                _jointPosMjcSensorResource->setAttributeString( "name", std::string( "mjcsensor_jointpos" ) + _sensorName );
+                _jointPosMjcSensorResource->setAttributeString( "joint", _targetJointName );
+
+                _jointVelMjcSensorResource->setAttributeString( "name", std::string( "mjcsensor_jointvel" ) + _sensorName );
+                _jointVelMjcSensorResource->setAttributeString( "joint", _targetJointName );
+
+                // add these to the sensor element
+                _srcSensorsElmPtr->children.push_back( _jointPosMjcSensorResource );
+                _srcSensorsElmPtr->children.push_back( _jointVelMjcSensorResource );
+            }
+            else if ( _kinSensors[i]->type == "body" )
+            {
+                // cast to the sensor type
+                auto _kinBodySensor = reinterpret_cast< agent::TKinTreeBodySensor* >( _kinSensors[i] );
+                // grab the jointsensor name
+                auto _sensorName = _kinBodySensor->name;
+                // and target body name
+                auto _targetBodyName = _kinBodySensor->bodyName;
+
+                // create a framelinvel sensor and a framelinacc sensor
+                auto _bodyLinVelMjcSensorResource = new mjcf::GenericElement( "framelinvel" );
+                auto _bodyLinAccMjcSensorResource = new mjcf::GenericElement( "framelinacc" );
+
+                // set the necessary properties
+                _bodyLinVelMjcSensorResource->setAttributeString( "name", std::string( "mjcsensor_framelinvel" ) + _sensorName );
+                _bodyLinVelMjcSensorResource->setAttributeString( "objtype", "body" );
+                _bodyLinVelMjcSensorResource->setAttributeString( "objname", _targetBodyName );
+
+                _bodyLinAccMjcSensorResource->setAttributeString( "name", std::string( "mjcsensor_framelinacc" ) + _sensorName );
+                _bodyLinAccMjcSensorResource->setAttributeString( "objtype", "body" );
+                _bodyLinAccMjcSensorResource->setAttributeString( "objname", _targetBodyName );                
+
+                // add these to the sensor element
+                _srcSensorsElmPtr->children.push_back( _bodyLinVelMjcSensorResource );
+                _srcSensorsElmPtr->children.push_back( _bodyLinAccMjcSensorResource );
+            }
         }
 
         // finally, copy all sensor elements from src to target element
@@ -272,6 +313,53 @@ namespace mujoco {
             _kinBodies[i]->worldTransform.setRotation( _rotation );
         }
 
+        // collect sensor readings
+        auto _kinSensors = m_kinTreeAgentPtr->getKinTreeSensors();
+        for ( size_t i = 0; i < _kinSensors.size(); i++ )
+        {
+            if ( _kinSensors[i]->type == "joint" )
+            {
+                auto _kinJointSensor = reinterpret_cast< agent::TKinTreeJointSensor* >( _kinSensors[i] );
+
+                std::vector< float > _readings;
+                // grab the reading from the jointpos sensor
+                mjcint::getJointSensorReading( m_mjcModelPtr,
+                                               m_mjcDataPtr,
+                                               std::string( "mjcsensor_jointpos" ) + _kinJointSensor->name,
+                                               _readings );
+                // and also the reading from the jointvel sensor
+                mjcint::getJointSensorReading( m_mjcModelPtr,
+                                               m_mjcDataPtr,
+                                               std::string( "mjcsensor_jointvel" ) + _kinJointSensor->name,
+                                               _readings );
+                // and store it into the sensor for later usage
+                _kinJointSensor->theta       = _readings[0];
+                _kinJointSensor->thetadot    = _readings[1];
+
+                // std::cout << "theta: " << _readings[0] << std::endl;
+                // std::cout << "thetadot: " << _readings[1] << std::endl;
+            }
+            else if ( _kinSensors[i]->type == "body" )
+            {
+                auto _kinBodySensor = reinterpret_cast< agent::TKinTreeBodySensor* >( _kinSensors[i] );
+
+                std::vector< float > _readings;
+                // grab the reading from the franelinvec sensor
+                mjcint::getJointSensorReading( m_mjcModelPtr,
+                                               m_mjcDataPtr,
+                                               std::string( "mjcsensor_framelinvel" ) + _kinBodySensor->name,
+                                               _readings );
+                // and also the reading from the framelinacc sensor
+                mjcint::getJointSensorReading( m_mjcModelPtr,
+                                               m_mjcDataPtr,
+                                               std::string( "mjcsensor_framelinacc" ) + _kinBodySensor->name,
+                                               _readings );
+                // and store it into the sensor for later usage
+                _kinBodySensor->linVelocity     = { _readings[0], _readings[1], _readings[2] };
+                _kinBodySensor->linAcceleration = { _readings[3], _readings[4], _readings[5] };
+            }
+        }
+
         // and then request an update of the kintree
         m_kinTreeAgentPtr->update( 0 );
 
@@ -294,5 +382,7 @@ namespace mujoco {
             _kinVisuals[i]->material.specular.z = _color[2];
         }
     }
+
+
 
 }}

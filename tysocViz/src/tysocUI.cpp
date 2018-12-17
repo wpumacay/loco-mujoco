@@ -109,6 +109,30 @@ namespace ui{
             _actions.push_back( _val );
         }
 
+        auto _sensors = _currentKinTreeAgent->getKinTreeSensors();
+
+        for ( size_t i = 0; i < _sensors.size(); i++ )
+        {
+            if ( _sensors[i]->type == "joint" )
+            {
+                // auto _kinJointSensor = reinterpret_cast< agent::TKinTreeJointSensor* >( _sensors[i] );
+                // ImGui::Text( "theta%d: %.3f", (int)i, _kinJointSensor->theta );
+                // ImGui::Text( "thetadot%d: %.3f", (int)i, _kinJointSensor->thetadot );
+            }
+            else if ( _sensors[i]->type == "body" )
+            {
+                auto _kinBodySensor = reinterpret_cast< agent::TKinTreeBodySensor* >( _sensors[i] );
+                ImGui::Text( "linvel%d: %.3f, %.3f, %.3f", (int)i, 
+                             _kinBodySensor->linVelocity.x, 
+                             _kinBodySensor->linVelocity.y, 
+                             _kinBodySensor->linVelocity.z );
+                ImGui::Text( "linacc%d: %.3f, %.3f, %.3f", (int)i,  
+                             _kinBodySensor->linAcceleration.x, 
+                             _kinBodySensor->linAcceleration.y, 
+                             _kinBodySensor->linAcceleration.z );
+            }
+        }
+
         _currentKinTreeAgent->setActions( _actions );
     }
 

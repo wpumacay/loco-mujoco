@@ -10,7 +10,10 @@
 
 ## Objective
 
-The main goal of this library is to serve as a framework for DeepRL research in locomotion. It's inspired in [dm_control](https://github.com/deepmind/dm_control), but I try to follow a different approach. This library is a concretion of an abstract framework for DeepRL, in the sense that most of the functionality is written in engine-agnostic dependencies (added in dev as submodules), and then making the necessary adapters to make it work with the specific physics engines (not porting everything again for every engine to be used). This is one specific concretion for the mujoco engine. I'm making the same for bullet and dart.
+The main goal of this library is to serve as a framework for DeepRL research in locomotion. It's inspired in [dm_control](https://github.com/deepmind/dm_control), 
+but I try to follow a different approach. This library is a concretion of an abstract framework for DeepRL, in the sense that most of the functionality is written 
+in engine-agnostic dependencies (added in dev as submodules), and then making the necessary adapters to make it work with the specific physics engines (not porting 
+everything again for every engine to be used). This is one specific concretion for the mujoco engine. I'm making the same for bullet and dart.
 
 The abstract functionality should include these :
 

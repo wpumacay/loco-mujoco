@@ -7,3 +7,6 @@
 [submodule "ext/imgui"]
 	path = ext/imgui
 	url = https://github.com/wpumacay/imgui.git
+[submodule "ext/tysocCore"]
+	path = ext/tysocCore
+	url = git@github.com:wpumacay/tysocCore.git

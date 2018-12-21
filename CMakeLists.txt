@@ -21,7 +21,7 @@ file( GLOB_RECURSE TYSOCMJC_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" )
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/include/" )
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/ext/cat1/include" )
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/ext/mjCpp/include" )
-include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/ext/tysocTerrain/include" )
+include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/ext/tysocCore/include" )
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/ext/imgui" )
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/ext/imgui/examples" )
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/tysocCustomViz/include" )
@@ -63,7 +63,7 @@ target_link_libraries( tysocMjcCustomViz
                        tysocCustomViz # this uses the custom visualizer
                        mjcppnogl
                        mjcpp
-                       tysoc )
+                       tysocCore )
 
 # @TEST: Testing tysocMjc with the mujoco visualizer (try to force first mix of gl and nongl mujoco)
 add_library( tysocMjcMujocoViz
@@ -72,7 +72,7 @@ target_link_libraries( tysocMjcMujocoViz
                        tysocMujocoViz # this uses the mujoco visualizer
                        mjcppnogl
                        mjcpp
-                       tysoc )
+                       tysocCore )
 
 # ****************************************************************************
 

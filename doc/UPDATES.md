@@ -19,7 +19,7 @@
 
 ![terrain-progress-2](../_imgs/gif_terrain_progress_2.gif)
 
-* Implemented base abstract terrain generation. (ext/tysocterrain)
+* Implemented base abstract terrain generation. (ext/tysocCore)
 
     1. implemented basic structure of the abstract terrain generation library
     2. implemented sections-type terraing generation

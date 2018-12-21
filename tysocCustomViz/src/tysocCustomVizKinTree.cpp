@@ -1,5 +1,5 @@
 
-#include <tysocVizKinTree.h>
+#include <tysocCustomVizKinTree.h>
 
 #ifndef TYSOCMJC_RESOURCES_PATH
     #define TYSOCMJC_RESOURCES_PATH "../../res/xml"
@@ -12,7 +12,7 @@ namespace viz{
     // @TODO: Change some of the visuals for actuators, sensors, etc. ...
     //        for special gizmos that give better feedback than primitives
 
-    TVizKinTree::TVizKinTree( agent::TAgentKinTree* agentKinTreePtr,
+    TCustomVizKinTree::TCustomVizKinTree( agent::TAgentKinTree* agentKinTreePtr,
                               engine::LScene* scenePtr )
     {
         m_scenePtr          = scenePtr;
@@ -21,7 +21,7 @@ namespace viz{
         _collectFromKinTree();
     }
 
-    TVizKinTree::~TVizKinTree()
+    TCustomVizKinTree::~TCustomVizKinTree()
     {
         m_scenePtr          = NULL;
         m_agentKinTreePtr   = NULL;
@@ -69,7 +69,7 @@ namespace viz{
         m_vizCollisions.clear();
     }
 
-    void TVizKinTree::_collectFromKinTree()
+    void TCustomVizKinTree::_collectFromKinTree()
     {
         if ( !m_agentKinTreePtr )
         {
@@ -89,13 +89,13 @@ namespace viz{
     }
 
 
-    void TVizKinTree::_collectKinBodies()
+    void TCustomVizKinTree::_collectKinBodies()
     {
         auto _bodies = m_agentKinTreePtr->getKinTreeBodies();
 
         for ( size_t i = 0; i < _bodies.size(); i++ )
         {
-            TVizKinBody _vizBody;
+            TCustomVizKinBody _vizBody;
             // wrap the kinBody object
             _vizBody.bodyPtr = _bodies[i];
             // and create the appropiate mesh
@@ -115,13 +115,13 @@ namespace viz{
         }
     }
 
-    void TVizKinTree::_collectKinJoints()
+    void TCustomVizKinTree::_collectKinJoints()
     {
         auto _joints = m_agentKinTreePtr->getKinTreeJoints();
 
         for ( size_t i = 0; i < _joints.size(); i++ )
         {
-            TVizKinJoint _vizJoint;
+            TCustomVizKinJoint _vizJoint;
             // wrap the kinJoint object
             _vizJoint.jointPtr = _joints[i];
             // and create the appropiate mesh
@@ -141,13 +141,13 @@ namespace viz{
         }
     }
 
-    void TVizKinTree::_collectKinActuators()
+    void TCustomVizKinTree::_collectKinActuators()
     {
         auto _actuators = m_agentKinTreePtr->getKinTreeActuators();
 
         for ( size_t i = 0; i < _actuators.size(); i++ )
         {
-            TVizKinActuator _vizActuator;
+            TCustomVizKinActuator _vizActuator;
             // wrap the kinActuator object
             _vizActuator.actuatorPtr = _actuators[i];
             // and create the appropiate mesh
@@ -167,13 +167,13 @@ namespace viz{
         }
     }
 
-    void TVizKinTree::_collectKinSensors()
+    void TCustomVizKinTree::_collectKinSensors()
     {
         auto _sensors = m_agentKinTreePtr->getKinTreeSensors();
 
         for ( size_t i = 0; i < _sensors.size(); i++ )
         {
-            TVizKinSensor _vizSensor;
+            TCustomVizKinSensor _vizSensor;
             // wrap the kinSensor object
             _vizSensor.sensorPtr = _sensors[i];
             // and create the appropiate mesh
@@ -193,13 +193,13 @@ namespace viz{
         }
     }
 
-    void TVizKinTree::_collectKinVisuals()
+    void TCustomVizKinTree::_collectKinVisuals()
     {
         auto _visuals = m_agentKinTreePtr->getKinTreeVisuals();
 
         for ( size_t i = 0; i < _visuals.size(); i++ )
         {
-            TVizKinVisual _vizVisual;
+            TCustomVizKinVisual _vizVisual;
             // wrap the kinVisual object
             _vizVisual.visualPtr = _visuals[i];
             // and create the appropiate mesh
@@ -222,13 +222,13 @@ namespace viz{
         }
     }
 
-    void TVizKinTree::_collectKinCollisions()
+    void TCustomVizKinTree::_collectKinCollisions()
     {
         auto _collisions = m_agentKinTreePtr->getKinTreeCollisions();
 
         for ( size_t i = 0; i < _collisions.size(); i++ )
         {
-            TVizKinCollision _vizCollision;
+            TCustomVizKinCollision _vizCollision;
             // wrap the kinCollision object
             _vizCollision.collisionPtr = _collisions[i];
             // and create the appropiate mesh
@@ -254,7 +254,7 @@ namespace viz{
     }
 
 
-    engine::LIRenderable* TVizKinTree::_createMesh( const std::string& type,
+    engine::LIRenderable* TCustomVizKinTree::_createMesh( const std::string& type,
                                                     const TVec3& size,
                                                     const TVec3& cAmbient,
                                                     const TVec3& cDiffuse,
@@ -286,7 +286,7 @@ namespace viz{
             auto _meshFilePath = std::string( TYSOCMJC_RESOURCES_PATH ) + std::string( "xml/" ) + filename;
             _renderable = engine::LMeshBuilder::createModelFromFile( _meshFilePath,
                                                                      "" );
-            std::cout << "mesh created: " << filename << std::endl;
+            // std::cout << "mesh created: " << filename << std::endl;
         }
 
         if ( _renderable )
@@ -309,7 +309,7 @@ namespace viz{
         return _renderable;
     }
 
-    void TVizKinTree::update()
+    void TCustomVizKinTree::update()
     {
         // update draw state
         for ( size_t i = 0; i < m_vizVisuals.size(); i++ )
@@ -372,7 +372,7 @@ namespace viz{
         }
     }
 
-    void TVizKinTree::_updateBody( TVizKinBody& kinBody )
+    void TCustomVizKinTree::_updateBody( TCustomVizKinBody& kinBody )
     {
         // extract body world transform
         TMat4 _worldTransform = kinBody.bodyPtr->worldTransform;
@@ -391,7 +391,7 @@ namespace viz{
         kinBody.axesPtr->rotation   = _rotation;
     }
 
-    void TVizKinTree::_updateJoint( TVizKinJoint& kinJoint )
+    void TCustomVizKinTree::_updateJoint( TCustomVizKinJoint& kinJoint )
     {
         // extract joint world transform
         TMat4 _worldTransform = kinJoint.jointPtr->worldTransform;
@@ -410,7 +410,7 @@ namespace viz{
         kinJoint.axesPtr->rotation   = _rotation;
     }
 
-    void TVizKinTree::_updateSensor( TVizKinSensor& kinSensor )
+    void TCustomVizKinTree::_updateSensor( TCustomVizKinSensor& kinSensor )
     {
         // extract sensor world transform
         TMat4 _worldTransform = kinSensor.sensorPtr->worldTransform;
@@ -429,7 +429,7 @@ namespace viz{
         kinSensor.axesPtr->rotation   = _rotation;
     }
 
-    void TVizKinTree::_updateVisual( TVizKinVisual& kinVisual )
+    void TCustomVizKinTree::_updateVisual( TCustomVizKinVisual& kinVisual )
     {
         // extract visual world transform
         TMat4 _worldTransform = kinVisual.visualPtr->geometry.worldTransform;
@@ -482,7 +482,7 @@ namespace viz{
         }
     }
 
-    void TVizKinTree::_updateActuator( TVizKinActuator& kinActuator )
+    void TCustomVizKinTree::_updateActuator( TCustomVizKinActuator& kinActuator )
     {
         // extract actuator world transform
         TMat4 _worldTransform = kinActuator.actuatorPtr->worldTransform;
@@ -501,7 +501,7 @@ namespace viz{
         kinActuator.axesPtr->rotation   = _rotation;
     }
 
-    void TVizKinTree::_updateCollision( TVizKinCollision& kinCollision )
+    void TCustomVizKinTree::_updateCollision( TCustomVizKinCollision& kinCollision )
     {
         // extract collision world transform
         TMat4 _worldTransform = kinCollision.collisionPtr->geometry.worldTransform;
@@ -520,7 +520,7 @@ namespace viz{
         kinCollision.axesPtr->rotation   = _rotation;
     }
 
-    agent::TAgentKinTree* TVizKinTree::getKinTreePtr()
+    agent::TAgentKinTree* TCustomVizKinTree::getKinTreePtr()
     {
         return m_agentKinTreePtr;
     }

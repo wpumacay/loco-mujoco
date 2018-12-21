@@ -14,6 +14,8 @@ namespace mujoco {
         m_mjcScenePtr   = NULL;
         m_mjcCameraPtr  = NULL;
         m_mjcOptionPtr  = NULL;
+
+        m_apiType = API_TYPE_MUJOCO;
     }
 
 

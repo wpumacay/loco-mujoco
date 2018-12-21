@@ -1,24 +1,24 @@
 cmake_minimum_required( VERSION 3.0.0 )
 
-project( tysocViz )
+project( tysocMujocoViz )
 
 set( CMAKE_CXX_STANDARD 11 )
 set( CMAKE_CXX_FLAGS "-g ${CMAKE_CXX_FLAGS}" )
 
-file( GLOB_RECURSE TYSOC_VIZ_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" )
+include_directories( "~/.mujoco/mujoco200_linux/include" )
+link_directories( "~/.mujoco/mujoco200_linux/bin" )
+
+file( GLOB_RECURSE TYSOC_MUJOCO_VIZ_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" )
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/include" )
-include_directories( "${CMAKE_SOURCE_DIR}/ext/cat1/include" )
 include_directories( "${CMAKE_SOURCE_DIR}/ext/mjCpp/include" )
 include_directories( "${CMAKE_SOURCE_DIR}/ext/tysocTerrain/include" )
 include_directories( "${CMAKE_SOURCE_DIR}/ext/imgui/include" )
 include_directories( "${CMAKE_SOURCE_DIR}/ext/imgui" )
 include_directories( "${CMAKE_SOURCE_DIR}/ext/imgui/examples" )
 
-## message( "IMGUI_INCLUDE_DIRS: ${IMGUI_INCLUDE_DIRS}" )
-
-add_library( tysocViz
-             ${TYSOC_VIZ_SOURCES} )
-target_link_libraries( tysocViz
-                       cat1
+add_library( tysocMujocoViz
+             ${TYSOC_MUJOCO_VIZ_SOURCES} )
+target_link_libraries( tysocMujocoViz
                        tysoc
-                       imgui )
+                       imgui_gl2
+                       mujoco200 )

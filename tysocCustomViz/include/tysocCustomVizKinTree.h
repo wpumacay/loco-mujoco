@@ -10,7 +10,7 @@
 
 #include <agent/types/agent_kintree.h>
 
-#include <tysocVizCommon.h>
+#include <tysocCustomVizCommon.h>
 
 #define VIZKINTREE_AXES_DEFAULT_SIZE 0.1f
 #define VIZKINTREE_COLLISION_DEFAULT_MARGIN 0.01f
@@ -37,49 +37,49 @@
 namespace tysoc {
 namespace viz {
 
-    struct TVizKinCollision
+    struct TCustomVizKinCollision
     {
         engine::LModel*             axesPtr;
         engine::LIRenderable*       meshPtr;
         agent::TKinTreeCollision*   collisionPtr;
     };
 
-    struct TVizKinVisual
+    struct TCustomVizKinVisual
     {
         engine::LModel*         axesPtr;
         engine::LIRenderable*   meshPtr;
         agent::TKinTreeVisual*  visualPtr;
     };
 
-    struct TVizKinSensor
+    struct TCustomVizKinSensor
     {
         engine::LModel*         axesPtr;
         engine::LIRenderable*   meshPtr;
         agent::TKinTreeSensor*  sensorPtr;
     };
 
-    struct TVizKinActuator
+    struct TCustomVizKinActuator
     {
         engine::LModel*             axesPtr;
         engine::LIRenderable*       meshPtr;
         agent::TKinTreeActuator*    actuatorPtr;
     };
 
-    struct TVizKinJoint
+    struct TCustomVizKinJoint
     {
         engine::LModel*         axesPtr;
         engine::LIRenderable*   meshPtr;
         agent::TKinTreeJoint*   jointPtr;
     };
 
-    struct TVizKinBody
+    struct TCustomVizKinBody
     {
         engine::LModel*         axesPtr;
         engine::LIRenderable*   meshPtr;
         agent::TKinTreeBody*    bodyPtr;
     };
 
-    struct TVizDrawState
+    struct TCustomVizDrawState
     {
         bool drawAsWireframe;
         bool drawFrameAxes;
@@ -90,7 +90,7 @@ namespace viz {
         bool showSensors;
         bool showActuators;
 
-        TVizDrawState()
+        TCustomVizDrawState()
         {
             drawAsWireframe     = false;
             drawFrameAxes       = false;
@@ -110,7 +110,7 @@ namespace viz {
     * properties using the wrapped kintree (which should be ...
     * updated by the underlying physics backend.)
     */
-    class TVizKinTree
+    class TCustomVizKinTree
     {
 
         private :
@@ -118,19 +118,19 @@ namespace viz {
         engine::LScene*         m_scenePtr;
         agent::TAgentKinTree*   m_agentKinTreePtr;
 
-        std::vector< TVizKinBody >         m_vizBodies;
-        std::vector< TVizKinJoint >        m_vizJoints;
-        std::vector< TVizKinSensor >       m_vizSensors;
-        std::vector< TVizKinVisual >       m_vizVisuals;
-        std::vector< TVizKinActuator >     m_vizActuators;
-        std::vector< TVizKinCollision >    m_vizCollisions;
+        std::vector< TCustomVizKinBody >         m_vizBodies;
+        std::vector< TCustomVizKinJoint >        m_vizJoints;
+        std::vector< TCustomVizKinSensor >       m_vizSensors;
+        std::vector< TCustomVizKinVisual >       m_vizVisuals;
+        std::vector< TCustomVizKinActuator >     m_vizActuators;
+        std::vector< TCustomVizKinCollision >    m_vizCollisions;
 
-        void _updateBody( TVizKinBody& kinBody );
-        void _updateJoint( TVizKinJoint& kinJoint );
-        void _updateSensor( TVizKinSensor& kinSensor );
-        void _updateVisual( TVizKinVisual& kinVisual );
-        void _updateActuator( TVizKinActuator& kinActuator );
-        void _updateCollision( TVizKinCollision& kinCollision );
+        void _updateBody( TCustomVizKinBody& kinBody );
+        void _updateJoint( TCustomVizKinJoint& kinJoint );
+        void _updateSensor( TCustomVizKinSensor& kinSensor );
+        void _updateVisual( TCustomVizKinVisual& kinVisual );
+        void _updateActuator( TCustomVizKinActuator& kinActuator );
+        void _updateCollision( TCustomVizKinCollision& kinCollision );
 
         void _collectFromKinTree();
         void _collectKinBodies();
@@ -149,11 +149,11 @@ namespace viz {
 
         public :
 
-        TVizKinTree( agent::TAgentKinTree* agentKinTreePtr,
+        TCustomVizKinTree( agent::TAgentKinTree* agentKinTreePtr,
                      engine::LScene* scenePtr );
-        ~TVizKinTree();
+        ~TCustomVizKinTree();
 
-        TVizDrawState drawState;
+        TCustomVizDrawState drawState;
 
         void update();
         agent::TAgentKinTree* getKinTreePtr();

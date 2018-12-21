@@ -40,77 +40,7 @@ int main( int argc, const char** argv )
     //     _terrainParams.set( "perlinProfileLacunarity", 2.0f );
     //     _terrainParams.set( "perlinProfileNoiseScale", 10.0f );
     // }
-    // // sections - path - sine profile
-    // {
-    //     _terrainParams.set( "sectionType", "path" );
-    //     _terrainParams.set( "sectionDepth", SECTION_DEPTH );
-    //     _terrainParams.set( "pathProfile", "sine" );
-    //     _terrainParams.set( "sineProfileAmplitude", 1.0f );
-    //     _terrainParams.set( "sineProfilePeriod", 10.0f );
-    //     _terrainParams.set( "sineProfilePhase", 1.57f );
-    // }
-    // sections - blocky
     {
-        // _terrainParams.set( "sectionType", "blocky" );
-        // _terrainParams.set( "sectionDepth", SECTION_DEPTH );
-        // _terrainParams.set( "sectionLength", 250.0f );
-        // _terrainParams.set( "sectionUsesBase", 1 );
-        // _terrainParams.set( "sectionUsesSides", 1 );
-        // _terrainParams.set( "sectionBlockyBaseHeight", 0.5f );
-        // _terrainParams.set( "sectionBlockyBaseWidth", 0.25f );
-        // _terrainParams.set( "sectionBlockyBaseSpacingX", 4.0f );
-        // _terrainParams.set( "sectionBlockyBaseOffsetZ", 0.0f );
-        // _terrainParams.set( "sectionBlockyPercentDepthMin", 0.25f );//1.0f
-        // _terrainParams.set( "sectionBlockyPercentDepthMax", 0.75f );//1.0f
-        // _terrainParams.set( "sectionBlockyPercentHeightMin", 0.75f );
-        // _terrainParams.set( "sectionBlockyPercentHeightMax", 1.25f );
-        // _terrainParams.set( "sectionBlockyPercentWidthMin", 0.5f );
-        // _terrainParams.set( "sectionBlockyPercentWidthMax", 2.0f );
-        // _terrainParams.set( "sectionBlockyPercentSpacingXMin", 0.9f );
-        // _terrainParams.set( "sectionBlockyPercentSpacingXMax", 1.1f );
-        // _terrainParams.set( "sectionBlockyPercentOffsetZMin", 1.0f );
-        // _terrainParams.set( "sectionBlockyPercentOffsetZMax", 1.0f );
-
-        // _terrainParams.set( "sectionType", "blocky" );
-        // _terrainParams.set( "sectionDepth", SECTION_DEPTH );
-        // _terrainParams.set( "sectionLength", 250.0f );
-        // _terrainParams.set( "sectionUsesBase", 1 );
-        // _terrainParams.set( "sectionUsesSides", 0 );
-        // _terrainParams.set( "sectionBlockyBaseHeight", 0.5f );
-        // _terrainParams.set( "sectionBlockyBaseWidth", 0.25f );
-        // _terrainParams.set( "sectionBlockyBaseSpacingX", 4.0f );
-        // _terrainParams.set( "sectionBlockyBaseOffsetZ", 0.0f );
-        // _terrainParams.set( "sectionBlockyPercentDepthMin", 1.0f );
-        // _terrainParams.set( "sectionBlockyPercentDepthMax", 1.0f );
-        // _terrainParams.set( "sectionBlockyPercentHeightMin", 0.75f );
-        // _terrainParams.set( "sectionBlockyPercentHeightMax", 1.25f );
-        // _terrainParams.set( "sectionBlockyPercentWidthMin", 0.5f );
-        // _terrainParams.set( "sectionBlockyPercentWidthMax", 2.0f );
-        // _terrainParams.set( "sectionBlockyPercentSpacingXMin", 0.9f );
-        // _terrainParams.set( "sectionBlockyPercentSpacingXMax", 1.1f );
-        // _terrainParams.set( "sectionBlockyPercentOffsetZMin", 1.0f );
-        // _terrainParams.set( "sectionBlockyPercentOffsetZMax", 1.0f );
-
-        // _terrainParams.set( "sectionType", "blocky" );
-        // _terrainParams.set( "sectionDepth", SECTION_DEPTH );
-        // _terrainParams.set( "sectionLength", 250.0f );
-        // _terrainParams.set( "sectionUsesBase", 0 );
-        // _terrainParams.set( "sectionUsesSides", 0 );
-        // _terrainParams.set( "sectionBlockyBaseHeight", 0.1f );
-        // _terrainParams.set( "sectionBlockyBaseWidth", 1.0f );
-        // _terrainParams.set( "sectionBlockyBaseSpacingX", 2.5f );
-        // _terrainParams.set( "sectionBlockyBaseOffsetZ", 0.0f );
-        // _terrainParams.set( "sectionBlockyPercentDepthMin", 1.0f );
-        // _terrainParams.set( "sectionBlockyPercentDepthMax", 1.0f );
-        // _terrainParams.set( "sectionBlockyPercentHeightMin", 1.0f );
-        // _terrainParams.set( "sectionBlockyPercentHeightMax", 1.0f );
-        // _terrainParams.set( "sectionBlockyPercentWidthMin", 0.75f );
-        // _terrainParams.set( "sectionBlockyPercentWidthMax", 1.25f );
-        // _terrainParams.set( "sectionBlockyPercentSpacingXMin", 0.75f );
-        // _terrainParams.set( "sectionBlockyPercentSpacingXMax", 1.25f );
-        // _terrainParams.set( "sectionBlockyPercentOffsetZMin", 1.0f );
-        // _terrainParams.set( "sectionBlockyPercentOffsetZMax", 1.0f );
-
         _terrainParams.set( "sectionType", "blocky" );
         _terrainParams.set( "sectionDepth", SECTION_DEPTH );
         _terrainParams.set( "sectionLength", 250.0f );

@@ -8,8 +8,9 @@ add_definitions( -DTYSOCMJC_RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/res/" )
 # Configure external dependencies
 add_subdirectory( ext )
 
-# Configure visualizer // @TODO: Should move this out from src to the ext directory
-add_subdirectory( tysocViz )
+# Configure visualizer // @TODO: Should move this out from src to the ext directory ?
+add_subdirectory( tysocCustomViz )
+add_subdirectory( tysocMujocoViz )
 
 # Configure tysocMjc project *************************************************
 
@@ -23,7 +24,8 @@ include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/ext/mjCpp/include" )
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/ext/tysocTerrain/include" )
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/ext/imgui" )
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/ext/imgui/examples" )
-include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/tysocViz/include" )
+include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/tysocCustomViz/include" )
+include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/tysocMujocoViz/include" )
 
 # mujoco dependencies
 include_directories( "~/.mujoco/mujoco200_linux/include" )
@@ -37,16 +39,42 @@ add_definitions( -DMUJOCO_LICENSE_FILE="${MUJOCO_LICENSE_ABSOLUTE_PATH}" )
 
 message( "TYSOCMJC_SOURCES: ${TYSOCMJC_SOURCES}" )
 
-# Configure the resulting library
-add_library( tysocMjc
-			 ${TYSOCMJC_SOURCES} )
-target_link_libraries( tysocMjc
-					   tysocViz
-					   mjcppnogl
+## @DIRTY: for testing each library, we are making use of ...
+##         compiling the whole library each time and check it works.
+##         For other purposes, we must use dynamic loading, and because the ...
+##         implementations are polymorphic and (as far as I've made them) because ...
+##         they implement a shared API, everything should work fine in *nix ...
+##         of windows systems, as long as we implement the appropiate loading ...
+##         functionality using the appropiate library loading APIs in these platforms.
+
+## @TOUGHT: this seems kind of similar to how opengl has core functionality and it's loaded ...
+##          using a loader like glew, etc, and also how some offer extensions (which could be ...
+##          similar to how mujoco could provide this in some cases, and then maybe bullet could ...
+##          catch up by providing this functionality as well be an user implementing what is needed)
+
+## @TOUGHT: there seems to be a potential issue to integrate with special full "rendering" engines like ...
+##          unreal, because it is very coupled. Perhaps we could extract a portion of the code to make ...
+##          it work the way we expect backends to be provided.
+
+# @TEST: Testing tysocMjc with the custom visualizer
+add_library( tysocMjcCustomViz
+             ${TYSOCMJC_SOURCES} )
+target_link_libraries( tysocMjcCustomViz
+                       tysocCustomViz # this uses the custom visualizer
+                       mjcppnogl
                        mjcpp
-					   tysoc )
+                       tysoc )
+
+# @TEST: Testing tysocMjc with the mujoco visualizer (try to force first mix of gl and nongl mujoco)
+add_library( tysocMjcMujocoViz
+             ${TYSOCMJC_SOURCES} )
+target_link_libraries( tysocMjcMujocoViz
+                       tysocMujocoViz # this uses the mujoco visualizer
+                       mjcppnogl
+                       mjcpp
+                       tysoc )
 
 # ****************************************************************************
 
-# Configure examples
+## # Configure examples
 add_subdirectory( examples )

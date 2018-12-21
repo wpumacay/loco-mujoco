@@ -4,9 +4,6 @@
 [submodule "ext/mjCpp"]
 	path = ext/mjCpp
 	url = git@github.com:wpumacay/mjCpp.git
-[submodule "ext/tysocTerrain"]
-	path = ext/tysocTerrain
-	url = git@github.com:wpumacay/tysocTerrain.git
 [submodule "ext/imgui"]
 	path = ext/imgui
 	url = https://github.com/wpumacay/imgui.git

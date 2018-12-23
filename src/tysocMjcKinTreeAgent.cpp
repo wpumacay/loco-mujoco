@@ -268,7 +268,7 @@ namespace mujoco {
 
         for ( size_t i = 0; i < _kinActuators.size(); i++ )
         {
-            mjcint::setActuatorCtrl( m_mjcModelPtr,
+            utils::setActuatorCtrl( m_mjcModelPtr,
                                      m_mjcDataPtr,
                                      _kinActuators[i]->name,
                                      _kinActuators[i]->ctrlValue );
@@ -281,12 +281,12 @@ namespace mujoco {
         for ( size_t i = 0; i < _kinBodies.size(); i++ )
         {
             // grab the position from the mujoco backend
-            auto _pos = mjcint::getBodyPosition( m_mjcModelPtr,
+            auto _pos = utils::getBodyPosition( m_mjcModelPtr,
                                                  m_mjcDataPtr,
                                                  _kinBodies[i]->name );
             // and the rotation as well
             float _rot[9];
-            mjcint::getBodyOrientation( m_mjcModelPtr,
+            utils::getBodyOrientation( m_mjcModelPtr,
                                         m_mjcDataPtr,
                                         _kinBodies[i]->name, _rot );
 
@@ -323,12 +323,12 @@ namespace mujoco {
 
                 std::vector< float > _readings;
                 // grab the reading from the jointpos sensor
-                mjcint::getJointSensorReading( m_mjcModelPtr,
+                utils::getJointSensorReading( m_mjcModelPtr,
                                                m_mjcDataPtr,
                                                std::string( "mjcsensor_jointpos" ) + _kinJointSensor->name,
                                                _readings );
                 // and also the reading from the jointvel sensor
-                mjcint::getJointSensorReading( m_mjcModelPtr,
+                utils::getJointSensorReading( m_mjcModelPtr,
                                                m_mjcDataPtr,
                                                std::string( "mjcsensor_jointvel" ) + _kinJointSensor->name,
                                                _readings );
@@ -345,12 +345,12 @@ namespace mujoco {
 
                 std::vector< float > _readings;
                 // grab the reading from the franelinvec sensor
-                mjcint::getJointSensorReading( m_mjcModelPtr,
+                utils::getJointSensorReading( m_mjcModelPtr,
                                                m_mjcDataPtr,
                                                std::string( "mjcsensor_framelinvel" ) + _kinBodySensor->name,
                                                _readings );
                 // and also the reading from the framelinacc sensor
-                mjcint::getJointSensorReading( m_mjcModelPtr,
+                utils::getJointSensorReading( m_mjcModelPtr,
                                                m_mjcDataPtr,
                                                std::string( "mjcsensor_framelinacc" ) + _kinBodySensor->name,
                                                _readings );
@@ -368,7 +368,7 @@ namespace mujoco {
         for ( size_t i = 0; i < _kinVisuals.size(); i++ )
         {
             float _color[3];
-            mjcint::getGeometryColor( m_mjcModelPtr,
+            utils::getGeometryColor( m_mjcModelPtr,
                                       m_mjcScenePtr,
                                       _kinVisuals[i]->name,
                                       _color );

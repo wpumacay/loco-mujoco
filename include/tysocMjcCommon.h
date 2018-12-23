@@ -6,10 +6,11 @@
 
 // extra helper functionality
 #include <tysoc_common.h>
-#include <mjcf/mjcf_api.h>
-#include <mjcint/mjcint_api.h>
+#include <utils/parsers/mjcf/mjcf.h>
+#include <utils/parsers/rlsim/rlsim.h>
+#include <utils/parsers/urdf/urdf.h>
 
-// some helper functions
+// some standard helper functions
 #include <map>
 #include <vector>
 #include <queue>

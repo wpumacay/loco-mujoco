@@ -1,12 +1,12 @@
 [submodule "ext/cat1"]
 	path = ext/cat1
 	url = git@github.com:wpumacay/cat1.git
-[submodule "ext/mjCpp"]
-	path = ext/mjCpp
-	url = git@github.com:wpumacay/mjCpp.git
 [submodule "ext/imgui"]
 	path = ext/imgui
 	url = https://github.com/wpumacay/imgui.git
 [submodule "ext/tysocCore"]
 	path = ext/tysocCore
 	url = git@github.com:wpumacay/tysocCore.git
+[submodule "pybind11"]
+	path = pybind11
+	url = git@github.com:pybind/pybind11.git

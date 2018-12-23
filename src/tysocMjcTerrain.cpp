@@ -95,15 +95,15 @@ namespace mujoco {
         // add all geometry resources into this element
         for ( size_t i = 0; i < m_mjcTerrainPrimitives.size(); i++ )
         {
-            auto _bodyElm = mjcf::_createBody( m_mjcTerrainPrimitives[i]->mjcBodyName,
-                                               { 0.0f,
-                                                 0.0f,
-                                                 100.0f + i * ( MJC_TERRAIN_PATH_DEFAULT_TICKNESS + 1.0f ) } );
+            auto _bodyElm = mjcf::createBody( m_mjcTerrainPrimitives[i]->mjcBodyName,
+                                              { 0.0f,
+                                                0.0f,
+                                                100.0f + i * ( MJC_TERRAIN_PATH_DEFAULT_TICKNESS + 1.0f ) } );
 
-            auto _geomElm = mjcf::_createGeometry( m_mjcTerrainPrimitives[i]->mjcBodyName,
-                                                   m_mjcTerrainPrimitives[i]->mjcGeomType,
-                                                   m_mjcTerrainPrimitives[i]->mjcGeomSize,
-                                                   1.0f );
+            auto _geomElm = mjcf::createGeometry( m_mjcTerrainPrimitives[i]->mjcBodyName,
+                                                  m_mjcTerrainPrimitives[i]->mjcGeomType,
+                                                  m_mjcTerrainPrimitives[i]->mjcGeomSize,
+                                                  1.0f );
             _geomElm->setAttributeInt( "contype", 0 );
             _geomElm->setAttributeInt( "conaffinity", 1 );
 
@@ -166,28 +166,28 @@ namespace mujoco {
         auto _primitiveObj = mjcTerrainPritimivePtr->tysocPrimitiveObj;
 
 
-        mjcint::setTerrainBodyPosition( m_mjcModelPtr, 
+        utils::setTerrainBodyPosition( m_mjcModelPtr, 
                                         m_mjcDataPtr,
                                         mjcTerrainPritimivePtr->mjcBodyName,
                                         { _primitiveObj->pos.x, _primitiveObj->pos.y, _primitiveObj->pos.z } );
 
-        mjcint::setTerrainBodyOrientation( m_mjcModelPtr,
+        utils::setTerrainBodyOrientation( m_mjcModelPtr,
                                            m_mjcDataPtr,
                                            mjcTerrainPritimivePtr->mjcBodyName,
                                            _primitiveObj->rotmat );
 
-        mjcint::changeSize( m_mjcModelPtr,
+        utils::changeSize( m_mjcModelPtr,
                             mjcTerrainPritimivePtr->mjcBodyName,
                             { 0.5f * _primitiveObj->size.x, 0.5f * _primitiveObj->size.y, 0.5f * _primitiveObj->size.z } );
 
-        mjcint::setRbound( m_mjcModelPtr,
+        utils::setRbound( m_mjcModelPtr,
                            mjcTerrainPritimivePtr->mjcBodyName,
                            _primitiveObj->rbound );
 
         if ( !_primitiveObj->useCustomColor )
         {
             float _color[3];
-            mjcint::getGeometryColor( m_mjcModelPtr,
+            utils::getGeometryColor( m_mjcModelPtr,
                                       m_mjcScenePtr,
                                       mjcTerrainPritimivePtr->mjcBodyName,
                                       _color );

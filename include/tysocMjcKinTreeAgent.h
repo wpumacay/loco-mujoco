@@ -2,6 +2,8 @@
 #pragma once
 
 #include <tysocMjcCommon.h>
+#include <tysocMjcUtils.h>
+
 #include <agent/types/agent_kintree.h>
 #include <agent/types/agent_kintree_mjcf.h>
 // #include <agent/types/agent_kintree_urdf.h> -> @TODO: urdf as well

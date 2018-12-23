@@ -139,7 +139,7 @@ int main( int argc, const char** argv )
     for ( size_t i = 0; i < NUM_AGENTS; i++ )
     {
         // create a terrain generator
-        mjcf::Vec3 _startPosition = { 0.0f, i * ( SECTION_DEPTH + 1.0f ), 0.0f };
+        tysoc::mjcf::Vec3 _startPosition = { 0.0f, i * ( SECTION_DEPTH + 1.0f ), 0.0f };
         _terrainParams.set( "startPosition", _startPosition );
         auto _terrain = _factory->createTerrainGen( std::string( "terrain_proc" ) + std::to_string( i ),
                                                     "procedural", _terrainParams );

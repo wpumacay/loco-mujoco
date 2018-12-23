@@ -2,6 +2,7 @@
 #pragma once
 
 #include <tysocMjcCommon.h>
+#include <tysocMjcUtils.h>
 
 // Pool size for the number of mjc bodies to use
 #define MJC_TERRAIN_POOL_SIZE PROCEDURAL_TERRAIN_POOL_SIZE - 1

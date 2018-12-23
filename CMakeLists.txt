@@ -7,6 +7,8 @@ add_definitions( -DTYSOCMJC_RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/res/" )
 
 # Configure external dependencies
 add_subdirectory( ext )
+# Configure pybind11
+add_subdirectory( pybind11 )
 
 # Configure visualizer // @TODO: Should move this out from src to the ext directory ?
 add_subdirectory( tysocCustomViz )
@@ -20,7 +22,6 @@ file( GLOB_RECURSE TYSOCMJC_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" )
 # add all dependencies to include path
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/include/" )
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/ext/cat1/include" )
-include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/ext/mjCpp/include" )
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/ext/tysocCore/include" )
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/ext/imgui" )
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/ext/imgui/examples" )
@@ -28,8 +29,13 @@ include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/tysocCustomViz/include" )
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/tysocMujocoViz/include" )
 
 # mujoco dependencies
+find_package( OpenGL REQUIRED )
+find_package( GLEW REQUIRED )
+include_directories( ${GLEW_INCLUDE_DIRS} )
+
 include_directories( "~/.mujoco/mujoco200_linux/include" )
 link_directories( "~/.mujoco/mujoco200_linux/bin" )
+
 # mujoco configuration
 set( CMAKE_CXX_FLAGS "-mavx -pthread -g ${CMAKE_CXX_FLAGS}" )
 get_filename_component( MUJOCO_LICENSE_ABSOLUTE_PATH "~/.mujoco/mjkey.txt" ABSOLUTE )
@@ -61,8 +67,7 @@ add_library( tysocMjcCustomViz
              ${TYSOCMJC_SOURCES} )
 target_link_libraries( tysocMjcCustomViz
                        tysocCustomViz # this uses the custom visualizer
-                       mjcppnogl
-                       mjcpp
+                       mujoco200nogl
                        tysocCore )
 
 # @TEST: Testing tysocMjc with the mujoco visualizer (try to force first mix of gl and nongl mujoco)
@@ -70,11 +75,16 @@ add_library( tysocMjcMujocoViz
              ${TYSOCMJC_SOURCES} )
 target_link_libraries( tysocMjcMujocoViz
                        tysocMujocoViz # this uses the mujoco visualizer
-                       mjcppnogl
-                       mjcpp
+                       mujoco200
+                       glfw
+                       ${OPENGL_LIBRARIES}
+                       ${GLEW_LIBRARIES}
                        tysocCore )
 
 # ****************************************************************************
 
-## # Configure examples
+# Configure examples
 add_subdirectory( examples )
+
+## # Configure bindings
+## add_subdirectory( bindings )

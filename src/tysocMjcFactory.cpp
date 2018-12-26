@@ -155,7 +155,7 @@ namespace mujoco {
                 float _componentsSpacingX   = params.getFloat( "componentsSpacingX", 0.5f );
                 float _componentsThickness  = params.getFloat( "componentsThickness", 0.01f );
 
-                mjcf::Vec3 _startPosition = params.getVec3( "startPosition" );
+                TVec3 _startPosition = params.getVec3( "startPosition" );
 
                 _terrainGenerator = new terrain::TPathTerrainGenerator( name, 
                                                                         _startPosition.x,
@@ -189,7 +189,7 @@ namespace mujoco {
                 _bparams.percentOffsetZ.min     = params.getFloat( "sectionBlockyPercentOffsetZMin" );
                 _bparams.percentOffsetZ.max     = params.getFloat( "sectionBlockyPercentOffsetZMax" );
 
-                mjcf::Vec3 _startPosition = params.getVec3( "startPosition" );
+                TVec3 _startPosition = params.getVec3( "startPosition" );
 
                 _terrainGenerator = new terrain::TBlockyTerrainGenerator( name,
                                                                           _startPosition.x,

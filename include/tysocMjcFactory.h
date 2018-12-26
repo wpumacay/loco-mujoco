@@ -17,10 +17,10 @@ namespace mujoco {
 
         std::map< std::string, int > m_ints;
         std::map< std::string, float > m_floats;
-        std::map< std::string, mjcf::Vec3 > m_vec3s;
-        std::map< std::string, mjcf::Vec4 > m_vec4s;
-        std::map< std::string, mjcf::Sizei > m_sizeis;
-        std::map< std::string, mjcf::Sizef > m_sizefs;
+        std::map< std::string, TVec3 > m_vec3s;
+        std::map< std::string, TVec4 > m_vec4s;
+        std::map< std::string, TSizei > m_sizeis;
+        std::map< std::string, TSizef > m_sizefs;
         std::map< std::string, std::string > m_strings;
 
         public :
@@ -35,22 +35,22 @@ namespace mujoco {
             m_floats[ name ] = val;
         }
 
-        void set( const std::string& name, const mjcf::Vec3& vec )
+        void set( const std::string& name, const TVec3& vec )
         {
             m_vec3s[ name ] = vec;
         }
 
-        void set( const std::string& name, const mjcf::Vec4& vec )
+        void set( const std::string& name, const TVec4& vec )
         {
             m_vec4s[ name ] = vec;
         }
 
-        void set( const std::string& name, const mjcf::Sizei& sizei )
+        void set( const std::string& name, const TSizei& sizei )
         {
             m_sizeis[ name ] = sizei;
         }
 
-        void set( const std::string& name, const mjcf::Sizef& sizef )
+        void set( const std::string& name, const TSizef& sizef )
         {
             m_sizefs[ name ] = sizef;
         }
@@ -78,7 +78,7 @@ namespace mujoco {
             return def;
         }
 
-        mjcf::Vec3 getVec3( const std::string& name, const mjcf::Vec3& def = { 0.0f, 0.0f, 0.0f } ) const
+        TVec3 getVec3( const std::string& name, const TVec3& def = { 0.0f, 0.0f, 0.0f } ) const
         {
             if ( m_vec3s.find( name ) != m_vec3s.end() )
             {
@@ -87,7 +87,7 @@ namespace mujoco {
             return def;
         }
 
-        mjcf::Vec4 getVec4( const std::string& name, const mjcf::Vec4& def = { 0.0f, 0.0f, 0.0f, 1.0f } ) const
+        TVec4 getVec4( const std::string& name, const TVec4& def = { 0.0f, 0.0f, 0.0f, 1.0f } ) const
         {
             if ( m_vec4s.find( name ) != m_vec4s.end() )
             {
@@ -96,7 +96,7 @@ namespace mujoco {
             return def;
         }
 
-        mjcf::Sizei getSizei( const std::string& name, const mjcf::Sizei& def = { 0, { 0 } } ) const
+        TSizei getSizei( const std::string& name, const TSizei& def = { 0, { 0 } } ) const
         {
             if ( m_sizeis.find( name ) != m_sizeis.end() )
             {
@@ -105,7 +105,7 @@ namespace mujoco {
             return def;
         }
 
-        mjcf::Sizef getSizef( const std::string& name, const mjcf::Sizef& def = { 0, { 0.0f } } ) const
+        TSizef getSizef( const std::string& name, const TSizef& def = { 0, { 0.0f } } ) const
         {
             if ( m_sizefs.find( name ) != m_sizefs.end() )
             {

@@ -25,7 +25,7 @@ namespace mujoco {
         int                         mjcBodyId;
         std::string                 mjcBodyName;
         std::string                 mjcGeomType;
-        mjcf::Sizef                 mjcGeomSize;
+        TSizef                      mjcGeomSize;
         bool                        isAvailable;
         tysoc::terrain::TTerrainPrimitive*   tysocPrimitiveObj;
     };

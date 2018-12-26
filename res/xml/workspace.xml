@@ -1244,7 +1244,7 @@
     <worldbody>
         <light diffuse="0.200000 0.200000 0.200000" dir="0.000000 0.000000 -1.000000" pos="0.000000 0.000000 5.000000" specular="0.000000 0.000000 0.000000" castshadow="false" directional="false"/>
         <light diffuse="0.800000 0.800000 0.800000" dir="0.000000 0.000000 -1.000000" pos="0.000000 0.000000 4.000000" specular="0.300000 0.300000 0.300000" directional="false" mode="targetbodycom" target="mjcbody_humanoid0_tmjcroot"/>
-        <body pos="2.000000 0.000000 2.500000" name="mjcbody_humanoid0_tmjcroot">
+        <body pos="3.000000 0.000000 2.500000" name="mjcbody_humanoid0_tmjcroot">
             <freejoint name="mjcjoint_humanoid0_root"/>
             <geom condim="1" fromto="0.000000 -0.070000 0.000000 0.000000 0.070000 0.000000" size="0.070000" material="matgeom" name="mjcgeom_humanoid0_tmjcroot" type="capsule"/>
             <geom condim="1" pos="0.000000 0.000000 0.190000" size="0.090000" material="matgeom" name="mjcgeom_humanoid0_head" type="sphere"/>
@@ -1406,7 +1406,7 @@
         <framelinacc name="mjcsensor_framelinacchumanoid0_sensBody_mjcbody_humanoid0_left_lower_arm" objname="mjcbody_humanoid0_left_lower_arm" objtype="body"/>
     </sensor>
     <worldbody>
-        <body pos="2.000000 3.000000 2.500000" name="mjcbody_baxter1_tmjcroot">
+        <body pos="3.000000 3.000000 2.500000" name="mjcbody_baxter1_tmjcroot">
             <freejoint name="mjcjoint_baxter1_root"/>
             <inertial mass="10.000000" diaginertia="0.001000 0.001000 0.001000" pos="0.000000 0.000000 0.000000"/>
             <body pos="0.000000 0.000000 0.000000" name="mjcbody_baxter1_torso">
@@ -1625,7 +1625,7 @@
     <worldbody>
         <light diffuse="0.200000 0.200000 0.200000" dir="0.000000 0.000000 -1.000000" pos="0.000000 0.000000 5.000000" specular="0.000000 0.000000 0.000000" castshadow="false" directional="false"/>
         <light diffuse="0.800000 0.800000 0.800000" dir="0.000000 0.000000 -1.000000" pos="0.000000 0.000000 4.000000" specular="0.300000 0.300000 0.300000" directional="false" mode="targetbodycom" target="mjcbody_humanoid2_tmjcroot"/>
-        <body pos="2.000000 6.000000 2.500000" name="mjcbody_humanoid2_tmjcroot">
+        <body pos="3.000000 6.000000 2.500000" name="mjcbody_humanoid2_tmjcroot">
             <freejoint name="mjcjoint_humanoid2_root"/>
             <geom condim="1" fromto="0.000000 -0.070000 0.000000 0.000000 0.070000 0.000000" size="0.070000" material="matgeom" name="mjcgeom_humanoid2_tmjcroot" type="capsule"/>
             <geom condim="1" pos="0.000000 0.000000 0.190000" size="0.090000" material="matgeom" name="mjcgeom_humanoid2_head" type="sphere"/>
@@ -1787,7 +1787,7 @@
         <framelinacc name="mjcsensor_framelinacchumanoid2_sensBody_mjcbody_humanoid2_left_lower_arm" objname="mjcbody_humanoid2_left_lower_arm" objtype="body"/>
     </sensor>
     <worldbody>
-        <body pos="2.000000 9.000000 2.500000" name="mjcbody_baxter3_tmjcroot">
+        <body pos="3.000000 9.000000 2.500000" name="mjcbody_baxter3_tmjcroot">
             <freejoint name="mjcjoint_baxter3_root"/>
             <inertial mass="10.000000" diaginertia="0.001000 0.001000 0.001000" pos="0.000000 0.000000 0.000000"/>
             <body pos="0.000000 0.000000 0.000000" name="mjcbody_baxter3_torso">

@@ -9,7 +9,7 @@
 ![intro-5](_imgs/img_tysocmjc_agents.png)
 
 This is an instance of my [**tysoc**](https://github.com/wpumacay/tysocCore) framework 
-for robot locomotion, using [**MuJoCo**](https://mujoco.org) as physics backend.
+for robot locomotion, using [**MuJoCo**](http://mujoco.org) as physics backend.
 
 ## Features
 

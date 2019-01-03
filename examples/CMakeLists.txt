@@ -29,3 +29,9 @@ add_executable( test_visualizer_mujoco
                 test_visualizer_mujoco.cpp )
 target_link_libraries( test_visualizer_mujoco
                        tysocMjcMujocoViz )
+
+# test kintree parsed from mjcf
+add_executable( test_kintree_mjcf
+                test_kintree_mjcf.cpp )
+target_link_libraries( test_kintree_mjcf
+                       tysocMujoco )

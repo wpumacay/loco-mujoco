@@ -1,4 +1,4 @@
-# tysocMjc :A C++ wrapper for mujoco, and some other stuff
+# tysocMjc :A robot locomotion framework, with mujoco as physics backend.
 
 ![intro-1](_imgs/gif_tysocMjc_progress_1_1.gif) ![intro-2](_imgs/gif_tysocMjc_progress_1_2.gif) ![intro-3](_imgs/gif_tysocMjc_progress_1_3.gif)
 
@@ -8,18 +8,8 @@
 
 ![intro-5](_imgs/img_tysocmjc_agents.png)
 
-## Objective
-
-The main goal of this library is to serve as a framework for DeepRL research in locomotion. It's inspired in [dm_control](https://github.com/deepmind/dm_control), 
-but I try to follow a different approach. This library is a concretion of an abstract framework for DeepRL, in the sense that most of the functionality is written 
-in engine-agnostic dependencies (added in dev as submodules), and then making the necessary adapters to make it work with the specific physics engines (not porting 
-everything again for every engine to be used). This is one specific concretion for the mujoco engine. I'm making the same for bullet and dart.
-
-The abstract functionality should include these :
-
-* **Terrain generation API** : abstract implementation of terrain generation for different environments (mainly procedural).
-* **Model edition API** : abstract implementation of a model editor ( and environment editor if it fits in the design ).
-* **Agent API** : abstract implementation of the necessary sensory information that an agent could need from the environment (terrain heightfield data, camera data, etc.) and itself (position/velocities of joints/bodies/etc respect to body/points/etc, etc.).
+This is an instance of my [**tysoc**](https://github.com/wpumacay/tysocCore) framework 
+for robot locomotion, using [**MuJoCo**](https://mujoco.org) as physics backend.
 
 ## Features
 

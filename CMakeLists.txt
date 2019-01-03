@@ -81,6 +81,13 @@ target_link_libraries( tysocMjcMujocoViz
                        ${GLEW_LIBRARIES}
                        tysocCore )
 
+# @TEST: Testing tysocMjc with no visualizer
+add_library( tysocMujoco
+             ${TYSOCMJC_SOURCES} )
+target_link_libraries( tysocMujoco
+                       tysocCore
+                       mujoco200nogl )
+
 # ****************************************************************************
 
 # Configure examples

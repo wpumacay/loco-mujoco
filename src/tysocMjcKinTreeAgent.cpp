@@ -11,39 +11,75 @@ namespace mujoco {
     {
         // grab the name
         m_name = name;
+
         // and create a fresh mjcf resource element
-        m_modelElmPtr = new mjcf::GenericElement();
+        m_mjcfModelTemplatePtr = new mjcf::GenericElement();
         // and copy all contents from the template element
-        mjcf::deepCopy( m_modelElmPtr, templateModelElmPtr );
-        // and replace the ### placeholder with the name of this agent
-        mjcf::replaceNameRecursive( m_modelElmPtr, m_name, "name" );// all name attribs
-        mjcf::replaceNameRecursive( m_modelElmPtr, m_name, "joint" );// all joint attribs (actuators)
-        mjcf::replaceNameRecursive( m_modelElmPtr, m_name, "target" );// all target attribs (cameras)
-        mjcf::replaceNameRecursive( m_modelElmPtr, m_name, "body" );// all body attribs (some sensors)
-        mjcf::replaceNameRecursive( m_modelElmPtr, m_name, "site" );// all site attribs (some sensors)
-        mjcf::replaceNameRecursive( m_modelElmPtr, m_name, "objname");// all objname attribs (some sensors)
-        mjcf::replaceNameRecursive( m_modelElmPtr, m_name, "body1" );// for contacts - body1 tag
-        mjcf::replaceNameRecursive( m_modelElmPtr, m_name, "body2" );// for contacts - body2 tag
-        // and set default to make not wild undefined pointers
+        mjcf::deepCopy( m_mjcfModelTemplatePtr, 
+                        templateModelElmPtr,
+                        NULL,
+                        name );
+
+        // @TEST: trying to make the wrapper more generic (given kintree, do the thing)
+        // @TEST: should create the elements according to the parsed kintree, not copy for mjcf only
+        m_mjcfResourcesPtr = new mjcf::GenericElement( "mujoco" );
+        m_mjcfResourcesPtr->setAttributeString( "model", m_name );
+
+        // and set default to avoid wild undefined pointers
         m_mjcModelPtr   = NULL;
         m_mjcDataPtr    = NULL;
         m_mjcScenePtr   = NULL;
 
         // and create the kintree agent that uses mjcf
-        m_kinTreeAgentPtr = new agent::TAgentKinTreeMjcf( name, position, m_modelElmPtr );
+        m_kinTreeAgentPtr = new agent::TAgentKinTreeMjcf( name, 
+                                                          position, 
+                                                          m_mjcfModelTemplatePtr );
+
+        // @TEST: should collect all resources from any generic kintree
+        _createMjcResourcesFromKinTree();
+    }
+
+    TMjcKinTreeAgentWrapper::TMjcKinTreeAgentWrapper( const std::string& name,
+                                                      urdf::UrdfModel* urdfModelPtr,
+                                                      const TVec3& position )
+    {
+        // @WIP: working on core urdf agent
+        // grab the name
+        m_name = name;
+
+        // @TEST: trying to make the wrapper more generic (given kintree, do the thing)
+        // @TEST: should create the elements according to the parsed kintree, not copy for mjcf only
+        m_mjcfResourcesPtr = new mjcf::GenericElement( "mujoco" );
+        m_mjcfResourcesPtr->setAttributeString( "model", m_name );
+
+        // and set default to avoid wild undefined pointers
+        m_mjcModelPtr   = NULL;
+        m_mjcDataPtr    = NULL;
+        m_mjcScenePtr   = NULL;
+
+        _createMjcResourcesFromKinTree();
     }
 
     TMjcKinTreeAgentWrapper::~TMjcKinTreeAgentWrapper()
     {
-        if ( m_modelElmPtr )
+        if ( m_mjcfModelTemplatePtr )
         {
-            delete m_modelElmPtr;
-            m_modelElmPtr = NULL;
+            delete m_mjcfModelTemplatePtr;
+            m_mjcfModelTemplatePtr = NULL;
+        }
+
+        if ( m_mjcfResourcesPtr )
+        {
+            delete m_mjcfResourcesPtr;
+            m_mjcfResourcesPtr = NULL;
         }
 
         m_mjcModelPtr   = NULL;
         m_mjcDataPtr    = NULL;
         m_mjcScenePtr   = NULL;
+
+        // @CHECK: deletion should happen at runtime, right?
+        m_kinTreeAgentPtr = NULL;
     }
 
     void TMjcKinTreeAgentWrapper::setMjcModel( mjModel* mjcModelPtr )
@@ -71,112 +107,234 @@ namespace mujoco {
         return m_kinTreeAgentPtr;
     }
 
-    bool TMjcKinTreeAgentWrapper::_findAndReplaceRootStartingPos( mjcf::GenericElement* elmPtr )
+    void TMjcKinTreeAgentWrapper::_createMjcResourcesFromKinTree()
     {
-        if ( elmPtr->etype == "body" )
+        if ( !m_mjcfResourcesPtr )
+            return;
+
+        if ( !m_kinTreeAgentPtr )
+            return;
+
+        auto _worldBody = new mjcf::GenericElement( "worldbody" );
+        m_mjcfResourcesPtr->children.push_back( _worldBody );
+        
+        // Collect bodies xml data into worldbody element
+        auto _rootBodyPtr = m_kinTreeAgentPtr->getRootBody();
+        _createMjcResourcesFromBodyNode( _worldBody, _rootBodyPtr );
+
+        // Collect all assets data into the model element
+        _createMjcAssetsFromKinTree();
+        // Create the default sensors (for joints and bodies)
+        _createMjcSensorsFromKinTree();
+        // Collect all actuators and replace the names accordingly
+        _createMjcActuatorsFromKinTree();
+        
+        // Collect extra specifics depending of the type of data being parsed
+        if ( m_kinTreeAgentPtr->getModelTemplateType() == agent::MODEL_TEMPLATE_TYPE_MJCF )
         {
-            auto _bname = elmPtr->getAttributeString( "name" );
-            if ( _bname.find( "tmjcroot" ) != std::string::npos )
+            // Collect all contacts and replace the names accordingly
+            if ( mjcf::findFirstChildByType( m_mjcfModelTemplatePtr, "contact" ) )
             {
-                auto _pos = m_kinTreeAgentPtr->getPosition();
-                elmPtr->setAttributeVec3( "pos", 
-                                          { _pos.x, _pos.y, _pos.z } );
-                return true;
+                // create the target element where we are going to place our contacts
+                auto _targetContactsElmPtr = new mjcf::GenericElement( "contact" );
+                m_mjcfResourcesPtr->children.push_back( _targetContactsElmPtr );
+                // and grab the contacts defined by our model template
+                auto _srcContactsElmPtr = mjcf::findFirstChildByType( m_mjcfModelTemplatePtr, "contact" );
+
+                // now place them inside the target contacts element
+                auto _srcContacts = _srcContactsElmPtr->children;
+                for ( size_t i = 0; i < _srcContacts.size(); i++ )
+                {
+                    _targetContactsElmPtr->children.push_back( _srcContacts[i] );
+                }
             }
         }
-
-        for ( size_t i = 0; i < elmPtr->children.size(); i++ )
+        else if ( m_kinTreeAgentPtr->getModelTemplateType() == agent::MODEL_TEMPLATE_TYPE_URDF )
         {
-            if ( _findAndReplaceRootStartingPos( elmPtr->children[i] ) )
-            {
-                return true;
-            }
+            // @WIP: Add urdf specific functionality here
         }
-
-        return false;
+        else if ( m_kinTreeAgentPtr->getModelTemplateType() == agent::MODEL_TEMPLATE_TYPE_RLSIM )
+        {
+            // @WIP: Add rlsim specific functionality here
+        }
     }
 
-    void TMjcKinTreeAgentWrapper::_injectMjcAssets( mjcf::GenericElement* root )
+    void TMjcKinTreeAgentWrapper::_createMjcResourcesFromBodyNode( mjcf::GenericElement* parentElmPtr,
+                                                                   agent::TKinTreeBody* kinTreeBodyPtr )
     {
-        if ( !mjcf::findFirstChildByType( m_modelElmPtr, "asset" ) )
+        auto _bodyElmPtr = new mjcf::GenericElement( "body" );
+        _bodyElmPtr->setAttributeString( "name", kinTreeBodyPtr->name );
+        if ( !kinTreeBodyPtr->parentBodyPtr )
         {
-            // no assets to get here
+            // root should use its worldTransform directly
+            _bodyElmPtr->setAttributeVec3( "pos", kinTreeBodyPtr->worldTransform.getPosition() );
+        }
+        else
+        {
+            // other bodies use its relative transform to the parent body
+            _bodyElmPtr->setAttributeVec3( "pos", kinTreeBodyPtr->relTransform.getPosition() );
+        }
+        auto _quat = TMat3::toQuaternion( kinTreeBodyPtr->relTransform.getRotation() );
+        _bodyElmPtr->setAttributeVec4( "quat", { _quat.w, _quat.x, _quat.y, _quat.z } );
+
+        // add joints
+        auto _joints = kinTreeBodyPtr->childJoints;
+        for ( size_t i = 0; i < _joints.size(); i++ )
+        {
+            auto _jointElmPtr = new mjcf::GenericElement( "joint" );
+            _jointElmPtr->setAttributeString( "name", _joints[i]->name );
+            _jointElmPtr->setAttributeString( "type", _joints[i]->type );
+
+            if ( _joints[i]->type != "free" ) // free joints should not have any more elements
+            {
+                _jointElmPtr->setAttributeVec3( "pos", _joints[i]->relTransform.getPosition() );
+                _jointElmPtr->setAttributeVec3( "axis", _joints[i]->axis );
+                _jointElmPtr->setAttributeVec2( "range", { _joints[i]->lowerLimit, _joints[i]->upperLimit } );
+                _jointElmPtr->setAttributeString( "limited", ( _joints[i]->limited ) ? "true" : "false" );
+                // @GENERIC
+                _jointElmPtr->setAttributeFloat( "stiffness", _joints[i]->stiffness );
+                // @GENERIC
+                _jointElmPtr->setAttributeFloat( "armature", _joints[i]->armature );
+                // @GENERIC
+                _jointElmPtr->setAttributeFloat( "damping", _joints[i]->damping );
+            }
+
+            _bodyElmPtr->children.push_back( _jointElmPtr );
+        }
+
+        // add geoms
+        auto _geoms = kinTreeBodyPtr->childVisuals;
+        for ( size_t i = 0; i < _geoms.size(); i++ )
+        {
+            auto _geomElmPtr = new mjcf::GenericElement( "geom" );
+            _geomElmPtr->setAttributeString( "name", _geoms[i]->name );
+            _geomElmPtr->setAttributeString( "type", _geoms[i]->geometry.type );
+            _geomElmPtr->setAttributeVec3( "pos", _geoms[i]->relTransform.getPosition() );
+            auto _gquat = TMat3::toQuaternion( _geoms[i]->relTransform.getRotation() );
+            _geomElmPtr->setAttributeVec4( "quat", { _gquat.w, _gquat.x, _gquat.y, _gquat.z } );
+            _geomElmPtr->setAttributeVec3( "size", _extractMjcSizeFromStandardSize( _geoms[i]->geometry ) );
+
+            if ( _geoms[i]->geometry.type == "mesh" )
+            {
+                if ( _geoms[i]->geometry.meshId == "" )
+                {
+                    _geomElmPtr->setAttributeString( "mesh", _geoms[i]->geometry.filename );
+                }
+                else
+                {
+                    _geomElmPtr->setAttributeString( "mesh", _geoms[i]->geometry.meshId );
+                }
+            }
+
+            // @GENERIC
+            if ( _geoms[i]->contype != -1 )
+                _geomElmPtr->setAttributeInt( "contype", _geoms[i]->contype );
+            // @GENERIC
+            if ( _geoms[i]->conaffinity != -1 )
+                _geomElmPtr->setAttributeInt( "conaffinity", _geoms[i]->conaffinity );
+            // @GENERIC
+            if ( _geoms[i]->condim != -1 )
+                _geomElmPtr->setAttributeInt( "condim", _geoms[i]->condim );
+            // @GENERIC
+            if ( _geoms[i]->group != -1 )
+                _geomElmPtr->setAttributeInt( "group", _geoms[i]->group );
+            // @GENERIC
+            if ( _geoms[i]->materialName != "" )
+                _geomElmPtr->setAttributeString( "material", _geoms[i]->materialName );
+            // @GENERIC
+            if ( _geoms[i]->rgba.x != 0.0 &&
+                 _geoms[i]->rgba.y != 0.0 &&
+                 _geoms[i]->rgba.z != 0.0 &&
+                 _geoms[i]->rgba.w != 0.0 )
+                _geomElmPtr->setAttributeVec4( "rgba", _geoms[i]->rgba );
+
+            _bodyElmPtr->children.push_back( _geomElmPtr );
+        }
+
+        // add inertia element (only if not using default calculations, which is hint by NULL)
+        if ( kinTreeBodyPtr->inertiaPtr )
+        {
+            auto _kinInertiaPtr = kinTreeBodyPtr->inertiaPtr;
+            auto _inertiaElmPtr = new mjcf::GenericElement( "inertial" );
+            _inertiaElmPtr->setAttributeFloat( "mass", _kinInertiaPtr->mass );
+            _inertiaElmPtr->setAttributeVec3( "pos", _kinInertiaPtr->relTransform.getPosition() );
+            auto _iquat = TMat3::toQuaternion( _kinInertiaPtr->relTransform.getRotation() );
+            _inertiaElmPtr->setAttributeVec4( "quat", { _iquat.w, _iquat.x, _iquat.y, _iquat.z } );
+
+            if ( _kinInertiaPtr->ixy == 0.0 &&
+                 _kinInertiaPtr->ixz == 0.0 &&
+                 _kinInertiaPtr->iyz == 0.0 )
+            {
+                // diagonal inertia matrix
+                _inertiaElmPtr->setAttributeVec3( "diaginertia", 
+                                                  { _kinInertiaPtr->ixx, 
+                                                    _kinInertiaPtr->iyy, 
+                                                    _kinInertiaPtr->izz } );
+            }
+            else
+            {
+                // full inertia matrix
+                _inertiaElmPtr->setAttributeArrayFloat( "fullinertia",
+                                                        { 6, 
+                                                          { _kinInertiaPtr->ixx,
+                                                            _kinInertiaPtr->iyy,
+                                                            _kinInertiaPtr->izz,
+                                                            _kinInertiaPtr->ixy,
+                                                            _kinInertiaPtr->ixz,
+                                                            _kinInertiaPtr->iyz } } );
+            }
+
+            _bodyElmPtr->children.push_back( _inertiaElmPtr );
+        }
+
+        // add sites
+        // @WIP|@CHECK: Check if necessary
+
+
+        // add this body element into the mjcf (in the correct place, given by the parent element)
+        parentElmPtr->children.push_back( _bodyElmPtr );
+
+        // and finally recursively add all bodies
+        for ( size_t i = 0; i < kinTreeBodyPtr->childBodies.size(); i++ )
+        {
+            _createMjcResourcesFromBodyNode( _bodyElmPtr, kinTreeBodyPtr->childBodies[i] );
+        }
+    }
+
+    void TMjcKinTreeAgentWrapper::_createMjcAssetsFromKinTree()
+    {
+        auto _meshAssets = m_kinTreeAgentPtr->getKinTreeMeshAssets();
+        if ( _meshAssets.size() < 1 )
+        {
+            // No mesh assets to add to the model
             return;
         }
 
-        // grab the target element where we are going to place our assets
-        auto _targetAssetsElmPtr    = mjcf::findFirstChildByType( root, "asset" );
-        auto _assetsInTarget        = _targetAssetsElmPtr->children;
-        // and grab the assets used by our model template
-        auto _srcAssetsElmPtr   = mjcf::findFirstChildByType( m_modelElmPtr, "asset" );
-        auto _assetsInSrc       = _srcAssetsElmPtr->children;
+        auto _assetsElmPtr = new mjcf::GenericElement( "asset" );
+        m_mjcfResourcesPtr->children.push_back( _assetsElmPtr );
 
-        // create a set out of the current elements in the target assets list
-        std::map< std::string, mjcf::GenericElement* > _currentAssetsMap;
-        for ( size_t i = 0; i < _assetsInTarget.size(); i++ )
+        for ( size_t i = 0; i < _meshAssets.size(); i++ )
         {
-            auto _assetElmPtr   = _assetsInTarget[i];
-            auto _assetElmName  = _assetsInTarget[i]->getAttributeString( "name" );
+            auto _meshAssetElmPtr = new mjcf::GenericElement( "mesh" );
+            _meshAssetElmPtr->setAttributeString( "name", _meshAssets[i]->name );
+            _meshAssetElmPtr->setAttributeString( "file", _meshAssets[i]->file );
 
-            _currentAssetsMap[ _assetElmName ] = _assetElmPtr;
-        }
-
-        // and place the src assets that are not already there
-        for ( size_t i = 0; i < _assetsInSrc.size(); i++ )
-        {
-            auto _assetElmPtr   = _assetsInSrc[i];
-            auto _assetElmName  = _assetsInSrc[i]->getAttributeString( "name" );
-
-            if ( _currentAssetsMap.find( _assetElmName ) == _currentAssetsMap.end() )
-            {
-                // if not in the current assets map, the we can go ahead
-                _targetAssetsElmPtr->children.push_back( _assetElmPtr );
-            }
+            _assetsElmPtr->children.push_back( _meshAssetElmPtr );
         }
     }
 
-    void TMjcKinTreeAgentWrapper::_injectMjcContacts( mjcf::GenericElement* root )
+    void TMjcKinTreeAgentWrapper::_createMjcSensorsFromKinTree()
     {
-        if ( !mjcf::findFirstChildByType( m_modelElmPtr, "contact" ) )
-        {
-            // no contacts to grab here
-            return;
-        }
-
-        // grab the target element where we are going to place our contacts
-        auto _targetContactsElmPtr = mjcf::findFirstChildByType( root, "contact" );
-        // and grab the contacts defined by our model template
-        auto _srcContactsElmPtr = mjcf::findFirstChildByType( m_modelElmPtr, "contact" );
-
-        // now place them inside the target contacts element
-        auto _srcContacts = _srcContactsElmPtr->children;
-        for ( size_t i = 0; i < _srcContacts.size(); i++ )
-        {
-            // @CHECK: I'm passing the pointer reference. Perhaps should pass a deep fresh copy
-            _targetContactsElmPtr->children.push_back( _srcContacts[i] );
-        }
-    }
-
-    // @CHECK: Maybe sensor should be created abstractly, and the backend should ...
-    // update its internals on each prestep requested to the concrete kintreeagent
-    void TMjcKinTreeAgentWrapper::_injectMjcSensors( mjcf::GenericElement* root )
-    {
-        // Generate for each joint an appropiate sensor, and ...
-        // add it to the model element if it has one, or create it if not
-        auto _srcSensorsElmPtr = mjcf::findFirstChildByType( m_modelElmPtr, "sensor" );
-        if ( !_srcSensorsElmPtr )
-        {
-            _srcSensorsElmPtr = new mjcf::GenericElement( "sensor" );
-            m_modelElmPtr->children.push_back( _srcSensorsElmPtr );
-        }
-
-        // create a brand new sensors-tag for this model sensor resources
-        auto _targetSensorsElmPtr = new mjcf::GenericElement( "sensor" );
-        // and add it to te root target model
-        root->children.push_back( _targetSensorsElmPtr );
-        // now, create the mjcf sensor entries and add them to both target and src
-        // @CHECK: Same as above, perhaps should pass a fresh new copy
         auto _kinSensors = m_kinTreeAgentPtr->getKinTreeSensors();
+        if ( _kinSensors.size() < 1 )
+        {
+            // no sensors to add to the model
+            return;
+        }
+
+        auto _sensorsElmPtr = new mjcf::GenericElement( "sensor" );
+        m_mjcfResourcesPtr->children.push_back( _sensorsElmPtr );
+
         for ( size_t i = 0; i < _kinSensors.size(); i++ )
         {
             if ( _kinSensors[i]->type == "joint" )
@@ -192,16 +350,19 @@ namespace mujoco {
                 auto _jointPosMjcSensorResource = new mjcf::GenericElement( "jointpos" );
                 auto _jointVelMjcSensorResource = new mjcf::GenericElement( "jointvel" );
 
-                // set the necessary properties
-                _jointPosMjcSensorResource->setAttributeString( "name", std::string( "mjcsensor_jointpos" ) + _sensorName );
+                // set the necessary properties (joint angular position sensor)
+                auto _mjcJointPosSensorName = _sensorName + std::string( "_jointpos" );
+                _jointPosMjcSensorResource->setAttributeString( "name", _mjcJointPosSensorName );
                 _jointPosMjcSensorResource->setAttributeString( "joint", _targetJointName );
 
-                _jointVelMjcSensorResource->setAttributeString( "name", std::string( "mjcsensor_jointvel" ) + _sensorName );
+                // set the necessary properties (joint angular speed sensor)
+                auto _mjcJointVelSensorName = _sensorName + std::string( "_jointvel" );
+                _jointVelMjcSensorResource->setAttributeString( "name", _mjcJointVelSensorName );
                 _jointVelMjcSensorResource->setAttributeString( "joint", _targetJointName );
 
                 // add these to the sensor element
-                _srcSensorsElmPtr->children.push_back( _jointPosMjcSensorResource );
-                _srcSensorsElmPtr->children.push_back( _jointVelMjcSensorResource );
+                _sensorsElmPtr->children.push_back( _jointPosMjcSensorResource );
+                _sensorsElmPtr->children.push_back( _jointVelMjcSensorResource );
             }
             else if ( _kinSensors[i]->type == "body" )
             {
@@ -216,50 +377,164 @@ namespace mujoco {
                 auto _bodyLinVelMjcSensorResource = new mjcf::GenericElement( "framelinvel" );
                 auto _bodyLinAccMjcSensorResource = new mjcf::GenericElement( "framelinacc" );
 
-                // set the necessary properties
-                _bodyLinVelMjcSensorResource->setAttributeString( "name", std::string( "mjcsensor_framelinvel" ) + _sensorName );
-                _bodyLinVelMjcSensorResource->setAttributeString( "objtype", "body" );
+                // set the necessary properties (body's linear velocity)
+                auto _mjcBodyVelSensorName = _sensorName + std::string( "_framelinvel" );
+                _bodyLinVelMjcSensorResource->setAttributeString( "name", _mjcBodyVelSensorName );
+                _bodyLinVelMjcSensorResource->setAttributeString( "objtype", "body" );// @GENERALIZE
                 _bodyLinVelMjcSensorResource->setAttributeString( "objname", _targetBodyName );
 
-                _bodyLinAccMjcSensorResource->setAttributeString( "name", std::string( "mjcsensor_framelinacc" ) + _sensorName );
-                _bodyLinAccMjcSensorResource->setAttributeString( "objtype", "body" );
+                // set the necessary properties (body's linear acceleration)
+                auto _mjcBodyAccSensorName = _sensorName + std::string( "_framelinacc" );
+                _bodyLinAccMjcSensorResource->setAttributeString( "name", _mjcBodyAccSensorName );
+                _bodyLinAccMjcSensorResource->setAttributeString( "objtype", "body" );// @GENERALIZE
                 _bodyLinAccMjcSensorResource->setAttributeString( "objname", _targetBodyName );                
 
                 // add these to the sensor element
-                _srcSensorsElmPtr->children.push_back( _bodyLinVelMjcSensorResource );
-                _srcSensorsElmPtr->children.push_back( _bodyLinAccMjcSensorResource );
+                _sensorsElmPtr->children.push_back( _bodyLinVelMjcSensorResource );
+                _sensorsElmPtr->children.push_back( _bodyLinAccMjcSensorResource );
             }
         }
+    }
 
-        // finally, copy all sensor elements from src to target element
-        for ( size_t i = 0; i < _srcSensorsElmPtr->children.size(); i++ )
+    void TMjcKinTreeAgentWrapper::_createMjcActuatorsFromKinTree()
+    {
+        auto _kinActuators = m_kinTreeAgentPtr->getKinTreeActuators();
+        if ( _kinActuators.size() < 1 )
         {
-            _targetSensorsElmPtr->children.push_back( _srcSensorsElmPtr->children[i] );
+            // No actuators to add to the model
+            return;
         }
+
+        auto _actuatorsElmPtr = new mjcf::GenericElement( "actuator" );
+        m_mjcfResourcesPtr->children.push_back( _actuatorsElmPtr );
+
+        for ( size_t i = 0; i < _kinActuators.size(); i++ )
+        {
+            if ( _kinActuators[i]->jointPtr == NULL )
+            {
+                std::cout << "WARNING> badly defined actuator: " 
+                          << _kinActuators[i]->name 
+                          << std::endl;
+                continue;
+            }
+
+            // Grab the joint actuator this actuator is using
+            auto _kinJointPtr = _kinActuators[i]->jointPtr;
+
+            // create the mjcf resource for this actuator
+            auto _actuatorResource = new mjcf::GenericElement( _kinActuators[i]->type );
+            // and set its properties
+            _actuatorResource->setAttributeString( "name", _kinActuators[i]->name );
+            _actuatorResource->setAttributeVec2( "ctrlrange", 
+                                                 { _kinActuators[i]->minCtrl,
+                                                   _kinActuators[i]->maxCtrl } );
+            _actuatorResource->setAttributeString( "joint", _kinJointPtr->name );
+
+            // @CHECK|@WIP : should change to variant with specific-params ...
+            // according to the backend (mjc allows kv, kp, but bullet does not)
+
+            // @GENERIC
+            if ( _kinActuators[i]->gear.ndim > 0 )
+                _actuatorResource->setAttributeArrayFloat( "gear", _kinActuators[i]->gear );
+            // @GENERIC
+            _actuatorResource->setAttributeString( "ctrllimited", ( _kinActuators[i]->clampCtrl ) ? "true" : "false" );
+            // @GENERIC
+            if ( _kinActuators[i]->type == "position" )
+                _actuatorResource->setAttributeFloat( "kp", _kinActuators[i]->kp );
+            else if ( _kinActuators[i]->type == "velocity" )
+                _actuatorResource->setAttributeFloat( "kv", _kinActuators[i]->kv );
+
+            _actuatorsElmPtr->children.push_back( _actuatorResource );
+        }
+    }
+
+    TVec3 TMjcKinTreeAgentWrapper::_extractMjcSizeFromStandardSize( const TGeometry& geometry )
+    {
+        TVec3 _res;
+
+        if ( geometry.type == "plane" )
+        {
+            _res = { geometry.size.x, 
+                     geometry.size.y, 
+                     geometry.size.z };
+        }
+        else if ( geometry.type == "sphere" )
+        {
+            _res = { geometry.size.x, 
+                     geometry.size.y, 
+                     geometry.size.z };
+        }
+        else if ( geometry.type == "capsule" ||
+                  geometry.type == "cylinder" )
+        {
+            if ( geometry.usesFromto )
+            {
+                _res = { geometry.size.x, 
+                         0.5f * geometry.size.y, 
+                         geometry.size.z };
+            }
+            else
+            {
+                _res = { geometry.size.x, 
+                         0.5f * geometry.size.y, 
+                         geometry.size.z };
+            }
+        }
+        else if ( geometry.type == "box" )
+        {
+            _res = { 0.5f * geometry.size.x, 
+                     0.5f * geometry.size.y, 
+                     0.5f * geometry.size.z };
+        }
+
+
+        return _res;
     }
 
     void TMjcKinTreeAgentWrapper::injectMjcResources( mjcf::GenericElement* root )
     {
-        // grab the resources to inject, namely the worldbody
-        auto _worldBodyElmPtr = mjcf::findFirstChildByType( m_modelElmPtr, "worldbody" );
-        // and set the starting position
-        _findAndReplaceRootStartingPos( _worldBodyElmPtr );
-
-        // and the actuators as well
-        auto _actuatorsElmPtr = mjcf::findFirstChildByType( m_modelElmPtr, "actuator" );
-        // @TODO: should also place custom sensors (for all joints)
-
-        // then, just add them to the children of the root
-        root->children.push_back( _worldBodyElmPtr );
-        root->children.push_back( _actuatorsElmPtr );
-        // @TODO: should also place custom sensors (for all joints)
-
-        // also, inject the assets used
-        _injectMjcAssets( root );
-        // as well as the contacts
-        _injectMjcContacts( root );
-        // and the sensors
-        _injectMjcSensors( root );  
+        // @TEST: grab the mjcf resources to inject, namely the worlbody
+        auto _worldBodyElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "worldbody" );
+        // @TEST: grab the actuators as well
+        auto _actuatorsElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "actuator" );
+        // @TEST: and the assets
+        auto _assetsElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "asset" );
+        // @TEST: and the sensors
+        auto _sensorsElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "sensor" );
+        // @TEST: and the contacts
+        auto _contactsElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "contact" );
+        // @TEST: then just add them to the children of the root
+        if ( _assetsElmPtr )
+        {
+            // grab the assets in the target element
+            auto _targetAssetsElmPtr    = mjcf::findFirstChildByType( root, "asset" );
+            auto _assetsInTarget        = _targetAssetsElmPtr->children;
+            // grab the assets in our model element
+            auto _assetsInModel = _assetsElmPtr->children;
+            // create a set with the current elements in the assets list
+            std::set< std::string > _currentAssets;
+            for ( size_t i = 0; i < _assetsInTarget.size(); i++ )
+            {
+                _currentAssets.emplace( _assetsInTarget[i]->getAttributeString( "name" ) );
+            }
+            // and place our model assets if not already there
+            for ( size_t i = 0; i < _assetsInModel.size(); i++ )
+            {
+                auto _assetElmName = _assetsInModel[i]->getAttributeString( "name" );
+                if ( _currentAssets.find( _assetElmName ) == _currentAssets.end() )
+                {
+                    _targetAssetsElmPtr->children.push_back( _assetsInModel[i] );
+                }
+            }
+        }
+        if ( _contactsElmPtr )
+            root->children.push_back( _contactsElmPtr );
+        if ( _worldBodyElmPtr )
+            root->children.push_back( _worldBodyElmPtr );
+        if ( _actuatorsElmPtr )
+            root->children.push_back( _actuatorsElmPtr );
+        if ( _sensorsElmPtr )
+            root->children.push_back( _sensorsElmPtr );
     }
 
     void TMjcKinTreeAgentWrapper::preStep()
@@ -325,12 +600,12 @@ namespace mujoco {
                 // grab the reading from the jointpos sensor
                 utils::getJointSensorReading( m_mjcModelPtr,
                                                m_mjcDataPtr,
-                                               std::string( "mjcsensor_jointpos" ) + _kinJointSensor->name,
+                                               _kinJointSensor->name + std::string( "_jointpos" ),
                                                _readings );
                 // and also the reading from the jointvel sensor
                 utils::getJointSensorReading( m_mjcModelPtr,
                                                m_mjcDataPtr,
-                                               std::string( "mjcsensor_jointvel" ) + _kinJointSensor->name,
+                                               _kinJointSensor->name + std::string( "_jointvel" ),
                                                _readings );
                 // and store it into the sensor for later usage
                 _kinJointSensor->theta       = _readings[0];
@@ -347,12 +622,12 @@ namespace mujoco {
                 // grab the reading from the franelinvec sensor
                 utils::getJointSensorReading( m_mjcModelPtr,
                                                m_mjcDataPtr,
-                                               std::string( "mjcsensor_framelinvel" ) + _kinBodySensor->name,
+                                               _kinBodySensor->name + std::string( "_framelinvel" ),
                                                _readings );
                 // and also the reading from the framelinacc sensor
                 utils::getJointSensorReading( m_mjcModelPtr,
                                                m_mjcDataPtr,
-                                               std::string( "mjcsensor_framelinacc" ) + _kinBodySensor->name,
+                                               _kinBodySensor->name + std::string( "_framelinacc" ),
                                                _readings );
                 // and store it into the sensor for later usage
                 _kinBodySensor->linVelocity     = { _readings[0], _readings[1], _readings[2] };

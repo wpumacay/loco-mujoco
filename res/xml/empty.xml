@@ -1,4 +1,4 @@
-<mujoco model="planar walker">
+<mujoco>
   <include file="materials.xml"/>
 
   <compiler inertiafromgeom="true" coordinate="local" angle="degree"/>
@@ -16,9 +16,9 @@
     <material name="matgeom" texture="texgeom" texuniform="true" rgba="0.8 0.6 .4 1"/>
   </asset>
 
-  <contact>
-    <!-- place contacts here -->s
-  </contact>
+  <!--<contact>-->
+    <!-- place contacts here -->
+  <!--</contact>-->
 
   <visual>
     <map force="0.1" zfar="30"/>

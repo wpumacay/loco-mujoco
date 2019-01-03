@@ -3,7 +3,7 @@
 #include <tysocCustomViz.h>
 
 
-static int NUM_AGENTS = 4;
+static int NUM_AGENTS = 3;
 
 #define SECTION_DEPTH 2.0f
 
@@ -152,7 +152,7 @@ int main( int argc, const char** argv )
 
         _tysocApi->addTerrainGenWrapper( _terrain );
 
-        std::string _templateModel = ( i % 2 == 0 ) ? "humanoid" : "baxter";
+        std::string _templateModel = ( i % 3 == 0 ) ? "humanoid" : ( ( i % 3  == 1 ) ? "walker" : "baxter" );
 
         // create kintree agents
         auto _agent = _factory->createKinTreeAgentFromMjcf( _templateModel + std::to_string( i ),

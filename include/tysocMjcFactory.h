@@ -131,11 +131,16 @@ namespace mujoco {
         private :
 
         mjcf::Schema* m_mjcfSchema;
-        std::vector< std::string > m_templateModelFiles;
-        std::map< std::string, mjcf::GenericElement* > m_cachedModels;
+        std::vector< std::string > m_templateMjcfModelFiles;
+        std::vector< std::string > m_templateUrdfModelFiles;
+        std::map< std::string, mjcf::GenericElement* > m_cachedMjcfModels;
+        std::map< std::string, urdf::UrdfModel* > m_cachedUrdfModels;
 
-        void _precacheSingleModel( const std::string& templateFile );
         void _precacheModels();
+        void _precacheMjcfModels();
+        void _precacheSingleMjcfModel( const std::string& templateFile );
+        void _precacheUrdfModels();
+        void _precacheSingleUrdfModel( const std::string& templateFile );
 
         public :
 
@@ -146,6 +151,10 @@ namespace mujoco {
         // agent creation not just kintree based agents. 
 
         TMjcKinTreeAgentWrapper* createKinTreeAgentFromMjcf( const std::string& name,
+                                                             const std::string& modelname,
+                                                             float startX, float startY, float startZ );
+
+        TMjcKinTreeAgentWrapper* createKinTreeAgentFromUrdf( const std::string& name,
                                                              const std::string& modelname,
                                                              float startX, float startY, float startZ );
 

@@ -1,6 +1,8 @@
 <mujoco>
   <include file="materials.xml"/>
 
+  <!--@CHECK: inertia calculation set to auto-->
+  <!--@CHECK: baxter fails with inertia calculation set to auto -->
   <compiler inertiafromgeom="true" coordinate="local" angle="degree"/>
   <option timestep="0.005" iterations="50" tolerance="1e-10" solver="Newton" jacobian="dense" cone="pyramidal"/>
   <size njmax="8000" nconmax="4000"/>
@@ -27,8 +29,10 @@
     <global offwidth="800" offheight="800"/>
   </visual>
 
-  <!--<worldbody>
-    <geom name="tmjc_floor" pos="0 0 0" size="0 0 .25" type="plane" material="matplane" condim="3"/>
-  </worldbody>-->
+  <!--<worldbody>-->
+    <!--<geom name="tmjc_floor" pos="0 0 0" size="0 0 .25" type="plane" material="matplane" condim="3"/>-->
+    <!--<geom name="floor" type="plane" contype="1" conaffinity="1" pos="0 0 0" size="1 1 .2" zaxis="0 0 1" friction=".7 .1 .1"/>-->
+    <!--<geom name="floor" type="box" contype="1" conaffinity="1" pos="0 0 0" size="4 4 .2" zaxis="0 0 1" friction=".7 .1 .1"/>-->
+  <!--</worldbody>-->
 
 </mujoco>

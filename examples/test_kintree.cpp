@@ -2,7 +2,6 @@
 #include <tysocMjc.h>
 #include <tysocCustomViz.h>
 
-
 static int NUM_AGENTS = 3;
 
 #define SECTION_DEPTH 2.0f
@@ -48,6 +47,7 @@ int main( int argc, const char** argv )
     //     _terrainParams.set( "sineProfileAmplitude", 1.0f );
     //     _terrainParams.set( "sineProfilePeriod", 10.0f );
     //     _terrainParams.set( "sineProfilePhase", 1.57f );
+    //     _terrainParams.set( "componentsThickness", 0.2f );
     // }
     // sections - blocky
     {
@@ -157,7 +157,7 @@ int main( int argc, const char** argv )
         // create kintree agents
         auto _agent = _factory->createKinTreeAgentFromMjcf( _templateModel + std::to_string( i ),
                                                             _templateModel,
-                                                            2.0f, i * ( SECTION_DEPTH + 1.0f ), 2.5f );
+                                                            2.0f, i * ( SECTION_DEPTH + 1.0f ), 4.5f );
 
         // create some sensors
         auto _sensor1Name = _templateModel + std::string( "_sensor_" ) + std::to_string( i ) + std::string( "_pathterrain" );

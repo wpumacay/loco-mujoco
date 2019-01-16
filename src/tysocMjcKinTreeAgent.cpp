@@ -20,8 +20,7 @@ namespace mujoco {
                         NULL,
                         name );
 
-        // @TEST: trying to make the wrapper more generic (given kintree, do the thing)
-        // @TEST: should create the elements according to the parsed kintree, not copy for mjcf only
+        // create the mjcf resources element for this agent
         m_mjcfResourcesPtr = new mjcf::GenericElement( "mujoco" );
         m_mjcfResourcesPtr->setAttributeString( "model", m_name );
 
@@ -35,7 +34,7 @@ namespace mujoco {
                                                           position, 
                                                           m_mjcfModelTemplatePtr );
 
-        // @TEST: should collect all resources from any generic kintree
+        // should collect all resources from any generic kintree
         _createMjcResourcesFromKinTree();
     }
 
@@ -47,8 +46,13 @@ namespace mujoco {
         // grab the name
         m_name = name;
 
-        // @TEST: trying to make the wrapper more generic (given kintree, do the thing)
-        // @TEST: should create the elements according to the parsed kintree, not copy for mjcf only
+        // and create a fresh urdfmodel resource
+        m_urdfModelTemplatePtr = new urdf::UrdfModel();
+        urdf::deepCopy( m_urdfModelTemplatePtr,
+                        urdfModelPtr,
+                        name );
+
+        // create the urdf resources element for this agent
         m_mjcfResourcesPtr = new mjcf::GenericElement( "mujoco" );
         m_mjcfResourcesPtr->setAttributeString( "model", m_name );
 
@@ -57,6 +61,10 @@ namespace mujoco {
         m_mjcDataPtr    = NULL;
         m_mjcScenePtr   = NULL;
 
+        // and create the kintree agent that uses urdf
+        m_kinTreeAgentPtr = new agent::TAgentKinTreeUrdf( name, 
+                                                          position, 
+                                                          m_urdfModelTemplatePtr );
         _createMjcResourcesFromKinTree();
     }
 
@@ -151,7 +159,21 @@ namespace mujoco {
         }
         else if ( m_kinTreeAgentPtr->getModelTemplateType() == agent::MODEL_TEMPLATE_TYPE_URDF )
         {
-            // @WIP: Add urdf specific functionality here
+            // // Create a free joint for the root body
+            // {
+            //     // create the freejoint element
+            //     auto _freeJointElmPtr = new mjcf::GenericElement( "joint" );
+            //     // compute the appropiate unique-name
+            //     auto _freeJointName = urdf::computeUrdfName( "joint", "free", m_name );
+            //     _freeJointElmPtr->setAttributeString( "name", _freeJointName );
+            //     // set the type to free to give 6dof to the agent at its root body
+            //     _freeJointElmPtr->setAttributeString( "type", "free" );
+            //     // get the appropiate body to add this joint to
+            //     auto _rootBodyElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "body" );
+            //     // and add it to the rootbody
+            //     _rootBodyElmPtr->children.push_back( _freeJointElmPtr );
+            //     
+            // }
         }
         else if ( m_kinTreeAgentPtr->getModelTemplateType() == agent::MODEL_TEMPLATE_TYPE_RLSIM )
         {
@@ -178,9 +200,36 @@ namespace mujoco {
         _bodyElmPtr->setAttributeVec4( "quat", { _quat.w, _quat.x, _quat.y, _quat.z } );
 
         // add joints
+        // if ( m_kinTreeAgentPtr->getModelTemplateType() ) @CONTINUE: traverse urdf format
         auto _joints = kinTreeBodyPtr->childJoints;
         for ( size_t i = 0; i < _joints.size(); i++ )
         {
+            // check the joint type, standarize and check for support
+            if ( _joints[i]->type == "continuous" ||
+                 _joints[i]->type == "revolute" )
+            {
+                _joints[i]->type = "hinge";
+            }
+            else if ( _joints[i]->type == "prismatic" )
+            {
+                _joints[i]->type = "slide";
+            }
+            else if ( _joints[i]->type == "floating" )
+            {
+                _joints[i]->type = "free";
+            }
+            else if ( _joints[i]->type == "fixed" )
+            {
+                // for mujoco it it's like a non-existent joint in xml
+                continue;
+            }
+            else if ( _joints[i]->type == "planar" )
+            {
+                std::cout << "WARNING> joint with type: " << _joints[i]->type << " "
+                          << "not supported for mujoco backend" << std::endl;
+                continue;
+            }
+
             auto _jointElmPtr = new mjcf::GenericElement( "joint" );
             _jointElmPtr->setAttributeString( "name", _joints[i]->name );
             _jointElmPtr->setAttributeString( "type", _joints[i]->type );
@@ -188,15 +237,19 @@ namespace mujoco {
             if ( _joints[i]->type != "free" ) // free joints should not have any more elements
             {
                 _jointElmPtr->setAttributeVec3( "pos", _joints[i]->relTransform.getPosition() );
-                _jointElmPtr->setAttributeVec3( "axis", _joints[i]->axis );
-                _jointElmPtr->setAttributeVec2( "range", { _joints[i]->lowerLimit, _joints[i]->upperLimit } );
+                _jointElmPtr->setAttributeVec3( "axis", _joints[i]->relTransform.getRotation() * _joints[i]->axis );
                 _jointElmPtr->setAttributeString( "limited", ( _joints[i]->limited ) ? "true" : "false" );
+                if ( _joints[i]->limited )
+                    _jointElmPtr->setAttributeVec2( "range", { _joints[i]->lowerLimit, _joints[i]->upperLimit } );
                 // @GENERIC
-                _jointElmPtr->setAttributeFloat( "stiffness", _joints[i]->stiffness );
+                if ( _joints[i]->stiffness != 0.0f )
+                    _jointElmPtr->setAttributeFloat( "stiffness", _joints[i]->stiffness );
                 // @GENERIC
-                _jointElmPtr->setAttributeFloat( "armature", _joints[i]->armature );
+                if ( _joints[i]->armature != 0.0f )
+                    _jointElmPtr->setAttributeFloat( "armature", _joints[i]->armature );
                 // @GENERIC
-                _jointElmPtr->setAttributeFloat( "damping", _joints[i]->damping );
+                if ( _joints[i]->damping != 0.0f )
+                    _jointElmPtr->setAttributeFloat( "damping", _joints[i]->damping );
             }
 
             _bodyElmPtr->children.push_back( _jointElmPtr );
@@ -257,31 +310,39 @@ namespace mujoco {
             auto _kinInertiaPtr = kinTreeBodyPtr->inertiaPtr;
             auto _inertiaElmPtr = new mjcf::GenericElement( "inertial" );
             _inertiaElmPtr->setAttributeFloat( "mass", _kinInertiaPtr->mass );
-            _inertiaElmPtr->setAttributeVec3( "pos", _kinInertiaPtr->relTransform.getPosition() );
+            _inertiaElmPtr->setAttributeVec3( "pos", { 0.0f, 0.0f, 0.0f} );
             auto _iquat = TMat3::toQuaternion( _kinInertiaPtr->relTransform.getRotation() );
-            _inertiaElmPtr->setAttributeVec4( "quat", { _iquat.w, _iquat.x, _iquat.y, _iquat.z } );
+            _inertiaElmPtr->setAttributeVec4( "quat", { 1.0f, 0.0f, 0.0f, 0.0f } );
 
-            if ( _kinInertiaPtr->ixy == 0.0 &&
-                 _kinInertiaPtr->ixz == 0.0 &&
-                 _kinInertiaPtr->iyz == 0.0 )
+            if ( _kinInertiaPtr->ixx > 0.000001 || 
+                 _kinInertiaPtr->iyy > 0.000001 ||
+                 _kinInertiaPtr->izz > 0.000001 ||
+                 _kinInertiaPtr->ixy > 0.000001 ||
+                 _kinInertiaPtr->ixz > 0.000001 ||
+                 _kinInertiaPtr->iyz > 0.000001 )
             {
-                // diagonal inertia matrix
-                _inertiaElmPtr->setAttributeVec3( "diaginertia", 
-                                                  { _kinInertiaPtr->ixx, 
-                                                    _kinInertiaPtr->iyy, 
-                                                    _kinInertiaPtr->izz } );
-            }
-            else
-            {
-                // full inertia matrix
-                _inertiaElmPtr->setAttributeArrayFloat( "fullinertia",
-                                                        { 6, 
-                                                          { _kinInertiaPtr->ixx,
-                                                            _kinInertiaPtr->iyy,
-                                                            _kinInertiaPtr->izz,
-                                                            _kinInertiaPtr->ixy,
-                                                            _kinInertiaPtr->ixz,
-                                                            _kinInertiaPtr->iyz } } );
+                if ( _kinInertiaPtr->ixy == 0.0 &&
+                     _kinInertiaPtr->ixz == 0.0 &&
+                     _kinInertiaPtr->iyz == 0.0 )
+                {
+                    // diagonal inertia matrix
+                    _inertiaElmPtr->setAttributeVec3( "diaginertia", 
+                                                      { _kinInertiaPtr->ixx, 
+                                                        _kinInertiaPtr->iyy, 
+                                                        _kinInertiaPtr->izz } );
+                }
+                else
+                {
+                    // full inertia matrix
+                    _inertiaElmPtr->setAttributeArrayFloat( "fullinertia",
+                                                            { 6, 
+                                                              { _kinInertiaPtr->ixx,
+                                                                _kinInertiaPtr->iyy,
+                                                                _kinInertiaPtr->izz,
+                                                                _kinInertiaPtr->ixy,
+                                                                _kinInertiaPtr->ixz,
+                                                                _kinInertiaPtr->iyz } } );
+                }
             }
 
             _bodyElmPtr->children.push_back( _inertiaElmPtr );
@@ -493,17 +554,17 @@ namespace mujoco {
 
     void TMjcKinTreeAgentWrapper::injectMjcResources( mjcf::GenericElement* root )
     {
-        // @TEST: grab the mjcf resources to inject, namely the worlbody
+        // grab the mjcf resources to inject, namely the worlbody
         auto _worldBodyElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "worldbody" );
-        // @TEST: grab the actuators as well
+        // grab the actuators as well
         auto _actuatorsElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "actuator" );
-        // @TEST: and the assets
+        // and the assets
         auto _assetsElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "asset" );
-        // @TEST: and the sensors
+        // and the sensors
         auto _sensorsElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "sensor" );
-        // @TEST: and the contacts
+        // and the contacts
         auto _contactsElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "contact" );
-        // @TEST: then just add them to the children of the root
+        // then just add them to the children of the root
         if ( _assetsElmPtr )
         {
             // grab the assets in the target element

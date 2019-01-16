@@ -30,7 +30,7 @@ namespace mujoco {
         // mjcf resource: a copy of the mjcf model passed for construction
         mjcf::GenericElement*   m_mjcfModelTemplatePtr;
         // urdf resource: a reference to the cached urdf model passed for construction
-        urdf::UrdfModel* m_urdfModelPtr;
+        urdf::UrdfModel* m_urdfModelTemplatePtr;
 
         // underlying kinematic tree
         agent::TAgentKinTree*   m_kinTreeAgentPtr;

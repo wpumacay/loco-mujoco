@@ -28,18 +28,33 @@ namespace mujoco {
             m_mjcfSchema = NULL;
         }
 
-        m_templateModelFiles.clear();
+        m_templateMjcfModelFiles.clear();
+        m_templateUrdfModelFiles.clear();
 
-        for ( auto it = m_cachedModels.begin();
-              it != m_cachedModels.end();
+        for ( auto it = m_cachedMjcfModels.begin();
+              it != m_cachedMjcfModels.end();
               it++ )
         {
             delete it->second;
         }
-        m_cachedModels.clear();
+        m_cachedMjcfModels.clear();
+
+        for ( auto it = m_cachedUrdfModels.begin();
+              it != m_cachedUrdfModels.end();
+              it++ )
+        {
+            delete it->second;
+        }
+        m_cachedUrdfModels.clear();
     }
 
     void TMjcFactory::_precacheModels()
+    {
+        _precacheMjcfModels();
+        _precacheUrdfModels();
+    }
+
+    void TMjcFactory::_precacheMjcfModels()
     {
         std::vector< std::string > _filesToCache;
 
@@ -49,7 +64,7 @@ namespace mujoco {
 
         std::string _templatesFolderPath;
         _templatesFolderPath += TYSOCMJC_RESOURCES_PATH;
-        _templatesFolderPath += "templates/";
+        _templatesFolderPath += "templates/mjcf/";
 
         _directoryPtr = opendir( _templatesFolderPath.c_str() );
         if ( _directoryPtr )
@@ -59,7 +74,7 @@ namespace mujoco {
                 std::string _fname = _direntPtr->d_name;
                 if ( _fname.find( ".xml" ) != std::string::npos )
                 {
-                    m_templateModelFiles.push_back( _fname );
+                    m_templateMjcfModelFiles.push_back( _fname );
                 }
             }
         }
@@ -67,43 +82,117 @@ namespace mujoco {
 
         // ******************************************************************
 
-        for ( size_t i = 0; i < m_templateModelFiles.size(); i++ )
+        for ( size_t i = 0; i < m_templateMjcfModelFiles.size(); i++ )
         {
-            _precacheSingleModel( m_templateModelFiles[ i ] );
+            _precacheSingleMjcfModel( m_templateMjcfModelFiles[ i ] );
         }
     }
 
-    void TMjcFactory::_precacheSingleModel( const std::string& templateFile )
+    void TMjcFactory::_precacheUrdfModels()
+    {
+        std::vector< std::string > _filesToCache;
+
+        // Get the template files from the templates folder *****************
+        DIR* _directoryPtr;
+        struct dirent* _direntPtr;
+
+        std::string _templatesFolderPath;
+        _templatesFolderPath += TYSOCMJC_RESOURCES_PATH;
+        _templatesFolderPath += "templates/urdf/";
+
+        _directoryPtr = opendir( _templatesFolderPath.c_str() );
+        if ( _directoryPtr )
+        {
+            while ( _direntPtr = readdir( _directoryPtr ) )
+            {
+                std::string _fname = _direntPtr->d_name;
+                if ( _fname.find( ".urdf" ) != std::string::npos )
+                {
+                    m_templateUrdfModelFiles.push_back( _fname );
+                }
+            }
+        }
+        closedir( _directoryPtr );
+
+        // ******************************************************************
+
+        for ( size_t i = 0; i < m_templateUrdfModelFiles.size(); i++ )
+        {
+            _precacheSingleUrdfModel( m_templateUrdfModelFiles[ i ] );
+        }
+    }
+
+    void TMjcFactory::_precacheSingleMjcfModel( const std::string& templateFile )
     {
         std::cout << "INFO> trying to load template: " << templateFile << std::endl;
         // Gran the model into a mjcf::GenericElement node
-        auto _root = mjcf::loadGenericModel( m_mjcfSchema, std::string( TYSOCMJC_RESOURCES_PATH ) + "templates/" + templateFile );
+        auto _root = mjcf::loadGenericModel( m_mjcfSchema, std::string( TYSOCMJC_RESOURCES_PATH ) + "templates/mjcf/" + templateFile );
 
         // Extract the name to use as key in the cache dictionary
         size_t _xmlTagPos = templateFile.find( ".xml" );
         std::string _modelName = templateFile.substr( 0, _xmlTagPos );
 
         // cache the model
-        m_cachedModels[ _modelName ] = _root;
+        m_cachedMjcfModels[ _modelName ] = _root;
 
-        std::cout << "INFO> Precached template model: " << _modelName << std::endl;
+        std::cout << "INFO> Precached mjcf template model: " << _modelName << std::endl;
+    }
+
+    void TMjcFactory::_precacheSingleUrdfModel( const std::string& templateFile )
+    {
+        std::cout << "INFO> trying to load template: " << templateFile << std::endl;
+        // Gran the model into a mjcf::GenericElement node
+        auto _urdfModel = urdf::loadGenericModel( std::string( TYSOCMJC_RESOURCES_PATH ) + "templates/urdf/" + templateFile );
+
+        // Extract the name to use as key in the cache dictionary
+        size_t _xmlTagPos = templateFile.find( ".urdf" );
+        std::string _modelName = templateFile.substr( 0, _xmlTagPos );
+
+        // cache the model
+        m_cachedUrdfModels[ _modelName ] = _urdfModel;
+
+        std::cout << "INFO> Precached urdf template model: " << _modelName << std::endl;
     }
 
     TMjcKinTreeAgentWrapper* TMjcFactory::createKinTreeAgentFromMjcf( const std::string& name,
                                                                       const std::string& modelname,
                                                                       float startX, float startY, float startZ )
     {
-        if ( m_cachedModels.find( modelname ) == m_cachedModels.end() )
+        if ( m_cachedMjcfModels.find( modelname ) == m_cachedMjcfModels.end() )
         {
             std::cout << "WARNING> agent " << name << " "
                       << "cannot be created because modelname " << modelname << " "
-                      << "is not a templated model or wasn't cached" << std::endl;
+                      << "is not a mjcf templated model or wasn't cached" << std::endl;
 
             return NULL;
         }
 
         // grab the template model and its components
-        auto _modelTemplateElm = m_cachedModels[ modelname ];
+        auto _modelTemplateElm = m_cachedMjcfModels[ modelname ];
+        // and create the wrapper (it handles everything inside)
+
+        auto _kinTreeAgentWrapper = new TMjcKinTreeAgentWrapper( name,
+                                                                 _modelTemplateElm,
+                                                                 { startX, startY, startZ } );
+
+        return _kinTreeAgentWrapper;
+    }
+
+    TMjcKinTreeAgentWrapper* TMjcFactory::createKinTreeAgentFromUrdf( const std::string& name,
+                                                                      const std::string& modelname,
+                                                                      float startX, float startY, float startZ )
+    {
+        if ( m_cachedUrdfModels.find( modelname ) == m_cachedUrdfModels.end() )
+        {
+            std::cout << "WARNING> agent " << name << " "
+                      << "cannot be created because modelname " << modelname << " "
+                      << "is not a urdf templated model or wasn't cached" << std::endl;
+
+            return NULL;
+        }
+
+        // grab the template model and its components
+        auto _modelTemplateElm = m_cachedUrdfModels[ modelname ];
         // and create the wrapper (it handles everything inside)
 
         auto _kinTreeAgentWrapper = new TMjcKinTreeAgentWrapper( name,

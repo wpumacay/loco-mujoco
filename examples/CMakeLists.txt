@@ -12,26 +12,44 @@ include_directories( ${GLEW_INCLUDE_DIRS} )
 ## target_link_libraries( test_kintree
 ##                        tysocMjc )
 
-# test_kintree example
+# kintree example
 add_executable( test_kintree
                 test_kintree.cpp )
 target_link_libraries( test_kintree
                        tysocMjcCustomViz )
 
-# test custom visualizer example
+# custom visualizer example
 add_executable( test_visualizer_custom
                 test_visualizer_custom.cpp )
 target_link_libraries( test_visualizer_custom
                        tysocMjcCustomViz )
 
-# test mujoco visualizer example
+# mujoco visualizer example
 add_executable( test_visualizer_mujoco
                 test_visualizer_mujoco.cpp )
 target_link_libraries( test_visualizer_mujoco
                        tysocMjcMujocoViz )
 
-# test kintree parsed from mjcf
+# kintree parsed from mjcf example
 add_executable( test_kintree_mjcf
                 test_kintree_mjcf.cpp )
 target_link_libraries( test_kintree_mjcf
                        tysocMujoco )
+
+# kintree parsed from urdf example
+add_executable( test_kintree_urdf
+                test_kintree_urdf.cpp )
+target_link_libraries( test_kintree_urdf
+                       tysocMujoco )
+
+# kintree with visualizer and urdf example
+add_executable( test_kintree_urdf_viz
+                test_kintree_urdf_viz.cpp )
+target_link_libraries( test_kintree_urdf_viz
+                       tysocMjcCustomViz )
+
+# kintree with mjc-visualizer and urdf example
+add_executable( test_kintree_urdf_mjcviz
+                test_kintree_urdf_mjcviz.cpp )
+target_link_libraries( test_kintree_urdf_mjcviz
+                       tysocMjcMujocoViz )

@@ -27,6 +27,9 @@ int main( int argc, const char** argv )
     auto _agent = _factory->createKinTreeAgentFromMjcf( MODEL_NAME,
                                                         MODEL_NAME,
                                                         0.0, 0.0, 1.0 );
+    if ( !_agent )
+        return 1;
+    
     // and add it to the runtime
     _tysocApi->addKinTreeAgentWrapper( _agent );
 

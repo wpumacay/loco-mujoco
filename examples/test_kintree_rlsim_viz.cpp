@@ -81,12 +81,12 @@ int main( int argc, const char** argv )
 
         _tysocApi->addTerrainGenWrapper( _terrain );
 
-        std::string _templateModel = "laikago";
+        std::string _templateModel = "dog3d";
 
         // create kintree agents
-        auto _agent = _factory->createKinTreeAgentFromUrdf( _templateModel + std::to_string( i ),
-                                                            _templateModel,
-                                                            2.0f, i * ( SECTION_DEPTH + 1.0f ), 1.5f );
+        auto _agent = _factory->createKinTreeAgentFromRlsim( _templateModel + std::to_string( i ),
+                                                             _templateModel,
+                                                             2.0f, i * ( SECTION_DEPTH + 1.0f ), 1.5f );
 
         // create some sensors
         auto _sensor1Name = _templateModel + std::string( "_sensor_" ) + std::to_string( i ) + std::string( "_pathterrain" );

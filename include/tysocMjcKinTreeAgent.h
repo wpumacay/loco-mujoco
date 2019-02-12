@@ -7,6 +7,7 @@
 #include <agent/types/agent_kintree.h>
 #include <agent/types/agent_kintree_mjcf.h>
 #include <agent/types/agent_kintree_urdf.h> // @WIP
+#include <agent/types/agent_kintree_rlsim.h>
 
 namespace tysoc { 
 namespace mujoco {
@@ -25,12 +26,14 @@ namespace mujoco {
 
         private :
 
-        std::string             m_name;
+        std::string m_name;
 
         // mjcf resource: a copy of the mjcf model passed for construction
-        mjcf::GenericElement*   m_mjcfModelTemplatePtr;
+        mjcf::GenericElement* m_mjcfModelTemplatePtr;
         // urdf resource: a reference to the cached urdf model passed for construction
         urdf::UrdfModel* m_urdfModelTemplatePtr;
+        // rlsim resource: a copy of the rlsim model passed for construction
+        rlsim::RlsimModel* m_rlsimModelTemplatePtr;
 
         // underlying kinematic tree
         agent::TAgentKinTree*   m_kinTreeAgentPtr;
@@ -72,6 +75,16 @@ namespace mujoco {
         */
         TMjcKinTreeAgentWrapper( const std::string& name,
                                  urdf::UrdfModel* urdfModelPtr,
+                                 const TVec3& position );
+
+        /**
+        * Constructor from rlsim
+        * @param name               String representing the name of the agent
+        * @param rlsimModelPtr      rlsimmodel with parsed template model
+        * @param position           Starting position of the agent
+        */
+        TMjcKinTreeAgentWrapper( const std::string& name,
+                                 rlsim::RlsimModel* rlsimModelPtr,
                                  const TVec3& position );
 
         // @TODO: Add constructor from urdf

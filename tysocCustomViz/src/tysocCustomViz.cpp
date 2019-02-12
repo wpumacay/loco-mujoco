@@ -159,15 +159,15 @@ namespace viz {
         auto _app = m_glAppPtr = engine::LApp::GetInstance();
         auto _scene = m_glScenePtr = _app->scene();
 
-        // auto _camera = new engine::LFpsCamera( "fps",
-        //                                        engine::LVec3( 1.0f, 2.0f, 1.0f ),
-        //                                        engine::LVec3( -2.0f, -4.0f, -2.0f ),
-        //                                        engine::LICamera::UP_Z );
+        auto _camera = new engine::LFpsCamera( "fps",
+                                               engine::LVec3( 1.0f, 2.0f, 1.0f ),
+                                               engine::LVec3( -2.0f, -4.0f, -2.0f ),
+                                               engine::LICamera::UP_Z );
 
-        auto _camera = new engine::LFixedCamera3d( "fixed",
-                                                   engine::LVec3( 4.0f, 8.0f, 4.0f ),
-                                                   engine::LVec3( 0.0f, 0.0f, 0.0f ),
-                                                   engine::LICamera::UP_Z );
+        // auto _camera = new engine::LFixedCamera3d( "fixed",
+        //                                            engine::LVec3( 4.0f, 8.0f, 4.0f ),
+        //                                            engine::LVec3( 0.0f, 0.0f, 0.0f ),
+        //                                            engine::LICamera::UP_Z );
 
         // make a sample light source
         auto _light = new engine::LLightDirectional( engine::LVec3( 0.8, 0.8, 0.8 ), 

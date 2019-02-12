@@ -28,39 +28,39 @@ int main( int argc, const char** argv )
     auto _factory = new tysoc::mujoco::TMjcFactory();
 
     tysoc::mujoco::TGenericParams _terrainParams;
-    // sections - path - perlin profile
-    {
-        _terrainParams.set( "sectionType", "path" );
-        _terrainParams.set( "sectionDepth", SECTION_DEPTH );
-        _terrainParams.set( "pathProfile", "perlin" );
-        _terrainParams.set( "componentsSpacingX", 0.25f );
-        _terrainParams.set( "componentsThickness", 0.2f );
-        _terrainParams.set( "perlinProfileOctaves", 4 );
-        _terrainParams.set( "perlinProfilePersistance", 0.5f );
-        _terrainParams.set( "perlinProfileLacunarity", 2.0f );
-        _terrainParams.set( "perlinProfileNoiseScale", 10.0f );
-    }
+    // // sections - path - perlin profile
     // {
-    //     _terrainParams.set( "sectionType", "blocky" );
+    //     _terrainParams.set( "sectionType", "path" );
     //     _terrainParams.set( "sectionDepth", SECTION_DEPTH );
-    //     _terrainParams.set( "sectionLength", 250.0f );
-    //     _terrainParams.set( "sectionUsesBase", 1 );
-    //     _terrainParams.set( "sectionUsesSides", 1 );
-    //     _terrainParams.set( "sectionBlockyBaseHeight", 0.05f );
-    //     _terrainParams.set( "sectionBlockyBaseWidth", 0.75f );
-    //     _terrainParams.set( "sectionBlockyBaseSpacingX", 4.0f );
-    //     _terrainParams.set( "sectionBlockyBaseOffsetZ", 0.75f );
-    //     _terrainParams.set( "sectionBlockyPercentDepthMin", 0.5f );
-    //     _terrainParams.set( "sectionBlockyPercentDepthMax", 0.75f );
-    //     _terrainParams.set( "sectionBlockyPercentHeightMin", 0.75f );
-    //     _terrainParams.set( "sectionBlockyPercentHeightMax", 1.25f );
-    //     _terrainParams.set( "sectionBlockyPercentWidthMin", 0.5f );
-    //     _terrainParams.set( "sectionBlockyPercentWidthMax", 2.0f );
-    //     _terrainParams.set( "sectionBlockyPercentSpacingXMin", 0.9f );
-    //     _terrainParams.set( "sectionBlockyPercentSpacingXMax", 1.1f );
-    //     _terrainParams.set( "sectionBlockyPercentOffsetZMin", 0.75f );
-    //     _terrainParams.set( "sectionBlockyPercentOffsetZMax", 1.25f );
+    //     _terrainParams.set( "pathProfile", "perlin" );
+    //     _terrainParams.set( "componentsSpacingX", 0.25f );
+    //     _terrainParams.set( "componentsThickness", 0.2f );
+    //     _terrainParams.set( "perlinProfileOctaves", 4 );
+    //     _terrainParams.set( "perlinProfilePersistance", 0.5f );
+    //     _terrainParams.set( "perlinProfileLacunarity", 2.0f );
+    //     _terrainParams.set( "perlinProfileNoiseScale", 10.0f );
     // }
+    {
+        _terrainParams.set( "sectionType", "blocky" );
+        _terrainParams.set( "sectionDepth", SECTION_DEPTH );
+        _terrainParams.set( "sectionLength", 250.0f );
+        _terrainParams.set( "sectionUsesBase", 1 );
+        _terrainParams.set( "sectionUsesSides", 1 );
+        _terrainParams.set( "sectionBlockyBaseHeight", 0.05f );
+        _terrainParams.set( "sectionBlockyBaseWidth", 0.75f );
+        _terrainParams.set( "sectionBlockyBaseSpacingX", 4.0f );
+        _terrainParams.set( "sectionBlockyBaseOffsetZ", 0.75f );
+        _terrainParams.set( "sectionBlockyPercentDepthMin", 0.5f );
+        _terrainParams.set( "sectionBlockyPercentDepthMax", 0.75f );
+        _terrainParams.set( "sectionBlockyPercentHeightMin", 0.75f );
+        _terrainParams.set( "sectionBlockyPercentHeightMax", 1.25f );
+        _terrainParams.set( "sectionBlockyPercentWidthMin", 0.5f );
+        _terrainParams.set( "sectionBlockyPercentWidthMax", 2.0f );
+        _terrainParams.set( "sectionBlockyPercentSpacingXMin", 0.9f );
+        _terrainParams.set( "sectionBlockyPercentSpacingXMax", 1.1f );
+        _terrainParams.set( "sectionBlockyPercentOffsetZMin", 0.75f );
+        _terrainParams.set( "sectionBlockyPercentOffsetZMax", 1.25f );
+    }
 
 
     auto _scenario = new tysoc::TScenario();

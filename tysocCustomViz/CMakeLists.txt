@@ -12,6 +12,7 @@ file( GLOB_RECURSE TYSOC_CUSTOM_VIZ_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/include" )
 include_directories( "${CMAKE_SOURCE_DIR}/ext/cat1/include" )
 include_directories( "${CMAKE_SOURCE_DIR}/ext/tysocCore/include" )
+include_directories( "${CMAKE_SOURCE_DIR}/ext/tysocCore/ext/json" )
 include_directories( "${CMAKE_SOURCE_DIR}/ext/imgui" )
 include_directories( "${CMAKE_SOURCE_DIR}/ext/imgui/examples" )
 

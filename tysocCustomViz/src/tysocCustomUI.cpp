@@ -155,9 +155,9 @@ namespace viz {
         {
             if ( _sensors[i]->type == "joint" )
             {
-                // auto _kinJointSensor = reinterpret_cast< agent::TKinTreeJointSensor* >( _sensors[i] );
-                // ImGui::Text( "theta%d: %.3f", (int)i, _kinJointSensor->theta );
-                // ImGui::Text( "thetadot%d: %.3f", (int)i, _kinJointSensor->thetadot );
+                auto _kinJointSensor = reinterpret_cast< agent::TKinTreeJointSensor* >( _sensors[i] );
+                ImGui::Text( "theta%d: %.3f", (int)i, _kinJointSensor->theta );
+                ImGui::Text( "thetadot%d: %.3f", (int)i, _kinJointSensor->thetadot );
             }
             else if ( _sensors[i]->type == "body" )
             {

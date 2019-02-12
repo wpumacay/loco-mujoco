@@ -68,6 +68,37 @@ namespace mujoco {
         _createMjcResourcesFromKinTree();
     }
 
+    TMjcKinTreeAgentWrapper::TMjcKinTreeAgentWrapper( const std::string& name,
+                                                      rlsim::RlsimModel* rlsimModelPtr,
+                                                      const TVec3& position )
+    {
+        // @WIP: working on core rlsim agent
+        // grab the name
+        m_name = name;
+
+        // and create a fresh urdfmodel resource (do not replace names yet, as ...
+        // they are replaced within the kintree functionality itself)
+        m_rlsimModelTemplatePtr = new rlsim::RlsimModel();
+        rlsim::deepCopy( m_rlsimModelTemplatePtr,
+                         rlsimModelPtr,
+                         "" );
+
+        // create the urdf resources element for this agent
+        m_mjcfResourcesPtr = new mjcf::GenericElement( "mujoco" );
+        m_mjcfResourcesPtr->setAttributeString( "model", m_name );
+
+        // and set default to avoid wild undefined pointers
+        m_mjcModelPtr   = NULL;
+        m_mjcDataPtr    = NULL;
+        m_mjcScenePtr   = NULL;
+
+        // and create the kintree agent that uses urdf
+        m_kinTreeAgentPtr = new agent::TAgentKinTreeRlsim( name, 
+                                                           position, 
+                                                           m_rlsimModelTemplatePtr );
+        _createMjcResourcesFromKinTree();
+    }
+
     TMjcKinTreeAgentWrapper::~TMjcKinTreeAgentWrapper()
     {
         if ( m_mjcfModelTemplatePtr )
@@ -159,21 +190,21 @@ namespace mujoco {
         }
         else if ( m_kinTreeAgentPtr->getModelTemplateType() == agent::MODEL_TEMPLATE_TYPE_URDF )
         {
-            // // Create a free joint for the root body
-            // {
-            //     // create the freejoint element
-            //     auto _freeJointElmPtr = new mjcf::GenericElement( "joint" );
-            //     // compute the appropiate unique-name
-            //     auto _freeJointName = urdf::computeUrdfName( "joint", "free", m_name );
-            //     _freeJointElmPtr->setAttributeString( "name", _freeJointName );
-            //     // set the type to free to give 6dof to the agent at its root body
-            //     _freeJointElmPtr->setAttributeString( "type", "free" );
-            //     // get the appropiate body to add this joint to
-            //     auto _rootBodyElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "body" );
-            //     // and add it to the rootbody
-            //     _rootBodyElmPtr->children.push_back( _freeJointElmPtr );
-            //     
-            // }
+            // Create a free joint for the root body
+            {
+                // create the freejoint element
+                auto _freeJointElmPtr = new mjcf::GenericElement( "joint" );
+                // compute the appropiate unique-name
+                auto _freeJointName = urdf::computeUrdfName( "joint", "free", m_name );
+                _freeJointElmPtr->setAttributeString( "name", _freeJointName );
+                // set the type to free to give 6dof to the agent at its root body
+                _freeJointElmPtr->setAttributeString( "type", "free" );
+                // get the appropiate body to add this joint to
+                auto _rootBodyElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "body" );
+                // and add it to the rootbody
+                _rootBodyElmPtr->children.push_back( _freeJointElmPtr );
+                
+            }
         }
         else if ( m_kinTreeAgentPtr->getModelTemplateType() == agent::MODEL_TEMPLATE_TYPE_RLSIM )
         {
@@ -218,6 +249,10 @@ namespace mujoco {
             {
                 _joints[i]->type = "free";
             }
+            else if ( _joints[i]->type == "spherical" )
+            {
+                _joints[i]->type = "ball";
+            }
             else if ( _joints[i]->type == "fixed" )
             {
                 // for mujoco it it's like a non-existent joint in xml
@@ -240,7 +275,12 @@ namespace mujoco {
                 _jointElmPtr->setAttributeVec3( "axis", _joints[i]->relTransform.getRotation() * _joints[i]->axis );
                 _jointElmPtr->setAttributeString( "limited", ( _joints[i]->limited ) ? "true" : "false" );
                 if ( _joints[i]->limited )
-                    _jointElmPtr->setAttributeVec2( "range", { _joints[i]->lowerLimit, _joints[i]->upperLimit } );
+                {
+                    if ( _joints[i]->type == "ball" )
+                        _jointElmPtr->setAttributeVec2( "range", { 0, _joints[i]->upperLimit } );
+                    else
+                        _jointElmPtr->setAttributeVec2( "range", { _joints[i]->lowerLimit, _joints[i]->upperLimit } );
+                }
                 // @GENERIC
                 if ( _joints[i]->stiffness != 0.0f )
                     _jointElmPtr->setAttributeFloat( "stiffness", _joints[i]->stiffness );
@@ -709,13 +749,30 @@ namespace mujoco {
                                       _kinVisuals[i]->name,
                                       _color );
 
-            _kinVisuals[i]->material.diffuse.x = _color[0];
-            _kinVisuals[i]->material.diffuse.y = _color[1];
-            _kinVisuals[i]->material.diffuse.z = _color[2];
+            // @HACK: colors should be set at initialization
+            if ( m_kinTreeAgentPtr->getModelTemplateType() == agent::MODEL_TEMPLATE_TYPE_MJCF )
+            {
+                _kinVisuals[i]->material.diffuse.x = _color[0];
+                _kinVisuals[i]->material.diffuse.y = _color[1];
+                _kinVisuals[i]->material.diffuse.z = _color[2];
 
-            _kinVisuals[i]->material.specular.x = _color[0];
-            _kinVisuals[i]->material.specular.y = _color[1];
-            _kinVisuals[i]->material.specular.z = _color[2];
+                _kinVisuals[i]->material.specular.x = _color[0];
+                _kinVisuals[i]->material.specular.y = _color[1];
+                _kinVisuals[i]->material.specular.z = _color[2];
+            }
+            // @HACK|@FIX: there is an issue with the preprocessing of the urdf materials
+            else
+            {
+                _kinVisuals[i]->material.diffuse.x = _kinVisuals[i]->rgba.x;
+                _kinVisuals[i]->material.diffuse.y = _kinVisuals[i]->rgba.y;
+                _kinVisuals[i]->material.diffuse.z = _kinVisuals[i]->rgba.z;
+
+                _kinVisuals[i]->material.specular.x = _kinVisuals[i]->rgba.x;
+                _kinVisuals[i]->material.specular.y = _kinVisuals[i]->rgba.y;
+                _kinVisuals[i]->material.specular.z = _kinVisuals[i]->rgba.z;
+            }
+
+            // std::cout << "color: " << TVec3::toString( _kinVisuals[i]->material.diffuse ) << std::endl;
         }
     }
 

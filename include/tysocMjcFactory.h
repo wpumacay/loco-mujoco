@@ -131,16 +131,22 @@ namespace mujoco {
         private :
 
         mjcf::Schema* m_mjcfSchema;
+
         std::vector< std::string > m_templateMjcfModelFiles;
         std::vector< std::string > m_templateUrdfModelFiles;
-        std::map< std::string, mjcf::GenericElement* > m_cachedMjcfModels;
-        std::map< std::string, urdf::UrdfModel* > m_cachedUrdfModels;
+        std::vector< std::string > m_templateRlsimModelFiles;
+
+        std::map< std::string, mjcf::GenericElement* >  m_cachedMjcfModels;
+        std::map< std::string, urdf::UrdfModel* >       m_cachedUrdfModels;
+        std::map< std::string, rlsim::RlsimModel* >     m_cachedRlsimModels;
 
         void _precacheModels();
         void _precacheMjcfModels();
         void _precacheSingleMjcfModel( const std::string& templateFile );
         void _precacheUrdfModels();
         void _precacheSingleUrdfModel( const std::string& templateFile );
+        void _precacheRlsimModels();
+        void _precacheSingleRlsimModel( const std::string& templateFile );
 
         public :
 
@@ -157,6 +163,10 @@ namespace mujoco {
         TMjcKinTreeAgentWrapper* createKinTreeAgentFromUrdf( const std::string& name,
                                                              const std::string& modelname,
                                                              float startX, float startY, float startZ );
+
+        TMjcKinTreeAgentWrapper* createKinTreeAgentFromRlsim( const std::string& name,
+                                                              const std::string& modelname,
+                                                              float startX, float startY, float startZ );
 
         TMjcTerrainGenWrapper* createTerrainGen( const std::string& name,
                                                  const std::string& type,

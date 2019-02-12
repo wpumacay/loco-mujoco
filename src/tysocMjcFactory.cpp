@@ -30,6 +30,7 @@ namespace mujoco {
 
         m_templateMjcfModelFiles.clear();
         m_templateUrdfModelFiles.clear();
+        m_templateRlsimModelFiles.clear();
 
         for ( auto it = m_cachedMjcfModels.begin();
               it != m_cachedMjcfModels.end();
@@ -46,12 +47,21 @@ namespace mujoco {
             delete it->second;
         }
         m_cachedUrdfModels.clear();
+
+        for ( auto it = m_cachedRlsimModels.begin();
+              it != m_cachedRlsimModels.end();
+              it++ )
+        {
+            delete it->second;
+        }
+        m_cachedRlsimModels.clear();
     }
 
     void TMjcFactory::_precacheModels()
     {
         _precacheMjcfModels();
         _precacheUrdfModels();
+        _precacheRlsimModels();
     }
 
     void TMjcFactory::_precacheMjcfModels()
@@ -122,6 +132,41 @@ namespace mujoco {
         }
     }
 
+    // @TODO|@CHECK: refactor this part in order to have a single precache starting point
+    void TMjcFactory::_precacheRlsimModels()
+    {
+        std::vector< std::string > _filesToCache;
+
+        // Get the template files from the templates folder *****************
+        DIR* _directoryPtr;
+        struct dirent* _direntPtr;
+
+        std::string _templatesFolderPath;
+        _templatesFolderPath += TYSOCMJC_RESOURCES_PATH;
+        _templatesFolderPath += "templates/rlsim/";
+
+        _directoryPtr = opendir( _templatesFolderPath.c_str() );
+        if ( _directoryPtr )
+        {
+            while ( _direntPtr = readdir( _directoryPtr ) )
+            {
+                std::string _fname = _direntPtr->d_name;
+                if ( _fname.find( ".json" ) != std::string::npos )
+                {
+                    m_templateRlsimModelFiles.push_back( _fname );
+                }
+            }
+        }
+        closedir( _directoryPtr );
+
+        // ******************************************************************
+
+        for ( size_t i = 0; i < m_templateRlsimModelFiles.size(); i++ )
+        {
+            _precacheSingleRlsimModel( m_templateRlsimModelFiles[ i ] );
+        }
+    }
+
     void TMjcFactory::_precacheSingleMjcfModel( const std::string& templateFile )
     {
         std::cout << "INFO> trying to load template: " << templateFile << std::endl;
@@ -152,6 +197,23 @@ namespace mujoco {
         m_cachedUrdfModels[ _modelName ] = _urdfModel;
 
         std::cout << "INFO> Precached urdf template model: " << _modelName << std::endl;
+    }
+
+    // @TODO|@CHECK: refactor this part in order to have a single precachesingle function
+    void TMjcFactory::_precacheSingleRlsimModel( const std::string& templateFile )
+    {
+        std::cout << "INFO> trying to load template: " << templateFile << std::endl;
+        // Gran the model into a mjcf::GenericElement node
+        auto _rlsimModel = rlsim::loadGenericModel( std::string( TYSOCMJC_RESOURCES_PATH ) + "templates/rlsim/" + templateFile );
+
+        // Extract the name to use as key in the cache dictionary
+        size_t _jsonTagPos = templateFile.find( ".json" );
+        std::string _modelName = templateFile.substr( 0, _jsonTagPos );
+
+        // cache the model
+        m_cachedRlsimModels[ _modelName ] = _rlsimModel;
+
+        std::cout << "INFO> Precached rlsim template model: " << _modelName << std::endl;
     }
 
     TMjcKinTreeAgentWrapper* TMjcFactory::createKinTreeAgentFromMjcf( const std::string& name,
@@ -193,6 +255,30 @@ namespace mujoco {
 
         // grab the template model and its components
         auto _modelTemplateElm = m_cachedUrdfModels[ modelname ];
+        // and create the wrapper (it handles everything inside)
+
+        auto _kinTreeAgentWrapper = new TMjcKinTreeAgentWrapper( name,
+                                                                 _modelTemplateElm,
+                                                                 { startX, startY, startZ } );
+
+        return _kinTreeAgentWrapper;
+    }
+
+    TMjcKinTreeAgentWrapper* TMjcFactory::createKinTreeAgentFromRlsim( const std::string& name,
+                                                                       const std::string& modelname,
+                                                                       float startX, float startY, float startZ )
+    {
+        if ( m_cachedRlsimModels.find( modelname ) == m_cachedRlsimModels.end() )
+        {
+            std::cout << "WARNING> agent " << name << " "
+                      << "cannot be created because modelname " << modelname << " "
+                      << "is not an rlsim templated model or wasn't cached" << std::endl;
+
+            return NULL;
+        }
+
+        // grab the template model and its components
+        auto _modelTemplateElm = m_cachedRlsimModels[ modelname ];
         // and create the wrapper (it handles everything inside)
 
         auto _kinTreeAgentWrapper = new TMjcKinTreeAgentWrapper( name,

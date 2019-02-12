@@ -2,7 +2,7 @@
 #include <tysocMjc.h>
 #include <tysocCustomViz.h>
 
-static int NUM_AGENTS = 3;
+static int NUM_AGENTS = 6;
 
 #define SECTION_DEPTH 2.0f
 
@@ -26,110 +26,112 @@ int main( int argc, const char** argv )
     auto _tysocApi = new tysoc::mujoco::TTysocMjcApi();
     auto _factory = new tysoc::mujoco::TMjcFactory();
 
-    tysoc::mujoco::TGenericParams _terrainParams;
-    // // sections - path - perlin profile
-    // {
-    //     _terrainParams.set( "sectionType", "path" );
-    //     _terrainParams.set( "sectionDepth", SECTION_DEPTH );
-    //     _terrainParams.set( "pathProfile", "perlin" );
-    //     _terrainParams.set( "componentsSpacingX", 0.25f );
-    //     _terrainParams.set( "componentsThickness", 0.2f );
-    //     _terrainParams.set( "perlinProfileOctaves", 4 );
-    //     _terrainParams.set( "perlinProfilePersistance", 0.5f );
-    //     _terrainParams.set( "perlinProfileLacunarity", 2.0f );
-    //     _terrainParams.set( "perlinProfileNoiseScale", 10.0f );
-    // }
-    // // sections - path - sine profile
-    // {
-    //     _terrainParams.set( "sectionType", "path" );
-    //     _terrainParams.set( "sectionDepth", SECTION_DEPTH );
-    //     _terrainParams.set( "pathProfile", "sine" );
-    //     _terrainParams.set( "sineProfileAmplitude", 1.0f );
-    //     _terrainParams.set( "sineProfilePeriod", 10.0f );
-    //     _terrainParams.set( "sineProfilePhase", 1.57f );
-    //     _terrainParams.set( "componentsThickness", 0.2f );
-    // }
+    tysoc::mujoco::TGenericParams _terrainParams[6];
+    // sections - path - perlin profile
+    {
+        _terrainParams[0].set( "sectionType", "path" );
+        _terrainParams[0].set( "sectionDepth", SECTION_DEPTH );
+        _terrainParams[0].set( "pathProfile", "perlin" );
+        _terrainParams[0].set( "componentsSpacingX", 0.25f );
+        _terrainParams[0].set( "componentsThickness", 0.2f );
+        _terrainParams[0].set( "perlinProfileOctaves", 4 );
+        _terrainParams[0].set( "perlinProfilePersistance", 0.5f );
+        _terrainParams[0].set( "perlinProfileLacunarity", 2.0f );
+        _terrainParams[0].set( "perlinProfileNoiseScale", 10.0f );
+    }
+    // sections - path - sine profile
+    {
+        _terrainParams[1].set( "sectionType", "path" );
+        _terrainParams[1].set( "sectionDepth", SECTION_DEPTH );
+        _terrainParams[1].set( "pathProfile", "sine" );
+        _terrainParams[1].set( "componentsSpacingX", 0.25f );
+        _terrainParams[1].set( "componentsThickness", 0.2f );
+        _terrainParams[1].set( "sineProfileAmplitude", 1.0f );
+        _terrainParams[1].set( "sineProfilePeriod", 10.0f );
+        _terrainParams[1].set( "sineProfilePhase", 1.57f );
+        _terrainParams[1].set( "componentsThickness", 0.2f );
+    }
     // sections - blocky
     {
-        // _terrainParams.set( "sectionType", "blocky" );
-        // _terrainParams.set( "sectionDepth", SECTION_DEPTH );
-        // _terrainParams.set( "sectionLength", 250.0f );
-        // _terrainParams.set( "sectionUsesBase", 1 );
-        // _terrainParams.set( "sectionUsesSides", 1 );
-        // _terrainParams.set( "sectionBlockyBaseHeight", 0.5f );
-        // _terrainParams.set( "sectionBlockyBaseWidth", 0.25f );
-        // _terrainParams.set( "sectionBlockyBaseSpacingX", 4.0f );
-        // _terrainParams.set( "sectionBlockyBaseOffsetZ", 0.0f );
-        // _terrainParams.set( "sectionBlockyPercentDepthMin", 0.25f );//1.0f
-        // _terrainParams.set( "sectionBlockyPercentDepthMax", 0.75f );//1.0f
-        // _terrainParams.set( "sectionBlockyPercentHeightMin", 0.75f );
-        // _terrainParams.set( "sectionBlockyPercentHeightMax", 1.25f );
-        // _terrainParams.set( "sectionBlockyPercentWidthMin", 0.5f );
-        // _terrainParams.set( "sectionBlockyPercentWidthMax", 2.0f );
-        // _terrainParams.set( "sectionBlockyPercentSpacingXMin", 0.9f );
-        // _terrainParams.set( "sectionBlockyPercentSpacingXMax", 1.1f );
-        // _terrainParams.set( "sectionBlockyPercentOffsetZMin", 1.0f );
-        // _terrainParams.set( "sectionBlockyPercentOffsetZMax", 1.0f );
+        _terrainParams[2].set( "sectionType", "blocky" );
+        _terrainParams[2].set( "sectionDepth", SECTION_DEPTH );
+        _terrainParams[2].set( "sectionLength", 250.0f );
+        _terrainParams[2].set( "sectionUsesBase", 1 );
+        _terrainParams[2].set( "sectionUsesSides", 1 );
+        _terrainParams[2].set( "sectionBlockyBaseHeight", 0.5f );
+        _terrainParams[2].set( "sectionBlockyBaseWidth", 0.25f );
+        _terrainParams[2].set( "sectionBlockyBaseSpacingX", 4.0f );
+        _terrainParams[2].set( "sectionBlockyBaseOffsetZ", 0.0f );
+        _terrainParams[2].set( "sectionBlockyPercentDepthMin", 0.25f );//1.0f
+        _terrainParams[2].set( "sectionBlockyPercentDepthMax", 0.75f );//1.0f
+        _terrainParams[2].set( "sectionBlockyPercentHeightMin", 0.75f );
+        _terrainParams[2].set( "sectionBlockyPercentHeightMax", 1.25f );
+        _terrainParams[2].set( "sectionBlockyPercentWidthMin", 0.5f );
+        _terrainParams[2].set( "sectionBlockyPercentWidthMax", 2.0f );
+        _terrainParams[2].set( "sectionBlockyPercentSpacingXMin", 0.9f );
+        _terrainParams[2].set( "sectionBlockyPercentSpacingXMax", 1.1f );
+        _terrainParams[2].set( "sectionBlockyPercentOffsetZMin", 1.0f );
+        _terrainParams[2].set( "sectionBlockyPercentOffsetZMax", 1.0f );
 
-        // _terrainParams.set( "sectionType", "blocky" );
-        // _terrainParams.set( "sectionDepth", SECTION_DEPTH );
-        // _terrainParams.set( "sectionLength", 250.0f );
-        // _terrainParams.set( "sectionUsesBase", 1 );
-        // _terrainParams.set( "sectionUsesSides", 0 );
-        // _terrainParams.set( "sectionBlockyBaseHeight", 0.5f );
-        // _terrainParams.set( "sectionBlockyBaseWidth", 0.25f );
-        // _terrainParams.set( "sectionBlockyBaseSpacingX", 4.0f );
-        // _terrainParams.set( "sectionBlockyBaseOffsetZ", 0.0f );
-        // _terrainParams.set( "sectionBlockyPercentDepthMin", 1.0f );
-        // _terrainParams.set( "sectionBlockyPercentDepthMax", 1.0f );
-        // _terrainParams.set( "sectionBlockyPercentHeightMin", 0.75f );
-        // _terrainParams.set( "sectionBlockyPercentHeightMax", 1.25f );
-        // _terrainParams.set( "sectionBlockyPercentWidthMin", 0.5f );
-        // _terrainParams.set( "sectionBlockyPercentWidthMax", 2.0f );
-        // _terrainParams.set( "sectionBlockyPercentSpacingXMin", 0.9f );
-        // _terrainParams.set( "sectionBlockyPercentSpacingXMax", 1.1f );
-        // _terrainParams.set( "sectionBlockyPercentOffsetZMin", 1.0f );
-        // _terrainParams.set( "sectionBlockyPercentOffsetZMax", 1.0f );
+        _terrainParams[3].set( "sectionType", "blocky" );
+        _terrainParams[3].set( "sectionDepth", SECTION_DEPTH );
+        _terrainParams[3].set( "sectionLength", 250.0f );
+        _terrainParams[3].set( "sectionUsesBase", 1 );
+        _terrainParams[3].set( "sectionUsesSides", 0 );
+        _terrainParams[3].set( "sectionBlockyBaseHeight", 0.5f );
+        _terrainParams[3].set( "sectionBlockyBaseWidth", 0.25f );
+        _terrainParams[3].set( "sectionBlockyBaseSpacingX", 4.0f );
+        _terrainParams[3].set( "sectionBlockyBaseOffsetZ", 0.0f );
+        _terrainParams[3].set( "sectionBlockyPercentDepthMin", 1.0f );
+        _terrainParams[3].set( "sectionBlockyPercentDepthMax", 1.0f );
+        _terrainParams[3].set( "sectionBlockyPercentHeightMin", 0.75f );
+        _terrainParams[3].set( "sectionBlockyPercentHeightMax", 1.25f );
+        _terrainParams[3].set( "sectionBlockyPercentWidthMin", 0.5f );
+        _terrainParams[3].set( "sectionBlockyPercentWidthMax", 2.0f );
+        _terrainParams[3].set( "sectionBlockyPercentSpacingXMin", 0.9f );
+        _terrainParams[3].set( "sectionBlockyPercentSpacingXMax", 1.1f );
+        _terrainParams[3].set( "sectionBlockyPercentOffsetZMin", 1.0f );
+        _terrainParams[3].set( "sectionBlockyPercentOffsetZMax", 1.0f );
 
-        // _terrainParams.set( "sectionType", "blocky" );
-        // _terrainParams.set( "sectionDepth", SECTION_DEPTH );
-        // _terrainParams.set( "sectionLength", 250.0f );
-        // _terrainParams.set( "sectionUsesBase", 0 );
-        // _terrainParams.set( "sectionUsesSides", 0 );
-        // _terrainParams.set( "sectionBlockyBaseHeight", 0.1f );
-        // _terrainParams.set( "sectionBlockyBaseWidth", 1.0f );
-        // _terrainParams.set( "sectionBlockyBaseSpacingX", 2.5f );
-        // _terrainParams.set( "sectionBlockyBaseOffsetZ", 0.0f );
-        // _terrainParams.set( "sectionBlockyPercentDepthMin", 1.0f );
-        // _terrainParams.set( "sectionBlockyPercentDepthMax", 1.0f );
-        // _terrainParams.set( "sectionBlockyPercentHeightMin", 1.0f );
-        // _terrainParams.set( "sectionBlockyPercentHeightMax", 1.0f );
-        // _terrainParams.set( "sectionBlockyPercentWidthMin", 0.75f );
-        // _terrainParams.set( "sectionBlockyPercentWidthMax", 1.25f );
-        // _terrainParams.set( "sectionBlockyPercentSpacingXMin", 0.75f );
-        // _terrainParams.set( "sectionBlockyPercentSpacingXMax", 1.25f );
-        // _terrainParams.set( "sectionBlockyPercentOffsetZMin", 1.0f );
-        // _terrainParams.set( "sectionBlockyPercentOffsetZMax", 1.0f );
+        _terrainParams[4].set( "sectionType", "blocky" );
+        _terrainParams[4].set( "sectionDepth", SECTION_DEPTH );
+        _terrainParams[4].set( "sectionLength", 250.0f );
+        _terrainParams[4].set( "sectionUsesBase", 0 );
+        _terrainParams[4].set( "sectionUsesSides", 0 );
+        _terrainParams[4].set( "sectionBlockyBaseHeight", 0.1f );
+        _terrainParams[4].set( "sectionBlockyBaseWidth", 1.0f );
+        _terrainParams[4].set( "sectionBlockyBaseSpacingX", 2.5f );
+        _terrainParams[4].set( "sectionBlockyBaseOffsetZ", 0.0f );
+        _terrainParams[4].set( "sectionBlockyPercentDepthMin", 1.0f );
+        _terrainParams[4].set( "sectionBlockyPercentDepthMax", 1.0f );
+        _terrainParams[4].set( "sectionBlockyPercentHeightMin", 1.0f );
+        _terrainParams[4].set( "sectionBlockyPercentHeightMax", 1.0f );
+        _terrainParams[4].set( "sectionBlockyPercentWidthMin", 0.75f );
+        _terrainParams[4].set( "sectionBlockyPercentWidthMax", 1.25f );
+        _terrainParams[4].set( "sectionBlockyPercentSpacingXMin", 0.75f );
+        _terrainParams[4].set( "sectionBlockyPercentSpacingXMax", 1.25f );
+        _terrainParams[4].set( "sectionBlockyPercentOffsetZMin", 1.0f );
+        _terrainParams[4].set( "sectionBlockyPercentOffsetZMax", 1.0f );
 
-        _terrainParams.set( "sectionType", "blocky" );
-        _terrainParams.set( "sectionDepth", SECTION_DEPTH );
-        _terrainParams.set( "sectionLength", 250.0f );
-        _terrainParams.set( "sectionUsesBase", 1 );
-        _terrainParams.set( "sectionUsesSides", 1 );
-        _terrainParams.set( "sectionBlockyBaseHeight", 0.05f );
-        _terrainParams.set( "sectionBlockyBaseWidth", 0.75f );
-        _terrainParams.set( "sectionBlockyBaseSpacingX", 4.0f );
-        _terrainParams.set( "sectionBlockyBaseOffsetZ", 0.75f );
-        _terrainParams.set( "sectionBlockyPercentDepthMin", 0.5f );
-        _terrainParams.set( "sectionBlockyPercentDepthMax", 0.75f );
-        _terrainParams.set( "sectionBlockyPercentHeightMin", 0.75f );
-        _terrainParams.set( "sectionBlockyPercentHeightMax", 1.25f );
-        _terrainParams.set( "sectionBlockyPercentWidthMin", 0.5f );
-        _terrainParams.set( "sectionBlockyPercentWidthMax", 2.0f );
-        _terrainParams.set( "sectionBlockyPercentSpacingXMin", 0.9f );
-        _terrainParams.set( "sectionBlockyPercentSpacingXMax", 1.1f );
-        _terrainParams.set( "sectionBlockyPercentOffsetZMin", 0.75f );
-        _terrainParams.set( "sectionBlockyPercentOffsetZMax", 1.25f );
+        _terrainParams[5].set( "sectionType", "blocky" );
+        _terrainParams[5].set( "sectionDepth", SECTION_DEPTH );
+        _terrainParams[5].set( "sectionLength", 250.0f );
+        _terrainParams[5].set( "sectionUsesBase", 1 );
+        _terrainParams[5].set( "sectionUsesSides", 1 );
+        _terrainParams[5].set( "sectionBlockyBaseHeight", 0.05f );
+        _terrainParams[5].set( "sectionBlockyBaseWidth", 0.75f );
+        _terrainParams[5].set( "sectionBlockyBaseSpacingX", 4.0f );
+        _terrainParams[5].set( "sectionBlockyBaseOffsetZ", 0.75f );
+        _terrainParams[5].set( "sectionBlockyPercentDepthMin", 0.5f );
+        _terrainParams[5].set( "sectionBlockyPercentDepthMax", 0.75f );
+        _terrainParams[5].set( "sectionBlockyPercentHeightMin", 0.75f );
+        _terrainParams[5].set( "sectionBlockyPercentHeightMax", 1.25f );
+        _terrainParams[5].set( "sectionBlockyPercentWidthMin", 0.5f );
+        _terrainParams[5].set( "sectionBlockyPercentWidthMax", 2.0f );
+        _terrainParams[5].set( "sectionBlockyPercentSpacingXMin", 0.9f );
+        _terrainParams[5].set( "sectionBlockyPercentSpacingXMax", 1.1f );
+        _terrainParams[5].set( "sectionBlockyPercentOffsetZMin", 0.75f );
+        _terrainParams[5].set( "sectionBlockyPercentOffsetZMax", 1.25f );
     }
 
 
@@ -140,9 +142,9 @@ int main( int argc, const char** argv )
     {
         // create a terrain generator
         tysoc::TVec3 _startPosition = { 0.0f, i * ( SECTION_DEPTH + 1.0f ), 0.0f };
-        _terrainParams.set( "startPosition", _startPosition );
+        _terrainParams[i].set( "startPosition", _startPosition );
         auto _terrain = _factory->createTerrainGen( std::string( "terrain_proc" ) + std::to_string( i ),
-                                                    "procedural", _terrainParams );
+                                                    "procedural", _terrainParams[i] );
         
         auto _terrainGen        = _terrain->terrainGenerator();
         auto _terrainGenInfo    = _terrainGen->generatorInfo();
@@ -152,7 +154,7 @@ int main( int argc, const char** argv )
 
         _tysocApi->addTerrainGenWrapper( _terrain );
 
-        std::string _templateModel = ( i % 3 == 0 ) ? "humanoid" : ( ( i % 3  == 1 ) ? "walker" : "baxter" );
+        std::string _templateModel = ( i % 3 == 0 ) ? "walker" : ( ( i % 3  == 1 ) ? "walker" : "walker" );
 
         // create kintree agents
         auto _agent = _factory->createKinTreeAgentFromMjcf( _templateModel + std::to_string( i ),
@@ -171,8 +173,8 @@ int main( int argc, const char** argv )
 
         // and add it to the runtime
         _tysocApi->addKinTreeAgentWrapper( _agent );
-        _tysocApi->getScenario()->addSensor( _sensor1 );
-        _tysocApi->getScenario()->addSensor( _sensor2 );
+        // _tysocApi->getScenario()->addSensor( _sensor1 );
+        // _tysocApi->getScenario()->addSensor( _sensor2 );
     }
 
     if ( !_tysocApi->initializeMjcApi() )
@@ -186,7 +188,7 @@ int main( int argc, const char** argv )
     auto _viz = new tysoc::viz::TCustomVisualizer( _tysocApi );
     _viz->initialize();
 
-    float _currentX = 0.0f;
+    float _currentX = 2.0f;
 
     while( _viz->isActive() )
     {
@@ -203,6 +205,15 @@ int main( int argc, const char** argv )
         // {
         //     auto _genInfoPtr = _terrainGens[i]->generatorInfo();
         //     _genInfoPtr->trackingpoint.x = _currentX;
+        // }
+
+        // auto _ballAgent = _scenario->getAgentByName( "ball0" );
+        // if ( _ballAgent )
+        // {
+        //     tysoc::mujoco::utils::setTerrainBodyPosition( _tysocApi->getMjcModel(),
+        //                                                   _tysocApi->getMjcData(),
+        //                                                   "body_ball0_rootbody",
+        //                                                   { _currentX, 0.0f, 2.0f } );
         // }
 
         // auto _iagents = _tysocApi->getAgents();

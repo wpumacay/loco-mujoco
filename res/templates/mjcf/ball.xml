@@ -1,9 +1,9 @@
 <mujoco model="template_ball">
 
   <worldbody>
-    <body name="mjcbody_###_tmjcroot" pos="0 0 0" >
+    <body name="rootbody" pos="0 0 0" >
       <!--<freejoint name="mjcjoint_###_root" />-->
-      <geom name="mjcgeom_###_tmjcroot" material="self" type="sphere" size="0.1"/>
+      <geom name="rootgeom" material="self" type="sphere" size="0.1"/>
     </body>
   </worldbody>
 

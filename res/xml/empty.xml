@@ -35,4 +35,8 @@
     <!--<geom name="floor" type="box" contype="1" conaffinity="1" pos="0 0 0" size="4 4 .2" zaxis="0 0 1" friction=".7 .1 .1"/>-->
   <!--</worldbody>-->
 
+  <worldbody>
+    <geom name="floor" type="plane" contype="1" conaffinity="1" pos="0 0 -10" size="1 1 .2" zaxis="0 0 1" friction=".7 .1 .1"/>
+  </worldbody>
+
 </mujoco>

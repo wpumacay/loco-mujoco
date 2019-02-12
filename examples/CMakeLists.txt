@@ -42,10 +42,22 @@ add_executable( test_kintree_urdf
 target_link_libraries( test_kintree_urdf
                        tysocMujoco )
 
+# kintree parsed from rlsim example
+add_executable( test_kintree_rlsim
+                test_kintree_rlsim.cpp )
+target_link_libraries( test_kintree_rlsim
+                       tysocMujoco )
+
 # kintree with visualizer and urdf example
 add_executable( test_kintree_urdf_viz
                 test_kintree_urdf_viz.cpp )
 target_link_libraries( test_kintree_urdf_viz
+                       tysocMjcCustomViz )
+
+# kintree with visualizer and urdf example
+add_executable( test_kintree_rlsim_viz
+                test_kintree_rlsim_viz.cpp )
+target_link_libraries( test_kintree_rlsim_viz
                        tysocMjcCustomViz )
 
 # kintree with mjc-visualizer and urdf example

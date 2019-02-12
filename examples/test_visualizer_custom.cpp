@@ -101,8 +101,8 @@ int main( int argc, const char** argv )
 
         // and add it to the runtime
         _tysocApi->addKinTreeAgentWrapper( _agent );
-        _tysocApi->getScenario()->addSensor( _sensor1 );
-        _tysocApi->getScenario()->addSensor( _sensor2 );
+        // _tysocApi->getScenario()->addSensor( _sensor1 );
+        // _tysocApi->getScenario()->addSensor( _sensor2 );
     }
 
     if ( !_tysocApi->initializeMjcApi() )

@@ -47,7 +47,7 @@ namespace viz {
 
         public :
 
-        TCustomUI( TTysocCommonApi* tysocApiPtr,
+        TCustomUI( TScenario* scenarioPtr,
                    TCustomContextUI* uiContextPtr );
         ~TCustomUI();
     };

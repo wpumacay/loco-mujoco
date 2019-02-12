@@ -62,7 +62,7 @@ namespace viz {
 
         public :
 
-        TCustomVisualizer( TTysocCommonApi* tysocApiPtr );
+        TCustomVisualizer( TScenario* scenarioPtr );
         ~TCustomVisualizer(); // @CHECK: check for virtual destructors
 
     };

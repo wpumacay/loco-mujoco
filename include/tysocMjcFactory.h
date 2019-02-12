@@ -130,8 +130,6 @@ namespace mujoco {
     {
         private :
 
-        mjcf::Schema* m_mjcfSchema;
-
         std::vector< std::string > m_templateMjcfModelFiles;
         std::vector< std::string > m_templateUrdfModelFiles;
         std::vector< std::string > m_templateRlsimModelFiles;

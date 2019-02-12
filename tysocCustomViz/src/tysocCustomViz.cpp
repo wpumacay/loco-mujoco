@@ -6,8 +6,8 @@ namespace tysoc {
 namespace viz {
 
 
-    TCustomVisualizer::TCustomVisualizer( TTysocCommonApi* tysocApiPtr )
-        : TIVisualizer( tysocApiPtr )
+    TCustomVisualizer::TCustomVisualizer( TScenario* scenarioPtr )
+        : TIVisualizer( scenarioPtr )
     {
         m_glAppPtr      = NULL;
         m_glScenePtr    = NULL;
@@ -25,7 +25,7 @@ namespace viz {
         _setupGlRenderingEngine();
 
         // Create visualization wrappers for the terrain generator
-        auto _terrainGenerators = m_tysocApiPtr->getScenario()->getTerrainGenerators();
+        auto _terrainGenerators = m_scenarioPtr->getTerrainGenerators();
 
         for ( size_t i = 0; i < _terrainGenerators.size(); i++ )
         {
@@ -33,7 +33,7 @@ namespace viz {
         }
 
         // Create visualization wrappers for the agents
-        auto _agents = m_tysocApiPtr->getScenario()->getAgents();
+        auto _agents = m_scenarioPtr->getAgents();
 
         for ( size_t i = 0; i < _agents.size(); i++ )
         {
@@ -51,7 +51,7 @@ namespace viz {
         m_uiContextPtr->glfwWindowPtr       = m_glAppPtr->window()->getGLFWwindow();
         m_uiContextPtr->vizKinTreePtrs      = m_vizKinTreeWrappers;
         // and then the UI
-        m_uiPtr = new TCustomUI( m_tysocApiPtr,
+        m_uiPtr = new TCustomUI( m_scenarioPtr,
                                  m_uiContextPtr );
         m_uiPtr->initUI();
     }
@@ -72,8 +72,7 @@ namespace viz {
 
         // and the sensor readings (render them directly, seems like ...
         // wrapping them would be wasteful?)
-        auto _scenarioPtr = m_tysocApiPtr->getScenario();
-        auto _sensors = _scenarioPtr->getSensors();
+        auto _sensors = m_scenarioPtr->getSensors();
 
         for ( size_t i = 0; i < _sensors.size(); i++ )
         {

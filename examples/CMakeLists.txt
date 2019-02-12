@@ -65,3 +65,9 @@ add_executable( test_kintree_urdf_mjcviz
                 test_kintree_urdf_mjcviz.cpp )
 target_link_libraries( test_kintree_urdf_mjcviz
                        tysocMjcMujocoViz )
+
+# kintree visualizer-only example
+add_executable( test_visualizer_only
+                test_visualizer_only.cpp )
+target_link_libraries( test_visualizer_only
+                       tysocMjcCustomViz )

@@ -8,8 +8,8 @@ namespace viz {
 
     TMujocoVisualizer* TMujocoVisualizer::_INSTANCE = NULL;
 
-    TMujocoVisualizer::TMujocoVisualizer( TTysocCommonApi* tysocApiPtr )
-        : TIVisualizer( tysocApiPtr )
+    TMujocoVisualizer::TMujocoVisualizer( TScenario* scenarioPtr )
+        : TIVisualizer( scenarioPtr )
     {
         if ( _INSTANCE )
         {
@@ -34,12 +34,13 @@ namespace viz {
         m_demoInfo.lastX = false;
         m_demoInfo.lastY = false;
 
-        // This visualizer should only work with the tysoc mujoco API type
-        if ( m_tysocApiPtr->getApiType() != API_TYPE_MUJOCO )
-        {
-            std::cout << "ERROR> Trying to use mujoco visualizer with a different physics backend" << std::endl;
-            std::cout << "ERROR> mujoco API defines the visualizer functionality as well, and it's coupled with the whole library" << std::endl;
-        }
+        // @CHECK: Should place something similar here, or perhaps in the user level
+        // // This visualizer should only work with the tysoc mujoco API type
+        // if ( m_tysocApiPtr->getApiType() != API_TYPE_MUJOCO )
+        // {
+        //     std::cout << "ERROR> Trying to use mujoco visualizer with a different physics backend" << std::endl;
+        //     std::cout << "ERROR> mujoco API defines the visualizer functionality as well, and it's coupled with the whole library" << std::endl;
+        // }
     }
 
     TMujocoVisualizer::~TMujocoVisualizer()
@@ -113,7 +114,7 @@ namespace viz {
         m_uiContextPtr->isBasicUiActive     = true;
         m_uiContextPtr->glfwWindowPtr       = m_glfwWindowPtr;
         // and then the UI
-        m_uiPtr = new TMujocoUI( m_tysocApiPtr,
+        m_uiPtr = new TMujocoUI( m_scenarioPtr,
                                  m_uiContextPtr );
         m_uiPtr->initUI();
     }

@@ -113,7 +113,7 @@ int main( int argc, const char** argv )
 
     /* ***************************************************************************/
 
-    auto _viz = new tysoc::viz::TCustomVisualizer( _tysocApi );
+    auto _viz = new tysoc::viz::TCustomVisualizer( _scenario );
     _viz->initialize();
 
     float _currentX = 0.0f;

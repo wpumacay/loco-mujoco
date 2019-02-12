@@ -6,9 +6,9 @@
 namespace tysoc {
 namespace viz {
 
-    TCustomUI::TCustomUI( TTysocCommonApi* tysocApiPtr,
+    TCustomUI::TCustomUI( TScenario* scenarioPtr,
                           TCustomContextUI* uiContextPtr )
-        : TIVisualizerUI( tysocApiPtr )
+        : TIVisualizerUI( scenarioPtr )
     {
         m_uiContextPtr          = uiContextPtr;
         m_glfwWindowPtr         = uiContextPtr->glfwWindowPtr;
@@ -73,7 +73,7 @@ namespace viz {
     {
         ImGui::Begin( "Main Menu" );
 
-        auto _kinTreeAgents = m_tysocApiPtr->getScenario()->getAgentsByType( agent::AGENT_TYPE_KINTREE );
+        auto _kinTreeAgents = m_scenarioPtr->getAgentsByType( agent::AGENT_TYPE_KINTREE );
 
         if ( ImGui::BeginCombo( "Kinematic trees", m_basicCurrentKinTreeName.c_str() ) )
         {

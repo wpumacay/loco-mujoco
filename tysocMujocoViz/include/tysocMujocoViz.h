@@ -69,7 +69,7 @@ namespace viz {
 
         public :
 
-        TMujocoVisualizer( TTysocCommonApi* tysocApiPtr );
+        TMujocoVisualizer( TScenario* scenarioPtr );
         ~TMujocoVisualizer(); // @CHECK: check for virtual destructors
 
         void setMjcModel( mjModel* mjcModelPtr );

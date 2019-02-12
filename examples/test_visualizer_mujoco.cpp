@@ -113,7 +113,7 @@ int main( int argc, const char** argv )
 
     /* ***************************************************************************/
 
-    auto _viz = new tysoc::viz::TMujocoVisualizer( _tysocApi );
+    auto _viz = new tysoc::viz::TMujocoVisualizer( _scenario );
     _viz->setMjcModel( _tysocApi->getMjcModel() );
     _viz->setMjcData( _tysocApi->getMjcData() );
     _viz->setMjcScene( _tysocApi->getMjcScene() );

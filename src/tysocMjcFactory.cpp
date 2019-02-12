@@ -7,27 +7,12 @@ namespace mujoco {
 
     TMjcFactory::TMjcFactory()
     {
-        // load the schema to be used with the mjcf helper
-        m_mjcfSchema = new mjcf::Schema();
-        {
-            std::string _schemaPath( TYSOCMJC_RESOURCES_PATH );
-            _schemaPath += "xml/schema.xml";
-
-            m_mjcfSchema->load( _schemaPath );
-        }
-
         // precache all resources?
         _precacheModels();
     }
 
     TMjcFactory::~TMjcFactory()
     {
-        if ( m_mjcfSchema )
-        {
-            delete m_mjcfSchema;
-            m_mjcfSchema = NULL;
-        }
-
         m_templateMjcfModelFiles.clear();
         m_templateUrdfModelFiles.clear();
         m_templateRlsimModelFiles.clear();
@@ -171,7 +156,7 @@ namespace mujoco {
     {
         std::cout << "INFO> trying to load template: " << templateFile << std::endl;
         // Gran the model into a mjcf::GenericElement node
-        auto _root = mjcf::loadGenericModel( m_mjcfSchema, std::string( TYSOCMJC_RESOURCES_PATH ) + "templates/mjcf/" + templateFile );
+        auto _root = mjcf::loadGenericModel( std::string( TYSOCMJC_RESOURCES_PATH ) + "templates/mjcf/" + templateFile );
 
         // Extract the name to use as key in the cache dictionary
         size_t _xmlTagPos = templateFile.find( ".xml" );

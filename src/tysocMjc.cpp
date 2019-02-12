@@ -73,18 +73,10 @@ namespace mujoco {
     {
         // Create mujoco resources and inject into xml *********************
 
-        mjcf::Schema _schema;
-        {
-            std::string _schemaPath( TYSOCMJC_RESOURCES_PATH );
-            _schemaPath += "xml/schema.xml";
-
-            _schema.load( _schemaPath );
-        }
-
         std::string _emptyModelPath( TYSOCMJC_RESOURCES_PATH );
         _emptyModelPath += "xml/empty.xml";
 
-        auto _root = mjcf::loadGenericModel( &_schema, _emptyModelPath );
+        auto _root = mjcf::loadGenericModel( _emptyModelPath );
 
         for ( size_t i = 0; i < m_terrainGenWrappers.size(); i++ )
         {

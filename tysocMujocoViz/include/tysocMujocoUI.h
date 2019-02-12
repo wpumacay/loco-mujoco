@@ -43,7 +43,7 @@ namespace viz {
 
         public :
 
-        TMujocoUI( TTysocCommonApi* tysocApiPtr,
+        TMujocoUI( TScenario* scenarioPtr,
                    TMujocoContextUI* uiContextPtr );
         ~TMujocoUI();
     };

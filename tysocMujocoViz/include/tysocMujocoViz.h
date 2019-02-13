@@ -28,6 +28,8 @@ namespace viz {
 
         GLFWwindow* m_glfwWindowPtr;
 
+        bool m_singleKeys[1024];// to check single click presses
+
         struct
         {
             bool buttonLeftPressed;
@@ -53,6 +55,10 @@ namespace viz {
         void _updateInternal() override;
         void _renderUIInternal() override;
         bool _isActiveInternal() override;
+
+        int _remapKeyInternal( int keyCode ) override;
+        bool _isKeyDownInternal( int keyCode ) override;
+        bool _checkSingleKeyPressInternal( int keyCode ) override;
 
         TIVizCamera* _createCameraInternal( const std::string& name,
                                             const std::string& type,

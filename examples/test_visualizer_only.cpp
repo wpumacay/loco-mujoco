@@ -80,6 +80,16 @@ int main( int argc, const char** argv )
     {
         // update visualizer
         _viz->update();
+
+        if ( _viz->isKeyDown( tysoc::keys::KEY_A ) )
+        {
+            std::cout << "INFO> key A is down" << std::endl;
+        }
+
+        if ( _viz->checkSingleKeyPress( tysoc::keys::KEY_B ) )
+        {
+            std::cout << "INFO> key B has been pressed (single check)" << std::endl;
+        }
     }
 
     delete _viz;

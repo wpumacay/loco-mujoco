@@ -34,6 +34,9 @@ namespace viz {
         m_demoInfo.lastX = false;
         m_demoInfo.lastY = false;
 
+        for ( size_t q = 0; q < 1024; q++ )
+            m_singleKeys[q] = false;
+
         // @CHECK: Should place something similar here, or perhaps in the user level
         // // This visualizer should only work with the tysoc mujoco API type
         // if ( m_tysocApiPtr->getApiType() != API_TYPE_MUJOCO )
@@ -313,5 +316,80 @@ namespace viz {
                         m_mjcCameraPtr );
     }
 
+
+    int TMujocoVisualizer::_remapKeyInternal( int keyCode )
+    {
+        /*
+        *   This visualizer initializes a window with glfw, so ...
+        *   here we map the tysoc::keys to the appropriate glfw keys
+        */
+
+        // letters (KEY_A=0, GLFW_KEY_A=65)
+        if ( keys::KEY_A <= keyCode && keyCode <= keys::KEY_Z )
+        {
+            return keyCode + 65;
+        }
+        // arrows (KEY_RIGHT=43, GLFW_KEY_RIGHT=262)
+        else if ( keys::KEY_RIGHT <= keyCode && keyCode <= keys::KEY_UP )
+        {
+            return keyCode + 219;
+        }
+        // all other keys
+        else
+        {
+            switch ( keyCode )
+            {
+                case keys::KEY_ESCAPE : return GLFW_KEY_ESCAPE;
+                case keys::KEY_ENTER : return GLFW_KEY_ENTER;
+                case keys::KEY_SPACE : return GLFW_KEY_SPACE;
+                case keys::KEY_TAB : return GLFW_KEY_TAB;
+                case keys::KEY_BACKSPACE : return GLFW_KEY_BACKSPACE;
+
+                case keys::KEY_INSERT : return GLFW_KEY_INSERT;
+                case keys::KEY_DELETE : return GLFW_KEY_DELETE;
+                case keys::KEY_HOME : return GLFW_KEY_HOME;
+                case keys::KEY_END : return GLFW_KEY_END;
+                case keys::KEY_PAGE_UP : return GLFW_KEY_PAGE_UP;
+                case keys::KEY_PAGE_DOWN : return GLFW_KEY_PAGE_DOWN;
+
+                case keys::KEY_LEFT_CTRL : return GLFW_KEY_LEFT_CONTROL;
+                case keys::KEY_LEFT_ALT : return GLFW_KEY_LEFT_ALT;
+                case keys::KEY_LEFT_SHIFT : return GLFW_KEY_LEFT_SHIFT;
+                case keys::KEY_RIGHT_CTRL : return GLFW_KEY_RIGHT_CONTROL;
+                case keys::KEY_RIGHT_ALT : return GLFW_KEY_RIGHT_ALT;
+                case keys::KEY_RIGHT_SHIFT : return GLFW_KEY_RIGHT_SHIFT;
+
+                default :
+                    std::cout << "WARNING> keyCode: " << keyCode << " is not mapped" << std::endl;
+            }
+        }
+
+        return keyCode;
+    }
+
+    bool TMujocoVisualizer::_isKeyDownInternal( int keyCode )
+    {
+        return glfwGetKey( m_glfwWindowPtr, keyCode ) == GLFW_PRESS;
+    }
+
+    bool TMujocoVisualizer::_checkSingleKeyPressInternal( int key )
+    {
+        if ( !_isKeyDownInternal( key ) )
+        {
+            m_singleKeys[key] = false;
+            return false;
+        }
+
+        // Xor between the saved single state and the handler state
+        bool _singleState = m_singleKeys[key];
+        bool _handlerState = _isKeyDownInternal( key );
+        bool _res = ( _singleState && !_handlerState ) ||
+                    ( !_singleState && _handlerState );
+
+        // update the state of the singlekey
+        m_singleKeys[key] = _handlerState;
+        // and return the previous result
+        return _res;
+    }
 
 }}

@@ -47,6 +47,10 @@ namespace viz {
         void _renderUIInternal() override;
         bool _isActiveInternal() override;
 
+        int _remapKeyInternal( int keyCode ) override;
+        bool _isKeyDownInternal( int keyCode ) override;
+        bool _checkSingleKeyPressInternal( int keyCode ) override;
+
         TIVizCamera* _createCameraInternal( const std::string& name,
                                             const std::string& type,
                                             const TVec3& pos,

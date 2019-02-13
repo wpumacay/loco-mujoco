@@ -335,11 +335,11 @@ namespace mujoco {
             if ( _geoms[i]->materialName != "" )
                 _geomElmPtr->setAttributeString( "material", _geoms[i]->materialName );
             // @GENERIC
-            if ( _geoms[i]->rgba.x != 0.0 &&
-                 _geoms[i]->rgba.y != 0.0 &&
-                 _geoms[i]->rgba.z != 0.0 &&
-                 _geoms[i]->rgba.w != 0.0 )
-                _geomElmPtr->setAttributeVec4( "rgba", _geoms[i]->rgba );
+
+            TVec4 _rgba = { _geoms[i]->material.diffuse.x,
+                            _geoms[i]->material.diffuse.y,
+                            _geoms[i]->material.diffuse.z, 1.0f };
+            _geomElmPtr->setAttributeVec4( "rgba", _rgba );
 
             _bodyElmPtr->children.push_back( _geomElmPtr );
         }
@@ -738,42 +738,6 @@ namespace mujoco {
 
         // and then request an update of the kintree
         m_kinTreeAgentPtr->update( 0 );
-
-        // @TODO: and get the colors
-        auto _kinVisuals = m_kinTreeAgentPtr->getKinTreeVisuals();
-        for ( size_t i = 0; i < _kinVisuals.size(); i++ )
-        {
-            float _color[3];
-            utils::getGeometryColor( m_mjcModelPtr,
-                                      m_mjcScenePtr,
-                                      _kinVisuals[i]->name,
-                                      _color );
-
-            // @HACK: colors should be set at initialization
-            if ( m_kinTreeAgentPtr->getModelTemplateType() == agent::MODEL_TEMPLATE_TYPE_MJCF )
-            {
-                _kinVisuals[i]->material.diffuse.x = _color[0];
-                _kinVisuals[i]->material.diffuse.y = _color[1];
-                _kinVisuals[i]->material.diffuse.z = _color[2];
-
-                _kinVisuals[i]->material.specular.x = _color[0];
-                _kinVisuals[i]->material.specular.y = _color[1];
-                _kinVisuals[i]->material.specular.z = _color[2];
-            }
-            // @HACK|@FIX: there is an issue with the preprocessing of the urdf materials
-            else
-            {
-                _kinVisuals[i]->material.diffuse.x = _kinVisuals[i]->rgba.x;
-                _kinVisuals[i]->material.diffuse.y = _kinVisuals[i]->rgba.y;
-                _kinVisuals[i]->material.diffuse.z = _kinVisuals[i]->rgba.z;
-
-                _kinVisuals[i]->material.specular.x = _kinVisuals[i]->rgba.x;
-                _kinVisuals[i]->material.specular.y = _kinVisuals[i]->rgba.y;
-                _kinVisuals[i]->material.specular.z = _kinVisuals[i]->rgba.z;
-            }
-
-            // std::cout << "color: " << TVec3::toString( _kinVisuals[i]->material.diffuse ) << std::endl;
-        }
     }
 
 

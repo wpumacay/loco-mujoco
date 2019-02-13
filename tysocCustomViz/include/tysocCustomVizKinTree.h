@@ -147,6 +147,11 @@ namespace viz {
                                            const TVec3& cSpecular,
                                            const std::string& filename = "" );
 
+        void _setRenderableColor( engine::LIRenderable* renderablePtr,
+                                  const TVec3& cAmbient,
+                                  const TVec3& cDiffuse,
+                                  const TVec3& cSpecular );
+
         public :
 
         TCustomVizKinTree( agent::TAgentKinTree* agentKinTreePtr,

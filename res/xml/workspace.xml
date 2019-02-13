@@ -1819,28 +1819,28 @@
             <joint axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_walker0_tmjcrootz" type="slide"/>
             <joint axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_walker0_tmjcrootx" type="slide"/>
             <joint axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_walker0_tmjcrooty" type="hinge"/>
-            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" size="0.070000 0.300000 0.000000" material="self" name="geom_walker0_tmjcroot" type="capsule"/>
+            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.070000 0.300000 0.000000" material="self" name="geom_walker0_tmjcroot" type="capsule"/>
             <body pos="0.000000 -0.050000 -0.300000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker0_right_thigh">
                 <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-20.000000 100.000000" limited="true" name="joint_walker0_right_hip" type="hinge"/>
-                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker0_right_thigh" type="capsule"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker0_right_thigh" type="capsule"/>
                 <body pos="0.000000 0.000000 -0.700000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker0_right_leg">
                     <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.250000" range="-150.000000 0.000000" limited="true" name="joint_walker0_right_knee" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker0_right_leg" type="capsule"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker0_right_leg" type="capsule"/>
                     <body pos="0.060000 0.000000 -0.250000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker0_right_foot">
                         <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="-0.060000 0.000000 0.000000" range="-45.000000 45.000000" limited="true" name="joint_walker0_right_ankle" type="hinge"/>
-                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker0_right_foot" type="capsule"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker0_right_foot" type="capsule"/>
                     </body>
                 </body>
             </body>
             <body pos="0.000000 0.050000 -0.300000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker0_left_thigh">
                 <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-20.000000 100.000000" limited="true" name="joint_walker0_left_hip" type="hinge"/>
-                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker0_left_thigh" type="capsule"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker0_left_thigh" type="capsule"/>
                 <body pos="0.000000 0.000000 -0.700000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker0_left_leg">
                     <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.250000" range="-150.000000 0.000000" limited="true" name="joint_walker0_left_knee" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker0_left_leg" type="capsule"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker0_left_leg" type="capsule"/>
                     <body pos="0.060000 0.000000 -0.250000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker0_left_foot">
                         <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="-0.060000 0.000000 0.000000" range="-45.000000 45.000000" limited="true" name="joint_walker0_left_ankle" type="hinge"/>
-                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker0_left_foot" type="capsule"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker0_left_foot" type="capsule"/>
                     </body>
                 </body>
             </body>
@@ -1893,28 +1893,28 @@
             <joint axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_walker1_tmjcrootz" type="slide"/>
             <joint axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_walker1_tmjcrootx" type="slide"/>
             <joint axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_walker1_tmjcrooty" type="hinge"/>
-            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" size="0.070000 0.300000 0.000000" material="self" name="geom_walker1_tmjcroot" type="capsule"/>
+            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.070000 0.300000 0.000000" material="self" name="geom_walker1_tmjcroot" type="capsule"/>
             <body pos="0.000000 -0.050000 -0.300000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker1_right_thigh">
                 <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-20.000000 100.000000" limited="true" name="joint_walker1_right_hip" type="hinge"/>
-                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker1_right_thigh" type="capsule"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker1_right_thigh" type="capsule"/>
                 <body pos="0.000000 0.000000 -0.700000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker1_right_leg">
                     <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.250000" range="-150.000000 0.000000" limited="true" name="joint_walker1_right_knee" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker1_right_leg" type="capsule"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker1_right_leg" type="capsule"/>
                     <body pos="0.060000 0.000000 -0.250000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker1_right_foot">
                         <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="-0.060000 0.000000 0.000000" range="-45.000000 45.000000" limited="true" name="joint_walker1_right_ankle" type="hinge"/>
-                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker1_right_foot" type="capsule"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker1_right_foot" type="capsule"/>
                     </body>
                 </body>
             </body>
             <body pos="0.000000 0.050000 -0.300000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker1_left_thigh">
                 <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-20.000000 100.000000" limited="true" name="joint_walker1_left_hip" type="hinge"/>
-                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker1_left_thigh" type="capsule"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker1_left_thigh" type="capsule"/>
                 <body pos="0.000000 0.000000 -0.700000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker1_left_leg">
                     <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.250000" range="-150.000000 0.000000" limited="true" name="joint_walker1_left_knee" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker1_left_leg" type="capsule"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker1_left_leg" type="capsule"/>
                     <body pos="0.060000 0.000000 -0.250000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker1_left_foot">
                         <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="-0.060000 0.000000 0.000000" range="-45.000000 45.000000" limited="true" name="joint_walker1_left_ankle" type="hinge"/>
-                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker1_left_foot" type="capsule"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker1_left_foot" type="capsule"/>
                     </body>
                 </body>
             </body>
@@ -1967,28 +1967,28 @@
             <joint axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_walker2_tmjcrootz" type="slide"/>
             <joint axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_walker2_tmjcrootx" type="slide"/>
             <joint axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_walker2_tmjcrooty" type="hinge"/>
-            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" size="0.070000 0.300000 0.000000" material="self" name="geom_walker2_tmjcroot" type="capsule"/>
+            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.070000 0.300000 0.000000" material="self" name="geom_walker2_tmjcroot" type="capsule"/>
             <body pos="0.000000 -0.050000 -0.300000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker2_right_thigh">
                 <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-20.000000 100.000000" limited="true" name="joint_walker2_right_hip" type="hinge"/>
-                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker2_right_thigh" type="capsule"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker2_right_thigh" type="capsule"/>
                 <body pos="0.000000 0.000000 -0.700000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker2_right_leg">
                     <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.250000" range="-150.000000 0.000000" limited="true" name="joint_walker2_right_knee" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker2_right_leg" type="capsule"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker2_right_leg" type="capsule"/>
                     <body pos="0.060000 0.000000 -0.250000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker2_right_foot">
                         <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="-0.060000 0.000000 0.000000" range="-45.000000 45.000000" limited="true" name="joint_walker2_right_ankle" type="hinge"/>
-                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker2_right_foot" type="capsule"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker2_right_foot" type="capsule"/>
                     </body>
                 </body>
             </body>
             <body pos="0.000000 0.050000 -0.300000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker2_left_thigh">
                 <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-20.000000 100.000000" limited="true" name="joint_walker2_left_hip" type="hinge"/>
-                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker2_left_thigh" type="capsule"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker2_left_thigh" type="capsule"/>
                 <body pos="0.000000 0.000000 -0.700000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker2_left_leg">
                     <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.250000" range="-150.000000 0.000000" limited="true" name="joint_walker2_left_knee" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker2_left_leg" type="capsule"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker2_left_leg" type="capsule"/>
                     <body pos="0.060000 0.000000 -0.250000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker2_left_foot">
                         <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="-0.060000 0.000000 0.000000" range="-45.000000 45.000000" limited="true" name="joint_walker2_left_ankle" type="hinge"/>
-                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker2_left_foot" type="capsule"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker2_left_foot" type="capsule"/>
                     </body>
                 </body>
             </body>
@@ -2041,28 +2041,28 @@
             <joint axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_walker3_tmjcrootz" type="slide"/>
             <joint axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_walker3_tmjcrootx" type="slide"/>
             <joint axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_walker3_tmjcrooty" type="hinge"/>
-            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" size="0.070000 0.300000 0.000000" material="self" name="geom_walker3_tmjcroot" type="capsule"/>
+            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.070000 0.300000 0.000000" material="self" name="geom_walker3_tmjcroot" type="capsule"/>
             <body pos="0.000000 -0.050000 -0.300000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker3_right_thigh">
                 <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-20.000000 100.000000" limited="true" name="joint_walker3_right_hip" type="hinge"/>
-                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker3_right_thigh" type="capsule"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker3_right_thigh" type="capsule"/>
                 <body pos="0.000000 0.000000 -0.700000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker3_right_leg">
                     <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.250000" range="-150.000000 0.000000" limited="true" name="joint_walker3_right_knee" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker3_right_leg" type="capsule"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker3_right_leg" type="capsule"/>
                     <body pos="0.060000 0.000000 -0.250000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker3_right_foot">
                         <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="-0.060000 0.000000 0.000000" range="-45.000000 45.000000" limited="true" name="joint_walker3_right_ankle" type="hinge"/>
-                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker3_right_foot" type="capsule"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker3_right_foot" type="capsule"/>
                     </body>
                 </body>
             </body>
             <body pos="0.000000 0.050000 -0.300000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker3_left_thigh">
                 <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-20.000000 100.000000" limited="true" name="joint_walker3_left_hip" type="hinge"/>
-                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker3_left_thigh" type="capsule"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker3_left_thigh" type="capsule"/>
                 <body pos="0.000000 0.000000 -0.700000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker3_left_leg">
                     <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.250000" range="-150.000000 0.000000" limited="true" name="joint_walker3_left_knee" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker3_left_leg" type="capsule"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker3_left_leg" type="capsule"/>
                     <body pos="0.060000 0.000000 -0.250000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker3_left_foot">
                         <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="-0.060000 0.000000 0.000000" range="-45.000000 45.000000" limited="true" name="joint_walker3_left_ankle" type="hinge"/>
-                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker3_left_foot" type="capsule"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker3_left_foot" type="capsule"/>
                     </body>
                 </body>
             </body>
@@ -2115,28 +2115,28 @@
             <joint axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_walker4_tmjcrootz" type="slide"/>
             <joint axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_walker4_tmjcrootx" type="slide"/>
             <joint axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_walker4_tmjcrooty" type="hinge"/>
-            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" size="0.070000 0.300000 0.000000" material="self" name="geom_walker4_tmjcroot" type="capsule"/>
+            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.070000 0.300000 0.000000" material="self" name="geom_walker4_tmjcroot" type="capsule"/>
             <body pos="0.000000 -0.050000 -0.300000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker4_right_thigh">
                 <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-20.000000 100.000000" limited="true" name="joint_walker4_right_hip" type="hinge"/>
-                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker4_right_thigh" type="capsule"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker4_right_thigh" type="capsule"/>
                 <body pos="0.000000 0.000000 -0.700000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker4_right_leg">
                     <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.250000" range="-150.000000 0.000000" limited="true" name="joint_walker4_right_knee" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker4_right_leg" type="capsule"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker4_right_leg" type="capsule"/>
                     <body pos="0.060000 0.000000 -0.250000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker4_right_foot">
                         <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="-0.060000 0.000000 0.000000" range="-45.000000 45.000000" limited="true" name="joint_walker4_right_ankle" type="hinge"/>
-                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker4_right_foot" type="capsule"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker4_right_foot" type="capsule"/>
                     </body>
                 </body>
             </body>
             <body pos="0.000000 0.050000 -0.300000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker4_left_thigh">
                 <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-20.000000 100.000000" limited="true" name="joint_walker4_left_hip" type="hinge"/>
-                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker4_left_thigh" type="capsule"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker4_left_thigh" type="capsule"/>
                 <body pos="0.000000 0.000000 -0.700000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker4_left_leg">
                     <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.250000" range="-150.000000 0.000000" limited="true" name="joint_walker4_left_knee" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker4_left_leg" type="capsule"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker4_left_leg" type="capsule"/>
                     <body pos="0.060000 0.000000 -0.250000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker4_left_foot">
                         <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="-0.060000 0.000000 0.000000" range="-45.000000 45.000000" limited="true" name="joint_walker4_left_ankle" type="hinge"/>
-                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker4_left_foot" type="capsule"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker4_left_foot" type="capsule"/>
                     </body>
                 </body>
             </body>
@@ -2189,28 +2189,28 @@
             <joint axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_walker5_tmjcrootz" type="slide"/>
             <joint axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_walker5_tmjcrootx" type="slide"/>
             <joint axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_walker5_tmjcrooty" type="hinge"/>
-            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" size="0.070000 0.300000 0.000000" material="self" name="geom_walker5_tmjcroot" type="capsule"/>
+            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.070000 0.300000 0.000000" material="self" name="geom_walker5_tmjcroot" type="capsule"/>
             <body pos="0.000000 -0.050000 -0.300000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker5_right_thigh">
                 <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-20.000000 100.000000" limited="true" name="joint_walker5_right_hip" type="hinge"/>
-                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker5_right_thigh" type="capsule"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker5_right_thigh" type="capsule"/>
                 <body pos="0.000000 0.000000 -0.700000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker5_right_leg">
                     <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.250000" range="-150.000000 0.000000" limited="true" name="joint_walker5_right_knee" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker5_right_leg" type="capsule"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker5_right_leg" type="capsule"/>
                     <body pos="0.060000 0.000000 -0.250000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker5_right_foot">
                         <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="-0.060000 0.000000 0.000000" range="-45.000000 45.000000" limited="true" name="joint_walker5_right_ankle" type="hinge"/>
-                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker5_right_foot" type="capsule"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker5_right_foot" type="capsule"/>
                     </body>
                 </body>
             </body>
             <body pos="0.000000 0.050000 -0.300000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker5_left_thigh">
                 <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-20.000000 100.000000" limited="true" name="joint_walker5_left_hip" type="hinge"/>
-                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker5_left_thigh" type="capsule"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.225000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.225000 0.000000" material="self" name="geom_walker5_left_thigh" type="capsule"/>
                 <body pos="0.000000 0.000000 -0.700000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker5_left_leg">
                     <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.250000" range="-150.000000 0.000000" limited="true" name="joint_walker5_left_knee" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker5_left_leg" type="capsule"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.040000 0.250000 0.000000" material="self" name="geom_walker5_left_leg" type="capsule"/>
                     <body pos="0.060000 0.000000 -0.250000" quat="1.000000 0.000000 0.000000 0.000000" name="body_walker5_left_foot">
                         <joint armature="0.010000" damping="0.100000" axis="0.000000 -1.000000 0.000000" pos="-0.060000 0.000000 0.000000" range="-45.000000 45.000000" limited="true" name="joint_walker5_left_ankle" type="hinge"/>
-                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker5_left_foot" type="capsule"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.707107 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.050000 0.100000 0.000000" material="self" name="geom_walker5_left_foot" type="capsule"/>
                     </body>
                 </body>
             </body>

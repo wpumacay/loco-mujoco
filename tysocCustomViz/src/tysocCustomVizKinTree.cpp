@@ -206,9 +206,9 @@ namespace viz{
             auto _geometry = _visuals[i]->geometry;
             _vizVisual.meshPtr = _createMesh( _geometry.type,
                                               _geometry.size,
-                                              VIZKINTREE_VISUAL_DEFAULT_COLOR,
-                                              VIZKINTREE_VISUAL_DEFAULT_COLOR,
-                                              VIZKINTREE_VISUAL_DEFAULT_COLOR,
+                                              _visuals[i]->material.diffuse,
+                                              _visuals[i]->material.diffuse,
+                                              _visuals[i]->material.specular,
                                               _geometry.filename );
             // and create the axes
             _vizVisual.axesPtr = engine::LMeshBuilder::createAxes( VIZKINTREE_AXES_DEFAULT_SIZE );
@@ -255,11 +255,11 @@ namespace viz{
 
 
     engine::LIRenderable* TCustomVizKinTree::_createMesh( const std::string& type,
-                                                    const TVec3& size,
-                                                    const TVec3& cAmbient,
-                                                    const TVec3& cDiffuse,
-                                                    const TVec3& cSpecular,
-                                                    const std::string& filename )
+                                                          const TVec3& size,
+                                                          const TVec3& cAmbient,
+                                                          const TVec3& cDiffuse,
+                                                          const TVec3& cSpecular,
+                                                          const std::string& filename )
     {
         engine::LIRenderable* _renderable = NULL;
 
@@ -291,9 +291,7 @@ namespace viz{
 
         if ( _renderable )
         {
-            _renderable->getMaterial()->ambient     = { cAmbient.x, cAmbient.y, cAmbient.z };
-            _renderable->getMaterial()->diffuse     = { cDiffuse.x, cDiffuse.y, cDiffuse.z };
-            _renderable->getMaterial()->specular    = { cSpecular.x, cSpecular.y, cSpecular.z };
+            _setRenderableColor( _renderable, cAmbient, cDiffuse, cSpecular );
 
             m_scenePtr->addRenderable( _renderable );
         }
@@ -307,6 +305,30 @@ namespace viz{
         }
 
         return _renderable;
+    }
+
+    void TCustomVizKinTree::_setRenderableColor( engine::LIRenderable* renderablePtr,
+                                                 const TVec3& cAmbient,
+                                                 const TVec3& cDiffuse,
+                                                 const TVec3& cSpecular )
+    {
+        // and update the color as well
+        if ( renderablePtr->getType() != RENDERABLE_TYPE_MODEL )
+        {
+            renderablePtr->getMaterial()->ambient   = { cAmbient.x, cAmbient.y, cAmbient.z };
+            renderablePtr->getMaterial()->diffuse   = { cDiffuse.x, cDiffuse.y, cDiffuse.z };
+            renderablePtr->getMaterial()->specular  = { cSpecular.x, cSpecular.y, cSpecular.z };
+        }
+        else
+        {
+            auto _children = reinterpret_cast< engine::LModel* >( renderablePtr )->getMeshes();
+            for ( size_t i = 0; i < _children.size(); i++ )
+            {
+                _children[i]->getMaterial()->ambient   = { cAmbient.x, cAmbient.y, cAmbient.z };
+                _children[i]->getMaterial()->diffuse   = { cDiffuse.x, cDiffuse.y, cDiffuse.z };
+                _children[i]->getMaterial()->specular  = { cSpecular.x, cSpecular.y, cSpecular.z };
+            }
+        }
     }
 
     void TCustomVizKinTree::update()
@@ -447,39 +469,39 @@ namespace viz{
         kinVisual.axesPtr->pos        = _position;
         kinVisual.axesPtr->rotation   = _rotation;
 
-        // and update the color as well
-        if ( kinVisual.meshPtr->getType() != RENDERABLE_TYPE_MODEL )
-        {
-            kinVisual.meshPtr->getMaterial()->ambient.x = kinVisual.visualPtr->material.diffuse.x;
-            kinVisual.meshPtr->getMaterial()->ambient.y = kinVisual.visualPtr->material.diffuse.y;
-            kinVisual.meshPtr->getMaterial()->ambient.z = kinVisual.visualPtr->material.diffuse.z;
-
-            kinVisual.meshPtr->getMaterial()->diffuse.x = kinVisual.visualPtr->material.diffuse.x;
-            kinVisual.meshPtr->getMaterial()->diffuse.y = kinVisual.visualPtr->material.diffuse.y;
-            kinVisual.meshPtr->getMaterial()->diffuse.z = kinVisual.visualPtr->material.diffuse.z;
-
-            kinVisual.meshPtr->getMaterial()->specular.x = kinVisual.visualPtr->material.specular.x;
-            kinVisual.meshPtr->getMaterial()->specular.y = kinVisual.visualPtr->material.specular.y;
-            kinVisual.meshPtr->getMaterial()->specular.z = kinVisual.visualPtr->material.specular.z;
-        }
-        else
-        {
-            auto _children = reinterpret_cast< engine::LModel* >( kinVisual.meshPtr )->getMeshes();
-            for ( size_t i = 0; i < _children.size(); i++ )
-            {
-                _children[i]->getMaterial()->ambient.x = kinVisual.visualPtr->material.diffuse.x;
-                _children[i]->getMaterial()->ambient.y = kinVisual.visualPtr->material.diffuse.y;
-                _children[i]->getMaterial()->ambient.z = kinVisual.visualPtr->material.diffuse.z;
-
-                _children[i]->getMaterial()->diffuse.x = kinVisual.visualPtr->material.diffuse.x;
-                _children[i]->getMaterial()->diffuse.y = kinVisual.visualPtr->material.diffuse.y;
-                _children[i]->getMaterial()->diffuse.z = kinVisual.visualPtr->material.diffuse.z;
-
-                _children[i]->getMaterial()->specular.x = kinVisual.visualPtr->material.specular.x;
-                _children[i]->getMaterial()->specular.y = kinVisual.visualPtr->material.specular.y;
-                _children[i]->getMaterial()->specular.z = kinVisual.visualPtr->material.specular.z;
-            }
-        }
+//         // and update the color as well
+//         if ( kinVisual.meshPtr->getType() != RENDERABLE_TYPE_MODEL )
+//         {
+//             kinVisual.meshPtr->getMaterial()->ambient.x = kinVisual.visualPtr->material.diffuse.x;
+//             kinVisual.meshPtr->getMaterial()->ambient.y = kinVisual.visualPtr->material.diffuse.y;
+//             kinVisual.meshPtr->getMaterial()->ambient.z = kinVisual.visualPtr->material.diffuse.z;
+// 
+//             kinVisual.meshPtr->getMaterial()->diffuse.x = kinVisual.visualPtr->material.diffuse.x;
+//             kinVisual.meshPtr->getMaterial()->diffuse.y = kinVisual.visualPtr->material.diffuse.y;
+//             kinVisual.meshPtr->getMaterial()->diffuse.z = kinVisual.visualPtr->material.diffuse.z;
+// 
+//             kinVisual.meshPtr->getMaterial()->specular.x = kinVisual.visualPtr->material.specular.x;
+//             kinVisual.meshPtr->getMaterial()->specular.y = kinVisual.visualPtr->material.specular.y;
+//             kinVisual.meshPtr->getMaterial()->specular.z = kinVisual.visualPtr->material.specular.z;
+//         }
+//         else
+//         {
+//             auto _children = reinterpret_cast< engine::LModel* >( kinVisual.meshPtr )->getMeshes();
+//             for ( size_t i = 0; i < _children.size(); i++ )
+//             {
+//                 _children[i]->getMaterial()->ambient.x = kinVisual.visualPtr->material.diffuse.x;
+//                 _children[i]->getMaterial()->ambient.y = kinVisual.visualPtr->material.diffuse.y;
+//                 _children[i]->getMaterial()->ambient.z = kinVisual.visualPtr->material.diffuse.z;
+// 
+//                 _children[i]->getMaterial()->diffuse.x = kinVisual.visualPtr->material.diffuse.x;
+//                 _children[i]->getMaterial()->diffuse.y = kinVisual.visualPtr->material.diffuse.y;
+//                 _children[i]->getMaterial()->diffuse.z = kinVisual.visualPtr->material.diffuse.z;
+// 
+//                 _children[i]->getMaterial()->specular.x = kinVisual.visualPtr->material.specular.x;
+//                 _children[i]->getMaterial()->specular.y = kinVisual.visualPtr->material.specular.y;
+//                 _children[i]->getMaterial()->specular.z = kinVisual.visualPtr->material.specular.z;
+//             }
+//         }
     }
 
     void TCustomVizKinTree::_updateActuator( TCustomVizKinActuator& kinActuator )

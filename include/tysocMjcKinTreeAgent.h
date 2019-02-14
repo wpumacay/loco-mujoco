@@ -87,6 +87,10 @@ namespace mujoco {
                                  rlsim::RlsimModel* rlsimModelPtr,
                                  const TVec3& position );
 
+        // @TODO|@CHANGE: The constructors above should be removed, as the core ...
+        // agents can be created easily with the new changes made so far (12)
+        TMjcKinTreeAgentWrapper( agent::TAgentKinTree* kinTreeAgentPtr );
+
         // @TODO: Add constructor from urdf
         ~TMjcKinTreeAgentWrapper();
 

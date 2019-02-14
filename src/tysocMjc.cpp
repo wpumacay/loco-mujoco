@@ -201,4 +201,17 @@ namespace mujoco {
         }
     }
     
+    // @CHANGE: this change is temporary, should change to a single ...
+    // initialization mechanism. Creating wrappers and adding them is ...
+    // not the way to go (even adding a wrapper does not add it to the scenatio)
+    void TTysocMjcApi::_collectFromScenarioInternal()
+    {
+        auto _agents = m_scenarioPtr->getAgentsByType( agent::AGENT_TYPE_KINTREE );
+        for ( size_t q = 0; q < _agents.size(); q++ )
+        {
+            auto _agentWrapper = new TMjcKinTreeAgentWrapper( (agent::TAgentKinTree*) _agents[q] );
+            m_kinTreeAgentWrappers.push_back( _agentWrapper );
+        }
+    }
+
 }}

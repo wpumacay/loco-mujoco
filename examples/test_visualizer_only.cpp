@@ -40,6 +40,38 @@ tysoc::agent::TAgentKinTree* createAgent( const std::string& format,
     return NULL;
 }
 
+static tysoc::TTysocCommonApi* g_runtime = NULL;
+static tysoc::mujoco::TTysocMjcApi* g_apiMujoco = NULL;
+
+tysoc::TTysocCommonApi* initialize_runtime( const std::string& apiType,
+                                            tysoc::TScenario* scenarioPtr )
+{
+    if ( apiType == tysoc::API_TYPE_MUJOCO )
+    {
+        if ( !g_apiMujoco )
+        {
+            g_apiMujoco = new tysoc::mujoco::TTysocMjcApi();
+            g_apiMujoco->setScenario( scenarioPtr );
+            // @TODO|@CHECK: Should redesign the initialization mechanism
+            g_apiMujoco->collectFromScenario();
+
+            if ( !g_apiMujoco->initializeMjcApi() )
+            {
+                std::cout << "WARNING> There was an error while initializing the mjcApi" << std::endl;
+            }
+            else
+            {
+                std::cout << "INFO> Successfully created mujoco Api" << std::endl;
+            }
+        }
+        
+        return g_apiMujoco;
+    }
+
+    std::cout << "WARNING> Api type: " << apiType << " is not supported" << std::endl;
+    return NULL;
+}
+
 int main( int argc, const char** argv )
 {
     if ( argc > 2 )
@@ -81,14 +113,15 @@ int main( int argc, const char** argv )
         // update visualizer
         _viz->update();
 
-        if ( _viz->isKeyDown( tysoc::keys::KEY_A ) )
+        if ( g_runtime )
         {
-            std::cout << "INFO> key A is down" << std::endl;
+            g_runtime->step();
         }
 
         if ( _viz->checkSingleKeyPress( tysoc::keys::KEY_B ) )
         {
-            std::cout << "INFO> key B has been pressed (single check)" << std::endl;
+            g_runtime = initialize_runtime( tysoc::API_TYPE_MUJOCO,
+                                            _scenario );
         }
     }
 

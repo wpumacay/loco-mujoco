@@ -4,6 +4,42 @@
 namespace tysoc {
 namespace mujoco {
 
+    TMjcKinTreeAgentWrapper::TMjcKinTreeAgentWrapper( agent::TAgentKinTree* kinTreeAgentPtr )
+    {
+        m_name = kinTreeAgentPtr->name();
+
+        m_mjcModelPtr   = NULL;
+        m_mjcDataPtr    = NULL;
+        m_mjcScenePtr   = NULL;
+
+        // create the mjcf resources element for this agent
+        m_mjcfResourcesPtr = new mjcf::GenericElement( "mujoco" );
+        m_mjcfResourcesPtr->setAttributeString( "model", m_name );
+
+        // @TODO: Deep copy should go in the factory. A brand new copy should ...
+        // be passed to this constructor.
+        // @TODO: Could change the code structure a bit (for the agent formats) ...
+        // such that the core agent functionality copies the required data ...
+        // and does name replacing for the bodies, joints, etc. as needed.
+
+        // save the reference to the core agent
+        m_kinTreeAgentPtr = kinTreeAgentPtr;
+        // grab some format dependent resources accordingly
+        if ( m_kinTreeAgentPtr->getModelTemplateType() == agent::MODEL_TEMPLATE_TYPE_MJCF )
+            m_mjcfModelTemplatePtr = reinterpret_cast< agent::TAgentKinTreeMjcf* >
+                                            ( m_kinTreeAgentPtr )->getMjcfModelDataPtr();
+
+        else if ( m_kinTreeAgentPtr->getModelTemplateType() == agent::MODEL_TEMPLATE_TYPE_URDF )
+            m_urdfModelTemplatePtr = reinterpret_cast< agent::TAgentKinTreeUrdf* >
+                                            ( m_kinTreeAgentPtr )->getUrdfModelDataPtr();
+
+        else if ( m_kinTreeAgentPtr->getModelTemplateType() == agent::MODEL_TEMPLATE_TYPE_RLSIM )
+            m_rlsimModelTemplatePtr = reinterpret_cast< agent::TAgentKinTreeRlsim* >
+                                            ( m_kinTreeAgentPtr )->getRlsimModelDataPtr();
+
+        // collect the required data
+        _createMjcResourcesFromKinTree();
+    }
 
     TMjcKinTreeAgentWrapper::TMjcKinTreeAgentWrapper( const std::string& name,
                                                       mjcf::GenericElement* templateModelElmPtr,

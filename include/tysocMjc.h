@@ -78,6 +78,8 @@ namespace mujoco {
         void _updateStep() override;
         void _postStep() override;
 
+        void _collectFromScenarioInternal() override;
+
         public :
 
         TTysocMjcApi();

@@ -123,6 +123,19 @@ int main( int argc, const char** argv )
             g_runtime = initialize_runtime( tysoc::API_TYPE_MUJOCO,
                                             _scenario );
         }
+
+        if ( _viz->checkSingleKeyPress( tysoc::keys::KEY_R ) )
+        {
+            if ( g_runtime )
+            {
+                g_runtime->reset();
+                if ( g_runtime->getApiType() == tysoc::API_TYPE_MUJOCO )
+                    g_apiMujoco = NULL;
+                delete g_runtime;
+                g_runtime = NULL;
+
+            }
+        }
     }
 
     delete _viz;

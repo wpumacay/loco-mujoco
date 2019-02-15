@@ -6,6 +6,7 @@
 namespace tysoc {
 namespace mujoco {
 
+    bool TTysocMjcApi::HAS_ACTIVATED_MUJOCO = false;//@HACK: checks that mujoco has been activated only once
 
     TTysocMjcApi::TTysocMjcApi()
     {
@@ -56,7 +57,8 @@ namespace mujoco {
         m_mjcOptionPtr = NULL;
         m_mjcCameraPtr = NULL;
 
-        mj_deactivate();
+        // std::cout << "INFO> Deactivated mujoco backend" << std::endl;
+        // mj_deactivate();
     }
 
     void TTysocMjcApi::addKinTreeAgentWrapper( TMjcKinTreeAgentWrapper* agentKinTreeWrapperPtr )
@@ -85,6 +87,7 @@ namespace mujoco {
 
         for ( size_t i = 0; i < m_kinTreeAgentWrappers.size(); i++ )
         {
+            std::cout << "INFO> Injecting agent resources: " << i << std::endl;
             m_kinTreeAgentWrappers[i]->injectMjcResources( _root );
         }
 
@@ -95,8 +98,14 @@ namespace mujoco {
         // *****************************************************************
 
         // Initialize mujoco ***********************************************
+        if ( !TTysocMjcApi::HAS_ACTIVATED_MUJOCO )
+        {
+            std::cout << "INFO> Trying to activate mujoco backend" << std::endl;
+            mj_activate( MUJOCO_LICENSE_FILE );
+            std::cout << "INFO> Successfully activated mujoco backend" << std::endl;
 
-        mj_activate( MUJOCO_LICENSE_FILE );
+            TTysocMjcApi::HAS_ACTIVATED_MUJOCO = true;
+        }
 
         char _error[1000];
         m_mjcModelPtr = mj_loadXML( _workspaceModelPath.c_str(), NULL, _error, 1000 );
@@ -131,7 +140,9 @@ namespace mujoco {
             m_terrainGenWrappers[i]->setMjcModel( m_mjcModelPtr );
             m_terrainGenWrappers[i]->setMjcData( m_mjcDataPtr );
             m_terrainGenWrappers[i]->setMjcScene( m_mjcScenePtr );
-            m_scenarioPtr->addTerrainGenerator( m_terrainGenWrappers[i]->terrainGenerator() );
+
+            if ( !m_scenarioPtr->hasTerrainGen( m_terrainGenWrappers[i]->name() ) )
+                m_scenarioPtr->addTerrainGenerator( m_terrainGenWrappers[i]->terrainGenerator() );
         }
 
         for ( size_t i = 0; i < m_kinTreeAgentWrappers.size(); i++ )
@@ -140,7 +151,8 @@ namespace mujoco {
             m_kinTreeAgentWrappers[i]->setMjcData( m_mjcDataPtr );
             m_kinTreeAgentWrappers[i]->setMjcScene( m_mjcScenePtr );
 
-            m_scenarioPtr->addAgent( m_kinTreeAgentWrappers[i]->agent() );
+            if ( !m_scenarioPtr->hasAgent( m_kinTreeAgentWrappers[i]->name() ) )
+                m_scenarioPtr->addAgent( m_kinTreeAgentWrappers[i]->agent() );
         }
 
         // initialize all underlying base resources
@@ -207,10 +219,19 @@ namespace mujoco {
     void TTysocMjcApi::_collectFromScenarioInternal()
     {
         auto _agents = m_scenarioPtr->getAgentsByType( agent::AGENT_TYPE_KINTREE );
+        std::cout << "INFO> num agents: " << _agents.size() << std::endl;
         for ( size_t q = 0; q < _agents.size(); q++ )
         {
             auto _agentWrapper = new TMjcKinTreeAgentWrapper( (agent::TAgentKinTree*) _agents[q] );
             m_kinTreeAgentWrappers.push_back( _agentWrapper );
+        }
+    }
+
+    void TTysocMjcApi::_resetInternal()
+    {
+        for ( size_t q = 0; q < m_kinTreeAgentWrappers.size(); q++ )
+        {
+            m_kinTreeAgentWrappers[q]->reset();
         }
     }
 

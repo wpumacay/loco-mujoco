@@ -72,6 +72,8 @@ namespace mujoco {
         mjvCamera*  m_mjcCameraPtr;
         mjvOption*  m_mjcOptionPtr;
 
+        static bool HAS_ACTIVATED_MUJOCO;// @HACK: checks that mujoco is only activated once
+
         protected :
 
         void _preStep() override;
@@ -79,6 +81,7 @@ namespace mujoco {
         void _postStep() override;
 
         void _collectFromScenarioInternal() override;
+        void _resetInternal() override;
 
         public :
 

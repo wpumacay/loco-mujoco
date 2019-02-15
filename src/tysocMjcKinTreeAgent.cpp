@@ -137,11 +137,11 @@ namespace mujoco {
 
     TMjcKinTreeAgentWrapper::~TMjcKinTreeAgentWrapper()
     {
-        if ( m_mjcfModelTemplatePtr )
-        {
-            delete m_mjcfModelTemplatePtr;
-            m_mjcfModelTemplatePtr = NULL;
-        }
+        // if ( m_mjcfModelTemplatePtr )
+        // {
+        //     delete m_mjcfModelTemplatePtr;
+        //     m_mjcfModelTemplatePtr = NULL;
+        // }
 
         if ( m_mjcfResourcesPtr )
         {
@@ -672,6 +672,14 @@ namespace mujoco {
             root->children.push_back( _actuatorsElmPtr );
         if ( _sensorsElmPtr )
             root->children.push_back( _sensorsElmPtr );
+    }
+
+    void TMjcKinTreeAgentWrapper::reset()
+    {
+        if ( m_kinTreeAgentPtr )
+        {
+            m_kinTreeAgentPtr->reset();
+        }
     }
 
     void TMjcKinTreeAgentWrapper::preStep()

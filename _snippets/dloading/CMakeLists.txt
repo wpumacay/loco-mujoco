@@ -5,6 +5,8 @@ set( CMAKE_CXX_STANDARD 11 )
 
 set( CMAKE_CXX_FLAGS "-g ${CMAKE_CXX_FLAGS}" )
 
+add_definitions( -DLIBRARIES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/build/" )
+
 include_directories( "${CMAKE_SOURCE_DIR}/include" )
 
 add_library( shape_unreal SHARED
@@ -19,4 +21,10 @@ add_executable( main
                 src/main.cpp
                 src/Shape.cpp )
 target_link_libraries( main 
+                       dl )
+
+add_executable( test_both
+                src/test_both.cpp
+                src/Shape.cpp )
+target_link_libraries( test_both 
                        dl )

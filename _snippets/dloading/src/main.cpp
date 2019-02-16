@@ -7,6 +7,10 @@
 
 #include <dlfcn.h>
 
+#ifndef DLIBRARIES_PATH
+    #define DLIBRARIES_PATH "./build/"
+#endif
+
 static std::map< std::string, std::string > LIBRARIES = { { "ogre", "libshape_ogre.so" }, { "unreal", "libshape_unreal.so" } };
 
 static std::string LIBRARY_NAME = "libshape_ogre.so";
@@ -28,7 +32,7 @@ int main( int argc, const char** argv )
     std::cout << "DEMO: DYNAMICALLY LOADING LIBRARIES" << std::endl;
 
     // load library
-    void* _shapeLibrary = dlopen( LIBRARY_NAME.c_str(), RTLD_NOW );
+    void* _shapeLibrary = dlopen( ( std::string( DLIBRARIES_PATH ) + LIBRARY_NAME ).c_str(), RTLD_NOW );
     if ( !_shapeLibrary )
     {
         std::cout << "ERROR> error while loading library: " << dlerror() << std::endl;

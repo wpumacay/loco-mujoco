@@ -26,7 +26,7 @@ int main( int argc, const char** argv )
     auto _tysocApi = new tysoc::mujoco::TTysocMjcApi();
     auto _factory = new tysoc::mujoco::TMjcFactory();
 
-    tysoc::mujoco::TGenericParams _terrainParams;
+    tysoc::TGenericParams _terrainParams;
     // sections - path - perlin profile
     {
         _terrainParams.set( "sectionType", "path" );

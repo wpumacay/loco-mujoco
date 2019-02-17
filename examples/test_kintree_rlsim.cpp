@@ -1,5 +1,5 @@
 
-#include <tysocMjc.h>
+#include <mujoco_simulation.h>
 
 static std::string MODEL_NAME = "biped3d";
 

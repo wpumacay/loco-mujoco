@@ -1,148 +1,28 @@
 
-#include <tysocMjcKinTreeAgent.h>
+#include <mujoco_agent_wrapper.h>
 
 namespace tysoc {
 namespace mujoco {
 
     TMjcKinTreeAgentWrapper::TMjcKinTreeAgentWrapper( agent::TAgentKinTree* kinTreeAgentPtr )
+        : TKinTreeAgentWrapper( kinTreeAgentPtr )
     {
-        m_name = kinTreeAgentPtr->name();
-
         m_mjcModelPtr   = NULL;
         m_mjcDataPtr    = NULL;
         m_mjcScenePtr   = NULL;
 
         // create the mjcf resources element for this agent
         m_mjcfResourcesPtr = new mjcf::GenericElement( "mujoco" );
-        m_mjcfResourcesPtr->setAttributeString( "model", m_name );
-
-        // @TODO: Deep copy should go in the factory. A brand new copy should ...
-        // be passed to this constructor.
-        // @TODO: Could change the code structure a bit (for the agent formats) ...
-        // such that the core agent functionality copies the required data ...
-        // and does name replacing for the bodies, joints, etc. as needed.
-
-        // save the reference to the core agent
-        m_kinTreeAgentPtr = kinTreeAgentPtr;
-        // grab some format dependent resources accordingly
-        if ( m_kinTreeAgentPtr->getModelTemplateType() == agent::MODEL_TEMPLATE_TYPE_MJCF )
-            m_mjcfModelTemplatePtr = reinterpret_cast< agent::TAgentKinTreeMjcf* >
-                                            ( m_kinTreeAgentPtr )->getMjcfModelDataPtr();
-
-        else if ( m_kinTreeAgentPtr->getModelTemplateType() == agent::MODEL_TEMPLATE_TYPE_URDF )
-            m_urdfModelTemplatePtr = reinterpret_cast< agent::TAgentKinTreeUrdf* >
-                                            ( m_kinTreeAgentPtr )->getUrdfModelDataPtr();
-
-        else if ( m_kinTreeAgentPtr->getModelTemplateType() == agent::MODEL_TEMPLATE_TYPE_RLSIM )
-            m_rlsimModelTemplatePtr = reinterpret_cast< agent::TAgentKinTreeRlsim* >
-                                            ( m_kinTreeAgentPtr )->getRlsimModelDataPtr();
+        m_mjcfResourcesPtr->setAttributeString( "model", name() );
+        // and declare the reference to the target mjcf (where to place the resources)
+        m_mjcfTargetResourcesPtr = NULL;
 
         // collect the required data
         _createMjcResourcesFromKinTree();
     }
 
-    TMjcKinTreeAgentWrapper::TMjcKinTreeAgentWrapper( const std::string& name,
-                                                      mjcf::GenericElement* templateModelElmPtr,
-                                                      const TVec3& position )
-    {
-        // grab the name
-        m_name = name;
-
-        // and create a fresh mjcf resource element
-        m_mjcfModelTemplatePtr = new mjcf::GenericElement();
-        // and copy all contents from the template element
-        mjcf::deepCopy( m_mjcfModelTemplatePtr, 
-                        templateModelElmPtr,
-                        NULL,
-                        name );
-
-        // create the mjcf resources element for this agent
-        m_mjcfResourcesPtr = new mjcf::GenericElement( "mujoco" );
-        m_mjcfResourcesPtr->setAttributeString( "model", m_name );
-
-        // and set default to avoid wild undefined pointers
-        m_mjcModelPtr   = NULL;
-        m_mjcDataPtr    = NULL;
-        m_mjcScenePtr   = NULL;
-
-        // and create the kintree agent that uses mjcf
-        m_kinTreeAgentPtr = new agent::TAgentKinTreeMjcf( name, 
-                                                          position, 
-                                                          m_mjcfModelTemplatePtr );
-
-        // should collect all resources from any generic kintree
-        _createMjcResourcesFromKinTree();
-    }
-
-    TMjcKinTreeAgentWrapper::TMjcKinTreeAgentWrapper( const std::string& name,
-                                                      urdf::UrdfModel* urdfModelPtr,
-                                                      const TVec3& position )
-    {
-        // @WIP: working on core urdf agent
-        // grab the name
-        m_name = name;
-
-        // and create a fresh urdfmodel resource
-        m_urdfModelTemplatePtr = new urdf::UrdfModel();
-        urdf::deepCopy( m_urdfModelTemplatePtr,
-                        urdfModelPtr,
-                        name );
-
-        // create the urdf resources element for this agent
-        m_mjcfResourcesPtr = new mjcf::GenericElement( "mujoco" );
-        m_mjcfResourcesPtr->setAttributeString( "model", m_name );
-
-        // and set default to avoid wild undefined pointers
-        m_mjcModelPtr   = NULL;
-        m_mjcDataPtr    = NULL;
-        m_mjcScenePtr   = NULL;
-
-        // and create the kintree agent that uses urdf
-        m_kinTreeAgentPtr = new agent::TAgentKinTreeUrdf( name, 
-                                                          position, 
-                                                          m_urdfModelTemplatePtr );
-        _createMjcResourcesFromKinTree();
-    }
-
-    TMjcKinTreeAgentWrapper::TMjcKinTreeAgentWrapper( const std::string& name,
-                                                      rlsim::RlsimModel* rlsimModelPtr,
-                                                      const TVec3& position )
-    {
-        // @WIP: working on core rlsim agent
-        // grab the name
-        m_name = name;
-
-        // and create a fresh urdfmodel resource (do not replace names yet, as ...
-        // they are replaced within the kintree functionality itself)
-        m_rlsimModelTemplatePtr = new rlsim::RlsimModel();
-        rlsim::deepCopy( m_rlsimModelTemplatePtr,
-                         rlsimModelPtr,
-                         "" );
-
-        // create the urdf resources element for this agent
-        m_mjcfResourcesPtr = new mjcf::GenericElement( "mujoco" );
-        m_mjcfResourcesPtr->setAttributeString( "model", m_name );
-
-        // and set default to avoid wild undefined pointers
-        m_mjcModelPtr   = NULL;
-        m_mjcDataPtr    = NULL;
-        m_mjcScenePtr   = NULL;
-
-        // and create the kintree agent that uses urdf
-        m_kinTreeAgentPtr = new agent::TAgentKinTreeRlsim( name, 
-                                                           position, 
-                                                           m_rlsimModelTemplatePtr );
-        _createMjcResourcesFromKinTree();
-    }
-
     TMjcKinTreeAgentWrapper::~TMjcKinTreeAgentWrapper()
     {
-        // if ( m_mjcfModelTemplatePtr )
-        // {
-        //     delete m_mjcfModelTemplatePtr;
-        //     m_mjcfModelTemplatePtr = NULL;
-        // }
-
         if ( m_mjcfResourcesPtr )
         {
             delete m_mjcfResourcesPtr;
@@ -152,9 +32,7 @@ namespace mujoco {
         m_mjcModelPtr   = NULL;
         m_mjcDataPtr    = NULL;
         m_mjcScenePtr   = NULL;
-
-        // @CHECK: deletion should happen at runtime, right?
-        m_kinTreeAgentPtr = NULL;
+        m_mjcfTargetResourcesPtr = NULL;
     }
 
     void TMjcKinTreeAgentWrapper::setMjcModel( mjModel* mjcModelPtr )
@@ -172,14 +50,173 @@ namespace mujoco {
         m_mjcScenePtr = mjcScenePtr;
     }
 
-    std::string TMjcKinTreeAgentWrapper::name()
+    void TMjcKinTreeAgentWrapper::setMjcfTargetElm( mjcf::GenericElement* targetResourcesPtr )
     {
-        return m_name;
+        m_mjcfTargetResourcesPtr = targetResourcesPtr;
     }
 
-    agent::TAgentKinTree* TMjcKinTreeAgentWrapper::agent()
+    void TMjcKinTreeAgentWrapper::_initializeInternal()
     {
-        return m_kinTreeAgentPtr;
+        // Check if the caller (TMjcSimulation) set the target reference
+        if ( !m_mjcfTargetResourcesPtr )
+        {
+            std::cout << "ERROR> mjc-sim object must pass a reference of the"
+                      << " target resources to this agent" << std::endl;
+            return;
+        }
+
+        // grab the mjcf resources to inject, namely the worlbody
+        auto _worldBodyElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "worldbody" );
+        // grab the actuators as well
+        auto _actuatorsElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "actuator" );
+        // and the assets
+        auto _assetsElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "asset" );
+        // and the sensors
+        auto _sensorsElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "sensor" );
+        // and the contacts
+        auto _contactsElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "contact" );
+        // then just add them to the children of the root
+        if ( _assetsElmPtr )
+        {
+            // grab the assets in the target element
+            auto _targetAssetsElmPtr    = mjcf::findFirstChildByType( m_mjcfTargetResourcesPtr, "asset" );
+            auto _assetsInTarget        = _targetAssetsElmPtr->children;
+            // grab the assets in our model element
+            auto _assetsInModel = _assetsElmPtr->children;
+            // create a set with the current elements in the assets list
+            std::set< std::string > _currentAssets;
+            for ( size_t i = 0; i < _assetsInTarget.size(); i++ )
+            {
+                _currentAssets.emplace( _assetsInTarget[i]->getAttributeString( "name" ) );
+            }
+            // and place our model assets if not already there
+            for ( size_t i = 0; i < _assetsInModel.size(); i++ )
+            {
+                auto _assetElmName = _assetsInModel[i]->getAttributeString( "name" );
+                if ( _currentAssets.find( _assetElmName ) == _currentAssets.end() )
+                {
+                    _targetAssetsElmPtr->children.push_back( _assetsInModel[i] );
+                }
+            }
+        }
+        if ( _contactsElmPtr )
+            m_mjcfTargetResourcesPtr->children.push_back( _contactsElmPtr );
+        if ( _worldBodyElmPtr )
+            m_mjcfTargetResourcesPtr->children.push_back( _worldBodyElmPtr );
+        if ( _actuatorsElmPtr )
+            m_mjcfTargetResourcesPtr->children.push_back( _actuatorsElmPtr );
+        if ( _sensorsElmPtr )
+            m_mjcfTargetResourcesPtr->children.push_back( _sensorsElmPtr );
+    }
+
+    void TMjcKinTreeAgentWrapper::_resetInternal()
+    {
+        if ( m_kinTreeAgentPtr )
+        {
+            m_kinTreeAgentPtr->reset();
+        }
+    }
+
+    void TMjcKinTreeAgentWrapper::_preStepInternal()
+    {
+        auto _kinActuators = m_kinTreeAgentPtr->getKinTreeActuators();
+
+        for ( size_t i = 0; i < _kinActuators.size(); i++ )
+        {
+            utils::setActuatorCtrl( m_mjcModelPtr,
+                                     m_mjcDataPtr,
+                                     _kinActuators[i]->name,
+                                     _kinActuators[i]->ctrlValue );
+        }
+    }
+
+    void TMjcKinTreeAgentWrapper::_postStepInternal()
+    {
+        auto _kinBodies = m_kinTreeAgentPtr->getKinTreeBodies();
+        for ( size_t i = 0; i < _kinBodies.size(); i++ )
+        {
+            // grab the position from the mujoco backend
+            auto _pos = utils::getBodyPosition( m_mjcModelPtr,
+                                                 m_mjcDataPtr,
+                                                 _kinBodies[i]->name );
+            // and the rotation as well
+            float _rot[9];
+            utils::getBodyOrientation( m_mjcModelPtr,
+                                        m_mjcDataPtr,
+                                        _kinBodies[i]->name, _rot );
+
+            // convert the position/rotation data to our format
+            TVec3 _position;
+            TMat3 _rotation;
+
+            _position.x = _pos.x;
+            _position.y = _pos.y;
+            _position.z = _pos.z;
+
+            _rotation.buff[0] = _rot[0];
+            _rotation.buff[1] = _rot[1];
+            _rotation.buff[2] = _rot[2];
+            _rotation.buff[3] = _rot[3];
+            _rotation.buff[4] = _rot[4];
+            _rotation.buff[5] = _rot[5];
+            _rotation.buff[6] = _rot[6];
+            _rotation.buff[7] = _rot[7];
+            _rotation.buff[8] = _rot[8];
+
+            // then set it to the body's worldtransform
+            _kinBodies[i]->worldTransform.setPosition( _position );
+            _kinBodies[i]->worldTransform.setRotation( _rotation );
+        }
+
+        // collect sensor readings
+        auto _kinSensors = m_kinTreeAgentPtr->getKinTreeSensors();
+        for ( size_t i = 0; i < _kinSensors.size(); i++ )
+        {
+            if ( _kinSensors[i]->type == "joint" )
+            {
+                auto _kinJointSensor = reinterpret_cast< agent::TKinTreeJointSensor* >( _kinSensors[i] );
+
+                std::vector< float > _readings;
+                // grab the reading from the jointpos sensor
+                utils::getJointSensorReading( m_mjcModelPtr,
+                                               m_mjcDataPtr,
+                                               _kinJointSensor->name + std::string( "_jointpos" ),
+                                               _readings );
+                // and also the reading from the jointvel sensor
+                utils::getJointSensorReading( m_mjcModelPtr,
+                                               m_mjcDataPtr,
+                                               _kinJointSensor->name + std::string( "_jointvel" ),
+                                               _readings );
+                // and store it into the sensor for later usage
+                _kinJointSensor->theta       = _readings[0];
+                _kinJointSensor->thetadot    = _readings[1];
+
+                // std::cout << "theta: " << _readings[0] << std::endl;
+                // std::cout << "thetadot: " << _readings[1] << std::endl;
+            }
+            else if ( _kinSensors[i]->type == "body" )
+            {
+                auto _kinBodySensor = reinterpret_cast< agent::TKinTreeBodySensor* >( _kinSensors[i] );
+
+                std::vector< float > _readings;
+                // grab the reading from the franelinvec sensor
+                utils::getJointSensorReading( m_mjcModelPtr,
+                                               m_mjcDataPtr,
+                                               _kinBodySensor->name + std::string( "_framelinvel" ),
+                                               _readings );
+                // and also the reading from the framelinacc sensor
+                utils::getJointSensorReading( m_mjcModelPtr,
+                                               m_mjcDataPtr,
+                                               _kinBodySensor->name + std::string( "_framelinacc" ),
+                                               _readings );
+                // and store it into the sensor for later usage
+                _kinBodySensor->linVelocity     = { _readings[0], _readings[1], _readings[2] };
+                _kinBodySensor->linAcceleration = { _readings[3], _readings[4], _readings[5] };
+            }
+        }
+
+        // and then request an update of the kintree
+        m_kinTreeAgentPtr->update( 0 );
     }
 
     void TMjcKinTreeAgentWrapper::_createMjcResourcesFromKinTree()
@@ -231,7 +268,7 @@ namespace mujoco {
                 // create the freejoint element
                 auto _freeJointElmPtr = new mjcf::GenericElement( "joint" );
                 // compute the appropiate unique-name
-                auto _freeJointName = urdf::computeUrdfName( "joint", "free", m_name );
+                auto _freeJointName = urdf::computeUrdfName( "joint", "free", name() );
                 _freeJointElmPtr->setAttributeString( "name", _freeJointName );
                 // set the type to free to give 6dof to the agent at its root body
                 _freeJointElmPtr->setAttributeString( "type", "free" );
@@ -628,162 +665,22 @@ namespace mujoco {
         return _res;
     }
 
-    void TMjcKinTreeAgentWrapper::injectMjcResources( mjcf::GenericElement* root )
+    extern "C" TKinTreeAgentWrapper* agent_createFromAbstract( agent::TAgentKinTree* kinTreeAgentPtr )
     {
-        // grab the mjcf resources to inject, namely the worlbody
-        auto _worldBodyElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "worldbody" );
-        // grab the actuators as well
-        auto _actuatorsElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "actuator" );
-        // and the assets
-        auto _assetsElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "asset" );
-        // and the sensors
-        auto _sensorsElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "sensor" );
-        // and the contacts
-        auto _contactsElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "contact" );
-        // then just add them to the children of the root
-        if ( _assetsElmPtr )
-        {
-            // grab the assets in the target element
-            auto _targetAssetsElmPtr    = mjcf::findFirstChildByType( root, "asset" );
-            auto _assetsInTarget        = _targetAssetsElmPtr->children;
-            // grab the assets in our model element
-            auto _assetsInModel = _assetsElmPtr->children;
-            // create a set with the current elements in the assets list
-            std::set< std::string > _currentAssets;
-            for ( size_t i = 0; i < _assetsInTarget.size(); i++ )
-            {
-                _currentAssets.emplace( _assetsInTarget[i]->getAttributeString( "name" ) );
-            }
-            // and place our model assets if not already there
-            for ( size_t i = 0; i < _assetsInModel.size(); i++ )
-            {
-                auto _assetElmName = _assetsInModel[i]->getAttributeString( "name" );
-                if ( _currentAssets.find( _assetElmName ) == _currentAssets.end() )
-                {
-                    _targetAssetsElmPtr->children.push_back( _assetsInModel[i] );
-                }
-            }
-        }
-        if ( _contactsElmPtr )
-            root->children.push_back( _contactsElmPtr );
-        if ( _worldBodyElmPtr )
-            root->children.push_back( _worldBodyElmPtr );
-        if ( _actuatorsElmPtr )
-            root->children.push_back( _actuatorsElmPtr );
-        if ( _sensorsElmPtr )
-            root->children.push_back( _sensorsElmPtr );
+        return new TMjcKinTreeAgentWrapper( kinTreeAgentPtr );
     }
 
-    void TMjcKinTreeAgentWrapper::reset()
+    extern "C" TKinTreeAgentWrapper* agent_createFromFile( const std::string& name,
+                                                           const std::string& filename )
     {
-        if ( m_kinTreeAgentPtr )
-        {
-            m_kinTreeAgentPtr->reset();
-        }
+        return NULL;
     }
 
-    void TMjcKinTreeAgentWrapper::preStep()
+    extern "C" TKinTreeAgentWrapper* agent_createFromId( const std::string& name,
+                                                         const std::string& format,
+                                                         const std::string& id )
     {
-        auto _kinActuators = m_kinTreeAgentPtr->getKinTreeActuators();
-
-        for ( size_t i = 0; i < _kinActuators.size(); i++ )
-        {
-            utils::setActuatorCtrl( m_mjcModelPtr,
-                                     m_mjcDataPtr,
-                                     _kinActuators[i]->name,
-                                     _kinActuators[i]->ctrlValue );
-        }
+        return NULL;
     }
-
-    void TMjcKinTreeAgentWrapper::postStep()
-    {
-        auto _kinBodies = m_kinTreeAgentPtr->getKinTreeBodies();
-        for ( size_t i = 0; i < _kinBodies.size(); i++ )
-        {
-            // grab the position from the mujoco backend
-            auto _pos = utils::getBodyPosition( m_mjcModelPtr,
-                                                 m_mjcDataPtr,
-                                                 _kinBodies[i]->name );
-            // and the rotation as well
-            float _rot[9];
-            utils::getBodyOrientation( m_mjcModelPtr,
-                                        m_mjcDataPtr,
-                                        _kinBodies[i]->name, _rot );
-
-            // convert the position/rotation data to our format
-            TVec3 _position;
-            TMat3 _rotation;
-
-            _position.x = _pos.x;
-            _position.y = _pos.y;
-            _position.z = _pos.z;
-
-            _rotation.buff[0] = _rot[0];
-            _rotation.buff[1] = _rot[1];
-            _rotation.buff[2] = _rot[2];
-            _rotation.buff[3] = _rot[3];
-            _rotation.buff[4] = _rot[4];
-            _rotation.buff[5] = _rot[5];
-            _rotation.buff[6] = _rot[6];
-            _rotation.buff[7] = _rot[7];
-            _rotation.buff[8] = _rot[8];
-
-            // then set it to the body's worldtransform
-            _kinBodies[i]->worldTransform.setPosition( _position );
-            _kinBodies[i]->worldTransform.setRotation( _rotation );
-        }
-
-        // collect sensor readings
-        auto _kinSensors = m_kinTreeAgentPtr->getKinTreeSensors();
-        for ( size_t i = 0; i < _kinSensors.size(); i++ )
-        {
-            if ( _kinSensors[i]->type == "joint" )
-            {
-                auto _kinJointSensor = reinterpret_cast< agent::TKinTreeJointSensor* >( _kinSensors[i] );
-
-                std::vector< float > _readings;
-                // grab the reading from the jointpos sensor
-                utils::getJointSensorReading( m_mjcModelPtr,
-                                               m_mjcDataPtr,
-                                               _kinJointSensor->name + std::string( "_jointpos" ),
-                                               _readings );
-                // and also the reading from the jointvel sensor
-                utils::getJointSensorReading( m_mjcModelPtr,
-                                               m_mjcDataPtr,
-                                               _kinJointSensor->name + std::string( "_jointvel" ),
-                                               _readings );
-                // and store it into the sensor for later usage
-                _kinJointSensor->theta       = _readings[0];
-                _kinJointSensor->thetadot    = _readings[1];
-
-                // std::cout << "theta: " << _readings[0] << std::endl;
-                // std::cout << "thetadot: " << _readings[1] << std::endl;
-            }
-            else if ( _kinSensors[i]->type == "body" )
-            {
-                auto _kinBodySensor = reinterpret_cast< agent::TKinTreeBodySensor* >( _kinSensors[i] );
-
-                std::vector< float > _readings;
-                // grab the reading from the franelinvec sensor
-                utils::getJointSensorReading( m_mjcModelPtr,
-                                               m_mjcDataPtr,
-                                               _kinBodySensor->name + std::string( "_framelinvel" ),
-                                               _readings );
-                // and also the reading from the framelinacc sensor
-                utils::getJointSensorReading( m_mjcModelPtr,
-                                               m_mjcDataPtr,
-                                               _kinBodySensor->name + std::string( "_framelinacc" ),
-                                               _readings );
-                // and store it into the sensor for later usage
-                _kinBodySensor->linVelocity     = { _readings[0], _readings[1], _readings[2] };
-                _kinBodySensor->linAcceleration = { _readings[3], _readings[4], _readings[5] };
-            }
-        }
-
-        // and then request an update of the kintree
-        m_kinTreeAgentPtr->update( 0 );
-    }
-
-
 
 }}

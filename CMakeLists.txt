@@ -64,7 +64,7 @@ message( "TYSOCMJC_SOURCES: ${TYSOCMJC_SOURCES}" )
 ##          it work the way we expect backends to be provided.
 
 # @TEST: Testing tysocMjc with the custom visualizer
-add_library( tysocMjcCustomViz
+add_library( tysocMjcCustomViz SHARED
              ${TYSOCMJC_SOURCES} )
 target_link_libraries( tysocMjcCustomViz
                        tysocCustomViz # this uses the custom visualizer
@@ -72,7 +72,7 @@ target_link_libraries( tysocMjcCustomViz
                        tysocCore )
 
 # @TEST: Testing tysocMjc with the mujoco visualizer (try to force first mix of gl and nongl mujoco)
-add_library( tysocMjcMujocoViz
+add_library( tysocMjcMujocoViz SHARED
              ${TYSOCMJC_SOURCES} )
 target_link_libraries( tysocMjcMujocoViz
                        tysocMujocoViz # this uses the mujoco visualizer
@@ -83,7 +83,7 @@ target_link_libraries( tysocMjcMujocoViz
                        tysocCore )
 
 # @TEST: Testing tysocMjc with no visualizer
-add_library( tysocMujoco
+add_library( tysocMujoco SHARED
              ${TYSOCMJC_SOURCES} )
 target_link_libraries( tysocMujoco
                        tysocCore

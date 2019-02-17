@@ -1,5 +1,5 @@
 
-#include <tysocMjcUtils.h>
+#include <mujoco_common.h>
 
 namespace tysoc {
 namespace mujoco {

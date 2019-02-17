@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include <tysocMjcCommon.h>
+#include <mujoco_common.h>
 
 namespace tysoc {
 namespace mujoco {

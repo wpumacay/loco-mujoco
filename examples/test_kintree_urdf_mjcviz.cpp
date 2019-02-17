@@ -1,5 +1,5 @@
 
-#include <tysocMjc.h>
+#include <mujoco_simulation.h>
 #include <tysocMujocoViz.h>
 
 static int NUM_AGENTS = 1;

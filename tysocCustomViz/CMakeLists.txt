@@ -16,7 +16,7 @@ include_directories( "${CMAKE_SOURCE_DIR}/ext/tysocCore/ext/json" )
 include_directories( "${CMAKE_SOURCE_DIR}/ext/imgui" )
 include_directories( "${CMAKE_SOURCE_DIR}/ext/imgui/examples" )
 
-add_library( tysocCustomViz
+add_library( tysocCustomViz SHARED
              ${TYSOC_CUSTOM_VIZ_SOURCES} )
 target_link_libraries( tysocCustomViz
                        cat1

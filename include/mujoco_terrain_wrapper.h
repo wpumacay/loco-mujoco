@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include <tysocMjcCommon.h>
-#include <tysocMjcUtils.h>
+#include <mujoco_common.h>
+#include <mujoco_utils.h>
 
 // Pool size for the number of mjc bodies to use
 #define MJC_TERRAIN_POOL_SIZE PROCEDURAL_TERRAIN_POOL_SIZE - 1
@@ -11,7 +11,7 @@
 #define MJC_TERRAIN_PATH_DEFAULT_DEPTH 2.0f
 #define MJC_TERRAIN_PATH_DEFAULT_TICKNESS 0.025f
 
-#include <terrain/terrain.h>
+#include <terrain_wrapper.h>
 
 namespace tysoc {
 namespace mujoco {
@@ -22,16 +22,16 @@ namespace mujoco {
     */
     struct TMjcTerrainPrimitive
     {
-        int                         mjcBodyId;
-        std::string                 mjcBodyName;
-        std::string                 mjcGeomType;
-        TSizef                      mjcGeomSize;
-        bool                        isAvailable;
-        tysoc::terrain::TTerrainPrimitive*   tysocPrimitiveObj;
+        int                             mjcBodyId;
+        std::string                     mjcBodyName;
+        std::string                     mjcGeomType;
+        TSizef                          mjcGeomSize;
+        bool                            isAvailable;
+        terrain::TTerrainPrimitive*     tysocPrimitiveObj;
     };
 
 
-    class TMjcTerrainGenWrapper
+    class TMjcTerrainGenWrapper : public TTerrainGenWrapper
     {
         private :
 
@@ -42,45 +42,42 @@ namespace mujoco {
         std::queue< TMjcTerrainPrimitive* > m_mjcWorkingPrimitives;
         std::queue< TMjcTerrainPrimitive* > m_mjcFixedPrimitives;
 
-        // terrain generator to wrap
-        tysoc::terrain::TITerrainGenerator* m_terrainGenPtr;
-
         // mujoco resources to inject into workspace
         mjcf::GenericElement* m_modelElmPtr;
+        // mjcf data where to send the data from above
+        mjcf::GenericElement* m_mjcfTargetResourcesPtr;
 
         // a reference to the mujoco model
         mjModel* m_mjcModelPtr;
         mjData* m_mjcDataPtr;
         mjvScene* m_mjcScenePtr;
 
-        // name for this agentwrapper (and underlying agent as well)
-        std::string m_name;
-
         void _collectFromGenerator();// collects primitives that can be reused and rewrapped in the lifetime of the generator
         void _collectFixedFromGenerator();// collects primitives that are single in the lifetime of the generator
-        void _wrapNewPrimitive( tysoc::terrain::TTerrainPrimitive* primitivePtr, bool isReusable );
+        void _wrapNewPrimitive( terrain::TTerrainPrimitive* primitivePtr, bool isReusable );
         void _updateProperties( TMjcTerrainPrimitive* mjcTerrainPritimivePtr );
+
+        protected :
+
+        void _initializeInternal() override;
+        void _resetInternal() override;
+        void _preStepInternal() override;
+        void _postStepInternal() override;
 
         public :
 
-        TMjcTerrainGenWrapper( const std::string& name,
-                               tysoc::terrain::TITerrainGenerator* terrainGenPtr );
+        TMjcTerrainGenWrapper( terrain::TITerrainGenerator* terrainGenPtr );
         ~TMjcTerrainGenWrapper();
 
-        void injectMjcResources( mjcf::GenericElement* root );
         void setMjcModel( mjModel* mjcModelPtr );
         void setMjcData( mjData* mjcDataPtr );
         void setMjcScene( mjvScene* mjcScenePtr );
-        void initialize();
-
-        std::string name() { return m_name; }
-        tysoc::terrain::TITerrainGenerator* terrainGenerator() { return m_terrainGenPtr; }
-
-
-        // update the wrapper by collecting all ...
-        // information needed for stages on top of ...
-        // the wrapper, like its concrete TTysocMjcApi parent
-        void preStep();
+        void setMjcfTargetElm( mjcf::GenericElement* targetResourcesPtr );
     };
 
+
+    extern "C" TTerrainGenWrapper* terrain_createFromAbstract( terrain::TITerrainGenerator* terrainGenPtr );
+
+    extern "C" TTerrainGenWrapper* terrain_createFromParams( const std::string& name,
+                                                             const TGenericParams& params );
 }}

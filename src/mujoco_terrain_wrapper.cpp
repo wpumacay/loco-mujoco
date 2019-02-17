@@ -1,19 +1,18 @@
 
-#include <tysocMjcTerrain.h>
+#include <mujoco_terrain_wrapper.h>
 
 
 namespace tysoc {
 namespace mujoco {
 
 
-    TMjcTerrainGenWrapper::TMjcTerrainGenWrapper( const std::string& name,
-                                                  tysoc::terrain::TITerrainGenerator* terrainGenPtr )
+    TMjcTerrainGenWrapper::TMjcTerrainGenWrapper( terrain::TITerrainGenerator* terrainGenPtr )
+        : TTerrainGenWrapper( terrainGenPtr )
     {
-        m_name          = name;
-        m_terrainGenPtr = terrainGenPtr;
         m_mjcModelPtr   = NULL;
         m_mjcDataPtr    = NULL;
         m_mjcScenePtr   = NULL;
+        m_mjcfTargetResourcesPtr = NULL;
 
         // initialize mujoco resources
         for ( size_t i = 0; i < MJC_TERRAIN_POOL_SIZE; i++ )
@@ -21,7 +20,7 @@ namespace mujoco {
             auto _mjcPrimitive = new TMjcTerrainPrimitive();
 
             _mjcPrimitive->mjcBodyId        = -1;
-            _mjcPrimitive->mjcBodyName      = std::string( "terrainGen_" ) + name + std::string( "_" ) + std::to_string( i );
+            _mjcPrimitive->mjcBodyName      = std::string( "terrainGen_" ) + name() + std::string( "_" ) + std::to_string( i );
             _mjcPrimitive->mjcGeomType      = "box";
             _mjcPrimitive->mjcGeomSize      = { 3, { 0.5f * MJC_TERRAIN_PATH_DEFAULT_WIDTH, 
                                                      0.5f * MJC_TERRAIN_PATH_DEFAULT_DEPTH, 
@@ -33,19 +32,18 @@ namespace mujoco {
             m_mjcTerrainPrimitives.push_back( _mjcPrimitive );
             m_mjcAvailablePrimitives.push( _mjcPrimitive );
         }
+
+        // collect starting info from generator
+        _collectFromGenerator();
+        _collectFixedFromGenerator();
     }
 
     TMjcTerrainGenWrapper::~TMjcTerrainGenWrapper()
     {
-        if ( m_terrainGenPtr )
-        {
-            // deletion of the base reosurces is in charge of the scenario
-            m_terrainGenPtr = NULL;
-        }
-
         m_mjcModelPtr   = NULL;
         m_mjcDataPtr    = NULL;
         m_mjcScenePtr   = NULL;
+        m_mjcfTargetResourcesPtr = NULL;
 
         while ( !m_mjcAvailablePrimitives.empty() )
         {
@@ -65,13 +63,6 @@ namespace mujoco {
         m_mjcTerrainPrimitives.clear();
     }
 
-    void TMjcTerrainGenWrapper::initialize()
-    {
-        // collect starting info from generator
-        _collectFromGenerator();
-        _collectFixedFromGenerator();
-    }
-
     void TMjcTerrainGenWrapper::setMjcModel( mjModel* mjcModelPtr )
     {
         m_mjcModelPtr = mjcModelPtr;
@@ -87,9 +78,22 @@ namespace mujoco {
         m_mjcScenePtr = mjcScenePtr;
     }
 
-    void TMjcTerrainGenWrapper::injectMjcResources( mjcf::GenericElement* root )
+    void TMjcTerrainGenWrapper::setMjcfTargetElm( mjcf::GenericElement* targetResourcesPtr )
     {
-        // create a worldbody element to inject into the root element
+        m_mjcfTargetResourcesPtr = targetResourcesPtr;
+    }
+
+    void TMjcTerrainGenWrapper::_initializeInternal()
+    {
+        // Check if the caller (TMjcSimulation) set the target reference
+        if ( !m_mjcfTargetResourcesPtr )
+        {
+            std::cout << "ERROR> mjc-sim object must pass a reference of the"
+                      << " target resources to this agent" << std::endl;
+            return;
+        }
+
+        // create a worldbody element to inject into the targetResources element
         auto _worldbody = new mjcf::GenericElement( "worldbody" );
 
         // add all geometry resources into this element
@@ -113,10 +117,15 @@ namespace mujoco {
         }
 
 
-        root->children.push_back( _worldbody );
+        m_mjcfTargetResourcesPtr->children.push_back( _worldbody );
     }
 
-    void TMjcTerrainGenWrapper::preStep()
+    void TMjcTerrainGenWrapper::_resetInternal()
+    {
+        // @TODO: add reset functionality
+    }
+
+    void TMjcTerrainGenWrapper::_preStepInternal()
     {
         _collectFromGenerator();
 
@@ -128,6 +137,11 @@ namespace mujoco {
                 _updateProperties( m_mjcTerrainPrimitives[i] );
             }
         }
+    }
+
+    void TMjcTerrainGenWrapper::_postStepInternal()
+    {
+        // @TODO: should contact checking be done here? (store contacts)
     }
 
     void TMjcTerrainGenWrapper::_collectFromGenerator()
@@ -199,7 +213,7 @@ namespace mujoco {
         }
     }
 
-    void TMjcTerrainGenWrapper::_wrapNewPrimitive( tysoc::terrain::TTerrainPrimitive* primitivePtr, bool isReusable )
+    void TMjcTerrainGenWrapper::_wrapNewPrimitive( terrain::TTerrainPrimitive* primitivePtr, bool isReusable )
     {
         // if the pool is empty, force to recycle the last object
         if ( m_mjcAvailablePrimitives.empty() )
@@ -231,6 +245,18 @@ namespace mujoco {
             // put it into the fixed queue
             m_mjcFixedPrimitives.push( _mjcPrimitive );
         }
+    }
+
+
+    extern "C" TTerrainGenWrapper* terrain_createFromAbstract( terrain::TITerrainGenerator* terrainGenPtr )
+    {
+        return new TMjcTerrainGenWrapper( terrainGenPtr );
+    }
+
+    extern "C" TTerrainGenWrapper* terrain_createFromParams( const std::string& name,
+                                                             const TGenericParams& params )
+    {
+        return NULL;
     }
 
 

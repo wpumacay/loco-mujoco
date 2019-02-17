@@ -1,5 +1,5 @@
 
-#include <tysocMjc.h>
+#include <mujoco_simulation.h>
 #include <tysocCustomViz.h>
 
 static std::string MODEL_FORMAT = "mjcf";

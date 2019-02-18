@@ -96,4 +96,4 @@ target_link_libraries( tysocMujoco
 add_subdirectory( examples )
 
 ## # Configure bindings
-## add_subdirectory( bindings )
+add_subdirectory( pytysoc )

@@ -51,7 +51,7 @@ namespace viz {
 
         protected :
 
-        void _initializeInternal() override;
+        bool _initializeInternal() override;
         void _updateInternal() override;
         void _renderUIInternal() override;
         bool _isActiveInternal() override;
@@ -104,6 +104,7 @@ namespace viz {
                                     double yOffset );
     };
 
-
+    extern "C" TIVisualizer* visualizer_create();
+    extern "C" TIVisualizer* visualizer_createFromScenario( TScenario* scenarioPtr );
 
 }}

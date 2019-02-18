@@ -19,8 +19,14 @@ namespace viz {
         // @TODO: Check if should delete meshes in scene or here
     }
 
-    void TCustomVisualizer::_initializeInternal()
+    bool TCustomVisualizer::_initializeInternal()
     {
+        if ( !m_scenarioPtr )
+        {
+            std::cout << "ERROR> scenario reference is NULL" << std::endl;
+            return false;
+        }
+
         // set up rendering engine stuff
         _setupGlRenderingEngine();
 
@@ -54,6 +60,8 @@ namespace viz {
         m_uiPtr = new TCustomUI( m_scenarioPtr,
                                  m_uiContextPtr );
         m_uiPtr->initUI();
+
+        return true;
     }
 
     void TCustomVisualizer::_updateInternal()
@@ -332,6 +340,11 @@ namespace viz {
     bool TCustomVisualizer::_checkSingleKeyPressInternal( int keyCode )
     {
         return engine::InputSystem::checkSingleKeyPress( keyCode );
+    }
+
+    extern "C" TIVisualizer* visualizer_create( TScenario* scenarioPtr )
+    {
+        return new TCustomVisualizer( scenarioPtr );
     }
 
 }}

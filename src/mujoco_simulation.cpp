@@ -25,6 +25,9 @@ namespace mujoco {
 
         m_mjcfResourcesPtr = mjcf::loadGenericModel( _emptyModelPath );
 
+        if ( !m_scenarioPtr )
+            m_scenarioPtr = new TScenario();
+
         auto _agents = m_scenarioPtr->getAgentsByType( agent::AGENT_TYPE_KINTREE );
         for ( size_t q = 0; q < _agents.size(); q++ )
         {
@@ -206,9 +209,9 @@ namespace mujoco {
         }
     }
 
-    extern "C" TISimulation* simulation_create()
+    extern "C" TISimulation* simulation_create( TScenario* scenarioPtr )
     {
         std::cout << "INFO> creating mujoco simulation" << std::endl;
-        return NULL;
+        return new TMjcSimulation( scenarioPtr );
     }
 }}

@@ -81,13 +81,19 @@ namespace viz {
         m_mjcOptionPtr = mjcOptionPtr;
     }
 
-    void TMujocoVisualizer::_initializeInternal()
+    bool TMujocoVisualizer::_initializeInternal()
     {
+        if ( !m_scenarioPtr )
+        {
+            std::cout << "ERROR> scenario reference is NULL" << std::endl;
+            return false;
+        }
+
         // Initialize glfw
         if ( !glfwInit() )
         {
             std::cout << "ERROR> Could not initialize GLFW" << std::endl;
-            return;
+            return false;
         }
 
         m_glfwWindowPtr = glfwCreateWindow( 1024, 768, "Mujoco Visualizer", NULL, NULL );
@@ -95,7 +101,7 @@ namespace viz {
         {
             glfwTerminate();
             std::cout << "ERROR> Could not create glfw window" << std::endl;
-            return;
+            return false;
         }
 
         glfwMakeContextCurrent( m_glfwWindowPtr );
@@ -120,6 +126,8 @@ namespace viz {
         m_uiPtr = new TMujocoUI( m_scenarioPtr,
                                  m_uiContextPtr );
         m_uiPtr->initUI();
+
+        return true;
     }
 
     void TMujocoVisualizer::_updateInternal()
@@ -390,6 +398,16 @@ namespace viz {
         m_singleKeys[key] = _handlerState;
         // and return the previous result
         return _res;
+    }
+
+    extern "C" TIVisualizer* visualizer_create()
+    {
+        return new TMujocoVisualizer( NULL );
+    }
+
+    extern "C" TIVisualizer* visualizer_createFromScenario( TScenario* scenarioPtr )
+    {
+        return new TMujocoVisualizer( scenarioPtr );
     }
 
 }}

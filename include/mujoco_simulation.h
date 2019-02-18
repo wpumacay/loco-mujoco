@@ -49,6 +49,6 @@ namespace mujoco {
         mjvOption* getMjcOption() { return m_mjcOptionPtr; }
     };
 
-    extern "C" TISimulation* simulation_create();
+    extern "C" TISimulation* simulation_create( TScenario* scenarioPtr );
     
 }}

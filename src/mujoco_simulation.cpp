@@ -209,6 +209,22 @@ namespace mujoco {
         }
     }
 
+    void* TMjcSimulation::_constructPayloadInternal( const std::string& type )
+    {
+        if ( type == "mjModel" )
+            return (void*) m_mjcModelPtr;
+        else if ( type == "mjData" )
+            return (void*) m_mjcDataPtr;
+        else if ( type == "mjvScene" )
+            return (void*) m_mjcScenePtr;
+        else if ( type == "mjvCamera" )
+            return (void*) m_mjcCameraPtr;
+        else if ( type == "mjvOption" )
+            return (void*) m_mjcOptionPtr;
+
+        return NULL;
+    }
+
     extern "C" TISimulation* simulation_create( TScenario* scenarioPtr )
     {
         std::cout << "INFO> creating mujoco simulation" << std::endl;

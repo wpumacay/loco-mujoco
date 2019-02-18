@@ -89,3 +89,39 @@
 ![tysoc-mjc-progress-2](../_imgs/gif_tysocMjc_progress_1_2.gif)
 
 ![tysoc-mjc-progress-3](../_imgs/gif_tysocMjc_progress_1_3.gif)
+
+## dic, 2018
+
+* Added starting support for urdf
+* Refactored code: parsers
+* Added joint sensors
+* Added support for mujoco visualizer
+* ... (wil check commits later)
+
+## jan, 2019
+
+* Added support for urdf (still some fixes needed)
+* Refactored code: design of the core agent functionality
+* ... (wil check commits later)
+
+## feb, 2019
+
+* Added support for the rlsim format (from [here](https://github.com/UBCMOCCA/TerrainRLSim/tree/master/data/characters))
+* Added a small visualizer/editor? (will add edition functionality after some extra changes)
+* ... (will check commits later)
+
+## 17, feb, 2019
+
+* Added dynamic loading functionality: We can load any simulation and visualizer at runtime,
+    which will be used later when choosing among various physics backends. See test_runtime.cpp 
+    in the examples folder. In the example we only change a line to indicate which visualizer, and
+    voila, you just swapped the visualizer, no need to recompile. I will be fixing the other examples
+    tomorrow (I kind of leave the old examples unusable).
+
+![tysoc-mjc-progress-dlloading-custom-viz](../_imgs/gif_tysocMjc_progress_dlloading_custom_viz.gif)
+
+![tysoc-mjc-progress-dlloading-mujoco-viz](../_imgs/gif_tysocMjc_progress_dlloading_mujoco_viz.gif)
+
+* Will be working on the python bindings now, so in the next days we will have a usable
+  python simulator. It will be better when we start adding the other backends. First Bullet,
+  and then PhysX.

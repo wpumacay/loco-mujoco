@@ -12,6 +12,7 @@ namespace viz {
         m_glAppPtr      = NULL;
         m_glScenePtr    = NULL;
         m_uiContextPtr  = NULL;
+        m_type          = "cat1";
     }
 
     TCustomVisualizer::~TCustomVisualizer()

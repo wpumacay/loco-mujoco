@@ -19,6 +19,8 @@ namespace viz {
 
         _INSTANCE = this;
 
+        m_type = "mujoco";
+
         m_mjcModelPtr       = NULL;
         m_mjcDataPtr        = NULL;
         m_mjcScenePtr       = NULL;
@@ -400,12 +402,21 @@ namespace viz {
         return _res;
     }
 
-    extern "C" TIVisualizer* visualizer_create()
+    void TMujocoVisualizer::_collectSimPayloadInternal( void* payload, const std::string& type )
     {
-        return new TMujocoVisualizer( NULL );
+        if ( type == "mjModel" )
+            setMjcModel( (mjModel*) payload );
+        else if ( type == "mjData" )
+            setMjcData( (mjData*) payload );
+        else if ( type == "mjvScene" )
+            setMjcScene( (mjvScene*) payload );
+        else if ( type == "mjvCamera" )
+            setMjcCamera( (mjvCamera*) payload );
+        else if ( type == "mjvOption" )
+            setMjcOption( (mjvOption*) payload );
     }
 
-    extern "C" TIVisualizer* visualizer_createFromScenario( TScenario* scenarioPtr )
+    extern "C" TIVisualizer* visualizer_create( TScenario* scenarioPtr )
     {
         return new TMujocoVisualizer( scenarioPtr );
     }

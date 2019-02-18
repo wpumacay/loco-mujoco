@@ -73,6 +73,8 @@ namespace viz {
                                           const std::string& type,
                                           const TVec3& pos ) override;
 
+        void _collectSimPayloadInternal( void* payload, const std::string& type ) override;
+
         public :
 
         TMujocoVisualizer( TScenario* scenarioPtr );
@@ -104,7 +106,6 @@ namespace viz {
                                     double yOffset );
     };
 
-    extern "C" TIVisualizer* visualizer_create();
-    extern "C" TIVisualizer* visualizer_createFromScenario( TScenario* scenarioPtr );
+    extern "C" TIVisualizer* visualizer_create( TScenario* scenarioPtr );
 
 }}

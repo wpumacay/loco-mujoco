@@ -4,6 +4,7 @@ cmake_minimum_required( VERSION 3.0.0 )
 set( CMAKE_CXX_STANDARD 11 )
 
 add_definitions( -DTYSOCMJC_RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/res/" )
+add_definitions( -DTYSOC_DLLIBS_PATH="${CMAKE_BINARY_DIR}/" )
 
 # Configure external dependencies
 add_subdirectory( ext )

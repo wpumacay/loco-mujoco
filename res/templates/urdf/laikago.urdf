@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<robot name="plane">
+<robot name="laikago">
     <link name="chassis">
         <contact>
             <lateral_friction value="1"/>

@@ -11,12 +11,14 @@ namespace pytysoc
 {
 
 
-    tysoc::TVec2 numpyToVec2( py::array_t<TScalar>& array );
-    tysoc::TVec3 numpyToVec3( py::array_t<TScalar>& array );
-    tysoc::TVec4 numpyToVec4( py::array_t<TScalar>& array );
+    tysoc::TVec2 numpyToVec2( py::array_t<TScalar>& nparray );
+    tysoc::TVec3 numpyToVec3( py::array_t<TScalar>& nparray );
+    tysoc::TVec4 numpyToVec4( py::array_t<TScalar>& nparray );
 
-    tysoc::TMat3 numpyToMat3( py::array_t<TScalar>& array );
-    tysoc::TMat4 numpyToMat4( py::array_t<TScalar>& array );
+    tysoc::TMat3 numpyToMat3( py::array_t<TScalar>& nparray );
+    tysoc::TMat4 numpyToMat4( py::array_t<TScalar>& nparray );
+
+    std::vector<TScalar> numpyToVecArray( py::array_t<TScalar>& nparray );
 
     py::array_t<TScalar> vec2ToNumpy( const tysoc::TVec2& vec2 );
     py::array_t<TScalar> vec3ToNumpy( const tysoc::TVec3& vec3 );
@@ -25,13 +27,15 @@ namespace pytysoc
     py::array_t<TScalar> mat3ToNumpy( const tysoc::TMat3& mat3 );
     py::array_t<TScalar> mat4ToNumpy( const tysoc::TMat4& mat4 );
 
+    py::array_t<TScalar> vecArrayToNumpy( const std::vector<TScalar>& vecarray );
 
-    void test_numpyToVec2( py::array_t<TScalar>& array );
-    void test_numpyToVec3( py::array_t<TScalar>& array );
-    void test_numpyToVec4( py::array_t<TScalar>& array );
+    void test_numpyToVec2( py::array_t<TScalar>& nparray );
+    void test_numpyToVec3( py::array_t<TScalar>& nparray );
+    void test_numpyToVec4( py::array_t<TScalar>& nparray );
 
-    void test_numpyToMat3( py::array_t<TScalar>& array );
-    void test_numpyToMat4( py::array_t<TScalar>& array );
+    void test_numpyToMat3( py::array_t<TScalar>& nparray );
+    void test_numpyToMat4( py::array_t<TScalar>& nparray );
+    void test_numpyToVecArray( py::array_t<TScalar>& nparray );
 
 }
 

@@ -6,9 +6,9 @@ namespace py = pybind11;
 namespace pytysoc
 {
 
-    tysoc::TVec2 numpyToVec2( py::array_t<TScalar>& array )
+    tysoc::TVec2 numpyToVec2( py::array_t<TScalar>& nparray )
     {
-        auto _bufferInfo = array.request();
+        auto _bufferInfo = nparray.request();
         auto _data = ( TScalar* ) _bufferInfo.ptr;
         if ( _bufferInfo.size != 2 )
         {
@@ -19,9 +19,9 @@ namespace pytysoc
         return tysoc::TVec2( _data[0], _data[1] );
     }
 
-    tysoc::TVec3 numpyToVec3( py::array_t<TScalar>& array )
+    tysoc::TVec3 numpyToVec3( py::array_t<TScalar>& nparray )
     {
-        auto _bufferInfo = array.request();
+        auto _bufferInfo = nparray.request();
         auto _data = ( TScalar* ) _bufferInfo.ptr;
         if ( _bufferInfo.size != 3 )
         {
@@ -32,9 +32,9 @@ namespace pytysoc
         return tysoc::TVec3( _data[0], _data[1], _data[2] );
     }
 
-    tysoc::TVec4 numpyToVec4( py::array_t<TScalar>& array )
+    tysoc::TVec4 numpyToVec4( py::array_t<TScalar>& nparray )
     {
-        auto _bufferInfo = array.request();
+        auto _bufferInfo = nparray.request();
         auto _data = ( TScalar* ) _bufferInfo.ptr;
         if ( _bufferInfo.size != 4 )
         {
@@ -45,9 +45,9 @@ namespace pytysoc
         return tysoc::TVec4( _data[0], _data[1], _data[2], _data[3] );
     }
 
-    tysoc::TMat3 numpyToMat3( py::array_t<TScalar>& array )
+    tysoc::TMat3 numpyToMat3( py::array_t<TScalar>& nparray )
     {
-        auto _bufferInfo = array.request();
+        auto _bufferInfo = nparray.request();
         auto _data = ( TScalar* ) _bufferInfo.ptr;
         if ( _bufferInfo.size != 9 )
         {
@@ -66,9 +66,9 @@ namespace pytysoc
                              _data[6], _data[7], _data[8] );
     }
 
-    tysoc::TMat4 numpyToMat4( py::array_t<TScalar>& array )
+    tysoc::TMat4 numpyToMat4( py::array_t<TScalar>& nparray )
     {
-        auto _bufferInfo = array.request();
+        auto _bufferInfo = nparray.request();
         auto _data = ( TScalar* ) _bufferInfo.ptr;
         if ( _bufferInfo.size != 16 )
         {
@@ -151,35 +151,59 @@ namespace pytysoc
                                            2, _shape, _strides ) );
     }
 
-    void test_numpyToVec2( py::array_t<TScalar>& array )
+    void test_numpyToVec2( py::array_t<TScalar>& nparray )
     {
-        auto _vec2 = numpyToVec2( array );
+        auto _vec2 = numpyToVec2( nparray );
         std::cout << "LOG> vec2: " << tysoc::TVec2::toString( _vec2 ) << std::endl;
     }
 
-    void test_numpyToVec3( py::array_t<TScalar>& array )
+    void test_numpyToVec3( py::array_t<TScalar>& nparray )
     {
-        auto _vec3 = numpyToVec3( array );
+        auto _vec3 = numpyToVec3( nparray );
         std::cout << "LOG> vec3: " << tysoc::TVec3::toString( _vec3 ) << std::endl;
     }
 
-    void test_numpyToVec4( py::array_t<TScalar>& array )
+    void test_numpyToVec4( py::array_t<TScalar>& nparray )
     {
-        auto _vec4 = numpyToVec4( array );
+        auto _vec4 = numpyToVec4( nparray );
         std::cout << "LOG> vec4: " << tysoc::TVec4::toString( _vec4 ) << std::endl;
     }
 
-    void test_numpyToMat3( py::array_t<TScalar>& array )
+    void test_numpyToMat3( py::array_t<TScalar>& nparray )
     {
-        auto _mat3 = numpyToMat3( array );
+        auto _mat3 = numpyToMat3( nparray );
         std::cout << "LOG> mat3: " << tysoc::TMat3::toString( _mat3 ) << std::endl;
     }
 
-    void test_numpyToMat4( py::array_t<TScalar>& array )
+    void test_numpyToMat4( py::array_t<TScalar>& nparray )
     {
-        auto _mat4 = numpyToMat4( array );
+        auto _mat4 = numpyToMat4( nparray );
         std::cout << "LOG> mat4: " << tysoc::TMat4::toString( _mat4 ) << std::endl;
     }
 
+    std::vector<TScalar> numpyToVecArray( py::array_t<TScalar>& nparray )
+    {
+        auto _bufferInfo = nparray.request();
+        auto _data = ( TScalar* ) _bufferInfo.ptr;
+
+        std::vector<TScalar> _vecarray;
+        for ( size_t q = 0; q < _bufferInfo.size; q++ )
+        {
+            _vecarray.push_back( _data[q] );
+        }
+
+        return _vecarray;
+    }
+
+    void test_numpyToVecArray( py::array_t<TScalar>& nparray )
+    {
+        auto _vecarray = numpyToVecArray( nparray );
+        std::cout << "LOG> std::vector [ ";
+        for ( size_t q = 0; q < _vecarray.size(); q++ )
+        {
+            std::cout << _vecarray[q] << " ";
+        }
+        std::cout << "]" << std::endl;
+    }
 
 }

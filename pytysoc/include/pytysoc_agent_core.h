@@ -78,6 +78,20 @@ namespace pytysoc
         */
         py::array_t<TScalar> getPosition();
 
+        /**
+        *   Gets the name of the wrapped agent
+        *
+        *   @exposed    Exposed through python API
+        */
+        std::string name();
+
+        /**
+        *   Gets the wrapped kintree core agent
+        *
+        *   @notexposed     Not exposed through python API
+        */
+        tysoc::agent::TAgentKinTree* ptr();
+
     };
 
 }
@@ -98,4 +112,5 @@ namespace pytysoc
         .def( py::init<const std::string&, py::array_t<TScalar>&, const std::string&, const std::string& >() ) \
         .def( "setActions", &pytysoc::PyCoreAgent::setActions ) \
         .def( "getActionDim", &pytysoc::PyCoreAgent::getActionDim ) \
-        .def( "getPosition", &pytysoc::PyCoreAgent::getPosition );
+        .def( "getPosition", &pytysoc::PyCoreAgent::getPosition ) \
+        .def( "name", &pytysoc::PyCoreAgent::name );

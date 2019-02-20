@@ -97,4 +97,17 @@ namespace pytysoc
         return vec3ToNumpy( tysoc::TVec3( 0.0f, 0.0f, 0.0f ) );
     }
 
+    std::string PyCoreAgent::name()
+    {
+        if ( m_agentKinTreePtr )
+            return m_agentKinTreePtr->name();
+
+        return "undefined";
+    }
+
+    tysoc::agent::TAgentKinTree* PyCoreAgent::ptr()
+    {
+        return m_agentKinTreePtr;
+    }
+
 }

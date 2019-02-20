@@ -21,165 +21,203 @@
         <geom conaffinity="1" contype="1" friction="0.700000 0.100000 0.100000" pos="0.000000 0.000000 -3.000000" size="1.000000 1.000000 0.200000" zaxis="0.000000 0.000000 1.000000" name="floor" type="plane"/>
     </worldbody>
     <worldbody>
-        <body pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="tmjcroot">
-            <joint name="root" type="free"/>
-            <geom condim="1" pos="0.000000 0.000000 0.000000" quat="0.707107 -0.707107 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.070000 0.070000 0.000000" material="matgeom" name="tmjcroot" type="capsule"/>
-            <geom condim="1" pos="0.000000 0.000000 0.190000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.090000 0.000000 0.000000" material="matgeom" name="head" type="sphere"/>
-            <geom condim="1" pos="-0.010000 0.000000 -0.120000" quat="0.707107 -0.707107 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.060000 0.060000 0.000000" material="matgeom" name="uwaist" type="capsule"/>
-            <body pos="-0.010000 0.000000 -0.260000" quat="0.999998 0.000000 -0.002000 0.000000" name="lwaist">
-                <joint armature="0.020000" damping="5.000000" stiffness="20.000000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.065000" range="-45.000000 45.000000" limited="true" name="abdomen_z" type="hinge"/>
-                <joint armature="0.020000" damping="5.000000" stiffness="10.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.065000" range="-75.000000 30.000000" limited="true" name="abdomen_y" type="hinge"/>
-                <geom condim="1" pos="0.000000 0.000000 0.000000" quat="0.707107 -0.707107 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.060000 0.060000 0.000000" material="matgeom" name="lwaist" type="capsule"/>
-                <body pos="0.000000 0.000000 -0.165000" quat="0.999998 0.000000 -0.002000 0.000000" name="pelvis">
-                    <joint armature="0.020000" damping="5.000000" stiffness="10.000000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.100000" range="-35.000000 35.000000" limited="true" name="abdomen_x" type="hinge"/>
-                    <geom condim="1" pos="-0.020000 0.000000 0.000000" quat="0.707107 -0.707107 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.090000 0.070000 0.000000" material="matgeom" name="butt" type="capsule"/>
-                    <body pos="0.000000 -0.100000 -0.040000" quat="1.000000 0.000000 0.000000 0.000000" name="right_thigh">
-                        <joint armature="0.010000" damping="5.000000" stiffness="10.000000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-25.000000 5.000000" limited="true" name="right_hip_x" type="hinge"/>
-                        <joint armature="0.010000" damping="5.000000" stiffness="10.000000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-60.000000 35.000000" limited="true" name="right_hip_z" type="hinge"/>
-                        <joint armature="0.010000" damping="5.000000" stiffness="20.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-120.000000 20.000000" limited="true" name="right_hip_y" type="hinge"/>
-                        <geom condim="1" pos="0.000000 0.005000 -0.170000" quat="-0.014703 0.999892 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.060000 0.170074 0.000000" material="matgeom" name="right_thigh1" type="capsule"/>
-                        <body pos="0.000000 0.010000 -0.403000" quat="1.000000 0.000000 0.000000 0.000000" name="right_shin">
-                            <joint armature="0.006000" damping="1.000000" stiffness="1.000000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.020000" range="-160.000000 -2.000000" limited="true" name="right_knee" type="hinge"/>
-                            <geom condim="1" pos="0.000000 0.000000 -0.150000" quat="0.000000 0.000000 1.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.049000 0.150000 0.000000" material="matgeom" name="right_shin1" type="capsule"/>
-                            <body pos="0.000000 0.000000 -0.390000" quat="1.000000 0.000000 0.000000 0.000000" name="right_foot">
-                                <joint armature="0.000800" damping="1.000000" stiffness="4.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.080000" range="-50.000000 50.000000" limited="true" name="right_ankle_y" type="hinge"/>
-                                <joint armature="0.000600" damping="1.000000" stiffness="1.000000" axis="1.000000 0.000000 0.500000" pos="0.000000 0.000000 0.040000" range="-50.000000 50.000000" limited="true" name="right_ankle_x" type="hinge"/>
-                                <geom condim="1" pos="0.035000 -0.030000 0.000000" quat="0.707107 0.067040 0.703922 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.027000 0.105475 0.000000" material="matgeom" name="right_foot_cap1" type="capsule"/>
-                                <geom condim="1" pos="0.035000 0.010000 0.000000" quat="0.707107 -0.067040 0.703922 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.027000 0.105475 0.000000" material="matgeom" name="right_foot_cap2" type="capsule"/>
-                            </body>
-                        </body>
-                    </body>
-                    <body pos="0.000000 0.100000 -0.040000" quat="1.000000 0.000000 0.000000 0.000000" name="left_thigh">
-                        <joint armature="0.010000" damping="5.000000" stiffness="10.000000" axis="-1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-25.000000 5.000000" limited="true" name="left_hip_x" type="hinge"/>
-                        <joint armature="0.010000" damping="5.000000" stiffness="10.000000" axis="0.000000 0.000000 -1.000000" pos="0.000000 0.000000 0.000000" range="-60.000000 35.000000" limited="true" name="left_hip_z" type="hinge"/>
-                        <joint armature="0.010000" damping="5.000000" stiffness="20.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-120.000000 20.000000" limited="true" name="left_hip_y" type="hinge"/>
-                        <geom condim="1" pos="0.000000 -0.005000 -0.170000" quat="0.014703 0.999892 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.060000 0.170074 0.000000" material="matgeom" name="left_thigh1" type="capsule"/>
-                        <body pos="0.000000 -0.010000 -0.403000" quat="1.000000 0.000000 0.000000 0.000000" name="left_shin">
-                            <joint armature="0.006000" damping="1.000000" stiffness="1.000000" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.020000" range="-160.000000 -2.000000" limited="true" name="left_knee" type="hinge"/>
-                            <geom condim="1" pos="0.000000 0.000000 -0.150000" quat="0.000000 0.000000 1.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.049000 0.150000 0.000000" material="matgeom" name="left_shin1" type="capsule"/>
-                            <body pos="0.000000 0.000000 -0.390000" quat="1.000000 0.000000 0.000000 0.000000" name="left_foot">
-                                <joint armature="0.000800" damping="1.000000" stiffness="4.000000" axis="0.000000 1.000000 0.000000" pos="0.000000 0.000000 0.080000" range="-50.000000 50.000000" limited="true" name="left_ankle_y" type="hinge"/>
-                                <joint armature="0.000600" damping="1.000000" stiffness="1.000000" axis="1.000000 0.000000 0.500000" pos="0.000000 0.000000 0.040000" range="-50.000000 50.000000" limited="true" name="left_ankle_x" type="hinge"/>
-                                <geom condim="1" pos="0.035000 0.030000 0.000000" quat="0.707107 -0.067040 0.703922 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.027000 0.105475 0.000000" material="matgeom" name="left_foot_cap1" type="capsule"/>
-                                <geom condim="1" pos="0.035000 -0.010000 0.000000" quat="0.707107 0.067040 0.703922 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.027000 0.105475 0.000000" material="matgeom" name="left_foot_cap2" type="capsule"/>
+        <body pos="2.000000 0.000000 1.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_root">
+            <joint name="joint_dog1_root" type="free"/>
+            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.953847 0.000000 0.000000 0.300293" rgba="0.225300 0.284500 0.503150 1.000000" size="0.077400 0.055800 0.063000" name="geom_dog1_root" type="box"/>
+            <body pos="0.054000 0.048000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_spine0">
+                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_spine0" type="hinge"/>
+                <geom conaffinity="0" contype="1" pos="0.023750 -0.030000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.235300 0.294500 0.513150 1.000000" size="0.043750 0.059850 0.063500" name="geom_dog1_spine0" type="box"/>
+                <body pos="0.061200 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_spine1">
+                    <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_spine1" type="hinge"/>
+                    <geom conaffinity="0" contype="1" pos="0.035550 -0.040000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.245300 0.304500 0.523150 1.000000" size="0.040550 0.066150 0.064000" name="geom_dog1_spine1" type="box"/>
+                    <body pos="0.073000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_spine2">
+                        <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_spine2" type="hinge"/>
+                        <geom conaffinity="0" contype="1" pos="0.035550 -0.057000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.255300 0.314500 0.533150 1.000000" size="0.045550 0.081000 0.064500" name="geom_dog1_spine2" type="box"/>
+                        <body pos="0.078000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_spine3">
+                            <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_spine3" type="hinge"/>
+                            <geom conaffinity="0" contype="1" pos="0.052650 -0.070000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.265300 0.324500 0.543150 1.000000" size="0.052650 0.091350 0.065000" name="geom_dog1_spine3" type="box"/>
+                            <body pos="0.108200 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_torso">
+                                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_torso" type="hinge"/>
+                                <geom conaffinity="0" contype="1" pos="0.119250 -0.085000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.275300 0.334500 0.553150 1.000000" size="0.119250 0.117450 0.075000" name="geom_dog1_torso" type="box"/>
+                                <body pos="0.216000 0.018000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_neck0">
+                                    <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_neck0" type="hinge"/>
+                                    <geom conaffinity="0" contype="1" pos="0.042300 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.285300 0.344500 0.563150 1.000000" size="0.042300 0.036000 0.030000" name="geom_dog1_neck0" type="box"/>
+                                    <body pos="0.085300 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_neck1">
+                                        <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_neck1" type="hinge"/>
+                                        <geom conaffinity="0" contype="1" pos="0.042300 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.295300 0.354500 0.573150 1.000000" size="0.042300 0.036000 0.030000" name="geom_dog1_neck1" type="box"/>
+                                        <body pos="0.085300 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_head">
+                                            <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_head" type="hinge"/>
+                                            <geom conaffinity="0" contype="1" pos="0.053100 -0.055000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.305300 0.364500 0.583150 1.000000" size="0.053100 0.104400 0.060000" name="geom_dog1_head" type="box"/>
+                                        </body>
+                                    </body>
+                                </body>
+                                <body pos="0.156000 -0.048000 0.100000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_forearm">
+                                    <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_shoulder" type="hinge"/>
+                                    <geom conaffinity="0" contype="1" pos="0.000000 -0.114200 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.439600 0.537050 0.538600 1.000000" size="0.035100 0.140850 0.030000" name="geom_dog1_back_forearm" type="box"/>
+                                    <geom conaffinity="0" contype="1" pos="0.000000 -0.114200 -0.200000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.351680 0.429640 0.440880 1.000000" size="0.035100 0.140850 0.030000" name="geom_dog1_left_forearm" type="box"/>
+                                    <body pos="0.000000 -0.228400 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_arm">
+                                        <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="0.000000 179.908752" limited="true" name="joint_dog1_elbow" type="hinge"/>
+                                        <geom conaffinity="0" contype="1" pos="0.000000 -0.105400 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.409600 0.507050 0.508600 1.000000" size="0.026900 0.103900 0.027500" name="geom_dog1_back_arm" type="box"/>
+                                        <geom conaffinity="0" contype="1" pos="0.000000 -0.105400 -0.200000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.327680 0.405640 0.416880 1.000000" size="0.026900 0.103900 0.027500" name="geom_dog1_left_arm" type="box"/>
+                                        <body pos="0.000000 -0.210700 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_hand">
+                                            <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="0.000000 179.908752" limited="true" name="joint_dog1_wrist" type="hinge"/>
+                                            <geom conaffinity="0" contype="1" pos="0.000000 -0.053600 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.389600 0.487050 0.488600 1.000000" size="0.022500 0.066750 0.025000" name="geom_dog1_back_hand" type="box"/>
+                                            <geom conaffinity="0" contype="1" pos="0.000000 -0.053600 -0.200000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.311680 0.389640 0.400880 1.000000" size="0.022500 0.066750 0.025000" name="geom_dog1_left_hand" type="box"/>
+                                            <body pos="0.000000 -0.107300 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_finger">
+                                                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_finger" type="hinge"/>
+                                                <geom conaffinity="0" contype="1" pos="0.030000 -0.010000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.359600 0.457050 0.458600 1.000000" size="0.055000 0.025000 0.030000" name="geom_dog1_back_finger" type="box"/>
+                                                <geom conaffinity="0" contype="1" pos="0.030000 -0.010000 -0.200000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.282320 0.329408 0.386472 1.000000" size="0.055000 0.025000 0.030000" name="geom_dog1_left_finger" type="box"/>
+                                            </body>
+                                        </body>
+                                    </body>
+                                </body>
                             </body>
                         </body>
                     </body>
                 </body>
             </body>
-            <body pos="0.000000 -0.170000 0.060000" quat="1.000000 0.000000 0.000000 0.000000" name="right_upper_arm">
-                <joint armature="0.006800" damping="1.000000" stiffness="1.000000" axis="2.000000 1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-85.000000 60.000000" limited="true" name="right_shoulder1" type="hinge"/>
-                <joint armature="0.005100" damping="1.000000" stiffness="1.000000" axis="0.000000 -1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-85.000000 60.000000" limited="true" name="right_shoulder2" type="hinge"/>
-                <geom condim="1" pos="0.080000 -0.080000 -0.080000" quat="0.459701 0.627963 0.627963 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.040000 0.138564 0.000000" material="matgeom" name="right_uarm1" type="capsule"/>
-                <body pos="0.180000 -0.180000 -0.180000" quat="1.000000 0.000000 0.000000 0.000000" name="right_lower_arm">
-                    <joint armature="0.002800" damping="1.000000" axis="0.000000 -1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-90.000000 50.000000" limited="true" name="right_elbow" type="hinge"/>
-                    <geom condim="1" pos="0.090000 0.090000 0.090000" quat="0.888074 -0.325058 0.325058 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.031000 0.138564 0.000000" material="matgeom" name="right_larm" type="capsule"/>
-                    <geom condim="1" pos="0.180000 0.180000 0.180000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.040000 0.000000 0.000000" material="matgeom" name="right_hand" type="sphere"/>
+            <body pos="-0.084000 -0.006000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_tail0">
+                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_dog1_tail0" type="hinge"/>
+                <geom conaffinity="0" contype="1" pos="-0.053600 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.215300 0.274500 0.493150 1.000000" size="0.045000 0.017500 0.025000" name="geom_dog1_tail0" type="box"/>
+                <body pos="-0.090000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_tail1">
+                    <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_dog1_tail1" type="hinge"/>
+                    <geom conaffinity="0" contype="1" pos="-0.053600 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.205300 0.264500 0.483150 1.000000" size="0.045000 0.017500 0.025000" name="geom_dog1_tail1" type="box"/>
+                    <body pos="-0.090000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_tail2">
+                        <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_dog1_tail2" type="hinge"/>
+                        <geom conaffinity="0" contype="1" pos="-0.053600 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.195300 0.254500 0.473150 1.000000" size="0.045000 0.017500 0.025000" name="geom_dog1_tail2" type="box"/>
+                        <body pos="-0.090000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_tail3">
+                            <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_dog1_tail3" type="hinge"/>
+                            <geom conaffinity="0" contype="1" pos="-0.053600 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.185300 0.244500 0.463150 1.000000" size="0.045000 0.017500 0.025000" name="geom_dog1_tail3" type="box"/>
+                        </body>
+                    </body>
                 </body>
             </body>
-            <body pos="0.000000 0.170000 0.060000" quat="1.000000 0.000000 0.000000 0.000000" name="left_upper_arm">
-                <joint armature="0.006800" damping="1.000000" stiffness="1.000000" axis="2.000000 -1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-60.000000 85.000000" limited="true" name="left_shoulder1" type="hinge"/>
-                <joint armature="0.005100" damping="1.000000" stiffness="1.000000" axis="0.000000 1.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-60.000000 85.000000" limited="true" name="left_shoulder2" type="hinge"/>
-                <geom condim="1" pos="0.080000 0.080000 -0.080000" quat="0.459701 -0.627963 0.627963 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.040000 0.138564 0.000000" material="matgeom" name="left_uarm1" type="capsule"/>
-                <body pos="0.180000 0.180000 -0.180000" quat="1.000000 0.000000 0.000000 0.000000" name="left_lower_arm">
-                    <joint armature="0.002800" damping="1.000000" axis="0.000000 -1.000000 -1.000000" pos="0.000000 0.000000 0.000000" range="-90.000000 50.000000" limited="true" name="left_elbow" type="hinge"/>
-                    <geom condim="1" pos="0.090000 -0.090000 0.090000" quat="0.888074 0.325058 0.325058 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.031000 0.138564 0.000000" material="matgeom" name="left_larm" type="capsule"/>
-                    <geom condim="1" pos="0.180000 -0.180000 0.180000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.040000 0.000000 0.000000" material="matgeom" name="left_hand" type="sphere"/>
+            <body pos="-0.030000 -0.018000 0.050000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_thigh">
+                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_hip" type="hinge"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 -0.114000 0.030000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.439600 0.537050 0.538600 1.000000" size="0.038250 0.136800 0.030000" name="geom_dog1_back_thigh" type="box"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 -0.114000 -0.120000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.351680 0.429640 0.440880 1.000000" size="0.038250 0.136800 0.030000" name="geom_dog1_left_thigh" type="box"/>
+                <body pos="0.000000 -0.228100 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_leg">
+                    <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-179.908752 0.000000" limited="true" name="joint_dog1_knee" type="hinge"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 -0.117200 0.030000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.409600 0.507050 0.508600 1.000000" size="0.027900 0.132750 0.027500" name="geom_dog1_back_leg" type="box"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 -0.117200 -0.120000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.327680 0.405640 0.416880 1.000000" size="0.027900 0.132750 0.027500" name="geom_dog1_left_leg" type="box"/>
+                    <body pos="0.000000 -0.234300 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_foot">
+                        <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="0.000000 179.908752" limited="true" name="joint_dog1_ankle" type="hinge"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 -0.066600 0.030000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.389600 0.487050 0.488600 1.000000" size="0.025000 0.077850 0.025000" name="geom_dog1_back_foot" type="box"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 -0.066600 -0.120000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.311680 0.389640 0.400880 1.000000" size="0.025000 0.077850 0.025000" name="geom_dog1_left_foot" type="box"/>
+                        <body pos="0.000000 -0.133200 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_toe">
+                            <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_toe" type="hinge"/>
+                            <geom conaffinity="0" contype="1" pos="0.030000 -0.010000 0.030000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.359600 0.457050 0.458600 1.000000" size="0.055000 0.025000 0.030000" name="geom_dog1_back_toe" type="box"/>
+                            <geom conaffinity="0" contype="1" pos="0.030000 -0.010000 -0.120000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.282320 0.329408 0.386472 1.000000" size="0.055000 0.025000 0.030000" name="geom_dog1_left_toe" type="box"/>
+                        </body>
+                    </body>
                 </body>
             </body>
         </body>
     </worldbody>
     <actuator>
-        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="abdomen_y" name="abdomen_y"/>
-        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="abdomen_z" name="abdomen_z"/>
-        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="abdomen_x" name="abdomen_x"/>
-        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="right_hip_x" name="right_hip_x"/>
-        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="right_hip_z" name="right_hip_z"/>
-        <motor ctrlrange="-0.400000 0.400000" gear="600.000000" ctrllimited="true" joint="right_hip_y" name="right_hip_y"/>
-        <motor ctrlrange="-0.400000 0.400000" gear="400.000000" ctrllimited="true" joint="right_knee" name="right_knee"/>
-        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="right_ankle_x" name="right_ankle_x"/>
-        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="right_ankle_y" name="right_ankle_y"/>
-        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="left_hip_x" name="left_hip_x"/>
-        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="left_hip_z" name="left_hip_z"/>
-        <motor ctrlrange="-0.400000 0.400000" gear="600.000000" ctrllimited="true" joint="left_hip_y" name="left_hip_y"/>
-        <motor ctrlrange="-0.400000 0.400000" gear="400.000000" ctrllimited="true" joint="left_knee" name="left_knee"/>
-        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="left_ankle_x" name="left_ankle_x"/>
-        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="left_ankle_y" name="left_ankle_y"/>
-        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="right_shoulder1" name="right_shoulder1"/>
-        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="right_shoulder2" name="right_shoulder2"/>
-        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="right_elbow" name="right_elbow"/>
-        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="left_shoulder1" name="left_shoulder1"/>
-        <motor ctrlrange="-0.400000 0.400000" gear="100.000000" ctrllimited="true" joint="left_shoulder2" name="left_shoulder2"/>
-        <motor ctrlrange="-0.400000 0.400000" gear="200.000000" ctrllimited="true" joint="left_elbow" name="left_elbow"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_dog1_spine0" name="actuator_dog1_joint_dog1_spine0"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_dog1_spine1" name="actuator_dog1_joint_dog1_spine1"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_dog1_spine2" name="actuator_dog1_joint_dog1_spine2"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_dog1_spine3" name="actuator_dog1_joint_dog1_spine3"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_dog1_torso" name="actuator_dog1_joint_dog1_torso"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_dog1_neck0" name="actuator_dog1_joint_dog1_neck0"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_dog1_neck1" name="actuator_dog1_joint_dog1_neck1"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_dog1_head" name="actuator_dog1_joint_dog1_head"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_dog1_shoulder" name="actuator_dog1_joint_dog1_shoulder"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_dog1_elbow" name="actuator_dog1_joint_dog1_elbow"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_dog1_wrist" name="actuator_dog1_joint_dog1_wrist"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_dog1_finger" name="actuator_dog1_joint_dog1_finger"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_dog1_tail0" name="actuator_dog1_joint_dog1_tail0"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_dog1_tail1" name="actuator_dog1_joint_dog1_tail1"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_dog1_tail2" name="actuator_dog1_joint_dog1_tail2"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_dog1_tail3" name="actuator_dog1_joint_dog1_tail3"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_dog1_hip" name="actuator_dog1_joint_dog1_hip"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_dog1_knee" name="actuator_dog1_joint_dog1_knee"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_dog1_ankle" name="actuator_dog1_joint_dog1_ankle"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_dog1_toe" name="actuator_dog1_joint_dog1_toe"/>
     </actuator>
     <sensor>
-        <jointpos joint="abdomen_z" name="sensor_agent0_abdomen_z_jointpos"/>
-        <jointvel joint="abdomen_z" name="sensor_agent0_abdomen_z_jointvel"/>
-        <jointpos joint="abdomen_y" name="sensor_agent0_abdomen_y_jointpos"/>
-        <jointvel joint="abdomen_y" name="sensor_agent0_abdomen_y_jointvel"/>
-        <jointpos joint="abdomen_x" name="sensor_agent0_abdomen_x_jointpos"/>
-        <jointvel joint="abdomen_x" name="sensor_agent0_abdomen_x_jointvel"/>
-        <jointpos joint="right_hip_x" name="sensor_agent0_right_hip_x_jointpos"/>
-        <jointvel joint="right_hip_x" name="sensor_agent0_right_hip_x_jointvel"/>
-        <jointpos joint="right_hip_z" name="sensor_agent0_right_hip_z_jointpos"/>
-        <jointvel joint="right_hip_z" name="sensor_agent0_right_hip_z_jointvel"/>
-        <jointpos joint="right_hip_y" name="sensor_agent0_right_hip_y_jointpos"/>
-        <jointvel joint="right_hip_y" name="sensor_agent0_right_hip_y_jointvel"/>
-        <jointpos joint="right_knee" name="sensor_agent0_right_knee_jointpos"/>
-        <jointvel joint="right_knee" name="sensor_agent0_right_knee_jointvel"/>
-        <jointpos joint="right_ankle_y" name="sensor_agent0_right_ankle_y_jointpos"/>
-        <jointvel joint="right_ankle_y" name="sensor_agent0_right_ankle_y_jointvel"/>
-        <jointpos joint="right_ankle_x" name="sensor_agent0_right_ankle_x_jointpos"/>
-        <jointvel joint="right_ankle_x" name="sensor_agent0_right_ankle_x_jointvel"/>
-        <jointpos joint="left_hip_x" name="sensor_agent0_left_hip_x_jointpos"/>
-        <jointvel joint="left_hip_x" name="sensor_agent0_left_hip_x_jointvel"/>
-        <jointpos joint="left_hip_z" name="sensor_agent0_left_hip_z_jointpos"/>
-        <jointvel joint="left_hip_z" name="sensor_agent0_left_hip_z_jointvel"/>
-        <jointpos joint="left_hip_y" name="sensor_agent0_left_hip_y_jointpos"/>
-        <jointvel joint="left_hip_y" name="sensor_agent0_left_hip_y_jointvel"/>
-        <jointpos joint="left_knee" name="sensor_agent0_left_knee_jointpos"/>
-        <jointvel joint="left_knee" name="sensor_agent0_left_knee_jointvel"/>
-        <jointpos joint="left_ankle_y" name="sensor_agent0_left_ankle_y_jointpos"/>
-        <jointvel joint="left_ankle_y" name="sensor_agent0_left_ankle_y_jointvel"/>
-        <jointpos joint="left_ankle_x" name="sensor_agent0_left_ankle_x_jointpos"/>
-        <jointvel joint="left_ankle_x" name="sensor_agent0_left_ankle_x_jointvel"/>
-        <jointpos joint="right_shoulder1" name="sensor_agent0_right_shoulder1_jointpos"/>
-        <jointvel joint="right_shoulder1" name="sensor_agent0_right_shoulder1_jointvel"/>
-        <jointpos joint="right_shoulder2" name="sensor_agent0_right_shoulder2_jointpos"/>
-        <jointvel joint="right_shoulder2" name="sensor_agent0_right_shoulder2_jointvel"/>
-        <jointpos joint="right_elbow" name="sensor_agent0_right_elbow_jointpos"/>
-        <jointvel joint="right_elbow" name="sensor_agent0_right_elbow_jointvel"/>
-        <jointpos joint="left_shoulder1" name="sensor_agent0_left_shoulder1_jointpos"/>
-        <jointvel joint="left_shoulder1" name="sensor_agent0_left_shoulder1_jointvel"/>
-        <jointpos joint="left_shoulder2" name="sensor_agent0_left_shoulder2_jointpos"/>
-        <jointvel joint="left_shoulder2" name="sensor_agent0_left_shoulder2_jointvel"/>
-        <jointpos joint="left_elbow" name="sensor_agent0_left_elbow_jointpos"/>
-        <jointvel joint="left_elbow" name="sensor_agent0_left_elbow_jointvel"/>
-        <framelinvel name="sensoragent0_tmjcroot_framelinvel" objname="tmjcroot" objtype="body"/>
-        <framelinacc name="sensoragent0_tmjcroot_framelinacc" objname="tmjcroot" objtype="body"/>
-        <framelinvel name="sensoragent0_lwaist_framelinvel" objname="lwaist" objtype="body"/>
-        <framelinacc name="sensoragent0_lwaist_framelinacc" objname="lwaist" objtype="body"/>
-        <framelinvel name="sensoragent0_pelvis_framelinvel" objname="pelvis" objtype="body"/>
-        <framelinacc name="sensoragent0_pelvis_framelinacc" objname="pelvis" objtype="body"/>
-        <framelinvel name="sensoragent0_right_thigh_framelinvel" objname="right_thigh" objtype="body"/>
-        <framelinacc name="sensoragent0_right_thigh_framelinacc" objname="right_thigh" objtype="body"/>
-        <framelinvel name="sensoragent0_right_shin_framelinvel" objname="right_shin" objtype="body"/>
-        <framelinacc name="sensoragent0_right_shin_framelinacc" objname="right_shin" objtype="body"/>
-        <framelinvel name="sensoragent0_right_foot_framelinvel" objname="right_foot" objtype="body"/>
-        <framelinacc name="sensoragent0_right_foot_framelinacc" objname="right_foot" objtype="body"/>
-        <framelinvel name="sensoragent0_left_thigh_framelinvel" objname="left_thigh" objtype="body"/>
-        <framelinacc name="sensoragent0_left_thigh_framelinacc" objname="left_thigh" objtype="body"/>
-        <framelinvel name="sensoragent0_left_shin_framelinvel" objname="left_shin" objtype="body"/>
-        <framelinacc name="sensoragent0_left_shin_framelinacc" objname="left_shin" objtype="body"/>
-        <framelinvel name="sensoragent0_left_foot_framelinvel" objname="left_foot" objtype="body"/>
-        <framelinacc name="sensoragent0_left_foot_framelinacc" objname="left_foot" objtype="body"/>
-        <framelinvel name="sensoragent0_right_upper_arm_framelinvel" objname="right_upper_arm" objtype="body"/>
-        <framelinacc name="sensoragent0_right_upper_arm_framelinacc" objname="right_upper_arm" objtype="body"/>
-        <framelinvel name="sensoragent0_right_lower_arm_framelinvel" objname="right_lower_arm" objtype="body"/>
-        <framelinacc name="sensoragent0_right_lower_arm_framelinacc" objname="right_lower_arm" objtype="body"/>
-        <framelinvel name="sensoragent0_left_upper_arm_framelinvel" objname="left_upper_arm" objtype="body"/>
-        <framelinacc name="sensoragent0_left_upper_arm_framelinacc" objname="left_upper_arm" objtype="body"/>
-        <framelinvel name="sensoragent0_left_lower_arm_framelinvel" objname="left_lower_arm" objtype="body"/>
-        <framelinacc name="sensoragent0_left_lower_arm_framelinacc" objname="left_lower_arm" objtype="body"/>
+        <jointpos joint="joint_dog1_spine0" name="sensor_dog1_joint_dog1_spine0_jointpos"/>
+        <jointvel joint="joint_dog1_spine0" name="sensor_dog1_joint_dog1_spine0_jointvel"/>
+        <jointpos joint="joint_dog1_spine1" name="sensor_dog1_joint_dog1_spine1_jointpos"/>
+        <jointvel joint="joint_dog1_spine1" name="sensor_dog1_joint_dog1_spine1_jointvel"/>
+        <jointpos joint="joint_dog1_spine2" name="sensor_dog1_joint_dog1_spine2_jointpos"/>
+        <jointvel joint="joint_dog1_spine2" name="sensor_dog1_joint_dog1_spine2_jointvel"/>
+        <jointpos joint="joint_dog1_spine3" name="sensor_dog1_joint_dog1_spine3_jointpos"/>
+        <jointvel joint="joint_dog1_spine3" name="sensor_dog1_joint_dog1_spine3_jointvel"/>
+        <jointpos joint="joint_dog1_torso" name="sensor_dog1_joint_dog1_torso_jointpos"/>
+        <jointvel joint="joint_dog1_torso" name="sensor_dog1_joint_dog1_torso_jointvel"/>
+        <jointpos joint="joint_dog1_neck0" name="sensor_dog1_joint_dog1_neck0_jointpos"/>
+        <jointvel joint="joint_dog1_neck0" name="sensor_dog1_joint_dog1_neck0_jointvel"/>
+        <jointpos joint="joint_dog1_neck1" name="sensor_dog1_joint_dog1_neck1_jointpos"/>
+        <jointvel joint="joint_dog1_neck1" name="sensor_dog1_joint_dog1_neck1_jointvel"/>
+        <jointpos joint="joint_dog1_head" name="sensor_dog1_joint_dog1_head_jointpos"/>
+        <jointvel joint="joint_dog1_head" name="sensor_dog1_joint_dog1_head_jointvel"/>
+        <jointpos joint="joint_dog1_shoulder" name="sensor_dog1_joint_dog1_shoulder_jointpos"/>
+        <jointvel joint="joint_dog1_shoulder" name="sensor_dog1_joint_dog1_shoulder_jointvel"/>
+        <jointpos joint="joint_dog1_elbow" name="sensor_dog1_joint_dog1_elbow_jointpos"/>
+        <jointvel joint="joint_dog1_elbow" name="sensor_dog1_joint_dog1_elbow_jointvel"/>
+        <jointpos joint="joint_dog1_wrist" name="sensor_dog1_joint_dog1_wrist_jointpos"/>
+        <jointvel joint="joint_dog1_wrist" name="sensor_dog1_joint_dog1_wrist_jointvel"/>
+        <jointpos joint="joint_dog1_finger" name="sensor_dog1_joint_dog1_finger_jointpos"/>
+        <jointvel joint="joint_dog1_finger" name="sensor_dog1_joint_dog1_finger_jointvel"/>
+        <jointpos joint="joint_dog1_tail0" name="sensor_dog1_joint_dog1_tail0_jointpos"/>
+        <jointvel joint="joint_dog1_tail0" name="sensor_dog1_joint_dog1_tail0_jointvel"/>
+        <jointpos joint="joint_dog1_tail1" name="sensor_dog1_joint_dog1_tail1_jointpos"/>
+        <jointvel joint="joint_dog1_tail1" name="sensor_dog1_joint_dog1_tail1_jointvel"/>
+        <jointpos joint="joint_dog1_tail2" name="sensor_dog1_joint_dog1_tail2_jointpos"/>
+        <jointvel joint="joint_dog1_tail2" name="sensor_dog1_joint_dog1_tail2_jointvel"/>
+        <jointpos joint="joint_dog1_tail3" name="sensor_dog1_joint_dog1_tail3_jointpos"/>
+        <jointvel joint="joint_dog1_tail3" name="sensor_dog1_joint_dog1_tail3_jointvel"/>
+        <jointpos joint="joint_dog1_hip" name="sensor_dog1_joint_dog1_hip_jointpos"/>
+        <jointvel joint="joint_dog1_hip" name="sensor_dog1_joint_dog1_hip_jointvel"/>
+        <jointpos joint="joint_dog1_knee" name="sensor_dog1_joint_dog1_knee_jointpos"/>
+        <jointvel joint="joint_dog1_knee" name="sensor_dog1_joint_dog1_knee_jointvel"/>
+        <jointpos joint="joint_dog1_ankle" name="sensor_dog1_joint_dog1_ankle_jointpos"/>
+        <jointvel joint="joint_dog1_ankle" name="sensor_dog1_joint_dog1_ankle_jointvel"/>
+        <jointpos joint="joint_dog1_toe" name="sensor_dog1_joint_dog1_toe_jointpos"/>
+        <jointvel joint="joint_dog1_toe" name="sensor_dog1_joint_dog1_toe_jointvel"/>
+        <framelinvel name="sensordog1_body_dog1_root_framelinvel" objname="body_dog1_root" objtype="body"/>
+        <framelinacc name="sensordog1_body_dog1_root_framelinacc" objname="body_dog1_root" objtype="body"/>
+        <framelinvel name="sensordog1_body_dog1_spine0_framelinvel" objname="body_dog1_spine0" objtype="body"/>
+        <framelinacc name="sensordog1_body_dog1_spine0_framelinacc" objname="body_dog1_spine0" objtype="body"/>
+        <framelinvel name="sensordog1_body_dog1_spine1_framelinvel" objname="body_dog1_spine1" objtype="body"/>
+        <framelinacc name="sensordog1_body_dog1_spine1_framelinacc" objname="body_dog1_spine1" objtype="body"/>
+        <framelinvel name="sensordog1_body_dog1_spine2_framelinvel" objname="body_dog1_spine2" objtype="body"/>
+        <framelinacc name="sensordog1_body_dog1_spine2_framelinacc" objname="body_dog1_spine2" objtype="body"/>
+        <framelinvel name="sensordog1_body_dog1_spine3_framelinvel" objname="body_dog1_spine3" objtype="body"/>
+        <framelinacc name="sensordog1_body_dog1_spine3_framelinacc" objname="body_dog1_spine3" objtype="body"/>
+        <framelinvel name="sensordog1_body_dog1_torso_framelinvel" objname="body_dog1_torso" objtype="body"/>
+        <framelinacc name="sensordog1_body_dog1_torso_framelinacc" objname="body_dog1_torso" objtype="body"/>
+        <framelinvel name="sensordog1_body_dog1_neck0_framelinvel" objname="body_dog1_neck0" objtype="body"/>
+        <framelinacc name="sensordog1_body_dog1_neck0_framelinacc" objname="body_dog1_neck0" objtype="body"/>
+        <framelinvel name="sensordog1_body_dog1_neck1_framelinvel" objname="body_dog1_neck1" objtype="body"/>
+        <framelinacc name="sensordog1_body_dog1_neck1_framelinacc" objname="body_dog1_neck1" objtype="body"/>
+        <framelinvel name="sensordog1_body_dog1_head_framelinvel" objname="body_dog1_head" objtype="body"/>
+        <framelinacc name="sensordog1_body_dog1_head_framelinacc" objname="body_dog1_head" objtype="body"/>
+        <framelinvel name="sensordog1_body_dog1_forearm_framelinvel" objname="body_dog1_forearm" objtype="body"/>
+        <framelinacc name="sensordog1_body_dog1_forearm_framelinacc" objname="body_dog1_forearm" objtype="body"/>
+        <framelinvel name="sensordog1_body_dog1_arm_framelinvel" objname="body_dog1_arm" objtype="body"/>
+        <framelinacc name="sensordog1_body_dog1_arm_framelinacc" objname="body_dog1_arm" objtype="body"/>
+        <framelinvel name="sensordog1_body_dog1_hand_framelinvel" objname="body_dog1_hand" objtype="body"/>
+        <framelinacc name="sensordog1_body_dog1_hand_framelinacc" objname="body_dog1_hand" objtype="body"/>
+        <framelinvel name="sensordog1_body_dog1_finger_framelinvel" objname="body_dog1_finger" objtype="body"/>
+        <framelinacc name="sensordog1_body_dog1_finger_framelinacc" objname="body_dog1_finger" objtype="body"/>
+        <framelinvel name="sensordog1_body_dog1_tail0_framelinvel" objname="body_dog1_tail0" objtype="body"/>
+        <framelinacc name="sensordog1_body_dog1_tail0_framelinacc" objname="body_dog1_tail0" objtype="body"/>
+        <framelinvel name="sensordog1_body_dog1_tail1_framelinvel" objname="body_dog1_tail1" objtype="body"/>
+        <framelinacc name="sensordog1_body_dog1_tail1_framelinacc" objname="body_dog1_tail1" objtype="body"/>
+        <framelinvel name="sensordog1_body_dog1_tail2_framelinvel" objname="body_dog1_tail2" objtype="body"/>
+        <framelinacc name="sensordog1_body_dog1_tail2_framelinacc" objname="body_dog1_tail2" objtype="body"/>
+        <framelinvel name="sensordog1_body_dog1_tail3_framelinvel" objname="body_dog1_tail3" objtype="body"/>
+        <framelinacc name="sensordog1_body_dog1_tail3_framelinacc" objname="body_dog1_tail3" objtype="body"/>
+        <framelinvel name="sensordog1_body_dog1_thigh_framelinvel" objname="body_dog1_thigh" objtype="body"/>
+        <framelinacc name="sensordog1_body_dog1_thigh_framelinacc" objname="body_dog1_thigh" objtype="body"/>
+        <framelinvel name="sensordog1_body_dog1_leg_framelinvel" objname="body_dog1_leg" objtype="body"/>
+        <framelinacc name="sensordog1_body_dog1_leg_framelinacc" objname="body_dog1_leg" objtype="body"/>
+        <framelinvel name="sensordog1_body_dog1_foot_framelinvel" objname="body_dog1_foot" objtype="body"/>
+        <framelinacc name="sensordog1_body_dog1_foot_framelinacc" objname="body_dog1_foot" objtype="body"/>
+        <framelinvel name="sensordog1_body_dog1_toe_framelinvel" objname="body_dog1_toe" objtype="body"/>
+        <framelinacc name="sensordog1_body_dog1_toe_framelinacc" objname="body_dog1_toe" objtype="body"/>
     </sensor>
 </mujoco>

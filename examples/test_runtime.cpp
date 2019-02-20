@@ -29,8 +29,8 @@ int main( int argc, const char** argv )
 
     auto _scenario = new tysoc::TScenario();
 
-    auto _modelpath = std::string( TYSOCMJC_RESOURCES_PATH ) + std::string( "templates/mjcf/humanoid.xml" );
-    auto _modeldata = tysoc::mjcf::loadGenericModel( _modelpath );
+    auto _modelpath = std::string( TYSOCMJC_RESOURCES_PATH ) + std::string( "templates/rlsim/goat3d.json" );
+    auto _modeldata = tysoc::rlsim::loadGenericModel( _modelpath );
     auto _agent = tysoc::agent::createKinTreeAgent( "agent0", { 0.0f, 0.0f, 0.0f }, _modeldata );
 
     _scenario->addAgent( _agent );

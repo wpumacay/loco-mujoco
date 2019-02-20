@@ -1,4 +1,5 @@
 
+set( CMAKE_CXX_FLAGS " -g ${CMAKE_CXX_FLAGS}" )
 
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/include" )
 include_directories( "${CMAKE_SOURCE_DIR}/ext/tysocCore/include" )

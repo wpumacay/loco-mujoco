@@ -1,9 +1,16 @@
 
-#include <mujoco_simulation.h>
-#include <tysocCustomViz.h>
+#include <runtime.h>
 
-static std::string MODEL_FORMAT = "mjcf";
-static std::string MODEL_NAME = "humanoid";
+#ifndef TYSOC_DLLIBS_PATH
+    #define TYSOC_DLLIBS_PATH "../" // pointing to the build/ directory
+#endif
+
+#ifndef TYSOCMJC_RESOURCES_PATH
+    #define TYSOCMJC_RESOURCES_PATH "../../res/"
+#endif
+
+static std::string MODEL_FORMAT = "urdf";
+static std::string MODEL_NAME = "laikago";
 
 static std::string TYSOC_MJCF_TEMPLATES     = std::string( TYSOCMJC_RESOURCES_PATH ) + std::string( "templates/mjcf/" );
 static std::string TYSOC_URDF_TEMPLATES     = std::string( TYSOCMJC_RESOURCES_PATH ) + std::string( "templates/urdf/" );
@@ -40,37 +47,9 @@ tysoc::agent::TAgentKinTree* createAgent( const std::string& format,
     return NULL;
 }
 
-static tysoc::TTysocCommonApi* g_runtime = NULL;
-static tysoc::mujoco::TTysocMjcApi* g_apiMujoco = NULL;
-
-tysoc::TTysocCommonApi* initialize_runtime( const std::string& apiType,
-                                            tysoc::TScenario* scenarioPtr )
-{
-    if ( apiType == tysoc::API_TYPE_MUJOCO )
-    {
-        if ( !g_apiMujoco )
-        {
-            g_apiMujoco = new tysoc::mujoco::TTysocMjcApi();
-            g_apiMujoco->setScenario( scenarioPtr );
-            // @TODO|@CHECK: Should redesign the initialization mechanism
-            g_apiMujoco->collectFromScenario();
-
-            if ( !g_apiMujoco->initializeMjcApi() )
-            {
-                std::cout << "WARNING> There was an error while initializing the mjcApi" << std::endl;
-            }
-            else
-            {
-                std::cout << "INFO> Successfully created mujoco Api" << std::endl;
-            }
-        }
-        
-        return g_apiMujoco;
-    }
-
-    std::cout << "WARNING> Api type: " << apiType << " is not supported" << std::endl;
-    return NULL;
-}
+static tysoc::TRuntime* g_runtime = NULL;
+static tysoc::TISimulation* g_simulation = NULL;
+static tysoc::TIVisualizer* g_visualizer = NULL;
 
 int main( int argc, const char** argv )
 {
@@ -93,7 +72,7 @@ int main( int argc, const char** argv )
 
     auto _scenario = new tysoc::TScenario();
 
-    auto _agent = createAgent( MODEL_FORMAT, MODEL_NAME, "agent0", { 0.0f, 0.0f, 0.0f } );
+    auto _agent = createAgent( MODEL_FORMAT, MODEL_NAME, "agent0", { 0.0f, 0.0f, 1.0f } );
 
     if ( !_agent )
     {
@@ -105,40 +84,43 @@ int main( int argc, const char** argv )
 
     _scenario->addAgent( _agent );
 
-    auto _viz = new tysoc::viz::TCustomVisualizer( _scenario );
-    _viz->initialize();
+    auto _simLibPath = std::string( TYSOC_DLLIBS_PATH ) + std::string( "libtysocMujoco.so");
+    auto _vizLibPath = std::string( TYSOC_DLLIBS_PATH ) + std::string( "tysocCustomViz/libtysocCustomViz.so" );
 
-    while( _viz->isActive() )
+    g_runtime = new tysoc::TRuntime( _simLibPath, _vizLibPath );
+
+    g_visualizer = g_runtime->createVisualizer( _scenario );
+    g_visualizer->initialize();
+
+    while( g_visualizer->isActive() )
     {
-        // update visualizer
-        _viz->update();
+        if ( g_simulation )
+            g_simulation->step();
 
-        if ( g_runtime )
+        if ( g_visualizer )
+            g_visualizer->update();
+
+        if ( g_visualizer->checkSingleKeyPress( tysoc::keys::KEY_B ) )
         {
-            g_runtime->step();
+            g_simulation = g_runtime->createSimulation( _scenario );
+            g_simulation->initialize();
         }
 
-        if ( _viz->checkSingleKeyPress( tysoc::keys::KEY_B ) )
+        if ( g_visualizer->checkSingleKeyPress( tysoc::keys::KEY_R ) )
         {
-            g_runtime = initialize_runtime( tysoc::API_TYPE_MUJOCO,
-                                            _scenario );
-        }
-
-        if ( _viz->checkSingleKeyPress( tysoc::keys::KEY_R ) )
-        {
-            if ( g_runtime )
+            if ( g_simulation )
             {
-                g_runtime->reset();
-                if ( g_runtime->getApiType() == tysoc::API_TYPE_MUJOCO )
-                    g_apiMujoco = NULL;
-                delete g_runtime;
-                g_runtime = NULL;
-
+                g_simulation->reset();
+                g_simulation = NULL;
+                g_runtime->destroySimulation();
             }
         }
     }
 
-    delete _viz;
+    g_runtime->destroyVisualizer();
+    g_runtime->destroySimulation();
+    g_visualizer = NULL;
+    g_simulation = NULL;
 
     return 0;
 }

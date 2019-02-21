@@ -263,7 +263,20 @@ namespace mujoco {
         }
         else if ( m_kinTreeAgentPtr->getModelTemplateType() == agent::MODEL_TEMPLATE_TYPE_URDF )
         {
+            // Check if the root has a joint that fixes it to the world
+            auto _rootJoints = _rootBodyPtr->childJoints;
+            auto _isRootFixed = false;
+            for ( size_t i = 0; i < _rootJoints.size(); i++ )
+            {
+                if ( _rootJoints[i]->type == "world" )
+                {
+                    _isRootFixed = true;
+                    break;
+                }
+            }
+
             // Create a free joint for the root body
+            if ( !_isRootFixed )
             {
                 // create the freejoint element
                 auto _freeJointElmPtr = new mjcf::GenericElement( "joint" );
@@ -326,7 +339,7 @@ namespace mujoco {
             {
                 _joints[i]->type = "ball";
             }
-            else if ( _joints[i]->type == "fixed" )
+            else if ( _joints[i]->type == "fixed" || _joints[i]->type == "world" )
             {
                 // for mujoco it it's like a non-existent joint in xml
                 continue;

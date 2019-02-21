@@ -502,64 +502,64 @@
         <framelinacc name="sensorbaxter1_body_baxter1_left_hand_framelinacc" objname="body_baxter1_left_hand" objtype="body"/>
     </sensor>
     <worldbody>
-        <body pos="0.000000 0.000000 1.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_laikago1_chassis">
+        <body pos="-1.000000 0.000000 1.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_laikago1_chassis">
             <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.043794" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.950000 0.750000 0.050000 1.000000" size="0.000000 0.000000 0.000000" mesh="laikago_meshes/chassis" name="geom_laikago1_12" type="mesh"/>
             <inertial mass="13.715000" diaginertia="0.420500 0.211900 0.551400" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000"/>
             <body pos="0.081715 0.000000 0.242889" quat="1.000000 0.000000 0.000000 0.000000" name="body_laikago1_FL_hip_motor">
-                <joint axis="0.000000 0.000000 1.000000" pos="0.081715 0.000000 0.242889" limited="false" name="joint_laikago1_FL_hip_motor_2_chassis_joint" type="hinge"/>
+                <joint axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_laikago1_FL_hip_motor_2_chassis_joint" type="hinge"/>
                 <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.230000 0.730000 0.330000 1.000000" size="0.000000 0.000000 0.000000" mesh="laikago_meshes/hip_motor" name="geom_laikago1_0" type="mesh"/>
                 <inertial mass="1.095000" diaginertia="0.001525 0.001496 0.001269" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000"/>
                 <body pos="0.055855 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_laikago1_FL_upper_leg">
-                    <joint axis="1.000000 0.000000 0.000000" pos="0.055855 0.000000 0.000000" limited="false" name="joint_laikago1_FL_upper_leg_2_hip_motor_joint" type="hinge"/>
+                    <joint axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_laikago1_FL_upper_leg_2_hip_motor_joint" type="hinge"/>
                     <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.280000 0.520000 0.930000 1.000000" size="0.000000 0.000000 0.000000" mesh="laikago_meshes/upper_leg" name="geom_laikago1_2" type="mesh"/>
                     <inertial mass="1.527000" diaginertia="0.014534 0.006778 0.009807" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000"/>
                     <body pos="-0.020690 -0.208330 -0.142200" quat="1.000000 0.000000 0.000000 0.000000" name="body_laikago1_FL_lower_leg">
-                        <joint axis="1.000000 0.000000 0.000000" pos="-0.020690 -0.208330 -0.142200" limited="false" name="joint_laikago1_FL_lower_leg_2_upper_leg_joint" type="hinge"/>
+                        <joint axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_laikago1_FL_lower_leg_2_upper_leg_joint" type="hinge"/>
                         <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707109 0.000000 0.707105 0.000000" rgba="0.850000 0.190000 0.210000 1.000000" size="0.000000 0.000000 0.000000" mesh="laikago_meshes/lower_leg_3" name="geom_laikago1_1" type="mesh"/>
                         <inertial mass="0.241000" diaginertia="0.002027 0.000097 0.002091" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000"/>
                     </body>
                 </body>
             </body>
             <body pos="-0.081715 0.000000 0.242889" quat="1.000000 0.000000 0.000000 0.000000" name="body_laikago1_FR_hip_motor">
-                <joint axis="0.000000 0.000000 -1.000000" pos="-0.081715 0.000000 0.242889" limited="false" name="joint_laikago1_FR_hip_motor_2_chassis_joint" type="hinge"/>
+                <joint axis="0.000000 0.000000 -1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_laikago1_FR_hip_motor_2_chassis_joint" type="hinge"/>
                 <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.230000 0.730000 0.330000 1.000000" size="0.000000 0.000000 0.000000" mesh="laikago_meshes/hip_motor_mirror" name="geom_laikago1_3" type="mesh"/>
                 <inertial mass="0.241000" diaginertia="0.000335 0.000329 0.000279" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000"/>
                 <body pos="-0.053565 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_laikago1_FR_upper_leg">
-                    <joint axis="1.000000 0.000000 0.000000" pos="-0.053565 0.000000 0.000000" limited="false" name="joint_laikago1_FR_upper_leg_2_hip_motor_joint" type="hinge"/>
+                    <joint axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_laikago1_FR_upper_leg_2_hip_motor_joint" type="hinge"/>
                     <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.280000 0.520000 0.930000 1.000000" size="0.000000 0.000000 0.000000" mesh="laikago_meshes/upper_leg_mirror" name="geom_laikago1_5" type="mesh"/>
                     <inertial mass="1.527000" diaginertia="0.014533 0.006777 0.009806" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000"/>
                     <body pos="0.020690 -0.208330 -0.142200" quat="1.000000 0.000000 0.000000 0.000000" name="body_laikago1_FR_lower_leg">
-                        <joint axis="1.000000 0.000000 0.000000" pos="0.020690 -0.208330 -0.142200" limited="false" name="joint_laikago1_FR_lower_leg_2_upper_leg_joint" type="hinge"/>
+                        <joint axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_laikago1_FR_lower_leg_2_upper_leg_joint" type="hinge"/>
                         <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707109 0.000000 0.707105 0.000000" rgba="0.850000 0.190000 0.210000 1.000000" size="0.000000 0.000000 0.000000" mesh="laikago_meshes/lower_leg_3" name="geom_laikago1_4" type="mesh"/>
                         <inertial mass="0.241000" diaginertia="0.002027 0.000097 0.002091" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000"/>
                     </body>
                 </body>
             </body>
             <body pos="0.081715 0.000000 -0.194401" quat="1.000000 0.000000 0.000000 0.000000" name="body_laikago1_RL_hip_motor">
-                <joint axis="0.000000 0.000000 1.000000" pos="0.081715 0.000000 -0.194401" limited="false" name="joint_laikago1_RL_hip_motor_2_chassis_joint" type="hinge"/>
+                <joint axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_laikago1_RL_hip_motor_2_chassis_joint" type="hinge"/>
                 <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.230000 0.730000 0.330000 1.000000" size="0.000000 0.000000 0.000000" mesh="laikago_meshes/hip_motor" name="geom_laikago1_6" type="mesh"/>
                 <inertial mass="1.095000" diaginertia="0.001525 0.001496 0.001269" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000"/>
                 <body pos="0.055855 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_laikago1_RL_upper_leg">
-                    <joint axis="1.000000 0.000000 0.000000" pos="0.055855 0.000000 0.000000" limited="false" name="joint_laikago1_RL_upper_leg_2_hip_motor_joint" type="hinge"/>
+                    <joint axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_laikago1_RL_upper_leg_2_hip_motor_joint" type="hinge"/>
                     <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.280000 0.520000 0.930000 1.000000" size="0.000000 0.000000 0.000000" mesh="laikago_meshes/upper_leg" name="geom_laikago1_8" type="mesh"/>
                     <inertial mass="1.527000" diaginertia="0.014534 0.006778 0.009807" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000"/>
                     <body pos="-0.020690 -0.208330 -0.142200" quat="1.000000 0.000000 0.000000 0.000000" name="body_laikago1_RL_lower_leg">
-                        <joint axis="1.000000 0.000000 0.000000" pos="-0.020690 -0.208330 -0.142200" limited="false" name="joint_laikago1_RL_lower_leg_2_upper_leg_joint" type="hinge"/>
+                        <joint axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_laikago1_RL_lower_leg_2_upper_leg_joint" type="hinge"/>
                         <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707109 0.000000 0.707105 0.000000" rgba="0.850000 0.190000 0.210000 1.000000" size="0.000000 0.000000 0.000000" mesh="laikago_meshes/lower_leg_3" name="geom_laikago1_7" type="mesh"/>
                         <inertial mass="0.241000" diaginertia="0.002027 0.000097 0.002091" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000"/>
                     </body>
                 </body>
             </body>
             <body pos="-0.081715 0.000000 -0.194401" quat="1.000000 0.000000 0.000000 0.000000" name="body_laikago1_RR_hip_motor">
-                <joint axis="0.000000 0.000000 -1.000000" pos="-0.081715 0.000000 -0.194401" limited="false" name="joint_laikago1_RR_hip_motor_2_chassis_joint" type="hinge"/>
+                <joint axis="0.000000 0.000000 -1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_laikago1_RR_hip_motor_2_chassis_joint" type="hinge"/>
                 <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.230000 0.730000 0.330000 1.000000" size="0.000000 0.000000 0.000000" mesh="laikago_meshes/hip_motor_mirror" name="geom_laikago1_9" type="mesh"/>
                 <inertial mass="0.241000" diaginertia="0.000335 0.000329 0.000279" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000"/>
                 <body pos="-0.053565 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_laikago1_RR_upper_leg">
-                    <joint axis="1.000000 0.000000 0.000000" pos="-0.053565 0.000000 0.000000" limited="false" name="joint_laikago1_RR_upper_leg_2_hip_motor_joint" type="hinge"/>
+                    <joint axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_laikago1_RR_upper_leg_2_hip_motor_joint" type="hinge"/>
                     <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.280000 0.520000 0.930000 1.000000" size="0.000000 0.000000 0.000000" mesh="laikago_meshes/upper_leg_mirror" name="geom_laikago1_11" type="mesh"/>
                     <inertial mass="1.527000" diaginertia="0.014533 0.006777 0.009806" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000"/>
                     <body pos="0.020690 -0.208330 -0.142200" quat="1.000000 0.000000 0.000000 0.000000" name="body_laikago1_RR_lower_leg">
-                        <joint axis="1.000000 0.000000 0.000000" pos="0.020690 -0.208330 -0.142200" limited="false" name="joint_laikago1_RR_lower_leg_2_upper_leg_joint" type="hinge"/>
+                        <joint axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_laikago1_RR_lower_leg_2_upper_leg_joint" type="hinge"/>
                         <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.707109 0.000000 0.707105 0.000000" rgba="0.850000 0.190000 0.210000 1.000000" size="0.000000 0.000000 0.000000" mesh="laikago_meshes/lower_leg_3" name="geom_laikago1_10" type="mesh"/>
                         <inertial mass="0.241000" diaginertia="0.002027 0.000097 0.002091" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000"/>
                     </body>
@@ -568,27 +568,41 @@
             <joint name="joint_laikago1_free" type="free"/>
         </body>
     </worldbody>
+    <actuator>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_laikago1_FL_hip_motor_2_chassis_joint" name="actuator_laikago1_joint_laikago1_FL_hip_motor_2_chassis_joint"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_laikago1_FL_upper_leg_2_hip_motor_joint" name="actuator_laikago1_joint_laikago1_FL_upper_leg_2_hip_motor_joint"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_laikago1_FL_lower_leg_2_upper_leg_joint" name="actuator_laikago1_joint_laikago1_FL_lower_leg_2_upper_leg_joint"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_laikago1_FR_hip_motor_2_chassis_joint" name="actuator_laikago1_joint_laikago1_FR_hip_motor_2_chassis_joint"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_laikago1_FR_upper_leg_2_hip_motor_joint" name="actuator_laikago1_joint_laikago1_FR_upper_leg_2_hip_motor_joint"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_laikago1_FR_lower_leg_2_upper_leg_joint" name="actuator_laikago1_joint_laikago1_FR_lower_leg_2_upper_leg_joint"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_laikago1_RL_hip_motor_2_chassis_joint" name="actuator_laikago1_joint_laikago1_RL_hip_motor_2_chassis_joint"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_laikago1_RL_upper_leg_2_hip_motor_joint" name="actuator_laikago1_joint_laikago1_RL_upper_leg_2_hip_motor_joint"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_laikago1_RL_lower_leg_2_upper_leg_joint" name="actuator_laikago1_joint_laikago1_RL_lower_leg_2_upper_leg_joint"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_laikago1_RR_hip_motor_2_chassis_joint" name="actuator_laikago1_joint_laikago1_RR_hip_motor_2_chassis_joint"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_laikago1_RR_upper_leg_2_hip_motor_joint" name="actuator_laikago1_joint_laikago1_RR_upper_leg_2_hip_motor_joint"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_laikago1_RR_lower_leg_2_upper_leg_joint" name="actuator_laikago1_joint_laikago1_RR_lower_leg_2_upper_leg_joint"/>
+    </actuator>
     <sensor>
         <jointpos joint="joint_laikago1_FL_hip_motor_2_chassis_joint" name="sensor_laikago1_joint_laikago1_FL_hip_motor_2_chassis_joint_jointpos"/>
         <jointvel joint="joint_laikago1_FL_hip_motor_2_chassis_joint" name="sensor_laikago1_joint_laikago1_FL_hip_motor_2_chassis_joint_jointvel"/>
-        <jointpos joint="joint_laikago1_FR_hip_motor_2_chassis_joint" name="sensor_laikago1_joint_laikago1_FR_hip_motor_2_chassis_joint_jointpos"/>
-        <jointvel joint="joint_laikago1_FR_hip_motor_2_chassis_joint" name="sensor_laikago1_joint_laikago1_FR_hip_motor_2_chassis_joint_jointvel"/>
-        <jointpos joint="joint_laikago1_RL_hip_motor_2_chassis_joint" name="sensor_laikago1_joint_laikago1_RL_hip_motor_2_chassis_joint_jointpos"/>
-        <jointvel joint="joint_laikago1_RL_hip_motor_2_chassis_joint" name="sensor_laikago1_joint_laikago1_RL_hip_motor_2_chassis_joint_jointvel"/>
-        <jointpos joint="joint_laikago1_RR_hip_motor_2_chassis_joint" name="sensor_laikago1_joint_laikago1_RR_hip_motor_2_chassis_joint_jointpos"/>
-        <jointvel joint="joint_laikago1_RR_hip_motor_2_chassis_joint" name="sensor_laikago1_joint_laikago1_RR_hip_motor_2_chassis_joint_jointvel"/>
         <jointpos joint="joint_laikago1_FL_upper_leg_2_hip_motor_joint" name="sensor_laikago1_joint_laikago1_FL_upper_leg_2_hip_motor_joint_jointpos"/>
         <jointvel joint="joint_laikago1_FL_upper_leg_2_hip_motor_joint" name="sensor_laikago1_joint_laikago1_FL_upper_leg_2_hip_motor_joint_jointvel"/>
         <jointpos joint="joint_laikago1_FL_lower_leg_2_upper_leg_joint" name="sensor_laikago1_joint_laikago1_FL_lower_leg_2_upper_leg_joint_jointpos"/>
         <jointvel joint="joint_laikago1_FL_lower_leg_2_upper_leg_joint" name="sensor_laikago1_joint_laikago1_FL_lower_leg_2_upper_leg_joint_jointvel"/>
+        <jointpos joint="joint_laikago1_FR_hip_motor_2_chassis_joint" name="sensor_laikago1_joint_laikago1_FR_hip_motor_2_chassis_joint_jointpos"/>
+        <jointvel joint="joint_laikago1_FR_hip_motor_2_chassis_joint" name="sensor_laikago1_joint_laikago1_FR_hip_motor_2_chassis_joint_jointvel"/>
         <jointpos joint="joint_laikago1_FR_upper_leg_2_hip_motor_joint" name="sensor_laikago1_joint_laikago1_FR_upper_leg_2_hip_motor_joint_jointpos"/>
         <jointvel joint="joint_laikago1_FR_upper_leg_2_hip_motor_joint" name="sensor_laikago1_joint_laikago1_FR_upper_leg_2_hip_motor_joint_jointvel"/>
         <jointpos joint="joint_laikago1_FR_lower_leg_2_upper_leg_joint" name="sensor_laikago1_joint_laikago1_FR_lower_leg_2_upper_leg_joint_jointpos"/>
         <jointvel joint="joint_laikago1_FR_lower_leg_2_upper_leg_joint" name="sensor_laikago1_joint_laikago1_FR_lower_leg_2_upper_leg_joint_jointvel"/>
+        <jointpos joint="joint_laikago1_RL_hip_motor_2_chassis_joint" name="sensor_laikago1_joint_laikago1_RL_hip_motor_2_chassis_joint_jointpos"/>
+        <jointvel joint="joint_laikago1_RL_hip_motor_2_chassis_joint" name="sensor_laikago1_joint_laikago1_RL_hip_motor_2_chassis_joint_jointvel"/>
         <jointpos joint="joint_laikago1_RL_upper_leg_2_hip_motor_joint" name="sensor_laikago1_joint_laikago1_RL_upper_leg_2_hip_motor_joint_jointpos"/>
         <jointvel joint="joint_laikago1_RL_upper_leg_2_hip_motor_joint" name="sensor_laikago1_joint_laikago1_RL_upper_leg_2_hip_motor_joint_jointvel"/>
         <jointpos joint="joint_laikago1_RL_lower_leg_2_upper_leg_joint" name="sensor_laikago1_joint_laikago1_RL_lower_leg_2_upper_leg_joint_jointpos"/>
         <jointvel joint="joint_laikago1_RL_lower_leg_2_upper_leg_joint" name="sensor_laikago1_joint_laikago1_RL_lower_leg_2_upper_leg_joint_jointvel"/>
+        <jointpos joint="joint_laikago1_RR_hip_motor_2_chassis_joint" name="sensor_laikago1_joint_laikago1_RR_hip_motor_2_chassis_joint_jointpos"/>
+        <jointvel joint="joint_laikago1_RR_hip_motor_2_chassis_joint" name="sensor_laikago1_joint_laikago1_RR_hip_motor_2_chassis_joint_jointvel"/>
         <jointpos joint="joint_laikago1_RR_upper_leg_2_hip_motor_joint" name="sensor_laikago1_joint_laikago1_RR_upper_leg_2_hip_motor_joint_jointpos"/>
         <jointvel joint="joint_laikago1_RR_upper_leg_2_hip_motor_joint" name="sensor_laikago1_joint_laikago1_RR_upper_leg_2_hip_motor_joint_jointvel"/>
         <jointpos joint="joint_laikago1_RR_lower_leg_2_upper_leg_joint" name="sensor_laikago1_joint_laikago1_RR_lower_leg_2_upper_leg_joint_jointpos"/>
@@ -619,6 +633,35 @@
         <framelinacc name="sensorlaikago1_body_laikago1_RR_upper_leg_framelinacc" objname="body_laikago1_RR_upper_leg" objtype="body"/>
         <framelinvel name="sensorlaikago1_body_laikago1_RR_lower_leg_framelinvel" objname="body_laikago1_RR_lower_leg" objtype="body"/>
         <framelinacc name="sensorlaikago1_body_laikago1_RR_lower_leg_framelinacc" objname="body_laikago1_RR_lower_leg" objtype="body"/>
+    </sensor>
+    <worldbody>
+        <body pos="1.000000 0.000000 1.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_doublePend1_base">
+            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.500000 0.500000 0.500000 1.000000" size="0.100000 0.100000 0.100000" name="geom_doublePend1_13" type="box"/>
+            <body pos="0.000000 0.000000 -0.100000" quat="1.000000 0.000000 0.000000 0.000000" name="body_doublePend1_link1">
+                <joint axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_doublePend1_joint1" type="hinge"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.500000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.000000 0.000000 0.800000 1.000000" size="0.050000 0.050000 0.500000" name="geom_doublePend1_14" type="box"/>
+                <body pos="0.000000 0.000000 -1.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_doublePend1_link2">
+                    <joint axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_doublePend1_joint2" type="hinge"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.500000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.000000 0.800000 0.000000 1.000000" size="0.050000 0.050000 0.500000" name="geom_doublePend1_15" type="box"/>
+                </body>
+            </body>
+        </body>
+    </worldbody>
+    <actuator>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_doublePend1_joint1" name="actuator_doublePend1_joint_doublePend1_joint1"/>
+        <motor ctrlrange="-1.000000 1.000000" gear="2.000000" ctrllimited="true" joint="joint_doublePend1_joint2" name="actuator_doublePend1_joint_doublePend1_joint2"/>
+    </actuator>
+    <sensor>
+        <jointpos joint="joint_doublePend1_joint1" name="sensor_doublePend1_joint_doublePend1_joint1_jointpos"/>
+        <jointvel joint="joint_doublePend1_joint1" name="sensor_doublePend1_joint_doublePend1_joint1_jointvel"/>
+        <jointpos joint="joint_doublePend1_joint2" name="sensor_doublePend1_joint_doublePend1_joint2_jointpos"/>
+        <jointvel joint="joint_doublePend1_joint2" name="sensor_doublePend1_joint_doublePend1_joint2_jointvel"/>
+        <framelinvel name="sensordoublePend1_body_doublePend1_base_framelinvel" objname="body_doublePend1_base" objtype="body"/>
+        <framelinacc name="sensordoublePend1_body_doublePend1_base_framelinacc" objname="body_doublePend1_base" objtype="body"/>
+        <framelinvel name="sensordoublePend1_body_doublePend1_link1_framelinvel" objname="body_doublePend1_link1" objtype="body"/>
+        <framelinacc name="sensordoublePend1_body_doublePend1_link1_framelinacc" objname="body_doublePend1_link1" objtype="body"/>
+        <framelinvel name="sensordoublePend1_body_doublePend1_link2_framelinvel" objname="body_doublePend1_link2" objtype="body"/>
+        <framelinacc name="sensordoublePend1_body_doublePend1_link2_framelinacc" objname="body_doublePend1_link2" objtype="body"/>
     </sensor>
     <worldbody>
         <body pos="-3.000000 2.000000 1.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_root">

@@ -29,9 +29,9 @@ int main( int argc, const char** argv )
 
     auto _scenario = new tysoc::TScenario();
 
-    auto _modelpath = std::string( TYSOCMJC_RESOURCES_PATH ) + std::string( "templates/urdf/laikago.urdf" );
+    auto _modelpath = std::string( TYSOCMJC_RESOURCES_PATH ) + std::string( "templates/urdf/double_pendulum.urdf" );
     auto _modeldata = tysoc::urdf::loadGenericModel( _modelpath );
-    auto _agent = tysoc::agent::createKinTreeAgent( "agent0", { 0.0f, 0.0f, 10.0f }, _modeldata );
+    auto _agent = tysoc::agent::createKinTreeAgent( "agent0", { 0.0f, 0.0f, 1.0f }, _modeldata );
 
     _scenario->addAgent( _agent );
 

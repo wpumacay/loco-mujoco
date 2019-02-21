@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<robot name="double_pendulum">
+
+  <link name="base">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.2 0.2 0.2"/>
+      </geometry>
+      <material name="gray">
+          <color rgba="0.5 0.5 0.5 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz = "0 0 0"/>
+      <geometry>
+        <box size="0.2 0.2 0.2"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link1">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 -0.5"/>
+      <geometry>
+        <box size="0.1 0.1 1"/>
+      </geometry>
+      <material name="blue">
+          <color rgba="0.0 0.0 0.8 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.1 0.1 1"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link2">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 -0.5"/>
+      <geometry>
+        <box size="0.1 0.1 1"/>
+      </geometry>
+      <material name="green">
+          <color rgba="0.0 0.8 0.0 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.1 0.1 1"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- Tysoc Extension: fixed joint to WORLD **** -->
+  <joint name="joint0_base" type="world">
+    <!-- "world" removes all dof from this joint to the world. ...
+         Use it in case you need to fix a body to the world, like a fixed base-->
+    <parent link="NONE"/>
+    <child link="base"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <!-- ***************************************** -->
+
+  <joint name="joint1" type="continuous">
+    <parent link="base"/>
+    <child link="link1"/>
+    <origin xyz="0 0 -0.1" rpy="0 0 0" />
+    <axis xyz="1 0 0" />
+    <dynamics damping="0.1" />
+  </joint>
+
+  <joint name="joint2" type="continuous">
+    <parent link="link1"/>
+    <child link="link2"/>
+    <origin xyz="0 0.0 -1.0" rpy="0 0 0" />
+    <axis xyz="1 0 0" />
+    <dynamics damping="0.1" />
+  </joint>
+
+</robot>

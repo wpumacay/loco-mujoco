@@ -5,6 +5,7 @@
 *.swo
 *.so
 *.a
+*.ini
 
 build/
 .vscode/

@@ -1,0 +1,216 @@
+{
+    "WorldUp" : "z",
+
+    "Skeleton": 
+    {
+        "Joints": 
+        [
+            {
+                "Name": "root",
+                "Type": "fixed",
+                "Parent": -1,
+                "AttachX": 0,
+                "AttachY": 0,
+                "AttachZ": 0,   
+                "AttachThetaX": 0,
+                "AttachThetaY": 0,
+                "AttachThetaZ": 0,
+                "LimLow0": 1,
+                "LimHigh0": 0,
+                "TorqueLim": 0,
+                "IsEndEffector": 0,
+                "DiffWeight": 1
+
+            },
+
+            {
+                "Name": "joint1",
+                "Type": "revolute",
+                "Parent": 0,
+                "AttachX": 0,
+                "AttachY": 0,
+                "AttachZ": -0.1,   
+                "AttachThetaX": 0,
+                "AttachThetaY": 0,
+                "AttachThetaZ": 0,
+                "LimLow0": -0.5,
+                "LimHigh0": 0.5,
+                "LimLow1": -1,
+                "LimHigh1": 1,
+                "LimLow2": -1,
+                "LimHigh2": 1,
+                "TorqueLim": 200,
+                "IsEndEffector": 0,
+                "DiffWeight": 0.5
+
+            },
+
+            {
+                "Name": "joint2",
+                "Type": "revolute",
+                "Parent": 1,
+                "AttachX": 0,
+                "AttachY": 0,
+                "AttachZ": -1.0,
+                "AttachThetaX": 0,
+                "AttachThetaY": 0,
+                "AttachThetaZ": 0,
+                "LimLow0": -1.2,
+                "LimHigh0": 1.2,
+                "LimLow1": -1,
+                "LimHigh1": 1,
+                "LimLow2": -2.57,
+                "LimHigh2": 2.57,
+                "TorqueLim": 200,
+                "IsEndEffector": 0,
+                "DiffWeight": 0.5
+            }
+        ]
+    },
+
+    "BodyDefs": 
+    [
+            {
+                "Name": "root",
+                "Shape": "box",
+                "Mass": 10.0,
+                "ColGroup": 1,
+                "EnableFallContact": 1,
+                "AttachX": 0,
+                "AttachY": 0,
+                "AttachZ": 0,
+                "AttachThetaX": 0,
+                "AttachThetaY": 0,
+                "AttachThetaZ": 0,
+                "Param0": 0.2,
+                "Param1": 0.2,
+                "Param2": 0.2,
+                "ColorR": 0.4706,
+                "ColorG": 0.549,
+                "ColorB": 0.6863,
+                "ColorA": 1
+            },
+            {
+                "Name": "link1",
+                "Shape": "box",
+                "Mass": 15.0,
+                "ColGroup": 1,
+                "EnableFallContact": 1,
+                "AttachX": 0,
+                "AttachY": 0,
+                "AttachZ": -0.5,
+                "AttachThetaX": 0,
+                "AttachThetaY": 0,
+                "AttachThetaZ": 0,
+                "Param0": 0.1,
+                "Param1": 0.1,
+                "Param2": 1.0,
+                "ColorR": 0.4706,
+                "ColorG": 0.549,
+                "ColorB": 0.6863,
+                "ColorA": 1
+            },
+            {
+                "Name": "link2",
+                "Shape": "box",
+                "Mass": 4.5,
+                "ColGroup": 2,
+                "AttachX": 0,
+                "AttachY": 0,
+                "AttachZ": -0.5,
+                "AttachThetaX": 0,
+                "AttachThetaY": 0,
+                "AttachThetaZ": 0,
+                "Param0": 0.1,
+                "Param1": 0.1,
+                "Param2": 1.0,
+                "ColorR": 0.6392,
+                "ColorG": 0.6941,
+                "ColorB": 0.7372,
+                "ColorA": 1
+            }
+        ],
+
+        "DrawShapeDefs": 
+        [
+            {
+                "Name": "root",
+                "Shape": "box",
+                "ParentJoint": 0,
+                "AttachX": 0,
+                "AttachY": 0,
+                "AttachZ": 0,
+                "AttachThetaX": 0,
+                "AttachThetaY": 0,
+                "AttachThetaZ": 0,
+                "Param0": 0.2,
+                "Param1": 0.2,
+                "Param2": 0.2,
+                "ColorR": 0.2253,
+                "ColorG": 0.2845,
+                "ColorB": 0.50315,
+                "ColorA": 1
+            },
+            {
+                "Name": "link1",
+                "Shape": "box",
+                "ParentJoint": 1,
+                "AttachX": 0,
+                "AttachY": 0,
+                "AttachZ": -0.5,
+                "AttachThetaX": 0,
+                "AttachThetaY": 0,
+                "AttachThetaZ": 0,
+                "Param0": 0.1,
+                "Param1": 0.1,
+                "Param2": 1.0,
+                "ColorR": 0.2253,
+                "ColorG": 0.2845,
+                "ColorB": 0.50315,
+                "ColorA": 1
+            },
+            {
+                "Name": "link2",
+                "Shape": "box",
+                "ParentJoint": 2,
+                "AttachX": 0,
+                "AttachY": 0,
+                "AttachZ": -0.5,
+                "AttachThetaX": 0,
+                "AttachThetaY": 0,
+                "AttachThetaZ": 0,
+                "Param0": 0.1,
+                "Param1": 0.1,
+                "Param2": 1.0,
+                "ColorR": 0.4396,
+                "ColorG": 0.53705,
+                "ColorB": 0.5386,
+                "ColorA": 1
+            }
+        ],
+
+        "PDControllers": 
+        [
+            {
+                "Name": "root",
+                "Kp": 0,
+                "Kd": 0,
+                "TargetTheta0": 0,
+                "UseWorldCoord": 0
+            },
+            {
+                "Name": "joint1",
+                "Kp": 1000,
+                "Kd": 100,
+                "TargetTheta0": 0,
+                "UseWorldCoord": 0
+            },
+            {
+                "Name": "joint2",
+                "Kp": 300,
+                "Kd": 30,
+                "TargetTheta0": 0,
+                "UseWorldCoord": 0
+            }
+        ]
+}

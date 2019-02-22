@@ -635,7 +635,7 @@
         <framelinacc name="sensorlaikago1_body_laikago1_RR_lower_leg_framelinacc" objname="body_laikago1_RR_lower_leg" objtype="body"/>
     </sensor>
     <worldbody>
-        <body pos="1.000000 0.000000 1.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_doublePend1_base">
+        <body pos="1.000000 0.000000 -0.500000" quat="1.000000 0.000000 0.000000 0.000000" name="body_doublePend1_base">
             <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.500000 0.500000 0.500000 1.000000" size="0.100000 0.100000 0.100000" name="geom_doublePend1_13" type="box"/>
             <body pos="0.000000 0.000000 -0.100000" quat="1.000000 0.000000 0.000000 0.000000" name="body_doublePend1_link1">
                 <joint axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_doublePend1_joint1" type="hinge"/>
@@ -666,50 +666,50 @@
     <worldbody>
         <body pos="-3.000000 2.000000 1.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_root">
             <joint name="joint_dog1_root" type="free"/>
-            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.953847 0.000000 0.000000 0.300293" rgba="0.225300 0.284500 0.503150 1.000000" size="0.077400 0.055800 0.063000" name="geom_dog1_root" type="box"/>
-            <body pos="0.054000 0.048000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_spine0">
-                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_spine0" type="hinge"/>
-                <geom conaffinity="0" contype="1" pos="0.023750 -0.030000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.235300 0.294500 0.513150 1.000000" size="0.043750 0.059850 0.063500" name="geom_dog1_spine0" type="box"/>
-                <body pos="0.061200 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_spine1">
-                    <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_spine1" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="0.035550 -0.040000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.245300 0.304500 0.523150 1.000000" size="0.040550 0.066150 0.064000" name="geom_dog1_spine1" type="box"/>
-                    <body pos="0.073000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_spine2">
-                        <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_spine2" type="hinge"/>
-                        <geom conaffinity="0" contype="1" pos="0.035550 -0.057000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.255300 0.314500 0.533150 1.000000" size="0.045550 0.081000 0.064500" name="geom_dog1_spine2" type="box"/>
-                        <body pos="0.078000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_spine3">
-                            <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_spine3" type="hinge"/>
-                            <geom conaffinity="0" contype="1" pos="0.052650 -0.070000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.265300 0.324500 0.543150 1.000000" size="0.052650 0.091350 0.065000" name="geom_dog1_spine3" type="box"/>
-                            <body pos="0.108200 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_torso">
-                                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_torso" type="hinge"/>
-                                <geom conaffinity="0" contype="1" pos="0.119250 -0.085000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.275300 0.334500 0.553150 1.000000" size="0.119250 0.117450 0.075000" name="geom_dog1_torso" type="box"/>
-                                <body pos="0.216000 0.018000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_neck0">
-                                    <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_neck0" type="hinge"/>
-                                    <geom conaffinity="0" contype="1" pos="0.042300 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.285300 0.344500 0.563150 1.000000" size="0.042300 0.036000 0.030000" name="geom_dog1_neck0" type="box"/>
-                                    <body pos="0.085300 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_neck1">
-                                        <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_neck1" type="hinge"/>
-                                        <geom conaffinity="0" contype="1" pos="0.042300 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.295300 0.354500 0.573150 1.000000" size="0.042300 0.036000 0.030000" name="geom_dog1_neck1" type="box"/>
-                                        <body pos="0.085300 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_head">
-                                            <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_head" type="hinge"/>
-                                            <geom conaffinity="0" contype="1" pos="0.053100 -0.055000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.305300 0.364500 0.583150 1.000000" size="0.053100 0.104400 0.060000" name="geom_dog1_head" type="box"/>
+            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.953847 0.300293 0.000000 0.000000" rgba="0.225300 0.284500 0.503150 1.000000" size="0.063000 0.077400 0.055800" name="geom_dog1_root" type="box"/>
+            <body pos="0.000000 0.054000 0.048000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_spine0">
+                <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_spine0" type="hinge"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 0.023750 -0.030000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.235300 0.294500 0.513150 1.000000" size="0.063500 0.043750 0.059850" name="geom_dog1_spine0" type="box"/>
+                <body pos="0.000000 0.061200 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_spine1">
+                    <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_spine1" type="hinge"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 0.035550 -0.040000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.245300 0.304500 0.523150 1.000000" size="0.064000 0.040550 0.066150" name="geom_dog1_spine1" type="box"/>
+                    <body pos="0.000000 0.073000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_spine2">
+                        <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_spine2" type="hinge"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 0.035550 -0.057000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.255300 0.314500 0.533150 1.000000" size="0.064500 0.045550 0.081000" name="geom_dog1_spine2" type="box"/>
+                        <body pos="0.000000 0.078000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_spine3">
+                            <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_spine3" type="hinge"/>
+                            <geom conaffinity="0" contype="1" pos="0.000000 0.052650 -0.070000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.265300 0.324500 0.543150 1.000000" size="0.065000 0.052650 0.091350" name="geom_dog1_spine3" type="box"/>
+                            <body pos="0.000000 0.108200 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_torso">
+                                <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_torso" type="hinge"/>
+                                <geom conaffinity="0" contype="1" pos="0.000000 0.119250 -0.085000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.275300 0.334500 0.553150 1.000000" size="0.075000 0.119250 0.117450" name="geom_dog1_torso" type="box"/>
+                                <body pos="0.000000 0.216000 0.018000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_neck0">
+                                    <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_neck0" type="hinge"/>
+                                    <geom conaffinity="0" contype="1" pos="0.000000 0.042300 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.285300 0.344500 0.563150 1.000000" size="0.030000 0.042300 0.036000" name="geom_dog1_neck0" type="box"/>
+                                    <body pos="0.000000 0.085300 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_neck1">
+                                        <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_neck1" type="hinge"/>
+                                        <geom conaffinity="0" contype="1" pos="0.000000 0.042300 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.295300 0.354500 0.573150 1.000000" size="0.030000 0.042300 0.036000" name="geom_dog1_neck1" type="box"/>
+                                        <body pos="0.000000 0.085300 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_head">
+                                            <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_head" type="hinge"/>
+                                            <geom conaffinity="0" contype="1" pos="0.000000 0.053100 -0.055000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.305300 0.364500 0.583150 1.000000" size="0.060000 0.053100 0.104400" name="geom_dog1_head" type="box"/>
                                         </body>
                                     </body>
                                 </body>
-                                <body pos="0.156000 -0.048000 0.100000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_forearm">
-                                    <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_shoulder" type="hinge"/>
-                                    <geom conaffinity="0" contype="1" pos="0.000000 -0.114200 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.439600 0.537050 0.538600 1.000000" size="0.035100 0.140850 0.030000" name="geom_dog1_back_forearm" type="box"/>
-                                    <geom conaffinity="0" contype="1" pos="0.000000 -0.114200 -0.200000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.351680 0.429640 0.440880 1.000000" size="0.035100 0.140850 0.030000" name="geom_dog1_left_forearm" type="box"/>
-                                    <body pos="0.000000 -0.228400 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_arm">
-                                        <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="0.000000 179.908752" limited="true" name="joint_dog1_elbow" type="hinge"/>
-                                        <geom conaffinity="0" contype="1" pos="0.000000 -0.105400 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.409600 0.507050 0.508600 1.000000" size="0.026900 0.103900 0.027500" name="geom_dog1_back_arm" type="box"/>
-                                        <geom conaffinity="0" contype="1" pos="0.000000 -0.105400 -0.200000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.327680 0.405640 0.416880 1.000000" size="0.026900 0.103900 0.027500" name="geom_dog1_left_arm" type="box"/>
-                                        <body pos="0.000000 -0.210700 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_hand">
-                                            <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="0.000000 179.908752" limited="true" name="joint_dog1_wrist" type="hinge"/>
-                                            <geom conaffinity="0" contype="1" pos="0.000000 -0.053600 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.389600 0.487050 0.488600 1.000000" size="0.022500 0.066750 0.025000" name="geom_dog1_back_hand" type="box"/>
-                                            <geom conaffinity="0" contype="1" pos="0.000000 -0.053600 -0.200000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.311680 0.389640 0.400880 1.000000" size="0.022500 0.066750 0.025000" name="geom_dog1_left_hand" type="box"/>
-                                            <body pos="0.000000 -0.107300 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_finger">
-                                                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_finger" type="hinge"/>
-                                                <geom conaffinity="0" contype="1" pos="0.030000 -0.010000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.359600 0.457050 0.458600 1.000000" size="0.055000 0.025000 0.030000" name="geom_dog1_back_finger" type="box"/>
-                                                <geom conaffinity="0" contype="1" pos="0.030000 -0.010000 -0.200000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.282320 0.329408 0.386472 1.000000" size="0.055000 0.025000 0.030000" name="geom_dog1_left_finger" type="box"/>
+                                <body pos="0.100000 0.156000 -0.048000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_forearm">
+                                    <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_shoulder" type="hinge"/>
+                                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.114200" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.439600 0.537050 0.538600 1.000000" size="0.030000 0.035100 0.140850" name="geom_dog1_back_forearm" type="box"/>
+                                    <geom conaffinity="0" contype="1" pos="-0.200000 0.000000 -0.114200" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.351680 0.429640 0.440880 1.000000" size="0.030000 0.035100 0.140850" name="geom_dog1_left_forearm" type="box"/>
+                                    <body pos="0.000000 0.000000 -0.228400" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_arm">
+                                        <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0.000000 179.908752" limited="true" name="joint_dog1_elbow" type="hinge"/>
+                                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.105400" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.409600 0.507050 0.508600 1.000000" size="0.027500 0.026900 0.103900" name="geom_dog1_back_arm" type="box"/>
+                                        <geom conaffinity="0" contype="1" pos="-0.200000 0.000000 -0.105400" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.327680 0.405640 0.416880 1.000000" size="0.027500 0.026900 0.103900" name="geom_dog1_left_arm" type="box"/>
+                                        <body pos="0.000000 0.000000 -0.210700" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_hand">
+                                            <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0.000000 179.908752" limited="true" name="joint_dog1_wrist" type="hinge"/>
+                                            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.053600" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.389600 0.487050 0.488600 1.000000" size="0.025000 0.022500 0.066750" name="geom_dog1_back_hand" type="box"/>
+                                            <geom conaffinity="0" contype="1" pos="-0.200000 0.000000 -0.053600" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.311680 0.389640 0.400880 1.000000" size="0.025000 0.022500 0.066750" name="geom_dog1_left_hand" type="box"/>
+                                            <body pos="0.000000 0.000000 -0.107300" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_finger">
+                                                <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_finger" type="hinge"/>
+                                                <geom conaffinity="0" contype="1" pos="0.000000 0.030000 -0.010000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.359600 0.457050 0.458600 1.000000" size="0.030000 0.055000 0.025000" name="geom_dog1_back_finger" type="box"/>
+                                                <geom conaffinity="0" contype="1" pos="-0.200000 0.030000 -0.010000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.282320 0.329408 0.386472 1.000000" size="0.030000 0.055000 0.025000" name="geom_dog1_left_finger" type="box"/>
                                             </body>
                                         </body>
                                     </body>
@@ -719,38 +719,38 @@
                     </body>
                 </body>
             </body>
-            <body pos="-0.084000 -0.006000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_tail0">
-                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_dog1_tail0" type="hinge"/>
-                <geom conaffinity="0" contype="1" pos="-0.053600 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.215300 0.274500 0.493150 1.000000" size="0.045000 0.017500 0.025000" name="geom_dog1_tail0" type="box"/>
-                <body pos="-0.090000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_tail1">
-                    <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_dog1_tail1" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="-0.053600 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.205300 0.264500 0.483150 1.000000" size="0.045000 0.017500 0.025000" name="geom_dog1_tail1" type="box"/>
-                    <body pos="-0.090000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_tail2">
-                        <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_dog1_tail2" type="hinge"/>
-                        <geom conaffinity="0" contype="1" pos="-0.053600 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.195300 0.254500 0.473150 1.000000" size="0.045000 0.017500 0.025000" name="geom_dog1_tail2" type="box"/>
-                        <body pos="-0.090000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_tail3">
-                            <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_dog1_tail3" type="hinge"/>
-                            <geom conaffinity="0" contype="1" pos="-0.053600 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.185300 0.244500 0.463150 1.000000" size="0.045000 0.017500 0.025000" name="geom_dog1_tail3" type="box"/>
+            <body pos="0.000000 -0.084000 -0.006000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_tail0">
+                <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_dog1_tail0" type="hinge"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 -0.053600 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.215300 0.274500 0.493150 1.000000" size="0.025000 0.045000 0.017500" name="geom_dog1_tail0" type="box"/>
+                <body pos="0.000000 -0.090000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_tail1">
+                    <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_dog1_tail1" type="hinge"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 -0.053600 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.205300 0.264500 0.483150 1.000000" size="0.025000 0.045000 0.017500" name="geom_dog1_tail1" type="box"/>
+                    <body pos="0.000000 -0.090000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_tail2">
+                        <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_dog1_tail2" type="hinge"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 -0.053600 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.195300 0.254500 0.473150 1.000000" size="0.025000 0.045000 0.017500" name="geom_dog1_tail2" type="box"/>
+                        <body pos="0.000000 -0.090000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_tail3">
+                            <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_dog1_tail3" type="hinge"/>
+                            <geom conaffinity="0" contype="1" pos="0.000000 -0.053600 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.185300 0.244500 0.463150 1.000000" size="0.025000 0.045000 0.017500" name="geom_dog1_tail3" type="box"/>
                         </body>
                     </body>
                 </body>
             </body>
-            <body pos="-0.030000 -0.018000 0.050000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_thigh">
-                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_hip" type="hinge"/>
-                <geom conaffinity="0" contype="1" pos="0.000000 -0.114000 0.030000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.439600 0.537050 0.538600 1.000000" size="0.038250 0.136800 0.030000" name="geom_dog1_back_thigh" type="box"/>
-                <geom conaffinity="0" contype="1" pos="0.000000 -0.114000 -0.120000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.351680 0.429640 0.440880 1.000000" size="0.038250 0.136800 0.030000" name="geom_dog1_left_thigh" type="box"/>
-                <body pos="0.000000 -0.228100 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_leg">
-                    <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-179.908752 0.000000" limited="true" name="joint_dog1_knee" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="0.000000 -0.117200 0.030000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.409600 0.507050 0.508600 1.000000" size="0.027900 0.132750 0.027500" name="geom_dog1_back_leg" type="box"/>
-                    <geom conaffinity="0" contype="1" pos="0.000000 -0.117200 -0.120000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.327680 0.405640 0.416880 1.000000" size="0.027900 0.132750 0.027500" name="geom_dog1_left_leg" type="box"/>
-                    <body pos="0.000000 -0.234300 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_foot">
-                        <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="0.000000 179.908752" limited="true" name="joint_dog1_ankle" type="hinge"/>
-                        <geom conaffinity="0" contype="1" pos="0.000000 -0.066600 0.030000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.389600 0.487050 0.488600 1.000000" size="0.025000 0.077850 0.025000" name="geom_dog1_back_foot" type="box"/>
-                        <geom conaffinity="0" contype="1" pos="0.000000 -0.066600 -0.120000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.311680 0.389640 0.400880 1.000000" size="0.025000 0.077850 0.025000" name="geom_dog1_left_foot" type="box"/>
-                        <body pos="0.000000 -0.133200 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_toe">
-                            <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_toe" type="hinge"/>
-                            <geom conaffinity="0" contype="1" pos="0.030000 -0.010000 0.030000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.359600 0.457050 0.458600 1.000000" size="0.055000 0.025000 0.030000" name="geom_dog1_back_toe" type="box"/>
-                            <geom conaffinity="0" contype="1" pos="0.030000 -0.010000 -0.120000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.282320 0.329408 0.386472 1.000000" size="0.055000 0.025000 0.030000" name="geom_dog1_left_toe" type="box"/>
+            <body pos="0.050000 -0.030000 -0.018000" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_thigh">
+                <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_hip" type="hinge"/>
+                <geom conaffinity="0" contype="1" pos="0.030000 0.000000 -0.114000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.439600 0.537050 0.538600 1.000000" size="0.030000 0.038250 0.136800" name="geom_dog1_back_thigh" type="box"/>
+                <geom conaffinity="0" contype="1" pos="-0.120000 0.000000 -0.114000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.351680 0.429640 0.440880 1.000000" size="0.030000 0.038250 0.136800" name="geom_dog1_left_thigh" type="box"/>
+                <body pos="0.000000 0.000000 -0.228100" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_leg">
+                    <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-179.908752 0.000000" limited="true" name="joint_dog1_knee" type="hinge"/>
+                    <geom conaffinity="0" contype="1" pos="0.030000 0.000000 -0.117200" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.409600 0.507050 0.508600 1.000000" size="0.027500 0.027900 0.132750" name="geom_dog1_back_leg" type="box"/>
+                    <geom conaffinity="0" contype="1" pos="-0.120000 0.000000 -0.117200" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.327680 0.405640 0.416880 1.000000" size="0.027500 0.027900 0.132750" name="geom_dog1_left_leg" type="box"/>
+                    <body pos="0.000000 0.000000 -0.234300" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_foot">
+                        <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0.000000 179.908752" limited="true" name="joint_dog1_ankle" type="hinge"/>
+                        <geom conaffinity="0" contype="1" pos="0.030000 0.000000 -0.066600" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.389600 0.487050 0.488600 1.000000" size="0.025000 0.025000 0.077850" name="geom_dog1_back_foot" type="box"/>
+                        <geom conaffinity="0" contype="1" pos="-0.120000 0.000000 -0.066600" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.311680 0.389640 0.400880 1.000000" size="0.025000 0.025000 0.077850" name="geom_dog1_left_foot" type="box"/>
+                        <body pos="0.000000 0.000000 -0.133200" quat="1.000000 0.000000 0.000000 0.000000" name="body_dog1_toe">
+                            <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_dog1_toe" type="hinge"/>
+                            <geom conaffinity="0" contype="1" pos="0.030000 0.030000 -0.010000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.359600 0.457050 0.458600 1.000000" size="0.030000 0.055000 0.025000" name="geom_dog1_back_toe" type="box"/>
+                            <geom conaffinity="0" contype="1" pos="-0.120000 0.030000 -0.010000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.282320 0.329408 0.386472 1.000000" size="0.030000 0.055000 0.025000" name="geom_dog1_left_toe" type="box"/>
                         </body>
                     </body>
                 </body>
@@ -866,75 +866,75 @@
     <worldbody>
         <body pos="-1.000000 2.000000 1.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_root">
             <joint name="joint_raptor1_root" type="free"/>
-            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.225300 0.284500 0.503150 1.000000" size="0.127800 0.114700 0.063000" name="geom_raptor1_root" type="box"/>
-            <body pos="0.105800 0.077700 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_spine0">
-                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_raptor1_spine0" type="hinge"/>
-                <geom conaffinity="0" contype="1" pos="0.086800 -0.050650 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.245300 0.304500 0.523150 1.000000" size="0.086800 0.085000 0.050000" name="geom_raptor1_spine0" type="box"/>
-                <body pos="0.173600 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_spine1">
-                    <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_raptor1_spine1" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="0.042000 -0.030000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.265300 0.324500 0.543150 1.000000" size="0.041500 0.062850 0.045000" name="geom_raptor1_spine1" type="box"/>
-                    <body pos="0.083000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_spine2">
-                        <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_raptor1_spine2" type="hinge"/>
-                        <geom conaffinity="0" contype="1" pos="0.031900 -0.017000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.285300 0.344500 0.563150 1.000000" size="0.039400 0.041700 0.040000" name="geom_raptor1_spine2" type="box"/>
-                        <body pos="0.078800 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_spine3">
-                            <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_raptor1_spine3" type="hinge"/>
-                            <geom conaffinity="0" contype="1" pos="0.031900 -0.017000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.305300 0.364500 0.583150 1.000000" size="0.039400 0.041700 0.040000" name="geom_raptor1_spine3" type="box"/>
-                            <body pos="0.068800 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_head">
-                                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_raptor1_head" type="hinge"/>
-                                <geom conaffinity="0" contype="1" pos="0.041000 -0.063000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.325300 0.384500 0.603150 1.000000" size="0.050000 0.104300 0.047500" name="geom_raptor1_head" type="box"/>
+            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.225300 0.284500 0.503150 1.000000" size="0.063000 0.127800 0.114700" name="geom_raptor1_root" type="box"/>
+            <body pos="0.000000 0.105800 0.077700" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_spine0">
+                <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_raptor1_spine0" type="hinge"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 0.086800 -0.050650" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.245300 0.304500 0.523150 1.000000" size="0.050000 0.086800 0.085000" name="geom_raptor1_spine0" type="box"/>
+                <body pos="0.000000 0.173600 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_spine1">
+                    <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_raptor1_spine1" type="hinge"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 0.042000 -0.030000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.265300 0.324500 0.543150 1.000000" size="0.045000 0.041500 0.062850" name="geom_raptor1_spine1" type="box"/>
+                    <body pos="0.000000 0.083000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_spine2">
+                        <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_raptor1_spine2" type="hinge"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 0.031900 -0.017000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.285300 0.344500 0.563150 1.000000" size="0.040000 0.039400 0.041700" name="geom_raptor1_spine2" type="box"/>
+                        <body pos="0.000000 0.078800 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_spine3">
+                            <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_raptor1_spine3" type="hinge"/>
+                            <geom conaffinity="0" contype="1" pos="0.000000 0.031900 -0.017000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.305300 0.364500 0.583150 1.000000" size="0.040000 0.039400 0.041700" name="geom_raptor1_spine3" type="box"/>
+                            <body pos="0.000000 0.068800 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_head">
+                                <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_raptor1_head" type="hinge"/>
+                                <geom conaffinity="0" contype="1" pos="0.000000 0.041000 -0.063000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.325300 0.384500 0.603150 1.000000" size="0.047500 0.050000 0.104300" name="geom_raptor1_head" type="box"/>
                             </body>
                         </body>
                     </body>
                 </body>
             </body>
-            <body pos="-0.119800 0.077700 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_tail0">
-                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_raptor1_tail0" type="hinge"/>
-                <geom conaffinity="0" contype="1" pos="-0.048000 -0.041250 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.205300 0.264500 0.483150 1.000000" size="0.079500 0.077650 0.050000" name="geom_raptor1_tail0" type="box"/>
-                <body pos="-0.125200 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_tail1">
-                    <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_raptor1_tail1" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="-0.057100 -0.016800 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.185300 0.244500 0.463150 1.000000" size="0.084600 0.052700 0.045000" name="geom_raptor1_tail1" type="box"/>
-                    <body pos="-0.125200 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_tail2">
-                        <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_raptor1_tail2" type="hinge"/>
-                        <geom conaffinity="0" contype="1" pos="-0.057100 -0.007000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.165300 0.224500 0.443150 1.000000" size="0.084600 0.040450 0.040000" name="geom_raptor1_tail2" type="box"/>
-                        <body pos="-0.125200 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_tail3">
-                            <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_raptor1_tail3" type="hinge"/>
-                            <geom conaffinity="0" contype="1" pos="-0.057100 0.002000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.145300 0.204500 0.423150 1.000000" size="0.084600 0.028200 0.035000" name="geom_raptor1_tail3" type="box"/>
-                            <body pos="-0.125200 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_tail4">
-                                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_raptor1_tail4" type="hinge"/>
-                                <geom conaffinity="0" contype="1" pos="-0.057100 0.005000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.125300 0.184500 0.403150 1.000000" size="0.084600 0.020000 0.030000" name="geom_raptor1_tail4" type="box"/>
+            <body pos="0.000000 -0.119800 0.077700" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_tail0">
+                <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_raptor1_tail0" type="hinge"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 -0.048000 -0.041250" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.205300 0.264500 0.483150 1.000000" size="0.050000 0.079500 0.077650" name="geom_raptor1_tail0" type="box"/>
+                <body pos="0.000000 -0.125200 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_tail1">
+                    <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_raptor1_tail1" type="hinge"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 -0.057100 -0.016800" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.185300 0.244500 0.463150 1.000000" size="0.045000 0.084600 0.052700" name="geom_raptor1_tail1" type="box"/>
+                    <body pos="0.000000 -0.125200 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_tail2">
+                        <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_raptor1_tail2" type="hinge"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 -0.057100 -0.007000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.165300 0.224500 0.443150 1.000000" size="0.040000 0.084600 0.040450" name="geom_raptor1_tail2" type="box"/>
+                        <body pos="0.000000 -0.125200 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_tail3">
+                            <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_raptor1_tail3" type="hinge"/>
+                            <geom conaffinity="0" contype="1" pos="0.000000 -0.057100 0.002000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.145300 0.204500 0.423150 1.000000" size="0.035000 0.084600 0.028200" name="geom_raptor1_tail3" type="box"/>
+                            <body pos="0.000000 -0.125200 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_tail4">
+                                <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_raptor1_tail4" type="hinge"/>
+                                <geom conaffinity="0" contype="1" pos="0.000000 -0.057100 0.005000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.125300 0.184500 0.403150 1.000000" size="0.030000 0.084600 0.020000" name="geom_raptor1_tail4" type="box"/>
                             </body>
                         </body>
                     </body>
                 </body>
             </body>
-            <body pos="0.000000 0.000000 0.080000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_right_hip">
-                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_raptor1_right_hip" type="hinge"/>
-                <geom conaffinity="0" contype="1" pos="0.000000 -0.126000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.439600 0.537050 0.538600 1.000000" size="0.046900 0.156450 0.032500" name="geom_raptor1_right_hip" type="box"/>
-                <body pos="0.000000 -0.252000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_right_knee">
-                    <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-179.908752 0.000000" limited="true" name="joint_raptor1_right_knee" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="0.000000 -0.105000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.409600 0.507050 0.508600 1.000000" size="0.032500 0.127050 0.030000" name="geom_raptor1_right_knee" type="box"/>
-                    <body pos="0.000000 -0.210000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_right_ankle">
-                        <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="0.000000 179.908752" limited="true" name="joint_raptor1_right_ankle" type="hinge"/>
-                        <geom conaffinity="0" contype="1" pos="0.000000 -0.093800 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.389600 0.487050 0.488600 1.000000" size="0.025000 0.101500 0.027500" name="geom_raptor1_right_ankle" type="box"/>
-                        <body pos="0.000000 -0.187600 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_right_toe">
-                            <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_raptor1_right_toe" type="hinge"/>
-                            <geom conaffinity="0" contype="1" pos="0.030000 -0.030000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.359600 0.457050 0.458600 1.000000" size="0.060000 0.025000 0.030000" name="geom_raptor1_right_toe" type="box"/>
+            <body pos="0.080000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_right_hip">
+                <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_raptor1_right_hip" type="hinge"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.126000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.439600 0.537050 0.538600 1.000000" size="0.032500 0.046900 0.156450" name="geom_raptor1_right_hip" type="box"/>
+                <body pos="0.000000 0.000000 -0.252000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_right_knee">
+                    <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-179.908752 0.000000" limited="true" name="joint_raptor1_right_knee" type="hinge"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.105000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.409600 0.507050 0.508600 1.000000" size="0.030000 0.032500 0.127050" name="geom_raptor1_right_knee" type="box"/>
+                    <body pos="0.000000 0.000000 -0.210000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_right_ankle">
+                        <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0.000000 179.908752" limited="true" name="joint_raptor1_right_ankle" type="hinge"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.093800" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.389600 0.487050 0.488600 1.000000" size="0.027500 0.025000 0.101500" name="geom_raptor1_right_ankle" type="box"/>
+                        <body pos="0.000000 0.000000 -0.187600" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_right_toe">
+                            <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_raptor1_right_toe" type="hinge"/>
+                            <geom conaffinity="0" contype="1" pos="0.000000 0.030000 -0.030000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.359600 0.457050 0.458600 1.000000" size="0.030000 0.060000 0.025000" name="geom_raptor1_right_toe" type="box"/>
                         </body>
                     </body>
                 </body>
             </body>
-            <body pos="0.000000 0.000000 -0.080000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_left_hip">
-                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_raptor1_left_hip" type="hinge"/>
-                <geom conaffinity="0" contype="1" pos="0.000000 -0.126000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.351680 0.429640 0.440880 1.000000" size="0.046900 0.156450 0.032500" name="geom_raptor1_left_hip" type="box"/>
-                <body pos="0.000000 -0.252000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_left_knee">
-                    <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-179.908752 0.000000" limited="true" name="joint_raptor1_left_knee" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="0.000000 -0.105000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.327680 0.405640 0.416880 1.000000" size="0.032500 0.127050 0.030000" name="geom_raptor1_left_knee" type="box"/>
-                    <body pos="0.000000 -0.210000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_left_ankle">
-                        <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="0.000000 179.908752" limited="true" name="joint_raptor1_left_ankle" type="hinge"/>
-                        <geom conaffinity="0" contype="1" pos="0.000000 -0.093800 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.311680 0.389640 0.400880 1.000000" size="0.025000 0.101500 0.027500" name="geom_raptor1_left_ankle" type="box"/>
-                        <body pos="0.000000 -0.187600 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_left_toe">
-                            <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_raptor1_left_toe" type="hinge"/>
-                            <geom conaffinity="0" contype="1" pos="0.030000 -0.030000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.282320 0.329408 0.386472 1.000000" size="0.060000 0.025000 0.030000" name="geom_raptor1_left_toe" type="box"/>
+            <body pos="-0.080000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_left_hip">
+                <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_raptor1_left_hip" type="hinge"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.126000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.351680 0.429640 0.440880 1.000000" size="0.032500 0.046900 0.156450" name="geom_raptor1_left_hip" type="box"/>
+                <body pos="0.000000 0.000000 -0.252000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_left_knee">
+                    <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-179.908752 0.000000" limited="true" name="joint_raptor1_left_knee" type="hinge"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.105000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.327680 0.405640 0.416880 1.000000" size="0.030000 0.032500 0.127050" name="geom_raptor1_left_knee" type="box"/>
+                    <body pos="0.000000 0.000000 -0.210000" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_left_ankle">
+                        <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0.000000 179.908752" limited="true" name="joint_raptor1_left_ankle" type="hinge"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.093800" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.311680 0.389640 0.400880 1.000000" size="0.027500 0.025000 0.101500" name="geom_raptor1_left_ankle" type="box"/>
+                        <body pos="0.000000 0.000000 -0.187600" quat="1.000000 0.000000 0.000000 0.000000" name="body_raptor1_left_toe">
+                            <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_raptor1_left_toe" type="hinge"/>
+                            <geom conaffinity="0" contype="1" pos="0.000000 0.030000 -0.030000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.282320 0.329408 0.386472 1.000000" size="0.030000 0.060000 0.025000" name="geom_raptor1_left_toe" type="box"/>
                         </body>
                     </body>
                 </body>
@@ -1040,54 +1040,54 @@
     <worldbody>
         <body pos="1.000000 2.000000 1.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_root">
             <joint name="joint_goat1_root" type="free"/>
-            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.953847 0.000000 0.000000 0.300293" rgba="0.225300 0.284500 0.503150 1.000000" size="0.077400 0.083700 0.063000" name="geom_goat1_root" type="box"/>
-            <body pos="0.054000 0.048000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_spine0">
-                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_spine0" type="hinge"/>
-                <geom conaffinity="0" contype="1" pos="0.023750 -0.080000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.235300 0.294500 0.513150 1.000000" size="0.043750 0.131670 0.063500" name="geom_goat1_spine0" type="box"/>
-                <body pos="0.061200 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_spine1">
-                    <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_spine1" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="0.035550 -0.080000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.245300 0.304500 0.523150 1.000000" size="0.040550 0.132300 0.064000" name="geom_goat1_spine1" type="box"/>
-                    <body pos="0.073000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_spine2">
-                        <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_spine2" type="hinge"/>
-                        <geom conaffinity="0" contype="1" pos="0.035550 -0.079000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.255300 0.314500 0.533150 1.000000" size="0.045550 0.129600 0.064500" name="geom_goat1_spine2" type="box"/>
-                        <body pos="0.078000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_spine3">
-                            <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_spine3" type="hinge"/>
-                            <geom conaffinity="0" contype="1" pos="0.052650 -0.095000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.265300 0.324500 0.543150 1.000000" size="0.052650 0.146160 0.065000" name="geom_goat1_spine3" type="box"/>
-                            <body pos="0.108200 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_torso">
-                                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_torso" type="hinge"/>
-                                <geom conaffinity="0" contype="1" pos="0.119250 -0.090000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.275300 0.334500 0.553150 1.000000" size="0.119250 0.152685 0.075000" name="geom_goat1_torso" type="box"/>
-                                <body pos="0.216000 0.018000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_neck0">
-                                    <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_neck0" type="hinge"/>
-                                    <geom conaffinity="0" contype="1" pos="0.042300 -0.065000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.285300 0.344500 0.563150 1.000000" size="0.042300 0.090000 0.030000" name="geom_goat1_neck0" type="box"/>
-                                    <body pos="0.085300 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_neck1">
-                                        <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_neck1" type="hinge"/>
-                                        <geom conaffinity="0" contype="1" pos="0.042300 -0.045000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.295300 0.354500 0.573150 1.000000" size="0.042300 0.072000 0.030000" name="geom_goat1_neck1" type="box"/>
-                                        <body pos="0.085300 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_head">
-                                            <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_head" type="hinge"/>
-                                            <geom conaffinity="0" contype="1" pos="0.053100 -0.055000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.305300 0.364500 0.583150 1.000000" size="0.053100 0.104400 0.060000" name="geom_goat1_head" type="box"/>
-                                            <geom conaffinity="0" contype="1" pos="0.070310 0.095000 0.050000" quat="0.980067 0.000000 0.000000 0.198669" rgba="0.305300 0.364500 0.583150 1.000000" size="0.016500 0.060000 0.012500" name="geom_goat1_right_horn0" type="box"/>
-                                            <geom conaffinity="0" contype="1" pos="0.019100 0.195000 0.050000" quat="0.955337 0.000000 0.000000 0.295520" rgba="0.305300 0.364500 0.583150 1.000000" size="0.010000 0.050000 0.012500" name="geom_goat1_right_horn1" type="box"/>
-                                            <geom conaffinity="0" contype="1" pos="0.070310 0.095000 -0.050000" quat="0.980067 0.000000 0.000000 0.198669" rgba="0.305300 0.364500 0.583150 1.000000" size="0.016500 0.060000 0.012500" name="geom_goat1_left_horn0" type="box"/>
-                                            <geom conaffinity="0" contype="1" pos="0.019100 0.195000 -0.050000" quat="0.955337 0.000000 0.000000 0.295520" rgba="0.305300 0.364500 0.583150 1.000000" size="0.010000 0.050000 0.012500" name="geom_goat1_left_horn1" type="box"/>
+            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.000000" quat="0.953847 0.300293 0.000000 0.000000" rgba="0.225300 0.284500 0.503150 1.000000" size="0.063000 0.077400 0.083700" name="geom_goat1_root" type="box"/>
+            <body pos="0.000000 0.054000 0.048000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_spine0">
+                <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_spine0" type="hinge"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 0.023750 -0.080000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.235300 0.294500 0.513150 1.000000" size="0.063500 0.043750 0.131670" name="geom_goat1_spine0" type="box"/>
+                <body pos="0.000000 0.061200 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_spine1">
+                    <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_spine1" type="hinge"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 0.035550 -0.080000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.245300 0.304500 0.523150 1.000000" size="0.064000 0.040550 0.132300" name="geom_goat1_spine1" type="box"/>
+                    <body pos="0.000000 0.073000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_spine2">
+                        <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_spine2" type="hinge"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 0.035550 -0.079000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.255300 0.314500 0.533150 1.000000" size="0.064500 0.045550 0.129600" name="geom_goat1_spine2" type="box"/>
+                        <body pos="0.000000 0.078000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_spine3">
+                            <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_spine3" type="hinge"/>
+                            <geom conaffinity="0" contype="1" pos="0.000000 0.052650 -0.095000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.265300 0.324500 0.543150 1.000000" size="0.065000 0.052650 0.146160" name="geom_goat1_spine3" type="box"/>
+                            <body pos="0.000000 0.108200 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_torso">
+                                <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_torso" type="hinge"/>
+                                <geom conaffinity="0" contype="1" pos="0.000000 0.119250 -0.090000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.275300 0.334500 0.553150 1.000000" size="0.075000 0.119250 0.152685" name="geom_goat1_torso" type="box"/>
+                                <body pos="0.000000 0.216000 0.018000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_neck0">
+                                    <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_neck0" type="hinge"/>
+                                    <geom conaffinity="0" contype="1" pos="0.000000 0.042300 -0.065000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.285300 0.344500 0.563150 1.000000" size="0.030000 0.042300 0.090000" name="geom_goat1_neck0" type="box"/>
+                                    <body pos="0.000000 0.085300 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_neck1">
+                                        <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_neck1" type="hinge"/>
+                                        <geom conaffinity="0" contype="1" pos="0.000000 0.042300 -0.045000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.295300 0.354500 0.573150 1.000000" size="0.030000 0.042300 0.072000" name="geom_goat1_neck1" type="box"/>
+                                        <body pos="0.000000 0.085300 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_head">
+                                            <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_head" type="hinge"/>
+                                            <geom conaffinity="0" contype="1" pos="0.000000 0.053100 -0.055000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.305300 0.364500 0.583150 1.000000" size="0.060000 0.053100 0.104400" name="geom_goat1_head" type="box"/>
+                                            <geom conaffinity="0" contype="1" pos="0.050000 0.070310 0.095000" quat="0.980067 0.198669 0.000000 0.000000" rgba="0.305300 0.364500 0.583150 1.000000" size="0.012500 0.016500 0.060000" name="geom_goat1_right_horn0" type="box"/>
+                                            <geom conaffinity="0" contype="1" pos="0.050000 0.019100 0.195000" quat="0.955337 0.295520 0.000000 0.000000" rgba="0.305300 0.364500 0.583150 1.000000" size="0.012500 0.010000 0.050000" name="geom_goat1_right_horn1" type="box"/>
+                                            <geom conaffinity="0" contype="1" pos="-0.050000 0.070310 0.095000" quat="0.980067 0.198669 0.000000 0.000000" rgba="0.305300 0.364500 0.583150 1.000000" size="0.012500 0.016500 0.060000" name="geom_goat1_left_horn0" type="box"/>
+                                            <geom conaffinity="0" contype="1" pos="-0.050000 0.019100 0.195000" quat="0.955337 0.295520 0.000000 0.000000" rgba="0.305300 0.364500 0.583150 1.000000" size="0.012500 0.010000 0.050000" name="geom_goat1_left_horn1" type="box"/>
                                         </body>
                                     </body>
                                 </body>
-                                <body pos="0.156000 -0.048000 0.100000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_forearm">
-                                    <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_shoulder" type="hinge"/>
-                                    <geom conaffinity="0" contype="1" pos="0.000000 -0.114200 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.439600 0.537050 0.538600 1.000000" size="0.045630 0.140850 0.030000" name="geom_goat1_right_forearm" type="box"/>
-                                    <geom conaffinity="0" contype="1" pos="0.000000 -0.114200 -0.200000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.351680 0.429640 0.440880 1.000000" size="0.045630 0.140850 0.030000" name="geom_goat1_left_forearm" type="box"/>
-                                    <body pos="0.000000 -0.228400 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_arm">
-                                        <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="0.000000 179.908752" limited="true" name="joint_goat1_elbow" type="hinge"/>
-                                        <geom conaffinity="0" contype="1" pos="0.000000 -0.105400 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.409600 0.507050 0.508600 1.000000" size="0.032280 0.103900 0.027500" name="geom_goat1_right_arm" type="box"/>
-                                        <geom conaffinity="0" contype="1" pos="0.000000 -0.105400 -0.200000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.327680 0.405640 0.416880 1.000000" size="0.032280 0.103900 0.027500" name="geom_goat1_left_arm" type="box"/>
-                                        <body pos="0.000000 -0.210700 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_hand">
-                                            <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="0.000000 179.908752" limited="true" name="joint_goat1_wrist" type="hinge"/>
-                                            <geom conaffinity="0" contype="1" pos="0.000000 -0.053600 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.389600 0.487050 0.488600 1.000000" size="0.024750 0.066750 0.025000" name="geom_goat1_right_hand" type="box"/>
-                                            <geom conaffinity="0" contype="1" pos="0.000000 -0.053600 -0.200000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.311680 0.389640 0.400880 1.000000" size="0.024750 0.066750 0.025000" name="geom_goat1_left_hand" type="box"/>
-                                            <body pos="0.000000 -0.107300 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_finger">
-                                                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_finger" type="hinge"/>
-                                                <geom conaffinity="0" contype="1" pos="0.030000 -0.010000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.359600 0.457050 0.458600 1.000000" size="0.055000 0.025000 0.030000" name="geom_goat1_right_finger" type="box"/>
-                                                <geom conaffinity="0" contype="1" pos="0.030000 -0.010000 -0.200000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.282320 0.329408 0.386472 1.000000" size="0.055000 0.025000 0.030000" name="geom_goat1_left_finger" type="box"/>
+                                <body pos="0.100000 0.156000 -0.048000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_forearm">
+                                    <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_shoulder" type="hinge"/>
+                                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.114200" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.439600 0.537050 0.538600 1.000000" size="0.030000 0.045630 0.140850" name="geom_goat1_right_forearm" type="box"/>
+                                    <geom conaffinity="0" contype="1" pos="-0.200000 0.000000 -0.114200" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.351680 0.429640 0.440880 1.000000" size="0.030000 0.045630 0.140850" name="geom_goat1_left_forearm" type="box"/>
+                                    <body pos="0.000000 0.000000 -0.228400" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_arm">
+                                        <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0.000000 179.908752" limited="true" name="joint_goat1_elbow" type="hinge"/>
+                                        <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.105400" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.409600 0.507050 0.508600 1.000000" size="0.027500 0.032280 0.103900" name="geom_goat1_right_arm" type="box"/>
+                                        <geom conaffinity="0" contype="1" pos="-0.200000 0.000000 -0.105400" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.327680 0.405640 0.416880 1.000000" size="0.027500 0.032280 0.103900" name="geom_goat1_left_arm" type="box"/>
+                                        <body pos="0.000000 0.000000 -0.210700" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_hand">
+                                            <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0.000000 179.908752" limited="true" name="joint_goat1_wrist" type="hinge"/>
+                                            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.053600" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.389600 0.487050 0.488600 1.000000" size="0.025000 0.024750 0.066750" name="geom_goat1_right_hand" type="box"/>
+                                            <geom conaffinity="0" contype="1" pos="-0.200000 0.000000 -0.053600" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.311680 0.389640 0.400880 1.000000" size="0.025000 0.024750 0.066750" name="geom_goat1_left_hand" type="box"/>
+                                            <body pos="0.000000 0.000000 -0.107300" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_finger">
+                                                <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_finger" type="hinge"/>
+                                                <geom conaffinity="0" contype="1" pos="0.000000 0.030000 -0.010000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.359600 0.457050 0.458600 1.000000" size="0.030000 0.055000 0.025000" name="geom_goat1_right_finger" type="box"/>
+                                                <geom conaffinity="0" contype="1" pos="-0.200000 0.030000 -0.010000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.282320 0.329408 0.386472 1.000000" size="0.030000 0.055000 0.025000" name="geom_goat1_left_finger" type="box"/>
                                             </body>
                                         </body>
                                     </body>
@@ -1097,38 +1097,38 @@
                     </body>
                 </body>
             </body>
-            <body pos="-0.084000 -0.006000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_tail0">
-                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_goat1_tail0" type="hinge"/>
-                <geom pos="-0.053600 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.045000 0.017500 0.025000" name="geom_goat1_tail0" type="box"/>
-                <body pos="-0.090000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_tail1">
-                    <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_goat1_tail1" type="hinge"/>
-                    <geom pos="-0.053600 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.045000 0.017500 0.025000" name="geom_goat1_tail1" type="box"/>
-                    <body pos="-0.090000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_tail2">
-                        <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_goat1_tail2" type="hinge"/>
-                        <geom pos="-0.053600 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.045000 0.017500 0.025000" name="geom_goat1_tail2" type="box"/>
-                        <body pos="-0.090000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_tail3">
-                            <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_goat1_tail3" type="hinge"/>
-                            <geom pos="-0.053600 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.045000 0.017500 0.025000" name="geom_goat1_tail3" type="box"/>
+            <body pos="0.000000 -0.084000 -0.006000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_tail0">
+                <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_goat1_tail0" type="hinge"/>
+                <geom pos="0.000000 -0.053600 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.025000 0.045000 0.017500" name="geom_goat1_tail0" type="box"/>
+                <body pos="0.000000 -0.090000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_tail1">
+                    <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_goat1_tail1" type="hinge"/>
+                    <geom pos="0.000000 -0.053600 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.025000 0.045000 0.017500" name="geom_goat1_tail1" type="box"/>
+                    <body pos="0.000000 -0.090000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_tail2">
+                        <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_goat1_tail2" type="hinge"/>
+                        <geom pos="0.000000 -0.053600 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.025000 0.045000 0.017500" name="geom_goat1_tail2" type="box"/>
+                        <body pos="0.000000 -0.090000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_tail3">
+                            <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" limited="false" name="joint_goat1_tail3" type="hinge"/>
+                            <geom pos="0.000000 -0.053600 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.700000 0.500000 0.300000 1.000000" size="0.025000 0.045000 0.017500" name="geom_goat1_tail3" type="box"/>
                         </body>
                     </body>
                 </body>
             </body>
-            <body pos="-0.030000 -0.018000 0.050000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_thigh">
-                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_hip" type="hinge"/>
-                <geom conaffinity="0" contype="1" pos="0.000000 -0.114000 0.030000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.439600 0.537050 0.538600 1.000000" size="0.049725 0.136800 0.030000" name="geom_goat1_right_thigh" type="box"/>
-                <geom conaffinity="0" contype="1" pos="0.000000 -0.114000 -0.120000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.351680 0.429640 0.440880 1.000000" size="0.049725 0.136800 0.030000" name="geom_goat1_left_thigh" type="box"/>
-                <body pos="0.000000 -0.228100 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_leg">
-                    <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-179.908752 0.000000" limited="true" name="joint_goat1_knee" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="0.000000 -0.117200 0.030000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.409600 0.507050 0.508600 1.000000" size="0.033480 0.132750 0.027500" name="geom_goat1_right_leg" type="box"/>
-                    <geom conaffinity="0" contype="1" pos="0.000000 -0.117200 -0.120000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.327680 0.405640 0.416880 1.000000" size="0.033480 0.132750 0.027500" name="geom_goat1_left_leg" type="box"/>
-                    <body pos="0.000000 -0.234300 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_foot">
-                        <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="0.000000 179.908752" limited="true" name="joint_goat1_ankle" type="hinge"/>
-                        <geom conaffinity="0" contype="1" pos="0.000000 -0.066600 0.030000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.389600 0.487050 0.488600 1.000000" size="0.027500 0.077850 0.025000" name="geom_goat1_right_foot" type="box"/>
-                        <geom conaffinity="0" contype="1" pos="0.000000 -0.066600 -0.120000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.311680 0.389640 0.400880 1.000000" size="0.027500 0.077850 0.025000" name="geom_goat1_left_foot" type="box"/>
-                        <body pos="0.000000 -0.133200 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_toe">
-                            <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_toe" type="hinge"/>
-                            <geom conaffinity="0" contype="1" pos="0.030000 -0.010000 0.030000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.359600 0.457050 0.458600 1.000000" size="0.055000 0.025000 0.030000" name="geom_goat1_right_toe" type="box"/>
-                            <geom conaffinity="0" contype="1" pos="0.030000 -0.010000 -0.120000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.282320 0.329408 0.386472 1.000000" size="0.055000 0.025000 0.030000" name="geom_goat1_left_toe" type="box"/>
+            <body pos="0.050000 -0.030000 -0.018000" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_thigh">
+                <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_hip" type="hinge"/>
+                <geom conaffinity="0" contype="1" pos="0.030000 0.000000 -0.114000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.439600 0.537050 0.538600 1.000000" size="0.030000 0.049725 0.136800" name="geom_goat1_right_thigh" type="box"/>
+                <geom conaffinity="0" contype="1" pos="-0.120000 0.000000 -0.114000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.351680 0.429640 0.440880 1.000000" size="0.030000 0.049725 0.136800" name="geom_goat1_left_thigh" type="box"/>
+                <body pos="0.000000 0.000000 -0.228100" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_leg">
+                    <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-179.908752 0.000000" limited="true" name="joint_goat1_knee" type="hinge"/>
+                    <geom conaffinity="0" contype="1" pos="0.030000 0.000000 -0.117200" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.409600 0.507050 0.508600 1.000000" size="0.027500 0.033480 0.132750" name="geom_goat1_right_leg" type="box"/>
+                    <geom conaffinity="0" contype="1" pos="-0.120000 0.000000 -0.117200" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.327680 0.405640 0.416880 1.000000" size="0.027500 0.033480 0.132750" name="geom_goat1_left_leg" type="box"/>
+                    <body pos="0.000000 0.000000 -0.234300" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_foot">
+                        <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0.000000 179.908752" limited="true" name="joint_goat1_ankle" type="hinge"/>
+                        <geom conaffinity="0" contype="1" pos="0.030000 0.000000 -0.066600" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.389600 0.487050 0.488600 1.000000" size="0.025000 0.027500 0.077850" name="geom_goat1_right_foot" type="box"/>
+                        <geom conaffinity="0" contype="1" pos="-0.120000 0.000000 -0.066600" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.311680 0.389640 0.400880 1.000000" size="0.025000 0.027500 0.077850" name="geom_goat1_left_foot" type="box"/>
+                        <body pos="0.000000 0.000000 -0.133200" quat="1.000000 0.000000 0.000000 0.000000" name="body_goat1_toe">
+                            <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-89.954376 89.954376" limited="true" name="joint_goat1_toe" type="hinge"/>
+                            <geom conaffinity="0" contype="1" pos="0.030000 0.030000 -0.010000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.359600 0.457050 0.458600 1.000000" size="0.030000 0.055000 0.025000" name="geom_goat1_right_toe" type="box"/>
+                            <geom conaffinity="0" contype="1" pos="-0.120000 0.030000 -0.010000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.282320 0.329408 0.386472 1.000000" size="0.030000 0.055000 0.025000" name="geom_goat1_left_toe" type="box"/>
                         </body>
                     </body>
                 </body>
@@ -1244,32 +1244,32 @@
     <worldbody>
         <body pos="3.000000 2.000000 1.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_biped1_root">
             <joint name="joint_biped1_root" type="free"/>
-            <geom conaffinity="0" contype="1" pos="0.000000 0.020000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.225300 0.284500 0.503150 1.000000" size="0.060000 0.065000 0.139000" name="geom_biped1_root" type="box"/>
-            <body pos="0.000000 0.080000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_biped1_torso">
-                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="0.000000 28.647890" limited="true" name="joint_biped1_torso" type="ball"/>
-                <geom conaffinity="0" contype="1" pos="0.000000 0.170000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.225300 0.284500 0.503150 1.000000" size="0.065000 0.165000 0.145000" name="geom_biped1_torso" type="box"/>
+            <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.020000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.225300 0.284500 0.503150 1.000000" size="0.139000 0.060000 0.065000" name="geom_biped1_root" type="box"/>
+            <body pos="0.000000 0.000000 0.080000" quat="1.000000 0.000000 0.000000 0.000000" name="body_biped1_torso">
+                <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0.000000 28.647890" limited="true" name="joint_biped1_torso" type="ball"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 0.170000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.225300 0.284500 0.503150 1.000000" size="0.145000 0.065000 0.165000" name="geom_biped1_torso" type="box"/>
             </body>
-            <body pos="0.000000 0.000000 0.100000" quat="1.000000 0.000000 0.000000 0.000000" name="body_biped1_right_hip">
-                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="0.000000 68.754936" limited="true" name="joint_biped1_right_hip" type="ball"/>
-                <geom conaffinity="0" contype="1" pos="0.000000 -0.174500 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.439600 0.537050 0.538600 1.000000" size="0.045000 0.200000 0.042500" name="geom_biped1_right_hip" type="box"/>
-                <body pos="0.000000 -0.352000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_biped1_right_knee">
-                    <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-179.908752 0.000000" limited="true" name="joint_biped1_right_knee" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="0.000000 -0.183000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.409600 0.507050 0.508600 1.000000" size="0.035000 0.208000 0.032500" name="geom_biped1_right_knee" type="box"/>
-                    <body pos="0.000000 -0.391000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_biped1_right_ankle">
-                        <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="0.000000 57.295780" limited="true" name="joint_biped1_right_ankle" type="ball"/>
-                        <geom conaffinity="0" contype="1" pos="0.051800 -0.022400 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.389600 0.487050 0.488600 1.000000" size="0.088500 0.025000 0.042500" name="geom_biped1_right_ankle" type="box"/>
+            <body pos="0.100000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_biped1_right_hip">
+                <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0.000000 68.754936" limited="true" name="joint_biped1_right_hip" type="ball"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.174500" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.439600 0.537050 0.538600 1.000000" size="0.042500 0.045000 0.200000" name="geom_biped1_right_hip" type="box"/>
+                <body pos="0.000000 0.000000 -0.352000" quat="1.000000 0.000000 0.000000 0.000000" name="body_biped1_right_knee">
+                    <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-179.908752 0.000000" limited="true" name="joint_biped1_right_knee" type="hinge"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.183000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.409600 0.507050 0.508600 1.000000" size="0.032500 0.035000 0.208000" name="geom_biped1_right_knee" type="box"/>
+                    <body pos="0.000000 0.000000 -0.391000" quat="1.000000 0.000000 0.000000 0.000000" name="body_biped1_right_ankle">
+                        <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0.000000 57.295780" limited="true" name="joint_biped1_right_ankle" type="ball"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 0.051800 -0.022400" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.389600 0.487050 0.488600 1.000000" size="0.042500 0.088500 0.025000" name="geom_biped1_right_ankle" type="box"/>
                     </body>
                 </body>
             </body>
-            <body pos="0.000000 0.000000 -0.100000" quat="1.000000 0.000000 0.000000 0.000000" name="body_biped1_left_hip">
-                <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="0.000000 68.754936" limited="true" name="joint_biped1_left_hip" type="ball"/>
-                <geom conaffinity="0" contype="1" pos="0.000000 -0.174500 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.351680 0.429640 0.440880 1.000000" size="0.045000 0.200000 0.042500" name="geom_biped1_left_hip" type="box"/>
-                <body pos="0.000000 -0.352000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_biped1_left_knee">
-                    <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="-179.908752 0.000000" limited="true" name="joint_biped1_left_knee" type="hinge"/>
-                    <geom conaffinity="0" contype="1" pos="0.000000 -0.183000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.327680 0.405640 0.416880 1.000000" size="0.035000 0.208000 0.032500" name="geom_biped1_left_knee" type="box"/>
-                    <body pos="0.000000 -0.391000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_biped1_left_ankle">
-                        <joint damping="0.300000" stiffness="0.500000" axis="0.000000 0.000000 1.000000" pos="0.000000 0.000000 0.000000" range="0.000000 57.295780" limited="true" name="joint_biped1_left_ankle" type="ball"/>
-                        <geom conaffinity="0" contype="1" pos="0.051800 -0.022400 0.000000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.311680 0.389640 0.400880 1.000000" size="0.088500 0.025000 0.042500" name="geom_biped1_left_ankle" type="box"/>
+            <body pos="-0.100000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000" name="body_biped1_left_hip">
+                <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0.000000 68.754936" limited="true" name="joint_biped1_left_hip" type="ball"/>
+                <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.174500" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.351680 0.429640 0.440880 1.000000" size="0.042500 0.045000 0.200000" name="geom_biped1_left_hip" type="box"/>
+                <body pos="0.000000 0.000000 -0.352000" quat="1.000000 0.000000 0.000000 0.000000" name="body_biped1_left_knee">
+                    <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="-179.908752 0.000000" limited="true" name="joint_biped1_left_knee" type="hinge"/>
+                    <geom conaffinity="0" contype="1" pos="0.000000 0.000000 -0.183000" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.327680 0.405640 0.416880 1.000000" size="0.032500 0.035000 0.208000" name="geom_biped1_left_knee" type="box"/>
+                    <body pos="0.000000 0.000000 -0.391000" quat="1.000000 0.000000 0.000000 0.000000" name="body_biped1_left_ankle">
+                        <joint damping="0.300000" stiffness="0.500000" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0.000000 57.295780" limited="true" name="joint_biped1_left_ankle" type="ball"/>
+                        <geom conaffinity="0" contype="1" pos="0.000000 0.051800 -0.022400" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.311680 0.389640 0.400880 1.000000" size="0.042500 0.088500 0.025000" name="geom_biped1_left_ankle" type="box"/>
                     </body>
                 </body>
             </body>

@@ -51,7 +51,8 @@ namespace mujoco {
 
         public :
 
-        TMjcKinTreeAgentWrapper( agent::TAgentKinTree* kinTreeAgentPtr );
+        TMjcKinTreeAgentWrapper( agent::TAgentKinTree* kinTreeAgentPtr,
+                                 const std::string& workingDir );
         ~TMjcKinTreeAgentWrapper();
 
         void setMjcModel( mjModel* mjcModelPtr );
@@ -62,13 +63,16 @@ namespace mujoco {
     };
 
 
-    extern "C" TKinTreeAgentWrapper* agent_createFromAbstract( agent::TAgentKinTree* kinTreeAgentPtr );
+    extern "C" TKinTreeAgentWrapper* agent_createFromAbstract( agent::TAgentKinTree* kinTreeAgentPtr,
+                                                               const std::string& workingDir );
 
     extern "C" TKinTreeAgentWrapper* agent_createFromFile( const std::string& name,
-                                                           const std::string& filename );
+                                                           const std::string& filename,
+                                                           const std::string& workingDir );
 
     extern "C" TKinTreeAgentWrapper* agent_createFromId( const std::string& name,
                                                          const std::string& format,
-                                                         const std::string& id );
+                                                         const std::string& id,
+                                                         const std::string& workingDir );
 
 }}

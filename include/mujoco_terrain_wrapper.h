@@ -66,7 +66,8 @@ namespace mujoco {
 
         public :
 
-        TMjcTerrainGenWrapper( terrain::TITerrainGenerator* terrainGenPtr );
+        TMjcTerrainGenWrapper( terrain::TITerrainGenerator* terrainGenPtr,
+                               const std::string& workingDir );
         ~TMjcTerrainGenWrapper();
 
         void setMjcModel( mjModel* mjcModelPtr );
@@ -76,8 +77,10 @@ namespace mujoco {
     };
 
 
-    extern "C" TTerrainGenWrapper* terrain_createFromAbstract( terrain::TITerrainGenerator* terrainGenPtr );
+    extern "C" TTerrainGenWrapper* terrain_createFromAbstract( terrain::TITerrainGenerator* terrainGenPtr,
+                                                               const std::string& workingDir );
 
     extern "C" TTerrainGenWrapper* terrain_createFromParams( const std::string& name,
-                                                             const TGenericParams& params );
+                                                             const TGenericParams& params,
+                                                             const std::string& workingDir );
 }}

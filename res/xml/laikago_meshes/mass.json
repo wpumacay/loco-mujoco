@@ -1,9 +1,0 @@
-{ 
-  "chassis"                 : 13.715,
-  "chassis_vhacd_mod"       : 13.715,
-  "hip_motor"               : 1.095,
-  "hip_motor_mirror"        : 0.241,
-  "upper_leg_right_vhacd"   : 1.527,
-  "upper_leg_left_vhacd"    : 1.527,
-  "lower_leg_3"             : 0.241
-}

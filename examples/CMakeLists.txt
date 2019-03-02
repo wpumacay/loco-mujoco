@@ -67,11 +67,11 @@ include_directories( ${GLEW_INCLUDE_DIRS} )
 ##                        tysocMjcMujocoViz )
 ## 
 
-# visualizer
-add_executable( test_visualizer_only
-                test_visualizer_only.cpp )
-target_link_libraries( test_visualizer_only
-                       tysocCore )
+## # visualizer
+## add_executable( test_visualizer_only
+##                 test_visualizer_only.cpp )
+## target_link_libraries( test_visualizer_only
+##                        tysocCore )
 
 add_executable( test_runtime
                 test_runtime.cpp )

@@ -6,8 +6,9 @@ namespace tysoc {
 namespace mujoco {
 
 
-    TMjcTerrainGenWrapper::TMjcTerrainGenWrapper( terrain::TITerrainGenerator* terrainGenPtr )
-        : TTerrainGenWrapper( terrainGenPtr )
+    TMjcTerrainGenWrapper::TMjcTerrainGenWrapper( terrain::TITerrainGenerator* terrainGenPtr,
+                                                  const std::string& workingDir )
+        : TTerrainGenWrapper( terrainGenPtr, workingDir )
     {
         m_mjcModelPtr   = NULL;
         m_mjcDataPtr    = NULL;
@@ -89,7 +90,7 @@ namespace mujoco {
         if ( !m_mjcfTargetResourcesPtr )
         {
             std::cout << "ERROR> mjc-sim object must pass a reference of the"
-                      << " target resources to this agent" << std::endl;
+                      << " target resources to this terrain generator" << std::endl;
             return;
         }
 
@@ -248,13 +249,15 @@ namespace mujoco {
     }
 
 
-    extern "C" TTerrainGenWrapper* terrain_createFromAbstract( terrain::TITerrainGenerator* terrainGenPtr )
+    extern "C" TTerrainGenWrapper* terrain_createFromAbstract( terrain::TITerrainGenerator* terrainGenPtr,
+                                                               const std::string& workingDir )
     {
-        return new TMjcTerrainGenWrapper( terrainGenPtr );
+        return new TMjcTerrainGenWrapper( terrainGenPtr, workingDir );
     }
 
     extern "C" TTerrainGenWrapper* terrain_createFromParams( const std::string& name,
-                                                             const TGenericParams& params )
+                                                             const TGenericParams& params,
+                                                             const std::string& workingDir )
     {
         return NULL;
     }

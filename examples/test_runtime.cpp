@@ -1,13 +1,9 @@
 
+// Includes from core functionality
 #include <runtime.h>
-
-#ifndef TYSOC_DLLIBS_PATH
-    #define TYSOC_DLLIBS_PATH "../" // pointing to the build/ directory
-#endif
-
-#ifndef TYSOCMJC_RESOURCES_PATH
-    #define TYSOCMJC_RESOURCES_PATH "../../res/"
-#endif
+#include <model_loader.h>
+// Includes from mujoco functionality
+#include <mujoco_common.h>
 
 static std::string VISUALIZER_TYPE = "custom";// custom visualizer using cat1 engine
 
@@ -27,20 +23,15 @@ int main( int argc, const char** argv )
         }
     }
 
+    auto _modelLoader = tysoc::TModelLoader::Create();
+    auto _modelData = _modelLoader->getMjcfModel( "humanoid" );
+    auto _agent = tysoc::agent::createKinTreeAgent( "agent0", { 0.0f, 0.0f, 1.0f }, _modelData );
+
     auto _scenario = new tysoc::TScenario();
-
-    auto _modelpath = std::string( TYSOCMJC_RESOURCES_PATH ) + std::string( "templates/urdf/double_pendulum.urdf" );
-    auto _modeldata = tysoc::urdf::loadGenericModel( _modelpath );
-    auto _agent = tysoc::agent::createKinTreeAgent( "agent0", { 0.0f, 0.0f, 1.0f }, _modeldata );
-
     _scenario->addAgent( _agent );
 
-    auto _simLibPath = std::string( TYSOC_DLLIBS_PATH ) + std::string( "libtysocMujoco.so");
-    auto _vizLibPath = std::string( TYSOC_DLLIBS_PATH ) + 
-                            ( ( VISUALIZER_TYPE == "mujoco") ? std::string( "tysocMujocoViz/libtysocMujocoViz.so" ) :
-                                                               std::string( "tysocCustomViz/libtysocCustomViz.so" ) );
-
-    auto _runtime = new tysoc::TRuntime( _simLibPath, _vizLibPath );
+    auto _runtime = new tysoc::TRuntime( tysoc::config::physics::MUJOCO, 
+                                         tysoc::config::rendering::GLVIZ );
 
     auto _simulation = _runtime->createSimulation( _scenario );
     _simulation->initialize();

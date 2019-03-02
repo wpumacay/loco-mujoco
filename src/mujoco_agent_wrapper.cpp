@@ -4,8 +4,9 @@
 namespace tysoc {
 namespace mujoco {
 
-    TMjcKinTreeAgentWrapper::TMjcKinTreeAgentWrapper( agent::TAgentKinTree* kinTreeAgentPtr )
-        : TKinTreeAgentWrapper( kinTreeAgentPtr )
+    TMjcKinTreeAgentWrapper::TMjcKinTreeAgentWrapper( agent::TAgentKinTree* kinTreeAgentPtr,
+                                                      const std::string& workingDir )
+        : TKinTreeAgentWrapper( kinTreeAgentPtr, workingDir )
     {
         m_mjcModelPtr   = NULL;
         m_mjcDataPtr    = NULL;
@@ -724,20 +725,23 @@ namespace mujoco {
         return _res;
     }
 
-    extern "C" TKinTreeAgentWrapper* agent_createFromAbstract( agent::TAgentKinTree* kinTreeAgentPtr )
+    extern "C" TKinTreeAgentWrapper* agent_createFromAbstract( agent::TAgentKinTree* kinTreeAgentPtr,
+                                                               const std::string& workingDir )
     {
-        return new TMjcKinTreeAgentWrapper( kinTreeAgentPtr );
+        return new TMjcKinTreeAgentWrapper( kinTreeAgentPtr, workingDir );
     }
 
     extern "C" TKinTreeAgentWrapper* agent_createFromFile( const std::string& name,
-                                                           const std::string& filename )
+                                                           const std::string& filename,
+                                                           const std::string& workingDir )
     {
         return NULL;
     }
 
     extern "C" TKinTreeAgentWrapper* agent_createFromId( const std::string& name,
                                                          const std::string& format,
-                                                         const std::string& id )
+                                                         const std::string& id,
+                                                         const std::string& workingDir )
     {
         return NULL;
     }

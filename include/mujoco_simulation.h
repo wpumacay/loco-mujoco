@@ -40,7 +40,8 @@ namespace mujoco {
 
         public :
 
-        TMjcSimulation( TScenario* scenarioPtr );
+        TMjcSimulation( TScenario* scenarioPtr,
+                        const std::string& workingDir );
         ~TMjcSimulation();
 
         mjModel* getMjcModel() { return m_mjcModelPtr; }
@@ -50,6 +51,7 @@ namespace mujoco {
         mjvOption* getMjcOption() { return m_mjcOptionPtr; }
     };
 
-    extern "C" TISimulation* simulation_create( TScenario* scenarioPtr );
+    extern "C" TISimulation* simulation_create( TScenario* scenarioPtr,
+                                                const std::string& workingDir );
     
 }}

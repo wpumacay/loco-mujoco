@@ -17,9 +17,8 @@
 #include <cmath>
 #include <random>
 
-#ifndef TYSOCMJC_RESOURCES_PATH
-    #define TYSOCMJC_RESOURCES_PATH "../res"
-#endif
+// and some configurations
+#include <mujoco_config.h>
 
 namespace tysoc {
 namespace mujoco {

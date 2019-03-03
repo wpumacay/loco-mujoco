@@ -9,4 +9,6 @@
 
 build/
 .vscode/
-_legacy
+_legacy/
+dist/
+pytysoc.egg-info/

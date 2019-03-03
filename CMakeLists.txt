@@ -12,15 +12,15 @@ add_subdirectory( tysoc )
 
 # Definitions used for development. Python bindings do not use these definitions, but ...
 # instead we load the paths dynamically according to the user configuration/installation.
-add_definitions( -DTYSOC_MUJOCO_LIB="${CMAKE_BINARY_DIR}/libtysocMujoco.so" )
-add_definitions( -DTYSOC_MUJOCO_VIZ_LIB="${CMAKE_BINARY_DIR}/mujocoviz/libtysocMujocoViz.so" )
+add_definitions( -DTYSOC_MUJOCO_LIB="${CMAKE_BINARY_DIR}/libtysocPhysicsMujoco.so" )
+add_definitions( -DTYSOC_MUJOCO_VIZ_LIB="${CMAKE_BINARY_DIR}/mujocoviz/libtysocRenderingMjcViz.so" )
 # repeat definitions from core library, as it seems they are not propagated up
 add_definitions( -DTYSOCCORE_RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/tysoc/res/" )
 add_definitions( -DTYSOCCORE_WORKING_DIR_PATH="${CMAKE_CURRENT_SOURCE_DIR}/tysoc/res/xml/" )
 add_definitions( -DTYSOCCORE_MJCF_TEMPLATES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/tysoc/res/templates/mjcf/" )
 add_definitions( -DTYSOCCORE_URDF_TEMPLATES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/tysoc/res/templates/urdf/" )
 add_definitions( -DTYSOCCORE_RLSIM_TEMPLATES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/tysoc/res/templates/rlsim/" )
-add_definitions( -DTYSOCCORE_GLVIZ_LIB="${CMAKE_BINARY_DIR}/tysoc/glviz/libtysocGlviz.so" )
+add_definitions( -DTYSOCCORE_GLVIZ_LIB="${CMAKE_BINARY_DIR}/tysoc/glviz/libtysocRenderingGlviz.so" )
 
 # grab all the sources for compilation
 file( GLOB_RECURSE TYSOCMJC_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" )
@@ -42,9 +42,9 @@ add_definitions( -DMUJOCO_LICENSE_FILE="${MUJOCO_LICENSE_ABSOLUTE_PATH}" )
 message( "MuJoCo license path: ${MUJOCO_LICENSE_ABSOLUTE_PATH}" )
 message( "Sources: ${TYSOCMJC_SOURCES}" )
 
-add_library( tysocMujoco SHARED
+add_library( tysocPhysicsMujoco SHARED
              ${TYSOCMJC_SOURCES} )
-target_link_libraries( tysocMujoco
+target_link_libraries( tysocPhysicsMujoco
                        tysocCore
                        mujoco200nogl )
 

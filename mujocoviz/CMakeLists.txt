@@ -21,9 +21,9 @@ include_directories( "${CMAKE_SOURCE_DIR}/tysoc/ext/tinyxml2" )
 include_directories( "${CMAKE_SOURCE_DIR}/tysoc/ext/imgui" )
 include_directories( "${CMAKE_SOURCE_DIR}/tysoc/ext/imgui/examples" )
 
-add_library( tysocMujocoViz SHARED
+add_library( tysocRenderingMjcViz SHARED
              ${TYSOC_MUJOCO_VIZ_SOURCES} )
-target_link_libraries( tysocMujocoViz
+target_link_libraries( tysocRenderingMjcViz
                        tysocCore
                        imgui_gl2
                        mujoco200

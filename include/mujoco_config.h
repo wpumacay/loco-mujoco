@@ -4,11 +4,11 @@
 #include <string>
 
 #ifndef TYSOC_MUJOCO_LIB
-    #define TYSOC_MUJOCO_LIB "./libtysocGlviz.so"
+    #define TYSOC_MUJOCO_LIB "./libtysocPhysicsMujoco.so"
 #endif
 
 #ifndef TYSOC_MUJOCO_VIZ_LIB
-    #define TYSOC_MUJOCO_VIZ_LIB "./mujocoviz/libtysocMujocoViz.so"
+    #define TYSOC_MUJOCO_VIZ_LIB "./mujocoviz/libtysocRenderingMjcViz.so"
 #endif
 
 namespace tysoc {

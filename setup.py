@@ -63,14 +63,15 @@ setup(
     author_email            = 'wpumacay@gmail.com',
     url                     = 'https://github.com/wpumacay/tysocCore',
     keywords                = 'locomotion control simulation',
-    packages                = ['pytysoc', 'pytysoc.common'],
+    packages                = ['pytysoc', 'pytysoc.common', 'pytysoc.runtime'],
     zip_safe                = False,
     install_requires        = [
                                 'numpy',
                                 'setuptools'
                               ],
     package_dir             = { 'pytysoc': 'tysoc/pytysoc',
-                                'pytysoc.common': 'tysoc/pytysoc/common' },
+                                'pytysoc.common': 'tysoc/pytysoc/common',
+                                'pytysoc.runtime': 'tysoc/pytysoc/runtime' },
     package_data            = {
                                 'pytysoc': [ '../res/templates/mjcf/*.xml',
                                              '../res/templates/urdf/*.urdf',

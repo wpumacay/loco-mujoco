@@ -21,9 +21,11 @@ namespace mujoco {
 
         m_runtimeType = "mujoco";
 
-        std::string _emptyModelPath( TYSOCCORE_RESOURCES_PATH );
-        _emptyModelPath += "xml/empty.xml";
+        std::string _emptyModelPath;
+        _emptyModelPath += m_workingDir;
+        _emptyModelPath += "empty.xml";
 
+        std::cout << "LOG> empty path: " << _emptyModelPath << std::endl;
         m_mjcfResourcesPtr = mjcf::loadGenericModel( _emptyModelPath );
 
         if ( !m_scenarioPtr )
@@ -91,8 +93,10 @@ namespace mujoco {
             m_terrainGenWrappers[q]->initialize();// Injects terrain resources into m_mjcfResourcesPtr
 
         /* Inject resources into the workspace xml *****************************/
-        std::string _workspaceModelPath( TYSOCCORE_WORKING_DIR_PATH );
+        std::string _workspaceModelPath;
+        _workspaceModelPath += m_workingDir;
         _workspaceModelPath += "workspace.xml";
+        std::cout << "LOG> working path: " << _workspaceModelPath << std::endl;
         mjcf::saveGenericModel( m_mjcfResourcesPtr, _workspaceModelPath );
 
         /* Initialize mujoco ***************************************************/

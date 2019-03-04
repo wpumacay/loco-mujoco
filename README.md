@@ -1,5 +1,7 @@
 # tysocMjc :A robot locomotion framework, with mujoco as physics backend.
 
+[![Build Status](https://travis-ci.com/wpumacay/tysocMjc.svg?branch=master)](https://travis-ci.com/wpumacay/tysocMjc)
+
 ![intro-1](_imgs/gif_tysocMjc_progress_1_1.gif) ![intro-2](_imgs/gif_tysocMjc_progress_1_2.gif) ![intro-3](_imgs/gif_tysocMjc_progress_1_3.gif)
 
 ![intro-3](_imgs/img_tysocmjc_terrains.png)

@@ -9,10 +9,9 @@ matrix:
 before_install:
   - sudo apt-get install make cmake pkg-config
   - sudo apt-get install libassimp-dev libglfw3-dev libglew-dev
-  - |
-    mkdir -p ~/.mujoco && cd ~/.mujoco
-    wget https://www.roboti.us/download/mujoco200_linux.zip
-    unzip mujoco200_linux.zip && rm mujoco200_linux.zip
+  - mkdir -p ~/.mujoco
+  - wget https://www.roboti.us/download/mujoco200_linux.zip
+  - unzip mujoco200_linux.zip -d ~/.mujoco/
   - |
     if [ -n "$PYTHON" ]; then
       pip install --user --upgrade pip virtualenv

@@ -215,9 +215,6 @@ namespace mujoco {
                 _kinBodySensor->linAcceleration = { _readings[3], _readings[4], _readings[5] };
             }
         }
-
-        // and then request an update of the kintree
-        m_kinTreeAgentPtr->update( 0 );
     }
 
     void TMjcKinTreeAgentWrapper::_createMjcResourcesFromKinTree()

@@ -19,8 +19,8 @@ def buildBindings( sourceDir, buildDir, cmakeArgs, buildArgs, env ):
 
 class CMakeExtension( Extension ) :
 
-    def __init__( self, name, sourceDir ) :
-        super( CMakeExtension, self ).__init__( name, sources=[] )
+    def __init__( self, name, sourceDir, sources=[] ) :
+        super( CMakeExtension, self ).__init__( name, sources=sources )
         self.sourceDir = os.path.abspath( sourceDir )
 
 class BuildCommand( BaseBuildExtCommand ) :
@@ -56,7 +56,8 @@ class BuildCommand( BaseBuildExtCommand ) :
         buildBindings( _sourceDir, _buildDir, _cmakeArgs, _buildArgs, _env )
 
 setup(
-    name                    = 'pytysoc',
+    name                    = 'tysoc-mjc',
+    version                 = '0.0.1',
     description             = 'Core functionality for a backend-agnostic locomotion framework',
     author                  = 'Wilbert Santos Pumacay Huallpa',
     license                 = 'MIT License',
@@ -89,7 +90,8 @@ setup(
                                              '../res/xml/sawyer_meshes/*.obj' ]
                               },
     ext_modules             = [
-                                CMakeExtension( 'tysoc_bindings', '.' )
+                                CMakeExtension( 'tysoc_bindings', '.', 
+                                                sources = ['src/mujoco_utils.cpp'] )
                               ],
     cmdclass                = {
                                 'build_ext': BuildCommand

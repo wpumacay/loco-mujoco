@@ -77,3 +77,8 @@ add_executable( test_runtime
                 test_runtime.cpp )
 target_link_libraries( test_runtime
                        tysocCore )
+
+add_executable( test_com_forces
+                test_com_forces.cpp )
+target_link_libraries( test_com_forces
+                       tysocCore )

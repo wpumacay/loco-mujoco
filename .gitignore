@@ -12,3 +12,4 @@ build/
 _legacy/
 dist/
 pytysoc.egg-info/
+tysoc_mjc.egg-info/

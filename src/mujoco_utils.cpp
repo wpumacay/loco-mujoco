@@ -323,4 +323,28 @@ namespace utils {
         }
     }
 
+    void getCOMForces( mjModel* pModel,
+                       mjData* pData,
+                       const std::string& name,
+                       TVec3& forces,
+                       TVec3& torques )
+    {
+        auto _id = mj_name2id( pModel, mjOBJ_BODY, name.c_str() );
+
+        if ( _id != -1 )
+        {
+            forces.x = pData->cfrc_ext[ 6 * _id + 0 ];
+            forces.y = pData->cfrc_ext[ 6 * _id + 1 ];
+            forces.z = pData->cfrc_ext[ 6 * _id + 2 ];
+
+            torques.x = pData->cfrc_ext[ 6 * _id + 3 ];
+            torques.y = pData->cfrc_ext[ 6 * _id + 4 ];
+            torques.z = pData->cfrc_ext[ 6 * _id + 5 ];
+        }
+        else
+        {
+            std::cout << "body: " << name << " not found" << std::endl;
+        }
+    }
+
 }}}

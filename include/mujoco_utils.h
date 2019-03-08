@@ -69,4 +69,10 @@ namespace utils {
                     const std::string& name,
                     float radius );
 
+    void getCOMForces( mjModel* pModel,
+                       mjData* pData,
+                       const std::string& name,
+                       TVec3& forces,
+                       TVec3& torques );
+
 }}}

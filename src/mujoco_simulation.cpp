@@ -146,6 +146,14 @@ namespace mujoco {
             _mujocoAgentWrapper->setMjcScene( m_mjcScenePtr );
         }
 
+        std::cout << "nq: " << m_mjcModelPtr->nq << std::endl;
+        std::cout << "nv: " << m_mjcModelPtr->nv << std::endl;
+        std::cout << "nu: " << m_mjcModelPtr->nu << std::endl;
+        std::cout << "nbody: " << m_mjcModelPtr->nbody << std::endl;
+        std::cout << "njnt: " << m_mjcModelPtr->njnt << std::endl;
+        std::cout << "ngeom: " << m_mjcModelPtr->ngeom << std::endl;
+        std::cout << "nsensor: " << m_mjcModelPtr->nsensor << std::endl;
+
         return true;
     }
 

@@ -213,6 +213,13 @@ namespace mujoco {
                 // and store it into the sensor for later usage
                 _kinBodySensor->linVelocity     = { _readings[0], _readings[1], _readings[2] };
                 _kinBodySensor->linAcceleration = { _readings[3], _readings[4], _readings[5] };
+
+                // grab the forces and torques from mjData
+                utils::getCOMForces( m_mjcModelPtr,
+                                     m_mjcDataPtr,
+                                     _kinBodySensor->bodyName,
+                                     _kinBodySensor->comForces,
+                                     _kinBodySensor->comTorques );
             }
         }
     }
@@ -420,6 +427,10 @@ namespace mujoco {
                 // @GENERIC
                 if ( _geoms[i]->materialName != "" )
                     _geomElmPtr->setAttributeString( "material", _geoms[i]->materialName );
+                if ( _geoms[i]->friction.ndim != 0 )
+                    _geomElmPtr->setAttributeArrayFloat( "friction", _geoms[i]->friction );
+                if ( _geoms[i]->density > 0 )
+                    _geomElmPtr->setAttributeFloat( "density", _geoms[i]->density );
                 // @GENERIC
 
                 TVec4 _rgba = { _geoms[i]->material.diffuse.x,

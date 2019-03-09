@@ -5,7 +5,7 @@ import pytysoc
 
 import numpy as np
 
-_agent = tysoc_bindings.PyCoreAgent( 'agent0', [0,0,-2], 'mjcf', 'ant' )
+_agent = tysoc_bindings.PyCoreAgent( 'agent0', [0,0,2], 'mjcf', 'ant' )
 _sensor = tysoc_bindings.PySensorIntrinsics( 'sensor0', _agent )
 
 _scenario = tysoc_bindings.PyScenario()

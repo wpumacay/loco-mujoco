@@ -5,7 +5,7 @@ import pytysoc
 
 import numpy as np
 
-_agent = tysoc_bindings.PyCoreAgent( 'agent0', [0,0,2], 'mjcf', 'ant' )
+_agent = tysoc_bindings.PyCoreAgent( 'agent0', [0,0,0.75], 'mjcf', 'ant' )
 
 _scenario = tysoc_bindings.PyScenario()
 _scenario.addAgent( _agent )
@@ -23,9 +23,16 @@ _visualizer.initialize()
 _actionDim = _agent.getActionDim()
 print( 'actionSpaceDim: ', _actionDim )
 
-while True :
+while _visualizer.isActive() :
+
+    ## _agent.setActions( -1.0 + 2.0 * np.random.random( _actionDim ) )
+    _obsMap = _simulation.getDictOfVectorizedSimData()
+    
+    _state = np.concatenate( [ _obsMap['qpos'].flat[2:],
+                               _obsMap['qvel'].flat,
+                               np.clip( _obsMap['comForcesExt'], -1, 1 ).flat ] )
+    print( 'state.shape: ', _state.shape )
+    print( 'state: ', _state )
 
     _simulation.step()
     _visualizer.render()
-
-    _agent.setActions( -1.0 + 2.0 * np.random.random( _actionDim ) )

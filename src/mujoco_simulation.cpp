@@ -221,6 +221,39 @@ namespace mujoco {
         }
     }
 
+    std::map< std::string, std::vector<TScalar> > TMjcSimulation::_getVectorizedInfoInternal()
+    {
+        if ( !m_mjcModelPtr || !m_mjcDataPtr )
+            return std::map< std::string, std::vector<TScalar> >();
+
+        std::vector<TScalar> _qpos;
+        for ( size_t i = 0; i < m_mjcModelPtr->nq; i++ )
+            _qpos.push_back( (TScalar) m_mjcDataPtr->qpos[i] );
+
+        std::vector<TScalar> _qvel;
+        for ( size_t i = 0; i < m_mjcModelPtr->nv; i++ )
+            _qvel.push_back( (TScalar) m_mjcDataPtr->qvel[i] );
+
+        std::vector<TScalar> _comForcesExt;
+        for ( size_t i = 0; i < m_mjcModelPtr->nbody; i++ )
+        {
+            _comForcesExt.push_back( (TScalar) m_mjcDataPtr->cfrc_ext[6 * i + 0] );
+            _comForcesExt.push_back( (TScalar) m_mjcDataPtr->cfrc_ext[6 * i + 1] );
+            _comForcesExt.push_back( (TScalar) m_mjcDataPtr->cfrc_ext[6 * i + 2] );
+            _comForcesExt.push_back( (TScalar) m_mjcDataPtr->cfrc_ext[6 * i + 3] );
+            _comForcesExt.push_back( (TScalar) m_mjcDataPtr->cfrc_ext[6 * i + 4] );
+            _comForcesExt.push_back( (TScalar) m_mjcDataPtr->cfrc_ext[6 * i + 5] );
+        }
+
+        std::map< std::string, std::vector<float> > _data;
+
+        _data["qpos"] = _qpos;
+        _data["qvel"] = _qvel;
+        _data["comForcesExt"] = _comForcesExt;
+
+        return _data;
+    }
+
     void* TMjcSimulation::_constructPayloadInternal( const std::string& type )
     {
         if ( type == "mjModel" )

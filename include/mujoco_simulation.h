@@ -36,6 +36,7 @@ namespace mujoco {
         void _simStepInternal() override;
         void _postStepInternal() override;
         void _resetInternal() override;
+        std::map< std::string, std::vector<TScalar> > _getVectorizedInfoInternal() override;
         void* _constructPayloadInternal( const std::string& type ) override;
 
         public :

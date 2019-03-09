@@ -38,8 +38,7 @@ int main( int argc, const char** argv )
     auto _simulation = _runtime->createSimulation( _scenario );
     _simulation->initialize();
 
-    auto _visualizer = _runtime->createVisualizer();
-    _visualizer->setScenario( _simulation->scenario() );
+    auto _visualizer = _runtime->createVisualizer( _scenario );
     _visualizer->initialize();
 
     while ( _visualizer->isActive() )
@@ -48,22 +47,33 @@ int main( int argc, const char** argv )
 
         _visualizer->update();
 
-        auto _measurement = ( tysoc::sensor::TAgentIntrinsicsSensorMeasurement* ) _sensor->getSensorMeasurement();
-        auto _forces = _measurement->comForces;
-        auto _torques = _measurement->comTorques;
+//        auto _measurement = ( tysoc::sensor::TAgentIntrinsicsSensorMeasurement* ) _sensor->getSensorMeasurement();
+//        auto _forces = _measurement->comForces;
+//        auto _torques = _measurement->comTorques;
+//
+//        std::cout << "numforces: " << _forces.size() << std::endl;
+//        std::cout << "numtorques: " << _torques.size() << std::endl;
+//
+//        for ( size_t i = 0; i < _forces.size(); i++ )
+//        {
+//            std::cout << "force(" << i << "): " << tysoc::TVec3::toString( _forces[i] ) << std::endl;
+//        }
+//
+//        for ( size_t i = 0; i < _torques.size(); i++ )
+//        {
+//            std::cout << "torques(" << i << "): " << tysoc::TVec3::toString( _torques[i] ) << std::endl;
+//        }
 
-        std::cout << "numforces: " << _forces.size() << std::endl;
-        std::cout << "numtorques: " << _torques.size() << std::endl;
 
-        for ( size_t i = 0; i < _forces.size(); i++ )
-        {
-            std::cout << "force(" << i << "): " << tysoc::TVec3::toString( _forces[i] ) << std::endl;
-        }
+        auto _simVectDataDict = _simulation->getVectorizedInfo();
+        auto _comForcesExt = _simVectDataDict["comForcesExt"];
+        std::cout << "comForcesExt: [ ";
 
-        for ( size_t i = 0; i < _torques.size(); i++ )
-        {
-            std::cout << "torques(" << i << "): " << tysoc::TVec3::toString( _torques[i] ) << std::endl;
-        }
+        for ( size_t i = 0; i < _comForcesExt.size(); i++ )
+            std::cout << _comForcesExt[i] << " ";
+
+        std::cout << "]" << std::endl;
+
     }
 
     return 0;

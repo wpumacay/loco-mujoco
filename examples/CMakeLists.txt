@@ -82,3 +82,8 @@ add_executable( test_com_forces
                 test_com_forces.cpp )
 target_link_libraries( test_com_forces
                        tysocCore )
+
+add_executable( test_terrain_static
+                test_terrain_static.cpp )
+target_link_libraries( test_terrain_static
+                       tysocCore )

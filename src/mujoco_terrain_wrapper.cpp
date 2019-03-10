@@ -15,18 +15,22 @@ namespace mujoco {
         m_mjcScenePtr   = NULL;
         m_mjcfTargetResourcesPtr = NULL;
 
-        // initialize mujoco resources
+        // Create resources that will be fixed|static (no pool needed)
+        _collectStaticFromGenerator();
+
+        // Create resources that will be reused *********************************
         for ( size_t i = 0; i < MJC_TERRAIN_POOL_SIZE; i++ )
         {
             auto _mjcPrimitive = new TMjcTerrainPrimitive();
+            auto _name = std::string( "tGen_" ) + name() + 
+                         std::string( "_" ) + std::to_string( i + m_mjcTerrainPrimitives.size() );
 
             _mjcPrimitive->mjcBodyId        = -1;
-            _mjcPrimitive->mjcBodyName      = std::string( "terrainGen_" ) + name() + std::string( "_" ) + std::to_string( i );
+            _mjcPrimitive->mjcGeomName      = _name;
             _mjcPrimitive->mjcGeomType      = "box";
             _mjcPrimitive->mjcGeomSize      = { 3, { 0.5f * MJC_TERRAIN_PATH_DEFAULT_WIDTH, 
                                                      0.5f * MJC_TERRAIN_PATH_DEFAULT_DEPTH, 
                                                      0.5f * MJC_TERRAIN_PATH_DEFAULT_TICKNESS } };
-            _mjcPrimitive->isAvailable      = true;
 
             _mjcPrimitive->tysocPrimitiveObj = NULL;
 
@@ -35,8 +39,8 @@ namespace mujoco {
         }
 
         // collect starting info from generator
-        _collectFromGenerator();
-        _collectFixedFromGenerator();
+        _collectReusableFromGenerator();
+        // **********************************************************************
     }
 
     TMjcTerrainGenWrapper::~TMjcTerrainGenWrapper()
@@ -100,15 +104,40 @@ namespace mujoco {
         // add all geometry resources into this element
         for ( size_t i = 0; i < m_mjcTerrainPrimitives.size(); i++ )
         {
-            auto _bodyElm = mjcf::createBody( m_mjcTerrainPrimitives[i]->mjcBodyName,
-                                              { 0.0f,
-                                                0.0f,
-                                                100.0f + i * ( MJC_TERRAIN_PATH_DEFAULT_TICKNESS + 1.0f ) } );
+            auto _mjcPrimitivePtr = m_mjcTerrainPrimitives[i];
+            auto _position = TVec3();
+            auto _orientation = TVec4();
+            bool _isStatic = ( ( _mjcPrimitivePtr->tysocPrimitiveObj != NULL ) && 
+                               ( _mjcPrimitivePtr->tysocPrimitiveObj->type == terrain::TERRAIN_TYPE_STATIC ) );
 
-            auto _geomElm = mjcf::createGeometry( m_mjcTerrainPrimitives[i]->mjcBodyName,
-                                                  m_mjcTerrainPrimitives[i]->mjcGeomType,
-                                                  m_mjcTerrainPrimitives[i]->mjcGeomSize,
-                                                  1.0f );
+            if ( _isStatic )
+            {
+                // Grab the primitive that is being wrapped
+                auto _tysocPrimitiveObj = _mjcPrimitivePtr->tysocPrimitiveObj;
+                // extract the rotation matrix @TODO: Change float[9] byt TMat3 (T_T)
+                auto _rotmat = TMat3();
+                for ( size_t i = 0; i < 9; i++ )
+                    _rotmat.buff[i] = _tysocPrimitiveObj->rotmat[i];
+
+                _position = { _tysocPrimitiveObj->pos.x,
+                              _tysocPrimitiveObj->pos.y,
+                              _tysocPrimitiveObj->pos.z };
+                _orientation = TMat3::toQuaternion( _rotmat );
+            }
+            else
+            {
+                _position = { 0.0f, 0.0f, 100.0f + i * ( MJC_TERRAIN_PATH_DEFAULT_TICKNESS + 1.0f ) };
+                _orientation = { 1.0f, 0.0f, 0.0f, 0.0f };
+            }
+
+            auto _bodyElm = mjcf::createBody( _mjcPrimitivePtr->mjcGeomName,
+                                              _position,
+                                              _orientation );
+
+            auto _geomElm = mjcf::createGeometry( _mjcPrimitivePtr->mjcGeomName,
+                                                  _mjcPrimitivePtr->mjcGeomType,
+                                                  _mjcPrimitivePtr->mjcGeomSize );
+
             _geomElm->setAttributeInt( "contype", 0 );
             _geomElm->setAttributeInt( "conaffinity", 1 );
             //_geomElm->setAttributeVec3( "friction", { 0.7f, 0.1f, 0.1f } );
@@ -116,7 +145,6 @@ namespace mujoco {
             _bodyElm->children.push_back( _geomElm );
             _worldbody->children.push_back( _bodyElm );
         }
-
 
         m_mjcfTargetResourcesPtr->children.push_back( _worldbody );
     }
@@ -128,15 +156,18 @@ namespace mujoco {
 
     void TMjcTerrainGenWrapper::_preStepInternal()
     {
-        _collectFromGenerator();
+        _collectReusableFromGenerator();
 
         // update the properties of all objects (if they have a primitive as reference)
         for ( size_t i = 0; i < m_mjcTerrainPrimitives.size(); i++ )
         {
-            if ( m_mjcTerrainPrimitives[i]->tysocPrimitiveObj )
-            {
-                _updateProperties( m_mjcTerrainPrimitives[i] );
-            }
+            if ( !m_mjcTerrainPrimitives[i]->tysocPrimitiveObj )
+                return;
+
+            if ( m_mjcTerrainPrimitives[i]->tysocPrimitiveObj->type == terrain::TERRAIN_TYPE_STATIC )
+                return;
+
+            _updateProperties( m_mjcTerrainPrimitives[i] );
         }
     }
 
@@ -145,7 +176,7 @@ namespace mujoco {
         // @TODO: should contact checking be done here? (store contacts)
     }
 
-    void TMjcTerrainGenWrapper::_collectFromGenerator()
+    void TMjcTerrainGenWrapper::_collectReusableFromGenerator()
     {
         auto _newPrimitivesQueue = m_terrainGenPtr->getJustCreated();
 
@@ -154,14 +185,14 @@ namespace mujoco {
             auto _newPrimitive = _newPrimitivesQueue.front();
             _newPrimitivesQueue.pop();
 
-            _wrapNewPrimitive( _newPrimitive, true );
+            _wrapReusablePrimitive( _newPrimitive );
         }
 
         // flush the creation queue to avoid double references everywhere
         m_terrainGenPtr->flushJustCreatedQueue();
     }
 
-    void TMjcTerrainGenWrapper::_collectFixedFromGenerator()
+    void TMjcTerrainGenWrapper::_collectStaticFromGenerator()
     {
         auto _fixedPrimitivesQueue = m_terrainGenPtr->getFixed();
 
@@ -170,7 +201,7 @@ namespace mujoco {
             auto _fixedPrimitive = _fixedPrimitivesQueue.front();
             _fixedPrimitivesQueue.pop();
 
-            _wrapNewPrimitive( _fixedPrimitive, false );
+            _wrapStaticPrimitive( _fixedPrimitive );
         }
 
         // flush the fixed queue to avoid double references (the wrapper now holds the ref.)
@@ -181,23 +212,22 @@ namespace mujoco {
     {
         auto _primitiveObj = mjcTerrainPritimivePtr->tysocPrimitiveObj;
 
-
         utils::setTerrainBodyPosition( m_mjcModelPtr, 
                                         m_mjcDataPtr,
-                                        mjcTerrainPritimivePtr->mjcBodyName,
+                                        mjcTerrainPritimivePtr->mjcGeomName,
                                         { _primitiveObj->pos.x, _primitiveObj->pos.y, _primitiveObj->pos.z } );
 
         utils::setTerrainBodyOrientation( m_mjcModelPtr,
                                            m_mjcDataPtr,
-                                           mjcTerrainPritimivePtr->mjcBodyName,
+                                           mjcTerrainPritimivePtr->mjcGeomName,
                                            _primitiveObj->rotmat );
 
         utils::changeSize( m_mjcModelPtr,
-                            mjcTerrainPritimivePtr->mjcBodyName,
+                            mjcTerrainPritimivePtr->mjcGeomName,
                             { 0.5f * _primitiveObj->size.x, 0.5f * _primitiveObj->size.y, 0.5f * _primitiveObj->size.z } );
 
         utils::setRbound( m_mjcModelPtr,
-                           mjcTerrainPritimivePtr->mjcBodyName,
+                           mjcTerrainPritimivePtr->mjcGeomName,
                            _primitiveObj->rbound );
 
         if ( !_primitiveObj->useCustomColor )
@@ -205,7 +235,7 @@ namespace mujoco {
             float _color[3];
             utils::getGeometryColor( m_mjcModelPtr,
                                       m_mjcScenePtr,
-                                      mjcTerrainPritimivePtr->mjcBodyName,
+                                      mjcTerrainPritimivePtr->mjcGeomName,
                                       _color );
 
             _primitiveObj->color.r = _color[0];
@@ -214,7 +244,28 @@ namespace mujoco {
         }
     }
 
-    void TMjcTerrainGenWrapper::_wrapNewPrimitive( terrain::TTerrainPrimitive* primitivePtr, bool isReusable )
+    void TMjcTerrainGenWrapper::_wrapStaticPrimitive( terrain::TTerrainPrimitive* primitivePtr )
+    {
+        // Create a new primitive for each static primitive (these do not change)
+        auto _mjcPrimitive = new TMjcTerrainPrimitive();
+        auto _mjcName = std::string( "tGen_" ) + 
+                        name() + 
+                        std::string( "_" ) + 
+                        std::to_string( m_mjcTerrainPrimitives.size() );
+
+        _mjcPrimitive->mjcBodyId            = -1;
+        _mjcPrimitive->mjcGeomName          = _mjcName;
+        _mjcPrimitive->mjcGeomType          = primitivePtr->geomType;
+        _mjcPrimitive->mjcGeomSize          = { 3, { primitivePtr->size.x,
+                                                     primitivePtr->size.y,
+                                                     primitivePtr->size.z } };
+        _mjcPrimitive->mjcGeomFilename      = primitivePtr->filename;
+        _mjcPrimitive->tysocPrimitiveObj    = primitivePtr;
+
+        m_mjcTerrainPrimitives.push_back( _mjcPrimitive );
+    }
+
+    void TMjcTerrainGenWrapper::_wrapReusablePrimitive( terrain::TTerrainPrimitive* primitivePtr )
     {
         // if the pool is empty, force to recycle the last object
         if ( m_mjcAvailablePrimitives.empty() )
@@ -236,16 +287,8 @@ namespace mujoco {
         // link an object from the working queue with the requested new primitive
         _mjcPrimitive->tysocPrimitiveObj = primitivePtr;
 
-        if ( isReusable )
-        {
-            // put it into the working queue
-            m_mjcWorkingPrimitives.push( _mjcPrimitive );
-        }
-        else
-        {
-            // put it into the fixed queue
-            m_mjcFixedPrimitives.push( _mjcPrimitive );
-        }
+        // put it into the working queue
+        m_mjcWorkingPrimitives.push( _mjcPrimitive );
     }
 
 

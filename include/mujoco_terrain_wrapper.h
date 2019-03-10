@@ -23,10 +23,10 @@ namespace mujoco {
     struct TMjcTerrainPrimitive
     {
         int                             mjcBodyId;
-        std::string                     mjcBodyName;
+        std::string                     mjcGeomName;
         std::string                     mjcGeomType;
         TSizef                          mjcGeomSize;
-        bool                            isAvailable;
+        std::string                     mjcGeomFilename;
         terrain::TTerrainPrimitive*     tysocPrimitiveObj;
     };
 
@@ -40,7 +40,6 @@ namespace mujoco {
         // working queues for the logic
         std::queue< TMjcTerrainPrimitive* > m_mjcAvailablePrimitives;
         std::queue< TMjcTerrainPrimitive* > m_mjcWorkingPrimitives;
-        std::queue< TMjcTerrainPrimitive* > m_mjcFixedPrimitives;
 
         // mujoco resources to inject into workspace
         mjcf::GenericElement* m_modelElmPtr;
@@ -52,9 +51,10 @@ namespace mujoco {
         mjData* m_mjcDataPtr;
         mjvScene* m_mjcScenePtr;
 
-        void _collectFromGenerator();// collects primitives that can be reused and rewrapped in the lifetime of the generator
-        void _collectFixedFromGenerator();// collects primitives that are single in the lifetime of the generator
-        void _wrapNewPrimitive( terrain::TTerrainPrimitive* primitivePtr, bool isReusable );
+        void _collectReusableFromGenerator();// collects primitives that can be reused and rewrapped in the lifetime of the generator
+        void _collectStaticFromGenerator();// collects primitives that are single in the lifetime of the generator
+        void _wrapReusablePrimitive( terrain::TTerrainPrimitive* primitivePtr );
+        void _wrapStaticPrimitive( terrain::TTerrainPrimitive* primitivePtr );
         void _updateProperties( TMjcTerrainPrimitive* mjcTerrainPritimivePtr );
 
         protected :

@@ -6,12 +6,20 @@ import pytysoc
 import numpy as np
 
 _agent = tysoc_bindings.PyCoreAgent( 'agent0', [0,0,0.75], 'mjcf', 'ant' )
+_terrainGen = tysoc_bindings.PyStaticTerrainGen( 'terrainGen0' )
+_terrainGen.createPrimitive( 'plane',
+                             [10,10,0.1],
+                             [0,0,0],
+                             [0,0,0],
+                             [.2,.3,.4],
+                             '' )
 
 _scenario = tysoc_bindings.PyScenario()
 _scenario.addAgent( _agent )
+_scenario.addTerrainGen( _terrainGen )
 
 _runtime = pytysoc.createRuntime( physicsBackend = pytysoc.BACKENDS.PHYSICS.MUJOCO,
-                                  renderingBackend = pytysoc.BACKENDS.RENDERING.MJCVIZ,
+                                  renderingBackend = pytysoc.BACKENDS.RENDERING.GLVIZ,
                                   workingDir = pytysoc.PATHS.WORKING_DIR )
 
 _simulation = _runtime.createSimulation( _scenario )
@@ -31,8 +39,8 @@ while _visualizer.isActive() :
     _state = np.concatenate( [ _obsMap['qpos'].flat[2:],
                                _obsMap['qvel'].flat,
                                np.clip( _obsMap['comForcesExt'], -1, 1 ).flat ] )
-    print( 'state.shape: ', _state.shape )
-    print( 'state: ', _state )
+    ## print( 'state.shape: ', _state.shape )
+    ## print( 'state: ', _state )
 
     _simulation.step()
     _visualizer.render()

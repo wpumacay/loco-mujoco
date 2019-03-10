@@ -12,7 +12,7 @@ _terrainGen.createPrimitive( 'plane',
                              [0,0,0],
                              [0,0,0],
                              [.2,.3,.4],
-                             '' )
+                             'chessboard' )
 
 _scenario = tysoc_bindings.PyScenario()
 _scenario.addAgent( _agent )

@@ -28,7 +28,12 @@ int main( int argc, const char** argv )
     auto _agent = tysoc::agent::createKinTreeAgent( "agent0", { 0.0f, 0.0f, 1.0f }, _modelData );
 
     auto _terrainGenStatic = new tysoc::terrain::TStaticTerrainGenerator( "terrainGen0" );
-    _terrainGenStatic->createPrimitive( "plane", { 10.0f, 10.0f, 10.0f } );
+    _terrainGenStatic->createPrimitive( "plane", 
+                                        { 10.0f, 10.0f, 0.1f }, 
+                                        { 0.0f, 0.0f, 0.0f },
+                                        tysoc::TMat3(),
+                                        { 0.2f, 0.3f, 0.4f },
+                                        "chessboard" );
 
     auto _scenario = new tysoc::TScenario();
     _scenario->addAgent( _agent );

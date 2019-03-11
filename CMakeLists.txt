@@ -12,8 +12,19 @@ endif()
 
 message( "TYSOCMJC> LIBRARY_OUT_DIR: ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}" )
 
-# Configure core functionality
-add_subdirectory( tysoc )
+set( TYSOCMJC_IS_MASTER_PROJECT OFF )
+if( CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR )
+    message( "TYSOCMJC> Configuring as MASTER project" )
+    set( TYSOCMJC_IS_MASTER_PROJECT ON )
+else()
+    message( "TYSOCMJC> Configuring as CHILD project" )
+endif()
+
+# Add core targets only if master project. If not, parent project must configure it
+if ( TYSOCMJC_IS_MASTER_PROJECT )
+    # Configure core functionality
+    add_subdirectory( tysoc )
+endif()
 
 # Configure tysocMjc project *************************************************
 
@@ -51,16 +62,25 @@ message( "PROP_TYSOC_BACKEND_GRAPHICS_GLVIZ:    ${VAR_TYSOC_BACKEND_GRAPHICS_GLV
 message( "PROP_TYSOC_BACKEND_GRAPHICS_MJCVIZ:   ${VAR_TYSOC_BACKEND_GRAPHICS_MJCVIZ}" )
 message( "PROP_TYSOC_BACKEND_PHYSICS_MUJOCO:    ${VAR_TYSOC_BACKEND_PHYSICS_MUJOCO}" )
 
-# ----------------------------------------------------------------------------------------------------------------------
-
 # grab all the sources for compilation
 file( GLOB_RECURSE TYSOCMJC_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" )
 
-# add all dependencies to include path
+# add this project headers to includepath
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/include/" )
-include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/tysoc/include" )
-include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/tysoc/ext/json" )
-include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/tysoc/ext/tinyxml2" )
+
+# add the core dependency headers to includepath
+if ( TYSOCMJC_IS_MASTER_PROJECT )
+    # core dependency to use is own submodule
+    include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/tysoc/include" )
+    include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/tysoc/ext/json" )
+    include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/tysoc/ext/tinyxml2" )
+else()
+    # core dependency to use if parent core submodule, names as "core"
+    include_directories( "${CMAKE_SOURCE_DIR}/core/include" )
+    include_directories( "${CMAKE_SOURCE_DIR}/core/ext/json" )
+    include_directories( "${CMAKE_SOURCE_DIR}/core/ext/tinyxml2" )
+endif()
+
 
 include_directories( "~/.mujoco/mujoco200_linux/include" )
 link_directories( "~/.mujoco/mujoco200_linux/bin" )
@@ -84,5 +104,8 @@ target_link_libraries( tysocPhysicsMujoco
 # Configure visualizer with mujoco's rendering backend
 add_subdirectory( mujocoviz )
 
-# Configure examples
-add_subdirectory( examples )
+# Only generate samples if not using as dependency
+if ( TYSOCMJC_IS_MASTER_PROJECT )
+    # Configure examples
+    add_subdirectory( examples )
+endif()

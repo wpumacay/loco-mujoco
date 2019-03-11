@@ -3,7 +3,7 @@
 
 ## 12, nov, 2018
 
-![terrain-progress-1](../_imgs/gif_terrain_progress_1.gif)
+![terrain-progress-1](https://media.giphy.com/media/psnfTo2l32SxR9lb5h/giphy.gif)
 
 * Implemented base functionality to interact with mujoco objects. (ext/mjcint)
 
@@ -17,7 +17,7 @@
 
 ## 13, nov, 2018
 
-![terrain-progress-2](../_imgs/gif_terrain_progress_2.gif)
+![terrain-progress-2](https://media.giphy.com/media/uiKS25QJOJnjWpoEHo/giphy.gif)
 
 * Implemented base abstract terrain generation. (ext/tysocCore)
 
@@ -30,13 +30,13 @@
 
 ## 21, nov, 2018
 
-![terrain-progress-3](../_imgs/gif_terrain_progress_3.gif)
+![terrain-progress-3](https://media.giphy.com/media/XHUj9S0F4GgVAmZW0p/giphy.gif)
 
-![terrain-progress-4](../_imgs/gif_terrain_progress_4.gif)
+![terrain-progress-4](https://media.giphy.com/media/3dgkXuLXHRIpdMTCZy/giphy.gif)
 
-![terrain-progress-5](../_imgs/gif_terrain_progress_5.gif)
+![terrain-progress-5](https://media.giphy.com/media/7vAgc1vznGDVvlpFMm/giphy.gif)
 
-![terrain-progress-6](../_imgs/gif_terrain_progress_6.gif)
+![terrain-progress-6](https://media.giphy.com/media/fwZ0REGoOVj57aJdWE/giphy.gif)
 
 * Implemented framework :
 
@@ -48,31 +48,31 @@
 
 * Integrated custom rendering engine into a decoupled visualizer : the visualizer is working and is decoupled of the concrete physics engine used. It updates its data from the underlying data being used by the abstract API, whose contents are written by the concrete implementations.
 
-![terrain-progress-7](../_imgs/gif_terrain_progress_7.gif)
+![terrain-progress-7](https://media.giphy.com/media/nnKODYDjpB8Vsj49sA/giphy.gif)
 
-![terrain-progress-8](../_imgs/gif_terrain_progress_8.gif)
+![terrain-progress-8](https://media.giphy.com/media/5h29BWEJxfI67e5ghS/giphy.gif)
 
 ## 24, nov, 2018
 
 * Added sensors (agent intrinsic and terrain extrinsic) to the library
 
-![terrain-progress-9](../_imgs/gif_terrain_progress_9.gif)
+![terrain-progress-9](https://media.giphy.com/media/fMzywtksuU42jHWvNi/giphy.gif)
 
-![terrain-progress-10](../_imgs/gif_terrain_progress_10.gif)
+![terrain-progress-10](https://media.giphy.com/media/3gPDeNpim4gMvOnqQe/giphy.gif)
 
 ## 25, nov, 2018
 
 * Added terrain generators to replicate the environments from [here](https://www.youtube.com/watch?v=hx_bgoTF7bs)
 
-![terrain-progress-11](../_imgs/gif_terrain_progress_11.gif)
+![terrain-progress-11](https://media.giphy.com/media/loG8Nf202bsfw8dJPO/giphy.gif)
 
-![terrain-progress-12](../_imgs/gif_terrain_progress_12.gif)
+![terrain-progress-12](https://media.giphy.com/media/Zvn0VIdbm52zf2SXkz/giphy.gif)
 
-![terrain-progress-13](../_imgs/gif_terrain_progress_13.gif)
+![terrain-progress-13](https://media.giphy.com/media/Bp5mbsdlZFbwsMIdaK/giphy.gif)
 
-![terrain-progress-14](../_imgs/gif_terrain_progress_14.gif)
+![terrain-progress-14](https://media.giphy.com/media/3rg0hDmYXKNnUZmUej/giphy.gif)
 
-![terrain-progress-15](../_imgs/gif_terrain_progress_15.gif)
+![terrain-progress-15](https://media.giphy.com/media/euGmWrsjhLgDPe6GmW/giphy.gif)
 
 ## 13, dic, 2018
 
@@ -84,11 +84,11 @@
     4. Fixed sensors for new agent API
     5. Refactored a bit
 
-![tysoc-mjc-progress-1](../_imgs/gif_tysocMjc_progress_1_1.gif)
+![tysoc-mjc-progress-1](https://media.giphy.com/media/ZcaynbjABz69Zyj9n9/giphy.gif)
 
-![tysoc-mjc-progress-2](../_imgs/gif_tysocMjc_progress_1_2.gif)
+![tysoc-mjc-progress-2](https://media.giphy.com/media/loMkXQHDRSeHC8s2dy/giphy.gif)
 
-![tysoc-mjc-progress-3](../_imgs/gif_tysocMjc_progress_1_3.gif)
+![tysoc-mjc-progress-3](https://media.giphy.com/media/9S1zriY4MMt8LjOoSq/giphy.gif)
 
 ## dic, 2018
 
@@ -118,9 +118,9 @@
     voila, you just swapped the visualizer, no need to recompile. I will be fixing the other examples
     tomorrow (I kind of leave the old examples unusable).
 
-![tysoc-mjc-progress-dlloading-custom-viz](../_imgs/gif_tysocMjc_progress_dlloading_custom_viz.gif)
+![tysoc-mjc-progress-dlloading-custom-viz](https://media.giphy.com/media/nmtB8f24YJmEXz3KU6/giphy.gif)
 
-![tysoc-mjc-progress-dlloading-mujoco-viz](../_imgs/gif_tysocMjc_progress_dlloading_mujoco_viz.gif)
+![tysoc-mjc-progress-dlloading-mujoco-viz](https://media.giphy.com/media/wq8M5dq2ly37c3uZE5/giphy.gif)
 
 * Will be working on the python bindings now, so in the next days we will have a usable
   python simulator. It will be better when we start adding the other backends. First Bullet,

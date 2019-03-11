@@ -55,6 +55,30 @@ class BuildCommand( BaseBuildExtCommand ) :
 
         buildBindings( _sourceDir, _buildDir, _cmakeArgs, _buildArgs, _env )
 
+def grabAllContents( folderPath ) :
+    _elements = os.listdir( folderPath )
+    _files = []
+
+    for _element in _elements :
+        _elementPath = os.path.join( folderPath, _element )
+
+        if os.path.isdir( _elementPath ) :
+            if ( ( '_imgs' in _element ) or
+                 ( 'build' == _element ) or
+                 ( 'egg-info' in _element ) ) :
+                continue
+
+            _files.extend( grabAllContents( _elementPath ) )
+
+        elif ( ( '.cpp' in _element ) or ( '.cc' in _element ) or
+               ( '.h' in _element ) or ( '.hh' in _element ) or
+               ( '.png' in _element ) or ( '.jpg' in _element ) or 
+               ( '.glsl' in _element ) or ( '.cmake' in _element ) or
+               ( 'CMakeLists.txt' == _element ) ) :
+            _files.append( _elementPath )
+
+    return _files
+
 setup(
     name                    = 'tysoc-mjc',
     version                 = '0.0.1',
@@ -91,7 +115,7 @@ setup(
                               },
     ext_modules             = [
                                 CMakeExtension( 'tysoc_bindings', '.', 
-                                                sources = ['src/mujoco_utils.cpp'] )
+                                                sources = grabAllContents( '.' ) )
                               ],
     cmdclass                = {
                                 'build_ext': BuildCommand

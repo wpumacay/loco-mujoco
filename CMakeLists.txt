@@ -71,9 +71,9 @@ include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/include/" )
 # add the core dependency headers to includepath
 if ( TYSOCMJC_IS_MASTER_PROJECT )
     # core dependency to use is own submodule
-    include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/tysoc/include" )
-    include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/tysoc/ext/json" )
-    include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/tysoc/ext/tinyxml2" )
+    include_directories( "${CMAKE_SOURCE_DIR}/tysoc/include" )
+    include_directories( "${CMAKE_SOURCE_DIR}/tysoc/ext/json" )
+    include_directories( "${CMAKE_SOURCE_DIR}/tysoc/ext/tinyxml2" )
 else()
     # core dependency to use if parent core submodule, names as "core"
     include_directories( "${CMAKE_SOURCE_DIR}/core/include" )

@@ -3,24 +3,55 @@ cmake_minimum_required( VERSION 3.0.0 )
 
 set( CMAKE_CXX_STANDARD 11 )
 
-add_definitions( -DTYSOC_DLLIBS_PATH="${CMAKE_BINARY_DIR}/" )
+if ( NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY )
+    message( "TYSOCMJC> Sending generated libs to OWN build directory" )
+    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/libs" )
+else()
+    message( "TYSOCMJC> Sending generated libs to EXTERNAL build directory" )
+endif()
+
+message( "TYSOCMJC> LIBRARY_OUT_DIR: ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}" )
 
 # Configure core functionality
 add_subdirectory( tysoc )
 
 # Configure tysocMjc project *************************************************
 
-# Definitions used for development. Python bindings do not use these definitions, but ...
-# instead we load the paths dynamically according to the user configuration/installation.
-add_definitions( -DTYSOC_MUJOCO_LIB="${CMAKE_BINARY_DIR}/libtysocPhysicsMujoco.so" )
-add_definitions( -DTYSOC_MUJOCO_VIZ_LIB="${CMAKE_BINARY_DIR}/mujocoviz/libtysocRenderingMjcViz.so" )
-# repeat definitions from core library, as it seems they are not propagated up
-add_definitions( -DTYSOCCORE_RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/tysoc/res/" )
-add_definitions( -DTYSOCCORE_WORKING_DIR_PATH="${CMAKE_CURRENT_SOURCE_DIR}/tysoc/res/xml/" )
-add_definitions( -DTYSOCCORE_MJCF_TEMPLATES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/tysoc/res/templates/mjcf/" )
-add_definitions( -DTYSOCCORE_URDF_TEMPLATES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/tysoc/res/templates/urdf/" )
-add_definitions( -DTYSOCCORE_RLSIM_TEMPLATES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/tysoc/res/templates/rlsim/" )
-add_definitions( -DTYSOCCORE_GLVIZ_LIB="${CMAKE_BINARY_DIR}/tysoc/glviz/libtysocRenderingGlviz.so" )
+# Set the lbirary paths as props to allow usage from other projects
+set_property( GLOBAL PROPERTY PROP_TYSOC_BACKEND_PHYSICS_MUJOCO "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libtysocPhysicsMujoco.so" )
+set_property( GLOBAL PROPERTY PROP_TYSOC_BACKEND_GRAPHICS_MJCVIZ "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libtysocRenderingMjcViz.so" )
+
+# get properties defined in core library
+get_property( VAR_TYSOC_PATH_RESOURCES              GLOBAL PROPERTY PROP_TYSOC_PATH_RESOURCES )
+get_property( VAR_TYSOC_PATH_WORKING_DIR            GLOBAL PROPERTY PROP_TYSOC_PATH_WORKING_DIR )
+get_property( VAR_TYSOC_PATH_MJCF_TEMPLATES         GLOBAL PROPERTY PROP_TYSOC_PATH_MJCF_TEMPLATES )
+get_property( VAR_TYSOC_PATH_URDF_TEMPLATES         GLOBAL PROPERTY PROP_TYSOC_PATH_URDF_TEMPLATES )
+get_property( VAR_TYSOC_PATH_RLSIM_TEMPLATES        GLOBAL PROPERTY PROP_TYSOC_PATH_RLSIM_TEMPLATES )
+get_property( VAR_TYSOC_BACKEND_GRAPHICS_GLVIZ      GLOBAL PROPERTY PROP_TYSOC_BACKEND_GRAPHICS_GLVIZ )
+get_property( VAR_TYSOC_BACKEND_GRAPHICS_MJCVIZ     GLOBAL PROPERTY PROP_TYSOC_BACKEND_GRAPHICS_MJCVIZ )
+get_property( VAR_TYSOC_BACKEND_PHYSICS_MUJOCO      GLOBAL PROPERTY PROP_TYSOC_BACKEND_PHYSICS_MUJOCO )
+
+# repeat definitions from core library, as they are not propagated up
+add_definitions( -DTYSOC_PATH_RESOURCES="${VAR_TYSOC_PATH_RESOURCES}" )
+add_definitions( -DTYSOC_PATH_WORKING_DIR="${VAR_TYSOC_PATH_WORKING_DIR}" )
+add_definitions( -DTYSOC_PATH_MJCF_TEMPLATES="${VAR_TYSOC_PATH_MJCF_TEMPLATES}" )
+add_definitions( -DTYSOC_PATH_URDF_TEMPLATES="${VAR_TYSOC_PATH_URDF_TEMPLATES}" )
+add_definitions( -DTYSOC_PATH_RLSIM_TEMPLATES="${VAR_TYSOC_PATH_RLSIM_TEMPLATES}" )
+add_definitions( -DTYSOC_BACKEND_GRAPHICS_GLVIZ="${VAR_TYSOC_BACKEND_GRAPHICS_GLVIZ}" )
+add_definitions( -DTYSOC_BACKEND_GRAPHICS_MJCVIZ="${VAR_TYSOC_BACKEND_GRAPHICS_MJCVIZ}" )
+add_definitions( -DTYSOC_BACKEND_PHYSICS_MUJOCO="${VAR_TYSOC_BACKEND_PHYSICS_MUJOCO}" )
+
+# test all properties
+message( "PROP_TYSOC_PATH_RESOURCES:            ${VAR_TYSOC_PATH_RESOURCES}" )
+message( "PROP_TYSOC_PATH_WORKING_DIR:          ${VAR_TYSOC_PATH_WORKING_DIR}" )
+message( "PROP_TYSOC_PATH_MJCF_TEMPLATES:       ${VAR_TYSOC_PATH_MJCF_TEMPLATES}" )
+message( "PROP_TYSOC_PATH_URDF_TEMPLATES:       ${VAR_TYSOC_PATH_URDF_TEMPLATES}" )
+message( "PROP_TYSOC_PATH_RLSIM_TEMPLATES:      ${VAR_TYSOC_PATH_RLSIM_TEMPLATES}" )
+message( "PROP_TYSOC_BACKEND_GRAPHICS_GLVIZ:    ${VAR_TYSOC_BACKEND_GRAPHICS_GLVIZ}" )
+message( "PROP_TYSOC_BACKEND_GRAPHICS_MJCVIZ:   ${VAR_TYSOC_BACKEND_GRAPHICS_MJCVIZ}" )
+message( "PROP_TYSOC_BACKEND_PHYSICS_MUJOCO:    ${VAR_TYSOC_BACKEND_PHYSICS_MUJOCO}" )
+
+# ----------------------------------------------------------------------------------------------------------------------
 
 # grab all the sources for compilation
 file( GLOB_RECURSE TYSOCMJC_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" )

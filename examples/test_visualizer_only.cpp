@@ -1,20 +1,12 @@
 
 #include <runtime.h>
 
-#ifndef TYSOC_DLLIBS_PATH
-    #define TYSOC_DLLIBS_PATH "../" // pointing to the build/ directory
-#endif
-
-#ifndef TYSOCMJC_RESOURCES_PATH
-    #define TYSOCMJC_RESOURCES_PATH "../../res/"
-#endif
-
 static std::string MODEL_FORMAT = "urdf";
 static std::string MODEL_NAME = "laikago";
 
-static std::string TYSOC_MJCF_TEMPLATES     = std::string( TYSOCMJC_RESOURCES_PATH ) + std::string( "templates/mjcf/" );
-static std::string TYSOC_URDF_TEMPLATES     = std::string( TYSOCMJC_RESOURCES_PATH ) + std::string( "templates/urdf/" );
-static std::string TYSOC_RLSIM_TEMPLATES    = std::string( TYSOCMJC_RESOURCES_PATH ) + std::string( "templates/rlsim/" );
+static std::string TYSOC_MJCF_TEMPLATES     = std::string( TYSOC_PATH_MJCF_TEMPLATES );
+static std::string TYSOC_URDF_TEMPLATES     = std::string( TYSOC_PATH_URDF_TEMPLATES );
+static std::string TYSOC_RLSIM_TEMPLATES    = std::string( TYSOC_PATH_RLSIM_TEMPLATES );
 
 tysoc::agent::TAgentKinTree* createAgent( const std::string& format,
                                           const std::string& modelName,
@@ -84,10 +76,8 @@ int main( int argc, const char** argv )
 
     _scenario->addAgent( _agent );
 
-    auto _simLibPath = std::string( TYSOC_DLLIBS_PATH ) + std::string( "libtysocMujoco.so");
-    auto _vizLibPath = std::string( TYSOC_DLLIBS_PATH ) + std::string( "tysocCustomViz/libtysocCustomViz.so" );
-
-    g_runtime = new tysoc::TRuntime( _simLibPath, _vizLibPath );
+    g_runtime = new tysoc::TRuntime( tysoc::config::physics::MUJOCO, 
+                                     tysoc::config::rendering::MJCVIZ );
 
     g_visualizer = g_runtime->createVisualizer( _scenario );
     g_visualizer->initialize();

@@ -31,7 +31,7 @@ int main( int argc, const char** argv )
     _scenario->addAgent( _agent );
 
     auto _runtime = new tysoc::TRuntime( tysoc::config::physics::MUJOCO, 
-                                         tysoc::config::rendering::MUJOCOVIZ );
+                                         tysoc::config::rendering::MJCVIZ );
 
     auto _simulation = _runtime->createSimulation( _scenario );
     _simulation->initialize();

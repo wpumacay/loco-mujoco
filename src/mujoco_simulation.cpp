@@ -86,11 +86,11 @@ namespace mujoco {
     {
 
         /* Initialize wrappers (to create their internal structures) ***********/
-        for ( size_t q = 0; q < m_agentWrappers.size(); q++ )
-            m_agentWrappers[q]->initialize();// Injects agent resources into m_mjcfResourcesPtr
-
         for ( size_t q = 0; q < m_terrainGenWrappers.size(); q++ )
             m_terrainGenWrappers[q]->initialize();// Injects terrain resources into m_mjcfResourcesPtr
+
+        for ( size_t q = 0; q < m_agentWrappers.size(); q++ )
+            m_agentWrappers[q]->initialize();// Injects agent resources into m_mjcfResourcesPtr
 
         /* Inject resources into the workspace xml *****************************/
         std::string _workspaceModelPath;

@@ -18,29 +18,29 @@ namespace mujoco {
         // Create resources that will be fixed|static (no pool needed)
         _collectStaticFromGenerator();
 
-        // Create resources that will be reused *********************************
-        for ( size_t i = 0; i < MJC_TERRAIN_POOL_SIZE; i++ )
-        {
-            auto _mjcPrimitive = new TMjcTerrainPrimitive();
-            auto _name = std::string( "tGen_" ) + name() + 
-                         std::string( "_" ) + std::to_string( i + m_mjcTerrainPrimitives.size() );
-
-            _mjcPrimitive->mjcBodyId        = -1;
-            _mjcPrimitive->mjcGeomName      = _name;
-            _mjcPrimitive->mjcGeomType      = "box";
-            _mjcPrimitive->mjcGeomSize      = { 3, { 0.5f * MJC_TERRAIN_PATH_DEFAULT_WIDTH, 
-                                                     0.5f * MJC_TERRAIN_PATH_DEFAULT_DEPTH, 
-                                                     0.5f * MJC_TERRAIN_PATH_DEFAULT_TICKNESS } };
-
-            _mjcPrimitive->tysocPrimitiveObj = NULL;
-
-            m_mjcTerrainPrimitives.push_back( _mjcPrimitive );
-            m_mjcAvailablePrimitives.push( _mjcPrimitive );
-        }
-
-        // collect starting info from generator
-        _collectReusableFromGenerator();
-        // **********************************************************************
+//        // Create resources that will be reused *********************************
+//        for ( size_t i = 0; i < MJC_TERRAIN_POOL_SIZE; i++ )
+//        {
+//            auto _mjcPrimitive = new TMjcTerrainPrimitive();
+//            auto _name = std::string( "tGen_" ) + name() + 
+//                         std::string( "_" ) + std::to_string( i + m_mjcTerrainPrimitives.size() );
+//
+//            _mjcPrimitive->mjcBodyId        = -1;
+//            _mjcPrimitive->mjcGeomName      = _name;
+//            _mjcPrimitive->mjcGeomType      = "box";
+//            _mjcPrimitive->mjcGeomSize      = { 3, { 0.5f * MJC_TERRAIN_PATH_DEFAULT_WIDTH, 
+//                                                     0.5f * MJC_TERRAIN_PATH_DEFAULT_DEPTH, 
+//                                                     0.5f * MJC_TERRAIN_PATH_DEFAULT_TICKNESS } };
+//
+//            _mjcPrimitive->tysocPrimitiveObj = NULL;
+//
+//            m_mjcTerrainPrimitives.push_back( _mjcPrimitive );
+//            m_mjcAvailablePrimitives.push( _mjcPrimitive );
+//        }
+//
+//        // collect starting info from generator
+//        _collectReusableFromGenerator();
+//        // **********************************************************************
     }
 
     TMjcTerrainGenWrapper::~TMjcTerrainGenWrapper()
@@ -130,20 +130,24 @@ namespace mujoco {
                 _orientation = { 1.0f, 0.0f, 0.0f, 0.0f };
             }
 
-            auto _bodyElm = mjcf::createBody( _mjcPrimitivePtr->mjcGeomName,
-                                              _position,
-                                              _orientation );
+            //auto _bodyElm = mjcf::createBody( _mjcPrimitivePtr->mjcGeomName,
+            //                                  _position,
+            //                                  _orientation );
 
             auto _geomElm = mjcf::createGeometry( _mjcPrimitivePtr->mjcGeomName,
                                                   _mjcPrimitivePtr->mjcGeomType,
-                                                  _mjcPrimitivePtr->mjcGeomSize );
+                                                  _mjcPrimitivePtr->mjcGeomSize,
+                                                  0.0f,
+                                                  _position,
+                                                  _orientation );
 
             _geomElm->setAttributeInt( "contype", 0 );
             _geomElm->setAttributeInt( "conaffinity", 1 );
             //_geomElm->setAttributeVec3( "friction", { 0.7f, 0.1f, 0.1f } );
 
-            _bodyElm->children.push_back( _geomElm );
-            _worldbody->children.push_back( _bodyElm );
+            //_bodyElm->children.push_back( _geomElm );
+            //_worldbody->children.push_back( _bodyElm );
+            _worldbody->children.push_back( _geomElm );
         }
 
         m_mjcfTargetResourcesPtr->children.push_back( _worldbody );

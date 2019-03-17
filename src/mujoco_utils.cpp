@@ -130,6 +130,38 @@ namespace utils {
         }
     }
 
+    void setBodyOrientation( mjModel* pModel,
+                             mjData* pData,
+                             const std::string& name,
+                             const TMat3& rotmat )
+    {
+        auto _id = mj_name2id( pModel, mjOBJ_BODY, name.c_str() );
+
+        if ( _id != -1 )
+        {
+            mjtNum _rquat[4];
+            mjtNum _rmat[9];
+            
+            _rmat[0] = rotmat.buff[0];
+            _rmat[1] = rotmat.buff[3];
+            _rmat[2] = rotmat.buff[6];
+
+            _rmat[3] = rotmat.buff[1];
+            _rmat[4] = rotmat.buff[4];
+            _rmat[5] = rotmat.buff[7];
+
+            _rmat[6] = rotmat.buff[2];
+            _rmat[7] = rotmat.buff[5];
+            _rmat[8] = rotmat.buff[8];
+
+            mju_mat2Quat( _rquat, _rmat );
+            pData->xquat[ 4 * _id + 0 ] = _rquat[0];
+            pData->xquat[ 4 * _id + 1 ] = _rquat[1];
+            pData->xquat[ 4 * _id + 2 ] = _rquat[2];
+            pData->xquat[ 4 * _id + 3 ] = _rquat[3];
+        }
+    }
+
     void getBodyOrientation( mjModel* pModel,
                              mjData* pData,
                              const std::string& name,
@@ -150,17 +182,53 @@ namespace utils {
             mju_quat2Mat( _rmat, _rquat );
 
             rotmat[0] = _rmat[0];
-            rotmat[3] = _rmat[1];
-            rotmat[6] = _rmat[2];
-
             rotmat[1] = _rmat[3];
-            rotmat[4] = _rmat[4];
-            rotmat[7] = _rmat[5];
-
             rotmat[2] = _rmat[6];
+
+            rotmat[3] = _rmat[1];
+            rotmat[4] = _rmat[4];
             rotmat[5] = _rmat[7];
+
+            rotmat[6] = _rmat[2];
+            rotmat[7] = _rmat[5];
             rotmat[8] = _rmat[8];
         }
+    }
+
+    TMat3 getBodyOrientation( mjModel* pModel,
+                              mjData* pData,
+                              const std::string& name )
+    {
+        TMat3 _res;
+
+        auto _id = mj_name2id( pModel, mjOBJ_BODY, name.c_str() );
+
+        if ( _id != -1 )
+        {
+            mjtNum _rquat[4];
+            mjtNum _rmat[9];
+
+            _rquat[0] = pData->xquat[ 4 * _id + 0 ];
+            _rquat[1] = pData->xquat[ 4 * _id + 1 ];
+            _rquat[2] = pData->xquat[ 4 * _id + 2 ];
+            _rquat[3] = pData->xquat[ 4 * _id + 3 ];
+
+            mju_quat2Mat( _rmat, _rquat );
+
+            _res.buff[0] = _rmat[0];
+            _res.buff[1] = _rmat[3];
+            _res.buff[2] = _rmat[6];
+
+            _res.buff[3] = _rmat[1];
+            _res.buff[4] = _rmat[4];
+            _res.buff[5] = _rmat[7];
+
+            _res.buff[6] = _rmat[2];
+            _res.buff[7] = _rmat[5];
+            _res.buff[8] = _rmat[8];
+        }
+
+        return _res;
     }
 
     void setActuatorCtrl( mjModel* pModel,

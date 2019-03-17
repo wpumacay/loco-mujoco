@@ -31,10 +31,19 @@ namespace utils {
                              const std::string& name,
                              float rotmat[9] );
 
+    void setBodyOrientation( mjModel* pModel,
+                             mjData* pData,
+                             const std::string& name,
+                             const TMat3& rotmat );
+
     void getBodyOrientation( mjModel* pModel,
                              mjData* pData,
                              const std::string& name,
                              float* rotmat );
+
+    TMat3 getBodyOrientation( mjModel* pModel,
+                              mjData* pData,
+                              const std::string& name );
 
     void setActuatorCtrl( mjModel* pModel,
                           mjData* pData,

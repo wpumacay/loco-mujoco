@@ -50,6 +50,23 @@ namespace mujoco {
 
             m_terrainGenWrappers.push_back( _terrainGenWrapper );
         }
+
+        auto _sbodies = m_scenarioPtr->getBodies();
+        auto _sjoints = m_scenarioPtr->getJoints();
+
+        for ( size_t q = 0; q < _sbodies.size(); q++ )
+        {
+            auto _bodyWrapper = new TMjcBodyWrapper( _sbodies[q],
+                                                     m_workingDir );;
+            _bodyWrapper->setMjcfTargetElm( m_mjcfResourcesPtr );
+
+            m_bodyWrappers.push_back( _bodyWrapper );
+        }
+
+        for ( size_t q = 0; q < _sjoints.size(); q++ )
+        {
+            // @WIP
+        }
     }
 
     TMjcSimulation::~TMjcSimulation()
@@ -91,6 +108,9 @@ namespace mujoco {
 
         for ( size_t q = 0; q < m_agentWrappers.size(); q++ )
             m_agentWrappers[q]->initialize();// Injects agent resources into m_mjcfResourcesPtr
+
+        for ( size_t q = 0; q < m_bodyWrappers.size(); q++ )
+            m_bodyWrappers[q]->initialize();
 
         /* Inject resources into the workspace xml *****************************/
         std::string _workspaceModelPath;
@@ -146,6 +166,16 @@ namespace mujoco {
             _mujocoAgentWrapper->setMjcScene( m_mjcScenePtr );
         }
 
+        for ( size_t q = 0; q < m_bodyWrappers.size(); q++ )
+        {
+            auto _mujocoBodyWrapper = reinterpret_cast< TMjcBodyWrapper* >
+                                            ( m_bodyWrappers[q] );
+
+            _mujocoBodyWrapper->setMjcModel( m_mjcModelPtr );
+            _mujocoBodyWrapper->setMjcData( m_mjcDataPtr );
+            _mujocoBodyWrapper->setMjcScene( m_mjcScenePtr );
+        }
+
         std::cout << "nq: " << m_mjcModelPtr->nq << std::endl;
         std::cout << "nv: " << m_mjcModelPtr->nv << std::endl;
         std::cout << "nu: " << m_mjcModelPtr->nu << std::endl;
@@ -171,6 +201,11 @@ namespace mujoco {
         for ( size_t q = 0; q < m_agentWrappers.size(); q++ )
         {
             m_agentWrappers[q]->preStep();
+        }
+
+        for ( size_t q = 0; q < m_bodyWrappers.size(); q++ )
+        {
+            m_bodyWrappers[q]->preStep();
         }
     }
 
@@ -206,6 +241,11 @@ namespace mujoco {
         {
             m_terrainGenWrappers[q]->postStep();
         }
+
+        for ( size_t q = 0; q < m_bodyWrappers.size(); q++ )
+        {
+            m_bodyWrappers[q]->postStep();
+        }
     }
     
     void TMjcSimulation::_resetInternal()
@@ -218,6 +258,11 @@ namespace mujoco {
         for ( size_t q = 0; q < m_terrainGenWrappers.size(); q++ )
         {
             m_terrainGenWrappers[q]->reset();
+        }
+
+        for ( size_t q = 0; q < m_bodyWrappers.size(); q++ )
+        {
+            m_bodyWrappers[q]->reset();
         }
     }
 

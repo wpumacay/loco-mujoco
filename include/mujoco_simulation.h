@@ -5,6 +5,7 @@
 
 #include <mujoco_terrain_wrapper.h>
 #include <mujoco_agent_wrapper.h>
+#include <mujoco_sandbox_body_wrapper.h>
 
 #ifndef MUJOCO_LICENSE_FILE
     #define MUJOCO_LICENSE_FILE "~/.mujoco/mjkey.txt"

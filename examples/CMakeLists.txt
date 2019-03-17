@@ -87,3 +87,8 @@ add_executable( test_terrain_static
                 test_terrain_static.cpp )
 target_link_libraries( test_terrain_static
                        tysocCore )
+
+add_executable( test_sandbox_bodies
+                test_sandbox_bodies.cpp )
+target_link_libraries( test_sandbox_bodies
+                       tysocCore )

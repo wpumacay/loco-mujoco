@@ -24,7 +24,7 @@ int main( int argc, const char** argv )
     }
 
     auto _modelLoader = tysoc::TModelLoader::Create();
-    auto _modelData = _modelLoader->getMjcfModel( "humanoid" );
+    auto _modelData = _modelLoader->getMjcfModel( "walker2d_gym" );
     auto _agent = tysoc::agent::createKinTreeAgent( "agent0", { 0.0f, 0.0f, 1.0f }, _modelData );
 
     auto _terrainGenStatic = new tysoc::terrain::TStaticTerrainGenerator( "terrainGen0" );
@@ -45,7 +45,7 @@ int main( int argc, const char** argv )
     auto _simulation = _runtime->createSimulation( _scenario );
     _simulation->initialize();
 
-    auto _visualizer = _runtime->createVisualizer( _simulation->scenario() );
+    auto _visualizer = _runtime->createVisualizer( _scenario );
     _visualizer->initialize();
 
     while ( _visualizer->isActive() )

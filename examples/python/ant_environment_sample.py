@@ -5,7 +5,7 @@ import pytysoc
 
 import numpy as np
 
-_agent = tysoc_bindings.PyCoreAgent( 'agent0', [0,0,0.75], 'mjcf', 'ant' )
+_agent = tysoc_bindings.PyCoreAgent( 'agent0', [1,1,1.25], 'mjcf', 'walker2d_gym' )
 _terrainGen = tysoc_bindings.PyStaticTerrainGen( 'terrainGen0' )
 _terrainGen.createPrimitive( 'plane',
                              [10,10,0.1],
@@ -19,7 +19,7 @@ _scenario.addAgent( _agent )
 _scenario.addTerrainGen( _terrainGen )
 
 _runtime = pytysoc.createRuntime( physicsBackend = pytysoc.BACKENDS.PHYSICS.MUJOCO,
-                                  renderingBackend = pytysoc.BACKENDS.RENDERING.GLVIZ,
+                                  renderingBackend = pytysoc.BACKENDS.RENDERING.MJCVIZ,
                                   workingDir = pytysoc.PATHS.WORKING_DIR )
 
 _simulation = _runtime.createSimulation( _scenario )

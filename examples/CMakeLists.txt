@@ -92,3 +92,8 @@ add_executable( test_sandbox_bodies
                 test_sandbox_bodies.cpp )
 target_link_libraries( test_sandbox_bodies
                        tysocCore )
+
+add_executable( test_sandbox_joints
+                test_sandbox_joints.cpp )
+target_link_libraries( test_sandbox_joints
+                       tysocCore )

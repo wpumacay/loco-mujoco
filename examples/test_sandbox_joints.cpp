@@ -1,31 +1,26 @@
 
 // Includes from core functionality
 #include <runtime.h>
-#include <model_loader.h>
 // Includes from mujoco functionality
-#include <mujoco_common.h>
+#include <mujoco_config.h>
 
-static std::string VISUALIZER_TYPE = "custom";// custom visualizer using cat1 engine
-
-int main( int argc, const char** argv )
+int main()
 {
-    if ( argc > 1 )
-    {
-        try
-        {
-            VISUALIZER_TYPE = std::string( argv[1] );
-        }
-        catch ( const std::exception& e )
-        {
-            std::cout << "ERROR> should pass which visualizer to use" << std::endl;
-            std::cerr << e.what() << '\n';
-            return 1;
-        }
-    }
 
-    auto _modelLoader = tysoc::TModelLoader::Create();
-    auto _modelData = _modelLoader->getMjcfModel( "walker2d_gym" );
-    auto _agent = tysoc::agent::createKinTreeAgent( "agent0", { 1.0f, 1.0f, 1.25f }, _modelData );
+    auto _bbox = new tysoc::sandbox::TBody();
+    _bbox->name = "bbox";
+    _bbox->type = "box";
+    _bbox->size = { 0.2, 0.2, 1.0 };
+    _bbox->worldTransform.setPosition( { 1.0, 1.0, 1.0 } );
+
+    auto _jhinge = new tysoc::sandbox::TJoint();
+    _jhinge->name = "jhinge";
+    _jhinge->type = "hinge";
+    _jhinge->axis = { 1, 0, 0 };
+    _jhinge->limits = { -180, 180 };
+    _jhinge->parentBodyPtr = _bbox;
+
+    _bbox->joints.push_back( _jhinge );
 
     auto _terrainGenStatic = new tysoc::terrain::TStaticTerrainGenerator( "terrainGen0" );
     _terrainGenStatic->createPrimitive( "plane", 
@@ -36,10 +31,10 @@ int main( int argc, const char** argv )
                                         "chessboard" );
 
     auto _scenario = new tysoc::TScenario();
-    _scenario->addAgent( _agent );
+    _scenario->addBody( _bbox );
     _scenario->addTerrainGenerator( _terrainGenStatic );
 
-    auto _runtime = new tysoc::TRuntime( tysoc::config::physics::MUJOCO, 
+    auto _runtime = new tysoc::TRuntime( tysoc::config::physics::MUJOCO,
                                          tysoc::config::rendering::GLVIZ );
 
     auto _simulation = _runtime->createSimulation( _scenario );

@@ -143,7 +143,7 @@ namespace mujoco {
 
             _geomElm->setAttributeInt( "contype", 0 );
             _geomElm->setAttributeInt( "conaffinity", 1 );
-            //_geomElm->setAttributeVec3( "friction", { 0.7f, 0.1f, 0.1f } );
+            _geomElm->setAttributeVec3( "friction", { 0.7f, 0.1f, 0.1f } );
 
             //_bodyElm->children.push_back( _geomElm );
             //_worldbody->children.push_back( _bodyElm );

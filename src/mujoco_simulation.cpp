@@ -52,7 +52,6 @@ namespace mujoco {
         }
 
         auto _sbodies = m_scenarioPtr->getBodies();
-        auto _sjoints = m_scenarioPtr->getJoints();
 
         for ( size_t q = 0; q < _sbodies.size(); q++ )
         {
@@ -61,11 +60,6 @@ namespace mujoco {
             _bodyWrapper->setMjcfTargetElm( m_mjcfResourcesPtr );
 
             m_bodyWrappers.push_back( _bodyWrapper );
-        }
-
-        for ( size_t q = 0; q < _sjoints.size(); q++ )
-        {
-            // @WIP
         }
     }
 

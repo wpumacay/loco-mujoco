@@ -381,6 +381,9 @@ namespace mujoco {
                 // @GENERIC
                 if ( _joints[i]->damping != 0.0f )
                     _jointElmPtr->setAttributeFloat( "damping", _joints[i]->damping );
+                // @GENERIC
+                if ( _joints[i]->ref != 0.0f )
+                    _jointElmPtr->setAttributeFloat( "ref", _joints[i]->ref );
             }
 
             _bodyElmPtr->children.push_back( _jointElmPtr );

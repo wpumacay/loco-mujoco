@@ -28,9 +28,19 @@ endif()
 
 # Configure tysocMjc project *************************************************
 
-# Set the lbirary paths as props to allow usage from other projects
-set_property( GLOBAL PROPERTY PROP_TYSOC_BACKEND_PHYSICS_MUJOCO "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libtysocPhysicsMujoco.so" )
-set_property( GLOBAL PROPERTY PROP_TYSOC_BACKEND_GRAPHICS_MJCVIZ "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libtysocRenderingMjcViz.so" )
+# Set the library paths as props to allow usage from other projects
+if ( WIN32 )
+    set_property( GLOBAL PROPERTY PROP_TYSOC_BACKEND_PHYSICS_MUJOCO "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libtysocPhysicsMujoco.dll" )
+    set_property( GLOBAL PROPERTY PROP_TYSOC_BACKEND_GRAPHICS_MJCVIZ "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libtysocRenderingMjcViz.dll" )
+elseif ( UNIX )
+    if ( APPLE )
+        set_property( GLOBAL PROPERTY PROP_TYSOC_BACKEND_PHYSICS_MUJOCO "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libtysocPhysicsMujoco.dylib" )
+        set_property( GLOBAL PROPERTY PROP_TYSOC_BACKEND_GRAPHICS_MJCVIZ "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libtysocRenderingMjcViz.dylib" )
+    else ()
+        set_property( GLOBAL PROPERTY PROP_TYSOC_BACKEND_PHYSICS_MUJOCO "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libtysocPhysicsMujoco.so" )
+        set_property( GLOBAL PROPERTY PROP_TYSOC_BACKEND_GRAPHICS_MJCVIZ "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libtysocRenderingMjcViz.so" )
+    endif()
+endif()
 
 # get properties defined in core library
 get_property( VAR_TYSOC_PATH_RESOURCES              GLOBAL PROPERTY PROP_TYSOC_PATH_RESOURCES )
@@ -81,13 +91,35 @@ else()
     include_directories( "${CMAKE_SOURCE_DIR}/core/ext/tinyxml2" )
 endif()
 
-
-include_directories( "~/.mujoco/mujoco200_linux/include" )
-link_directories( "~/.mujoco/mujoco200_linux/bin" )
+if ( WIN32 )
+    # Path to mujoco library in the windows system
+    include_directories( "C:/.mujoco/mujoco200_win64/include" )
+    link_directories( "C:/.mujoco/mujoco200_win64/bin" )
+elseif ( UNIX )
+    if ( APPLE )
+        # Apple kind of needs to specify this (at least in the system I had available, ...
+        # which was a brand new macbookair from a friend)
+        include_directories( /usr/local/include )
+        link_directories( /usr/local/lib )
+        # Path to mujoco library in the macos system
+        include_directories( "~/.mujoco/mujoco200_macos/include" )
+        link_directories( "~/.mujoco/mujoco200_macos/bin" )
+    else ()
+        # Path to mujoco library in the linux system
+        include_directories( "~/.mujoco/mujoco200_linux/include" )
+        link_directories( "~/.mujoco/mujoco200_linux/bin" )
+    endif()
+endif()
 
 # mujoco configuration
 set( CMAKE_CXX_FLAGS "-mavx -pthread -g ${CMAKE_CXX_FLAGS}" )
-get_filename_component( MUJOCO_LICENSE_ABSOLUTE_PATH "~/.mujoco/mjkey.txt" ABSOLUTE )
+
+if ( WIN32 )
+    get_filename_component( MUJOCO_LICENSE_ABSOLUTE_PATH "C:/.mujoco/mjkey.txt" ABSOLUTE )
+elseif ( UNIX )
+    get_filename_component( MUJOCO_LICENSE_ABSOLUTE_PATH "~/.mujoco/mjkey.txt" ABSOLUTE )
+endif()
+
 add_definitions( -DMUJOCO_LICENSE_FILE="${MUJOCO_LICENSE_ABSOLUTE_PATH}" )
 
 message( "MuJoCo license path: ${MUJOCO_LICENSE_ABSOLUTE_PATH}" )

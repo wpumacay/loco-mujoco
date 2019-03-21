@@ -20,7 +20,9 @@ namespace mujoco {
         m_mjcfTargetResourcesPtr = NULL;
 
         // collect the required data
-        _createMjcResourcesFromBody();
+        auto _worldBodyElmPtr = new mjcf::GenericElement( "worldbody" );
+        m_mjcfResourcesPtr->children.push_back( _worldBodyElmPtr );
+        _createMjcResourcesFromBody( _worldBodyElmPtr, m_bodyPtr );
     }
 
     TMjcBodyWrapper::~TMjcBodyWrapper()
@@ -93,24 +95,7 @@ namespace mujoco {
         if ( !m_bodyPtr )
             return;
 
-        // grab the position from the mujoco backend
-        auto _pos = utils::getBodyPosition( m_mjcModelPtr,
-                                            m_mjcDataPtr,
-                                            m_bodyPtr->name );
-        // and the rotation as well
-        auto _rot = utils::getBodyOrientation( m_mjcModelPtr,
-                                               m_mjcDataPtr,
-                                               m_bodyPtr->name );
-
-        // then set it to the body's worldTransform
-        m_bodyPtr->worldTransform.setPosition( _pos );
-        m_bodyPtr->worldTransform.setRotation( _rot );
-
-        for ( size_t q = 0; q < m_bodyPtr->joints.size(); q++ )
-        {
-            auto _joint = m_bodyPtr->joints[q];
-            _joint->worldTransform = m_bodyPtr->worldTransform * _joint->relTransform;
-        }
+        _updateBodyRecursively( m_bodyPtr );
     }
 
     void TMjcBodyWrapper::_changePositionInternal()
@@ -145,34 +130,44 @@ namespace mujoco {
                            m_bodyPtr->size );
     }
 
-    void TMjcBodyWrapper::_createMjcResourcesFromBody()
+    void TMjcBodyWrapper::_createMjcResourcesFromBody( mjcf::GenericElement* parentElmPtr,
+                                                       sandbox::TBody* bodyPtr )
     {
-        if ( !m_mjcfResourcesPtr )
+        if ( !parentElmPtr )
             return;
 
-        if ( !m_bodyPtr )
+        if ( !bodyPtr )
             return;
-
-        auto _worldBody = new mjcf::GenericElement( "worldbody" );
-        m_mjcfResourcesPtr->children.push_back( _worldBody );
         
         auto _bodyElmPtr = new mjcf::GenericElement( "body" );
-        _bodyElmPtr->setAttributeString( "name", m_bodyPtr->name );
-        _bodyElmPtr->setAttributeVec3( "pos", m_bodyPtr->worldTransform.getPosition() );
-        _bodyElmPtr->setAttributeVec4( "quat", m_bodyPtr->worldTransform.getRotQuaternion() );
-        _worldBody->children.push_back( _bodyElmPtr );
+        _bodyElmPtr->setAttributeString( "name", bodyPtr->name );
+        if ( !bodyPtr->parentBodyPtr )
+        {
+            _bodyElmPtr->setAttributeVec3( "pos", bodyPtr->worldTransform.getPosition() );
+
+            auto _quat = bodyPtr->worldTransform.getRotQuaternion();
+            _bodyElmPtr->setAttributeVec4( "quat", { _quat.w, _quat.x, _quat.y, _quat.z } );
+        }
+        else
+        {
+            _bodyElmPtr->setAttributeVec3( "pos", bodyPtr->relTransform.getPosition() );
+
+            auto _quat = bodyPtr->relTransform.getRotQuaternion();
+            _bodyElmPtr->setAttributeVec4( "quat", { _quat.w, _quat.x, _quat.y, _quat.z } );
+        }
+        parentElmPtr->children.push_back( _bodyElmPtr );
 
         auto _geomElmPtr = new mjcf::GenericElement( "geom" );
-        _geomElmPtr->setAttributeString( "name", m_bodyPtr->name );
-        _geomElmPtr->setAttributeString( "type", m_bodyPtr->type );
-        _geomElmPtr->setAttributeVec3( "size", _extractMjcSizeFromStandardSize( m_bodyPtr->type, m_bodyPtr->size ) );
+        _geomElmPtr->setAttributeString( "name", bodyPtr->name );
+        _geomElmPtr->setAttributeString( "type", bodyPtr->type );
+        _geomElmPtr->setAttributeVec3( "size", _extractMjcSizeFromStandardSize( bodyPtr->type, bodyPtr->size ) );
         _bodyElmPtr->children.push_back( _geomElmPtr );
 
-        for ( size_t q = 0; q < m_bodyPtr->joints.size(); q++ )
+        for ( size_t q = 0; q < bodyPtr->joints.size(); q++ )
         {
-            auto _joint = m_bodyPtr->joints[q];
+            auto _joint = bodyPtr->joints[q];
             auto _jointElmPtr = new mjcf::GenericElement( "joint" );
-            _jointElmPtr->setAttributeString( "name", m_bodyPtr->name + "_jnt_" + _joint->name );
+            _jointElmPtr->setAttributeString( "name", bodyPtr->name + "_jnt_" + _joint->name );
             _jointElmPtr->setAttributeString( "type", _joint->type );
 
             if ( _joint->type != "free" )
@@ -196,9 +191,12 @@ namespace mujoco {
             _bodyElmPtr->children.push_back( _jointElmPtr );
         }
 
+        for ( size_t q = 0; q < bodyPtr->bodies.size(); q++ )
+            _createMjcResourcesFromBody( _bodyElmPtr, bodyPtr->bodies[q] );
+
         // // @DEBUG: just for testing, add free type joints
         // auto _freeJointElmPtr = new mjcf::GenericElement( "joint" );
-        // _freeJointElmPtr->setAttributeString( "name", m_bodyPtr->name + "_jnt_free" );
+        // _freeJointElmPtr->setAttributeString( "name", bodyPtr->name + "_jnt_free" );
         // _freeJointElmPtr->setAttributeString( "type", "free" );
         // _bodyElmPtr->children.push_back( _freeJointElmPtr );
     }
@@ -221,6 +219,34 @@ namespace mujoco {
             _res = { 0.5f * size.x, 0.5f * size.y, 0.5f * size.z };
 
         return _res;
+    }
+
+    void TMjcBodyWrapper::_updateBodyRecursively( sandbox::TBody* bodyPtr )
+    {
+        if ( !bodyPtr )
+            return;
+
+        // grab the position from the mujoco backend
+        auto _pos = utils::getBodyPosition( m_mjcModelPtr,
+                                            m_mjcDataPtr,
+                                            bodyPtr->name );
+        // and the rotation as well
+        auto _rot = utils::getBodyOrientation( m_mjcModelPtr,
+                                               m_mjcDataPtr,
+                                               bodyPtr->name );
+
+        // then set it to the body's worldTransform
+        bodyPtr->worldTransform.setPosition( _pos );
+        bodyPtr->worldTransform.setRotation( _rot );
+
+        for ( size_t q = 0; q < bodyPtr->joints.size(); q++ )
+        {
+            auto _joint = bodyPtr->joints[q];
+            _joint->worldTransform = bodyPtr->worldTransform * _joint->relTransform;
+        }
+
+        for ( size_t q = 0; q < bodyPtr->bodies.size(); q++ )
+            _updateBodyRecursively( bodyPtr->bodies[q] );
     }
 
 }}

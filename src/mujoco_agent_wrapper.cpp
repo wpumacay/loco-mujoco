@@ -310,14 +310,16 @@ namespace mujoco {
         _bodyElmPtr->setAttributeString( "name", kinTreeBodyPtr->name );
         if ( !kinTreeBodyPtr->parentBodyPtr )
         {
-            // root should use its worldTransform directly
+            // root should use its worldTransform directly (position of root is defined by user, not model)
             _bodyElmPtr->setAttributeVec3( "pos", kinTreeBodyPtr->worldTransform.getPosition() );
         }
         else
         {
-            // other bodies use its relative transform to the parent body
+            // non-root bodies use its relative transform to the parent body
             _bodyElmPtr->setAttributeVec3( "pos", kinTreeBodyPtr->relTransform.getPosition() );
         }
+        // rotation is stored in relTransform, and is used for both ...
+        // root (world rotation of model) and non-root bodies (local rotation of body)
         auto _quat = TMat3::toQuaternion( kinTreeBodyPtr->relTransform.getRotation() );
         _bodyElmPtr->setAttributeVec4( "quat", { _quat.w, _quat.x, _quat.y, _quat.z } );
 

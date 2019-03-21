@@ -19,10 +19,14 @@ namespace mujoco {
         mjcf::GenericElement* m_mjcfTargetResourcesPtr;
 
         // creates mjcf resources for this wrapper
-        void _createMjcResourcesFromBody();
+        void _createMjcResourcesFromBody( mjcf::GenericElement* parentElmPtr,
+                                          sandbox::TBody* bodyPtr );
         // converts standard size to mjcf size
         TVec3 _extractMjcSizeFromStandardSize( const std::string& shape,
                                                const TVec3& size );
+
+        // updates a body recursively
+        void _updateBodyRecursively( sandbox::TBody* bodyPtr );
 
         // mujoco simulation data
         mjModel*    m_mjcModelPtr;

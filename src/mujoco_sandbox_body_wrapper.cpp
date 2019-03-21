@@ -105,6 +105,12 @@ namespace mujoco {
         // then set it to the body's worldTransform
         m_bodyPtr->worldTransform.setPosition( _pos );
         m_bodyPtr->worldTransform.setRotation( _rot );
+
+        for ( size_t q = 0; q < m_bodyPtr->joints.size(); q++ )
+        {
+            auto _joint = m_bodyPtr->joints[q];
+            _joint->worldTransform = m_bodyPtr->worldTransform * _joint->relTransform;
+        }
     }
 
     void TMjcBodyWrapper::_changePositionInternal()
@@ -162,11 +168,39 @@ namespace mujoco {
         _geomElmPtr->setAttributeVec3( "size", _extractMjcSizeFromStandardSize( m_bodyPtr->type, m_bodyPtr->size ) );
         _bodyElmPtr->children.push_back( _geomElmPtr );
 
-        // @DEBUG: just for testing, add free type joints
-        auto _freeJointElmPtr = new mjcf::GenericElement( "joint" );
-        _freeJointElmPtr->setAttributeString( "name", m_bodyPtr->name + "_jnt_free" );
-        _freeJointElmPtr->setAttributeString( "type", "free" );
-        _bodyElmPtr->children.push_back( _freeJointElmPtr );
+        for ( size_t q = 0; q < m_bodyPtr->joints.size(); q++ )
+        {
+            auto _joint = m_bodyPtr->joints[q];
+            auto _jointElmPtr = new mjcf::GenericElement( "joint" );
+            _jointElmPtr->setAttributeString( "name", m_bodyPtr->name + "_jnt_" + _joint->name );
+            _jointElmPtr->setAttributeString( "type", _joint->type );
+
+            if ( _joint->type != "free" )
+            {
+                _jointElmPtr->setAttributeVec3( "pos", _joint->relTransform.getPosition() );
+                _jointElmPtr->setAttributeVec3( "axis", _joint->axis );
+                if ( TVec2::length( _joint->limits ) < 0.1 )
+                {
+                    _jointElmPtr->setAttributeString( "limited", "false" );
+                }
+                else
+                {
+                    if ( _joint->type == "ball" )
+                        _joint->limits.x = 0.0;
+
+                    _jointElmPtr->setAttributeString( "limited", "true" );
+                    _jointElmPtr->setAttributeVec2( "range", _joint->limits );
+                }
+            }
+
+            _bodyElmPtr->children.push_back( _jointElmPtr );
+        }
+
+        // // @DEBUG: just for testing, add free type joints
+        // auto _freeJointElmPtr = new mjcf::GenericElement( "joint" );
+        // _freeJointElmPtr->setAttributeString( "name", m_bodyPtr->name + "_jnt_free" );
+        // _freeJointElmPtr->setAttributeString( "type", "free" );
+        // _bodyElmPtr->children.push_back( _freeJointElmPtr );
     }
 
     TVec3 TMjcBodyWrapper::_extractMjcSizeFromStandardSize( const std::string& shape,

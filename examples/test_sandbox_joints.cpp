@@ -11,7 +11,8 @@ int main()
     _bbox->name = "bbox";
     _bbox->type = "box";
     _bbox->size = { 0.2, 0.2, 1.0 };
-    _bbox->worldTransform.setPosition( { 1.0, 1.0, 1.0 } );
+    _bbox->worldTransform.setPosition( { 1.0, 1.0, 2.0 } );
+    _bbox->worldTransform.setRotation( tysoc::TMat3::fromEuler( { 0.4, 0.6, 0.8 } ) );
 
     auto _jhinge = new tysoc::sandbox::TJoint();
     _jhinge->name = "jhinge";
@@ -19,6 +20,7 @@ int main()
     _jhinge->axis = { 1, 0, 0 };
     _jhinge->limits = { -180, 180 };
     _jhinge->parentBodyPtr = _bbox;
+    _jhinge->relTransform.setPosition( { 0.0, 0.0, 0.5 } );
 
     _bbox->joints.push_back( _jhinge );
 

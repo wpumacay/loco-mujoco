@@ -7,28 +7,28 @@
 int main()
 {
 
-    auto _bbox = new tysoc::sandbox::TBody();
+    auto _bbox = new tysoc::sandbox::TFreeBody();
     _bbox->name = "bbox";
     _bbox->type = "box";
     _bbox->size = { 0.2, 0.2, 0.4 };
     _bbox->worldTransform.setPosition( { 1.0, 1.0, 1.0 } );
     _bbox->worldTransform.setRotation( tysoc::TMat3::fromEuler( { 0.4, 0.6, 0.8 } ) );
 
-    auto _bsphere = new tysoc::sandbox::TBody();
+    auto _bsphere = new tysoc::sandbox::TFreeBody();
     _bsphere->name = "bsphere";
     _bsphere->type = "sphere";
     _bsphere->size = { 0.2, 0.2, 0.2 };
     _bsphere->worldTransform.setPosition( { 1.0, -1.0, 1.0 } );
     _bsphere->worldTransform.setRotation( tysoc::TMat3::fromEuler( { 0.4, 0.6, 0.8 } ) );
 
-    auto _bcapsule = new tysoc::sandbox::TBody();
+    auto _bcapsule = new tysoc::sandbox::TFreeBody();
     _bcapsule->name = "bcapsule";
     _bcapsule->type = "capsule";
     _bcapsule->size = { 0.1, 0.4, 0.0 };
     _bcapsule->worldTransform.setPosition( { -1.0, 1.0, 1.0 } );
     _bcapsule->worldTransform.setRotation( tysoc::TMat3::fromEuler( { 0.4, 0.6, 0.8 } ) );
 
-    auto _bcylinder = new tysoc::sandbox::TBody();
+    auto _bcylinder = new tysoc::sandbox::TFreeBody();
     _bcylinder->name = "bcylinder";
     _bcylinder->type = "cylinder";
     _bcylinder->size = { 0.1, 0.4, 0.0 };

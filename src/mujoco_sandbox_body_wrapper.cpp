@@ -76,6 +76,17 @@ namespace mujoco {
             m_mjcfTargetResourcesPtr->children.push_back( _worldBodyElmPtr );
     }
 
+    void TMjcBodyWrapper::_initializeWorldTransformsInternal()
+    {
+        // @TODO: Change the order of the method calls, as it seems unnecessary ...
+        // to initialize twice the world transforms for the internals (during ..
+        // construction the world transforms should already be the correct ones)
+
+        // Do nothing, as the reltransforms are used internally by Mujoco to
+        // instantiate the model (it wont override the world transforms computed ...
+        // with the given rel transforms).
+    }
+
     void TMjcBodyWrapper::_resetInternal()
     {
         if ( !m_bodyPtr )
@@ -161,6 +172,11 @@ namespace mujoco {
         _geomElmPtr->setAttributeString( "name", bodyPtr->name );
         _geomElmPtr->setAttributeString( "type", bodyPtr->type );
         _geomElmPtr->setAttributeVec3( "size", _extractMjcSizeFromStandardSize( bodyPtr->type, bodyPtr->size ) );
+        if ( bodyPtr->contype >= 0 && bodyPtr->conaffinity >= 0 )
+        {
+            _geomElmPtr->setAttributeInt( "contype", bodyPtr->contype );
+            _geomElmPtr->setAttributeInt( "conaffinity", bodyPtr->conaffinity );
+        }
         _bodyElmPtr->children.push_back( _geomElmPtr );
 
         for ( size_t q = 0; q < bodyPtr->joints.size(); q++ )

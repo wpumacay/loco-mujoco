@@ -38,6 +38,7 @@ namespace mujoco {
         protected :
 
         void _initializeInternal() override;
+        void _initializeWorldTransformsInternal() override;
         void _resetInternal() override;
         void _preStepInternal() override;
         void _postStepInternal() override;

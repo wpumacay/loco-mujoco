@@ -56,7 +56,7 @@ namespace mujoco {
         for ( size_t q = 0; q < _sbodies.size(); q++ )
         {
             auto _bodyWrapper = new TMjcBodyWrapper( _sbodies[q],
-                                                     m_workingDir );;
+                                                     m_workingDir );
             _bodyWrapper->setMjcfTargetElm( m_mjcfResourcesPtr );
 
             m_bodyWrappers.push_back( _bodyWrapper );

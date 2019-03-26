@@ -39,6 +39,7 @@ namespace mujoco {
         void _createMjcAssetsFromKinTree();
         void _createMjcSensorsFromKinTree();
         void _createMjcActuatorsFromKinTree();
+        void _createMjcExclusionContactsFromKinTree();
 
         TVec3 _extractMjcSizeFromStandardSize( const TGeometry& geometry );
 

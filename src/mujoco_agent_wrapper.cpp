@@ -245,7 +245,9 @@ namespace mujoco {
         _createMjcSensorsFromKinTree();
         // Collect all actuators and replace the names accordingly
         _createMjcActuatorsFromKinTree();
-        
+        // Collect all contact eclusions
+        _createMjcExclusionContactsFromKinTree();
+
         // Collect extra specifics depending of the type of data being parsed
         if ( m_kinTreeAgentPtr->getModelTemplateType() == agent::MODEL_TEMPLATE_TYPE_MJCF )
         {
@@ -390,6 +392,14 @@ namespace mujoco {
 
             _bodyElmPtr->children.push_back( _jointElmPtr );
         }
+
+        // @TODO|@CLEAN: Change this initialization from visual and collisions to ...
+        // be separate for each. In MuJoCo, only collisions should matter, and ...
+        // they are created from the geometries themselves. These same geoms are ...
+        // used for visuals, so the viz only uses those (GLVIZ), but mujoco viz uses ...
+        // the ones parsed from collisions. In rlsim, visuals and collisions are ...
+        // separate from each other in the sense that they are parse from different ...
+        // elements (visuals-> drawdefinitions, collisions-> bodydefinitions)
 
         // add geoms
         if ( kinTreeBodyPtr->childVisuals.size() > 0 )
@@ -692,6 +702,28 @@ namespace mujoco {
                 _actuatorResource->setAttributeFloat( "kv", _kinActuators[i]->kv );
 
             _actuatorsElmPtr->children.push_back( _actuatorResource );
+        }
+    }
+
+    void TMjcKinTreeAgentWrapper::_createMjcExclusionContactsFromKinTree()
+    {
+        auto _kinExclusionContacts = m_kinTreeAgentPtr->exclusionContacts();
+        if ( _kinExclusionContacts.size() < 1 )
+        {
+            return;
+        }
+
+        auto _exclusionContactsElmPtr = new mjcf::GenericElement( "contact" );
+        m_mjcfResourcesPtr->children.push_back( _exclusionContactsElmPtr );
+
+        for ( size_t i = 0; i < _kinExclusionContacts.size(); i++ )
+        {
+            auto _exclusionPair = _kinExclusionContacts[i];
+            auto _exclusionPairElmPtr = new mjcf::GenericElement( "exclude" );
+            _exclusionPairElmPtr->setAttributeString( "body1", _exclusionPair.first );
+            _exclusionPairElmPtr->setAttributeString( "body2", _exclusionPair.second );
+
+            _exclusionContactsElmPtr->children.push_back( _exclusionPairElmPtr );
         }
     }
 

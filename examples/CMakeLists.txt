@@ -107,3 +107,5 @@ add_executable( test_sandbox_joints_compound
                 test_sandbox_joints_compound.cpp )
 target_link_libraries( test_sandbox_joints_compound
                        tysocCore )
+
+add_subdirectory( cpp )

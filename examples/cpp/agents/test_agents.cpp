@@ -13,7 +13,8 @@ static std::string TYSOC_RLSIM_TEMPLATES    = std::string( TYSOC_PATH_RLSIM_TEMP
 tysoc::agent::TAgentKinTree* createAgent( const std::string& format,
                                           const std::string& modelName,
                                           const std::string& agentName,
-                                          const tysoc::TVec3& position )
+                                          const tysoc::TVec3& position,
+                                          const tysoc::TVec3& rotation = tysoc::TVec3() )
 {
     auto _modelLoader = tysoc::TModelLoader::Create();
 
@@ -21,19 +22,19 @@ tysoc::agent::TAgentKinTree* createAgent( const std::string& format,
     {
         auto _modelData = _modelLoader->getUrdfModel( modelName );
 
-        return tysoc::agent::createKinTreeAgent( agentName, position, _modelData );
+        return tysoc::agent::createKinTreeAgent( agentName, _modelData, position, rotation );
     }
     else if ( format == "rlsim" )
     {
         auto _modelData = _modelLoader->getRlsimModel( modelName );
         
-        return tysoc::agent::createKinTreeAgent( agentName, position, _modelData );
+        return tysoc::agent::createKinTreeAgent( agentName, _modelData, position, rotation );
     }
     else if ( format == "mjcf" )
     {
         auto _modelData = _modelLoader->getMjcfModel( modelName );
         
-        return tysoc::agent::createKinTreeAgent( agentName, position, _modelData );
+        return tysoc::agent::createKinTreeAgent( agentName, _modelData, position, rotation );
     }
 
     std::cout << "ERROR> format: " << format << " not supported" << std::endl;
@@ -59,7 +60,7 @@ int main( int argc, const char** argv )
 
     /* ***************************************************************************/
 
-    auto _agent = createAgent( MODEL_FORMAT, MODEL_NAME, "agent0", { 0.0f, 0.0f, 1.5f } );
+    auto _agent = createAgent( MODEL_FORMAT, MODEL_NAME, "agent0", { 0.0f, 0.0f, 1.5f }, { 0.5, 0.5, 0.5 } );
 
     if ( !_agent )
     {
@@ -94,7 +95,7 @@ int main( int argc, const char** argv )
 
     while ( _visualizer->isActive() )
     {
-        if ( _visualizer->checkSingleKeyPress( 15 ) )
+        if ( _visualizer->checkSingleKeyPress( tysoc::keys::KEY_P ) )
             _running = ( _running ) ? false : true;
 
         if ( _running )

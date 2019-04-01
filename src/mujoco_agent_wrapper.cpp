@@ -115,6 +115,18 @@ namespace mujoco {
         if ( m_kinTreeAgentPtr )
         {
             m_kinTreeAgentPtr->reset();
+
+            auto _rootBodyPtr = m_kinTreeAgentPtr->getRootBody();
+
+            utils::setBodyPosition( m_mjcModelPtr,
+                                    m_mjcDataPtr,
+                                    _rootBodyPtr->name,
+                                    m_kinTreeAgentPtr->getStartPosition() );
+
+            utils::setBodyOrientation( m_mjcModelPtr,
+                                       m_mjcDataPtr,
+                                       _rootBodyPtr->name,
+                                       TMat3::fromEuler( m_kinTreeAgentPtr->getStartRotation() ) );
         }
     }
 
@@ -164,7 +176,7 @@ namespace mujoco {
             _rotation.buff[7] = _rot[7];
             _rotation.buff[8] = _rot[8];
 
-            // then set it to the body's worldtransform
+            // then set it to the body's worldTransform
             _kinBodies[i]->worldTransform.setPosition( _position );
             _kinBodies[i]->worldTransform.setRotation( _rotation );
         }
@@ -312,18 +324,19 @@ namespace mujoco {
         _bodyElmPtr->setAttributeString( "name", kinTreeBodyPtr->name );
         if ( !kinTreeBodyPtr->parentBodyPtr )
         {
-            // root should use its worldTransform directly (position of root is defined by user, not model)
+            // root should use its worldTransform directly (position and rotation of root is defined by user, not model)
             _bodyElmPtr->setAttributeVec3( "pos", kinTreeBodyPtr->worldTransform.getPosition() );
+            auto _quat = TMat3::toQuaternion( kinTreeBodyPtr->worldTransform.getRotation() );
+            _bodyElmPtr->setAttributeVec4( "quat", { _quat.w, _quat.x, _quat.y, _quat.z } );
         }
         else
         {
             // non-root bodies use its relative transform to the parent body
             _bodyElmPtr->setAttributeVec3( "pos", kinTreeBodyPtr->relTransform.getPosition() );
+            auto _quat = TMat3::toQuaternion( kinTreeBodyPtr->relTransform.getRotation() );
+            _bodyElmPtr->setAttributeVec4( "quat", { _quat.w, _quat.x, _quat.y, _quat.z } );
         }
-        // rotation is stored in relTransform, and is used for both ...
-        // root (world rotation of model) and non-root bodies (local rotation of body)
-        auto _quat = TMat3::toQuaternion( kinTreeBodyPtr->relTransform.getRotation() );
-        _bodyElmPtr->setAttributeVec4( "quat", { _quat.w, _quat.x, _quat.y, _quat.z } );
+        
 
         // add joints
         // if ( m_kinTreeAgentPtr->getModelTemplateType() ) @CONTINUE: traverse urdf format

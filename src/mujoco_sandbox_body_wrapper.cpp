@@ -76,17 +76,6 @@ namespace mujoco {
             m_mjcfTargetResourcesPtr->children.push_back( _worldBodyElmPtr );
     }
 
-    void TMjcBodyWrapper::_initializeWorldTransformsInternal()
-    {
-        // @TODO: Change the order of the method calls, as it seems unnecessary ...
-        // to initialize twice the world transforms for the internals (during ..
-        // construction the world transforms should already be the correct ones)
-
-        // Do nothing, as the reltransforms are used internally by Mujoco to
-        // instantiate the model (it wont override the world transforms computed ...
-        // with the given rel transforms).
-    }
-
     void TMjcBodyWrapper::_resetInternal()
     {
         if ( !m_bodyPtr )

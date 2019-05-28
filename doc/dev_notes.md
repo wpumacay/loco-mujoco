@@ -46,7 +46,26 @@ of wrapper here, one for static-terrain generators, and one for procedural-terra
 
 ## About object pool
 
-I think that I should make a separate object pool class that could have the information necessary when trying to recycle and reuse
-an object from the terrain. I came up with this because I need to make sure that objects in the pool satisfy some certain properties,
-and a separate queue with its logic being handled by a non-friendly object don't make it that clean (I guess). Some properties include
-making the objects be in a certain position, deactivating them (if possible), resizing them, etc.
+@TODO: Clean this up, seems legacy: I think that I should make a separate object 
+pool class that could have the information necessary when trying to recycle and reuse
+an object from the terrain. I came up with this because I need to make sure that 
+objects in the pool satisfy some certain properties, and a separate queue with its 
+logic being handled by a non-friendly object don't make it that clean (I guess). 
+Some properties include making the objects be in a certain position, deactivating 
+them (if possible), resizing them, etc.
+
+## About hfields
+
+Take into consideration the following: 
+
+```c++
+// For collision detection, a height field is treated as a union of triangular prisms. 
+// Collisions between height fields and other geoms (except for planes and other height 
+// fields which are not supported) are computed by first selecting the sub-grid of prisms 
+// that could collide with the geom based on its bounding box, and then using the general 
+// convex collider. The number of possible contacts between a height field and a geom is 
+// limited to 9; any contacts beyond that are discarded. To avoid penetration due to discarded 
+// contacts, the spatial features of the height field should be large compared to the geoms it collides with. 
+```
+
+We then must give enough resolution, but with care not to exceed the default number of contacts.

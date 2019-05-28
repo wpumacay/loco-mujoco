@@ -56,6 +56,9 @@ namespace viz {
         void _renderUIInternal() override;
         bool _isActiveInternal() override;
 
+        void _drawLineInternal( const TVec3& start, const TVec3& end, const TVec3& color ) override;
+        void _drawAABBInternal( const TVec3& aabbMin, const TVec3& aabbMax, const TMat4& aabbWorldTransform, const TVec3& color ) override;
+
         int _remapKeyInternal( int keyCode ) override;
         bool _isKeyDownInternal( int keyCode ) override;
         bool _checkSingleKeyPressInternal( int keyCode ) override;

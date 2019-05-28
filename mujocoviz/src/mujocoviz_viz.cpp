@@ -164,6 +164,16 @@ namespace viz {
         return !glfwWindowShouldClose( m_glfwWindowPtr );
     }
 
+    void TMujocoVisualizer::_drawLineInternal( const TVec3& start, const TVec3& end, const TVec3& color )
+    {
+        // do nothing
+    }
+
+    void TMujocoVisualizer::_drawAABBInternal( const TVec3& aabbMin, const TVec3& aabbMax, const TMat4& aabbWorldTransform, const TVec3& color )
+    {
+        // do nothing
+    }
+
     TIVizCamera* TMujocoVisualizer::_createCameraInternal( const std::string& name,
                                                            const std::string& type,
                                                            const TVec3& pos,

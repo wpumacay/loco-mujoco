@@ -76,8 +76,8 @@ namespace utils {
     }
 
     TVec3 getBodyPosition( mjModel* pModel,
-                                mjData* pData,
-                                const std::string& name )
+                           mjData* pData,
+                           const std::string& name )
     {
         TVec3 _res;
         
@@ -413,6 +413,34 @@ namespace utils {
         {
             std::cout << "body: " << name << " not found" << std::endl;
         }
+    }
+
+    TScalar getBodyMass( mjModel* pModel,
+                         const std::string& name )
+    {
+        TScalar _res = 0.0f;
+
+        auto _id = mj_name2id( pModel, mjOBJ_BODY, name.c_str() );
+        if ( _id != -1 )
+            _res = pModel->body_mass[_id];
+
+        return _res;
+    }
+
+    TVec3 getBodyInertiaDiag( mjModel* pModel,
+                              const std::string& name )
+    {
+        TVec3 _res = { 0.0f, 0.0f, 0.0f };
+
+        auto _id = mj_name2id( pModel, mjOBJ_BODY, name.c_str() );
+        if ( _id != -1 )
+        {
+            _res.x = pModel->body_inertia[3 * _id + 0];
+            _res.y = pModel->body_inertia[3 * _id + 1];
+            _res.z = pModel->body_inertia[3 * _id + 2];
+        }
+
+        return _res;
     }
 
 }}}

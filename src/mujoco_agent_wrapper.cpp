@@ -12,6 +12,8 @@ namespace mujoco {
         m_mjcDataPtr    = NULL;
         m_mjcScenePtr   = NULL;
 
+        m_hasMadeSummary = false;
+
         // create the mjcf resources element for this agent
         m_mjcfResourcesPtr = new mjcf::GenericElement( "mujoco" );
         m_mjcfResourcesPtr->setAttributeString( "model", name() );
@@ -112,26 +114,31 @@ namespace mujoco {
 
     void TMjcKinTreeAgentWrapper::_resetInternal()
     {
-        if ( m_kinTreeAgentPtr )
-        {
-            m_kinTreeAgentPtr->reset();
+        if ( !m_kinTreeAgentPtr )
+            return;
 
-            auto _rootBodyPtr = m_kinTreeAgentPtr->getRootBody();
+        m_kinTreeAgentPtr->reset();
 
-            utils::setBodyPosition( m_mjcModelPtr,
-                                    m_mjcDataPtr,
-                                    _rootBodyPtr->name,
-                                    m_kinTreeAgentPtr->getStartPosition() );
+        auto _rootBodyPtr = m_kinTreeAgentPtr->getRootBody();
 
-            utils::setBodyOrientation( m_mjcModelPtr,
-                                       m_mjcDataPtr,
-                                       _rootBodyPtr->name,
-                                       TMat3::fromEuler( m_kinTreeAgentPtr->getStartRotation() ) );
-        }
+        utils::setBodyPosition( m_mjcModelPtr,
+                                m_mjcDataPtr,
+                                _rootBodyPtr->name,
+                                m_kinTreeAgentPtr->getStartPosition() );
+
+        utils::setBodyOrientation( m_mjcModelPtr,
+                                   m_mjcDataPtr,
+                                   _rootBodyPtr->name,
+                                   TMat3::fromEuler( m_kinTreeAgentPtr->getStartRotation() ) );
+
+        m_hasMadeSummary = false;
     }
 
     void TMjcKinTreeAgentWrapper::_preStepInternal()
     {
+        if ( !m_kinTreeAgentPtr )
+            return;
+
         auto _kinActuators = m_kinTreeAgentPtr->getKinTreeActuators();
 
         for ( size_t i = 0; i < _kinActuators.size(); i++ )
@@ -141,10 +148,43 @@ namespace mujoco {
                                      _kinActuators[i]->name,
                                      _kinActuators[i]->ctrlValue );
         }
+
+        if ( !m_hasMadeSummary )
+        {
+            m_hasMadeSummary = true;
+
+            /* Generate summary information *******************************************/
+            TGenericParams& _summary = m_kinTreeAgentPtr->getSummary();
+
+            // collect inertia properties
+            TScalar _totalMass = 0.0f;
+            auto _bodies = m_kinTreeAgentPtr->getKinTreeBodies();
+            for ( size_t q = 0; q < _bodies.size(); q++ )
+            {
+                auto _name = _bodies[q]->name;
+                auto _mass = utils::getBodyMass( m_mjcModelPtr,
+                                                _name );
+
+                _summary.set( "mass-" + _name, _mass );
+                _totalMass += _mass;
+
+                auto _inertiaDiag = utils::getBodyInertiaDiag( m_mjcModelPtr,
+                                                            _name );
+
+                _summary.set( "inertia-" + _name, _inertiaDiag );
+            }
+
+            _summary.set( "total-mass", _totalMass );
+            /**************************************************************************/
+        }
+
     }
 
     void TMjcKinTreeAgentWrapper::_postStepInternal()
     {
+        if ( !m_kinTreeAgentPtr )
+            return;
+
         auto _kinBodies = m_kinTreeAgentPtr->getKinTreeBodies();
         for ( size_t i = 0; i < _kinBodies.size(); i++ )
         {

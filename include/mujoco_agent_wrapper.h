@@ -33,6 +33,9 @@ namespace mujoco {
         mjData*     m_mjcDataPtr;
         mjvScene*   m_mjcScenePtr;
 
+        // A flag to check if we already constructed a summary
+        bool m_hasMadeSummary;
+
         void _createMjcResourcesFromKinTree();
         void _createMjcResourcesFromBodyNode( mjcf::GenericElement* parentElmPtr,
                                               agent::TKinTreeBody* kinTreeBodyPtr );

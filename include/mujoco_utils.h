@@ -84,4 +84,10 @@ namespace utils {
                        TVec3& forces,
                        TVec3& torques );
 
+    TScalar getBodyMass( mjModel* pModel,
+                         const std::string& name );
+
+    TVec3 getBodyInertiaDiag( mjModel* pModel,
+                              const std::string& name );
+
 }}}

@@ -95,16 +95,13 @@ int main( int argc, const char** argv )
 
     while ( _visualizer->isActive() )
     {
-        if ( _visualizer->checkSingleKeyPress( 15 ) )
+        if ( _visualizer->checkSingleKeyPress( tysoc::keys::KEY_P ) )
             _simulation->togglePause();
 
+        if ( _visualizer->checkSingleKeyPress( tysoc::keys::KEY_ESCAPE ) )
+            break;
+
         _simulation->step();
-
-        // _visualizer->drawLine( { 0.0f, 0.0f, 0.0f }, { 5.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f } );
-        // _visualizer->drawLine( { 0.0f, 0.0f, 0.0f }, { 0.0f, 5.0f, 0.0f }, { 0.0f, 1.0f, 0.0f } );
-        // _visualizer->drawLine( { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 5.0f }, { 0.0f, 0.0f, 1.0f } );
-
-        // _visualizer->drawAABB( { -5, -2, -2 }, { 5, 2, 2 }, tysoc::TMat4(), { 0.8f, 0.1f, 0.1f } );
 
         _visualizer->update();
     }

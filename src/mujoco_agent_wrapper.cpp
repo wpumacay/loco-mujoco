@@ -455,102 +455,54 @@ namespace mujoco {
         // elements (visuals-> drawdefinitions, collisions-> bodydefinitions)
 
         // add geoms
-        if ( kinTreeBodyPtr->childVisuals.size() > 0 )
+        auto _geoms = kinTreeBodyPtr->childCollisions;
+        for ( size_t i = 0; i < _geoms.size(); i++ )
         {
-            auto _geoms = kinTreeBodyPtr->childVisuals;
-            for ( size_t i = 0; i < _geoms.size(); i++ )
+            auto _geomElmPtr = new mjcf::GenericElement( "geom" );
+            _geomElmPtr->setAttributeString( "name", _geoms[i]->name );
+            _geomElmPtr->setAttributeString( "type", _geoms[i]->geometry.type );
+            _geomElmPtr->setAttributeVec3( "pos", _geoms[i]->relTransform.getPosition() );
+            auto _gquat = TMat3::toQuaternion( _geoms[i]->relTransform.getRotation() );
+            _geomElmPtr->setAttributeVec4( "quat", { _gquat.w, _gquat.x, _gquat.y, _gquat.z } );
+            _geomElmPtr->setAttributeVec3( "size", _extractMjcSizeFromStandardSize( _geoms[i]->geometry ) );
+
+            if ( _geoms[i]->geometry.type == "mesh" )
             {
-                auto _geomElmPtr = new mjcf::GenericElement( "geom" );
-                _geomElmPtr->setAttributeString( "name", _geoms[i]->name );
-                _geomElmPtr->setAttributeString( "type", _geoms[i]->geometry.type );
-                _geomElmPtr->setAttributeVec3( "pos", _geoms[i]->relTransform.getPosition() );
-                auto _gquat = TMat3::toQuaternion( _geoms[i]->relTransform.getRotation() );
-                _geomElmPtr->setAttributeVec4( "quat", { _gquat.w, _gquat.x, _gquat.y, _gquat.z } );
-                _geomElmPtr->setAttributeVec3( "size", _extractMjcSizeFromStandardSize( _geoms[i]->geometry ) );
-
-                if ( _geoms[i]->geometry.type == "mesh" )
+                if ( _geoms[i]->geometry.meshId == "" )
                 {
-                    if ( _geoms[i]->geometry.meshId == "" )
-                    {
-                        _geomElmPtr->setAttributeString( "mesh", _geoms[i]->geometry.filename );
-                    }
-                    else
-                    {
-                        _geomElmPtr->setAttributeString( "mesh", _geoms[i]->geometry.meshId );
-                    }
+                    _geomElmPtr->setAttributeString( "mesh", _geoms[i]->geometry.filename );
                 }
-
-                // @GENERIC
-                if ( _geoms[i]->contype != -1 )
-                    _geomElmPtr->setAttributeInt( "contype", _geoms[i]->contype );
-                // @GENERIC
-                if ( _geoms[i]->conaffinity != -1 )
-                    _geomElmPtr->setAttributeInt( "conaffinity", _geoms[i]->conaffinity );
-                // @GENERIC
-                if ( _geoms[i]->condim != -1 )
-                    _geomElmPtr->setAttributeInt( "condim", _geoms[i]->condim );
-                // @GENERIC
-                if ( _geoms[i]->group != -1 )
-                    _geomElmPtr->setAttributeInt( "group", _geoms[i]->group );
-                // @GENERIC
-                if ( _geoms[i]->materialName != "" )
-                    _geomElmPtr->setAttributeString( "material", _geoms[i]->materialName );
-                if ( _geoms[i]->friction.ndim != 0 )
-                    _geomElmPtr->setAttributeArrayFloat( "friction", _geoms[i]->friction );
-                if ( _geoms[i]->density > 0 )
-                    _geomElmPtr->setAttributeFloat( "density", _geoms[i]->density );
-                // @GENERIC
-
-                TVec4 _rgba = { _geoms[i]->material.diffuse.x,
-                                _geoms[i]->material.diffuse.y,
-                                _geoms[i]->material.diffuse.z, 1.0f };
-                _geomElmPtr->setAttributeVec4( "rgba", _rgba );
-
-                _bodyElmPtr->children.push_back( _geomElmPtr );
-            }
-        }
-        else
-        {
-            auto _colls = kinTreeBodyPtr->childCollisions;
-            for ( size_t i = 0; i < _colls.size(); i++ )
-            {
-                auto _geomElmPtr = new mjcf::GenericElement( "geom" );
-                _geomElmPtr->setAttributeString( "name", _colls[i]->name );
-                _geomElmPtr->setAttributeString( "type", _colls[i]->geometry.type );
-                _geomElmPtr->setAttributeVec3( "pos", _colls[i]->relTransform.getPosition() );
-                auto _gquat = TMat3::toQuaternion( _colls[i]->relTransform.getRotation() );
-                _geomElmPtr->setAttributeVec4( "quat", { _gquat.w, _gquat.x, _gquat.y, _gquat.z } );
-                _geomElmPtr->setAttributeVec3( "size", _extractMjcSizeFromStandardSize( _colls[i]->geometry ) );
-
-                if ( _colls[i]->geometry.type == "mesh" )
+                else
                 {
-                    if ( _colls[i]->geometry.meshId == "" )
-                    {
-                        _geomElmPtr->setAttributeString( "mesh", _colls[i]->geometry.filename );
-                    }
-                    else
-                    {
-                        _geomElmPtr->setAttributeString( "mesh", _colls[i]->geometry.meshId );
-                    }
+                    _geomElmPtr->setAttributeString( "mesh", _geoms[i]->geometry.meshId );
                 }
-
-                // @GENERIC
-                if ( _colls[i]->contype != -1 )
-                    _geomElmPtr->setAttributeInt( "contype", _colls[i]->contype );
-                // @GENERIC
-                if ( _colls[i]->conaffinity != -1 )
-                    _geomElmPtr->setAttributeInt( "conaffinity", _colls[i]->conaffinity );
-                // @GENERIC
-                if ( _colls[i]->condim != -1 )
-                    _geomElmPtr->setAttributeInt( "condim", _colls[i]->condim );
-                // @GENERIC
-                if ( _colls[i]->group != -1 )
-                    _geomElmPtr->setAttributeInt( "group", _colls[i]->group );
-
-                _geomElmPtr->setAttributeVec4( "rgba", TYSOC_DEFAULT_RGBA_COLOR );
-
-                _bodyElmPtr->children.push_back( _geomElmPtr );
             }
+
+            // @GENERIC
+            if ( _geoms[i]->contype != -1 )
+                _geomElmPtr->setAttributeInt( "contype", _geoms[i]->contype );
+            // @GENERIC
+            if ( _geoms[i]->conaffinity != -1 )
+                _geomElmPtr->setAttributeInt( "conaffinity", _geoms[i]->conaffinity );
+            // @GENERIC
+            if ( _geoms[i]->condim != -1 )
+                _geomElmPtr->setAttributeInt( "condim", _geoms[i]->condim );
+            // @GENERIC
+            if ( _geoms[i]->group != -1 )
+                _geomElmPtr->setAttributeInt( "group", _geoms[i]->group );
+            // @GENERIC
+            if ( _geoms[i]->friction.ndim != 0 )
+                _geomElmPtr->setAttributeArrayFloat( "friction", _geoms[i]->friction );
+            // @GENERIC
+            if ( _geoms[i]->density > 0 )
+                _geomElmPtr->setAttributeFloat( "density", _geoms[i]->density );
+            // @GENERIC
+            TVec4 _rgba = { _geoms[i]->material.diffuse.x,
+                            _geoms[i]->material.diffuse.y,
+                            _geoms[i]->material.diffuse.z, 1.0f };
+            _geomElmPtr->setAttributeVec4( "rgba", _rgba );
+
+            _bodyElmPtr->children.push_back( _geomElmPtr );
         }
 
         // add inertia element (only if not using default calculations, which is hint by NULL)

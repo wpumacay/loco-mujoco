@@ -22,6 +22,10 @@ endif()
 
 # Add core targets only if master project. If not, parent project must configure it
 if ( TYSOCMJC_IS_MASTER_PROJECT )
+    # Configure dependencies for tysoc
+    add_subdirectory( ext/pybind11 )
+    add_subdirectory( ext/imgui )
+    add_subdirectory( ext/cat1 )
     # Configure core functionality
     add_subdirectory( tysoc )
 endif()

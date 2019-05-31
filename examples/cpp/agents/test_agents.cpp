@@ -71,9 +71,9 @@ int main( int argc, const char** argv )
     }
 
     auto _terrainGenStatic = new tysoc::terrain::TStaticTerrainGenerator( "terrainGen0" );
-    _terrainGenStatic->createPrimitive( "plane", 
+    _terrainGenStatic->createPrimitive( "box", 
                                         { 10.0f, 10.0f, 0.1f }, 
-                                        { 0.0f, 0.0f, 0.0f },
+                                        { 0.0f, 0.0f, -0.05f },
                                         tysoc::TMat3(),
                                         { 0.2f, 0.3f, 0.4f },
                                         "chessboard" );

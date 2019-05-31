@@ -25,7 +25,7 @@ namespace mujoco {
         int                             mjcBodyId;
         std::string                     mjcGeomName;
         std::string                     mjcGeomType;
-        TSizef                          mjcGeomSize;
+        TVec3                           mjcGeomSize;
         std::string                     mjcGeomFilename;
         terrain::TTerrainPrimitive*     tysocPrimitiveObj;
     };
@@ -56,6 +56,9 @@ namespace mujoco {
         void _wrapReusablePrimitive( terrain::TTerrainPrimitive* primitivePtr );
         void _wrapStaticPrimitive( terrain::TTerrainPrimitive* primitivePtr );
         void _updateProperties( TMjcTerrainPrimitive* mjcTerrainPritimivePtr );
+
+        TVec3 _extractMjcSizeFromStandardSize( const std::string& shapeType,
+                                               const TVec3& shapeSize );
 
         protected :
 

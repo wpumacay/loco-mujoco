@@ -18,6 +18,15 @@ namespace mujoco {
         // Create resources that will be fixed|static (no pool needed)
         _collectStaticFromGenerator();
 
+        // @TODO: Commented due to some compatibility we wanted to try out with ...
+        // the statis terrain generators and the mujoco-py environments. The ...
+        // problem was that those environments extract vectorized information ...
+        // using directly the mjData structure, and if we enabled pooling, some ...
+        // information would go into this vectorized information grabbed from ...
+        // mjData (like mjData->qpos, etc.). We will fix this issue later by ...
+        // filtering out the non-working primitives (which remain in the pool) ...
+        // and pass the information required only from the active primities.
+
 //        // Create resources that will be reused *********************************
 //        for ( size_t i = 0; i < MJC_TERRAIN_POOL_SIZE; i++ )
 //        {
@@ -28,9 +37,9 @@ namespace mujoco {
 //            _mjcPrimitive->mjcBodyId        = -1;
 //            _mjcPrimitive->mjcGeomName      = _name;
 //            _mjcPrimitive->mjcGeomType      = "box";
-//            _mjcPrimitive->mjcGeomSize      = { 3, { 0.5f * MJC_TERRAIN_PATH_DEFAULT_WIDTH, 
-//                                                     0.5f * MJC_TERRAIN_PATH_DEFAULT_DEPTH, 
-//                                                     0.5f * MJC_TERRAIN_PATH_DEFAULT_TICKNESS } };
+//            _mjcPrimitive->mjcGeomSize      = { 0.5f * MJC_TERRAIN_PATH_DEFAULT_WIDTH, 
+//                                                0.5f * MJC_TERRAIN_PATH_DEFAULT_DEPTH, 
+//                                                0.5f * MJC_TERRAIN_PATH_DEFAULT_TICKNESS };
 //
 //            _mjcPrimitive->tysocPrimitiveObj = NULL;
 //
@@ -136,7 +145,7 @@ namespace mujoco {
 
             auto _geomElm = mjcf::createGeometry( _mjcPrimitivePtr->mjcGeomName,
                                                   _mjcPrimitivePtr->mjcGeomType,
-                                                  _mjcPrimitivePtr->mjcGeomSize,
+                                                  vec3ToSizef( _mjcPrimitivePtr->mjcGeomSize ),
                                                   0.0f,
                                                   _position,
                                                   _orientation );
@@ -226,9 +235,15 @@ namespace mujoco {
                                            mjcTerrainPritimivePtr->mjcGeomName,
                                            _primitiveObj->rotmat );
 
+        auto _mjcSize = _extractMjcSizeFromStandardSize( _primitiveObj->geomType,
+                                                         { _primitiveObj->size.x,
+                                                           _primitiveObj->size.y,
+                                                           _primitiveObj->size.z } );
+
+        // @TODO: Change to use TVec3s instead of TSizefs T_T
         utils::changeSize( m_mjcModelPtr,
-                            mjcTerrainPritimivePtr->mjcGeomName,
-                            { 0.5f * _primitiveObj->size.x, 0.5f * _primitiveObj->size.y, 0.5f * _primitiveObj->size.z } );
+                           mjcTerrainPritimivePtr->mjcGeomName,
+                           _mjcSize );
 
         utils::setRbound( m_mjcModelPtr,
                            mjcTerrainPritimivePtr->mjcGeomName,
@@ -257,12 +272,15 @@ namespace mujoco {
                         std::string( "_" ) + 
                         std::to_string( m_mjcTerrainPrimitives.size() );
 
+        auto _mjcSize = _extractMjcSizeFromStandardSize( primitivePtr->geomType,
+                                                         { primitivePtr->size.x,
+                                                           primitivePtr->size.y,
+                                                           primitivePtr->size.z } );
+
         _mjcPrimitive->mjcBodyId            = -1;
         _mjcPrimitive->mjcGeomName          = _mjcName;
         _mjcPrimitive->mjcGeomType          = primitivePtr->geomType;
-        _mjcPrimitive->mjcGeomSize          = { 3, { primitivePtr->size.x,
-                                                     primitivePtr->size.y,
-                                                     primitivePtr->size.z } };
+        _mjcPrimitive->mjcGeomSize          = _mjcSize;
         _mjcPrimitive->mjcGeomFilename      = primitivePtr->filename;
         _mjcPrimitive->tysocPrimitiveObj    = primitivePtr;
 
@@ -295,6 +313,39 @@ namespace mujoco {
         m_mjcWorkingPrimitives.push( _mjcPrimitive );
     }
 
+    TVec3 TMjcTerrainGenWrapper::_extractMjcSizeFromStandardSize( const std::string& shapeType,
+                                                                  const TVec3& shapeSize )
+    {
+        TVec3 _res;
+
+        if ( shapeType == "plane" )
+        {
+            _res = { 0.5f * shapeSize.x, 
+                     0.5f * shapeSize.y,
+                     0.5f * shapeSize.z };
+        }
+        else if ( shapeType == "sphere" )
+        {
+            _res = { shapeSize.x,
+                     shapeSize.y,
+                     shapeSize.z };
+        }
+        else if ( shapeType == "capsule" ||
+                  shapeType == "cylinder" )
+        {
+            _res = { shapeSize.x, 
+                     0.5f * shapeSize.y,
+                     shapeSize.z };
+        }
+        else if ( shapeType == "box" )
+        {
+            _res = { 0.5f * shapeSize.x, 
+                     0.5f * shapeSize.y, 
+                     0.5f * shapeSize.z };
+        }
+
+        return _res;
+    }
 
     extern "C" TTerrainGenWrapper* terrain_createFromAbstract( terrain::TITerrainGenerator* terrainGenPtr,
                                                                const std::string& workingDir )

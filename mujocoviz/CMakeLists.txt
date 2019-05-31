@@ -43,8 +43,8 @@ else()
     include_directories( "${CMAKE_SOURCE_DIR}/core/include" )
     include_directories( "${CMAKE_SOURCE_DIR}/core/ext/json" )
     include_directories( "${CMAKE_SOURCE_DIR}/core/ext/tinyxml2" )
-    include_directories( "${CMAKE_SOURCE_DIR}/core/ext/imgui" )
-    include_directories( "${CMAKE_SOURCE_DIR}/core/ext/imgui/examples" )
+    include_directories( "${CMAKE_SOURCE_DIR}/ext/imgui" )
+    include_directories( "${CMAKE_SOURCE_DIR}/ext/imgui/examples" )
 endif()
 
 add_library( tysocRenderingMjcViz SHARED

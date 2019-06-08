@@ -31,10 +31,10 @@ namespace mujoco {
         if ( !m_scenarioPtr )
             m_scenarioPtr = new TScenario();
 
-        auto _agents = m_scenarioPtr->getAgentsByType( agent::AGENT_TYPE_KINTREE );
+        auto _agents = m_scenarioPtr->getAgents();
         for ( size_t q = 0; q < _agents.size(); q++ )
         {
-            auto _agentWrapper = new TMjcKinTreeAgentWrapper( (agent::TAgentKinTree*) _agents[q],
+            auto _agentWrapper = new TMjcKinTreeAgentWrapper( (agent::TAgent*) _agents[q],
                                                               m_workingDir );
             _agentWrapper->setMjcfTargetElm( m_mjcfResourcesPtr );
 

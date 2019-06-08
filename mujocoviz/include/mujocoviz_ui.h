@@ -33,7 +33,7 @@ namespace viz {
         std::string     m_basicCurrentKinTreeName;
 
         void _renderBasicMainMenu();
-        void _renderBasicKinTreeActionsMenu( agent::TAgentKinTree* agentKinTreePtr );
+        void _renderBasicKinTreeActionsMenu( agent::TAgent* agentPtr );
         // **************************************************************
 
         protected :

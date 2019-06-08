@@ -18,7 +18,7 @@ namespace mujoco {
     * (It works in this way, so it's ok. It's fine that it does everything at the start, ...
     *  maybe it does various optimizations when compiling models :D)
     */
-    class TMjcKinTreeAgentWrapper : public TKinTreeAgentWrapper
+    class TMjcKinTreeAgentWrapper : public TAgentWrapper
     {
 
         private :
@@ -55,7 +55,7 @@ namespace mujoco {
 
         public :
 
-        TMjcKinTreeAgentWrapper( agent::TAgentKinTree* kinTreeAgentPtr,
+        TMjcKinTreeAgentWrapper( agent::TAgent* agentPtr,
                                  const std::string& workingDir );
         ~TMjcKinTreeAgentWrapper();
 
@@ -67,14 +67,14 @@ namespace mujoco {
     };
 
 
-    extern "C" TKinTreeAgentWrapper* agent_createFromAbstract( agent::TAgentKinTree* kinTreeAgentPtr,
+    extern "C" TAgentWrapper* agent_createFromAbstract( agent::TAgent* agentPtr,
                                                                const std::string& workingDir );
 
-    extern "C" TKinTreeAgentWrapper* agent_createFromFile( const std::string& name,
+    extern "C" TAgentWrapper* agent_createFromFile( const std::string& name,
                                                            const std::string& filename,
                                                            const std::string& workingDir );
 
-    extern "C" TKinTreeAgentWrapper* agent_createFromId( const std::string& name,
+    extern "C" TAgentWrapper* agent_createFromId( const std::string& name,
                                                          const std::string& format,
                                                          const std::string& id,
                                                          const std::string& workingDir );

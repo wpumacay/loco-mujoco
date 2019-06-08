@@ -73,18 +73,18 @@ namespace viz {
     {
         ImGui::Begin( "Main Menu" );
 
-        auto _kinTreeAgents = m_scenarioPtr->getAgentsByType( agent::AGENT_TYPE_KINTREE );
+        auto _agents = m_scenarioPtr->getAgents();
 
         if ( ImGui::BeginCombo( "Kinematic trees", m_basicCurrentKinTreeName.c_str() ) )
         {
-            for ( size_t i = 0; i < _kinTreeAgents.size(); i++ )
+            for ( size_t i = 0; i < _agents.size(); i++ )
             {
-                auto _kinTreeAgent = _kinTreeAgents[i];
-                bool _isSelected = ( _kinTreeAgent->name() == m_basicCurrentKinTreeName );
+                auto _agent = _agents[i];
+                bool _isSelected = ( _agent->name() == m_basicCurrentKinTreeName );
 
-                if ( ImGui::Selectable( _kinTreeAgent->name().c_str(), _isSelected ) )
+                if ( ImGui::Selectable( _agent->name().c_str(), _isSelected ) )
                 {
-                    m_basicCurrentKinTreeName = _kinTreeAgent->name();
+                    m_basicCurrentKinTreeName = _agent->name();
                     m_basicCurrentKinTreeIndx = i;
                 }
 
@@ -102,15 +102,15 @@ namespace viz {
         if ( m_basicCurrentKinTreeIndx != -1 )
         {
             size_t _indx = m_basicCurrentKinTreeIndx;
-            _renderBasicKinTreeActionsMenu( ( agent::TAgentKinTree* ) _kinTreeAgents[_indx] );
+            _renderBasicKinTreeActionsMenu( ( agent::TAgent* ) _agents[_indx] );
         }
     }
 
-    void TMujocoUI::_renderBasicKinTreeActionsMenu( agent::TAgentKinTree* agentKinTreePtr )
+    void TMujocoUI::_renderBasicKinTreeActionsMenu( agent::TAgent* agentPtr )
     {
         ImGui::Begin( "Kinematic Tree actuator options" );
 
-        auto _actuators = agentKinTreePtr->getKinTreeActuators();
+        auto _actuators = agentPtr->actuators;
         std::vector< TScalar > _actions;
 
         for ( size_t i = 0; i < _actuators.size(); i++ )
@@ -123,7 +123,7 @@ namespace viz {
             _actions.push_back( _val );
         }
 
-        agentKinTreePtr->setActions( _actions );
+        agentPtr->setActions( _actions );
 
         ImGui::End();
     }

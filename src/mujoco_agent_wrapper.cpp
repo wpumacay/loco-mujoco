@@ -4,9 +4,9 @@
 namespace tysoc {
 namespace mujoco {
 
-    TMjcKinTreeAgentWrapper::TMjcKinTreeAgentWrapper( agent::TAgentKinTree* kinTreeAgentPtr,
+    TMjcKinTreeAgentWrapper::TMjcKinTreeAgentWrapper( agent::TAgent* agentPtr,
                                                       const std::string& workingDir )
-        : TKinTreeAgentWrapper( kinTreeAgentPtr, workingDir )
+        : TAgentWrapper( agentPtr, workingDir )
     {
         m_mjcModelPtr   = NULL;
         m_mjcDataPtr    = NULL;
@@ -114,32 +114,32 @@ namespace mujoco {
 
     void TMjcKinTreeAgentWrapper::_resetInternal()
     {
-        if ( !m_kinTreeAgentPtr )
+        if ( !m_agentPtr )
             return;
 
-        m_kinTreeAgentPtr->reset();
+        m_agentPtr->reset();
 
-        auto _rootBodyPtr = m_kinTreeAgentPtr->getRootBody();
+        auto _rootBodyPtr = m_agentPtr->getRootBody();
 
         utils::setBodyPosition( m_mjcModelPtr,
                                 m_mjcDataPtr,
                                 _rootBodyPtr->name,
-                                m_kinTreeAgentPtr->getStartPosition() );
+                                m_agentPtr->getStartPosition() );
 
         utils::setBodyOrientation( m_mjcModelPtr,
                                    m_mjcDataPtr,
                                    _rootBodyPtr->name,
-                                   TMat3::fromEuler( m_kinTreeAgentPtr->getStartRotation() ) );
+                                   TMat3::fromEuler( m_agentPtr->getStartRotation() ) );
 
         m_hasMadeSummary = false;
     }
 
     void TMjcKinTreeAgentWrapper::_preStepInternal()
     {
-        if ( !m_kinTreeAgentPtr )
+        if ( !m_agentPtr )
             return;
 
-        auto _kinActuators = m_kinTreeAgentPtr->getKinTreeActuators();
+        auto _kinActuators = m_agentPtr->actuators;
 
         for ( size_t i = 0; i < _kinActuators.size(); i++ )
         {
@@ -154,11 +154,11 @@ namespace mujoco {
             m_hasMadeSummary = true;
 
             /* Generate summary information *******************************************/
-            TGenericParams& _summary = m_kinTreeAgentPtr->getSummary();
+            TGenericParams& _summary = m_agentPtr->summary();
 
             // collect inertia properties
             TScalar _totalMass = 0.0f;
-            auto _bodies = m_kinTreeAgentPtr->getKinTreeBodies();
+            auto _bodies = m_agentPtr->bodies;
             for ( size_t q = 0; q < _bodies.size(); q++ )
             {
                 auto _name = _bodies[q]->name;
@@ -182,10 +182,10 @@ namespace mujoco {
 
     void TMjcKinTreeAgentWrapper::_postStepInternal()
     {
-        if ( !m_kinTreeAgentPtr )
+        if ( !m_agentPtr )
             return;
 
-        auto _kinBodies = m_kinTreeAgentPtr->getKinTreeBodies();
+        auto _kinBodies = m_agentPtr->bodies;
         for ( size_t i = 0; i < _kinBodies.size(); i++ )
         {
             // grab the position from the mujoco backend
@@ -195,8 +195,8 @@ namespace mujoco {
             // and the rotation as well
             float _rot[9];
             utils::getBodyOrientation( m_mjcModelPtr,
-                                        m_mjcDataPtr,
-                                        _kinBodies[i]->name, _rot );
+                                       m_mjcDataPtr,
+                                       _kinBodies[i]->name, _rot );
 
             // convert the position/rotation data to our format
             TVec3 _position;
@@ -222,7 +222,7 @@ namespace mujoco {
         }
 
         // collect sensor readings
-        auto _kinSensors = m_kinTreeAgentPtr->getKinTreeSensors();
+        auto _kinSensors = m_agentPtr->sensors;
         for ( size_t i = 0; i < _kinSensors.size(); i++ )
         {
             if ( _kinSensors[i]->type == "joint" )
@@ -281,14 +281,14 @@ namespace mujoco {
         if ( !m_mjcfResourcesPtr )
             return;
 
-        if ( !m_kinTreeAgentPtr )
+        if ( !m_agentPtr )
             return;
 
         auto _worldBody = new mjcf::GenericElement( "worldbody" );
         m_mjcfResourcesPtr->children.push_back( _worldBody );
         
         // Collect bodies xml data into worldbody element
-        auto _rootBodyPtr = m_kinTreeAgentPtr->getRootBody();
+        auto _rootBodyPtr = m_agentPtr->getRootBody();
         _createMjcResourcesFromBodyNode( _worldBody, _rootBodyPtr );
 
         // Collect all assets data into the model element
@@ -301,7 +301,7 @@ namespace mujoco {
         _createMjcExclusionContactsFromKinTree();
 
         // Collect extra specifics depending of the type of data being parsed
-        if ( m_kinTreeAgentPtr->getModelTemplateType() == agent::MODEL_TEMPLATE_TYPE_MJCF )
+        if ( m_agentPtr->getModelFormat() == agent::MODEL_FORMAT_MJCF )
         {
             // Collect all contacts and replace the names accordingly
             if ( mjcf::findFirstChildByType( m_mjcfModelTemplatePtr, "contact" ) )
@@ -320,7 +320,7 @@ namespace mujoco {
                 }
             }
         }
-        else if ( m_kinTreeAgentPtr->getModelTemplateType() == agent::MODEL_TEMPLATE_TYPE_URDF )
+        else if ( m_agentPtr->getModelFormat() == agent::MODEL_FORMAT_URDF )
         {
             // Check if the root has a joint that fixes it to the world
             auto _rootJoints = _rootBodyPtr->childJoints;
@@ -351,7 +351,7 @@ namespace mujoco {
                 
             }
         }
-        else if ( m_kinTreeAgentPtr->getModelTemplateType() == agent::MODEL_TEMPLATE_TYPE_RLSIM )
+        else if ( m_agentPtr->getModelFormat() == agent::MODEL_FORMAT_RLSIM )
         {
             // @WIP: Add rlsim specific functionality here
         }
@@ -379,7 +379,7 @@ namespace mujoco {
         
 
         // add joints
-        // if ( m_kinTreeAgentPtr->getModelTemplateType() ) @CONTINUE: traverse urdf format
+        // if ( m_agentPtr->getModelFormat() ) @CONTINUE: traverse urdf format
         auto _joints = kinTreeBodyPtr->childJoints;
         for ( size_t i = 0; i < _joints.size(); i++ )
         {
@@ -478,28 +478,22 @@ namespace mujoco {
                 }
             }
 
-            // @GENERIC
             if ( _geoms[i]->contype != -1 )
                 _geomElmPtr->setAttributeInt( "contype", _geoms[i]->contype );
-            // @GENERIC
+
             if ( _geoms[i]->conaffinity != -1 )
                 _geomElmPtr->setAttributeInt( "conaffinity", _geoms[i]->conaffinity );
-            // @GENERIC
+
             if ( _geoms[i]->condim != -1 )
                 _geomElmPtr->setAttributeInt( "condim", _geoms[i]->condim );
-            // @GENERIC
-            if ( _geoms[i]->group != -1 )
-                _geomElmPtr->setAttributeInt( "group", _geoms[i]->group );
-            // @GENERIC
+
             if ( _geoms[i]->friction.ndim != 0 )
                 _geomElmPtr->setAttributeArrayFloat( "friction", _geoms[i]->friction );
-            // @GENERIC
+
             if ( _geoms[i]->density > 0 )
                 _geomElmPtr->setAttributeFloat( "density", _geoms[i]->density );
-            // @GENERIC
-            TVec4 _rgba = { _geoms[i]->material.diffuse.x,
-                            _geoms[i]->material.diffuse.y,
-                            _geoms[i]->material.diffuse.z, 1.0f };
+
+            TVec4 _rgba = TYSOC_DEFAULT_RGBA_COLOR;
             _geomElmPtr->setAttributeVec4( "rgba", _rgba );
 
             _bodyElmPtr->children.push_back( _geomElmPtr );
@@ -565,7 +559,7 @@ namespace mujoco {
 
     void TMjcKinTreeAgentWrapper::_createMjcAssetsFromKinTree()
     {
-        auto _meshAssets = m_kinTreeAgentPtr->getKinTreeMeshAssets();
+        auto _meshAssets = m_agentPtr->meshAssets;
         if ( _meshAssets.size() < 1 )
         {
             // No mesh assets to add to the model
@@ -587,7 +581,7 @@ namespace mujoco {
 
     void TMjcKinTreeAgentWrapper::_createMjcSensorsFromKinTree()
     {
-        auto _kinSensors = m_kinTreeAgentPtr->getKinTreeSensors();
+        auto _kinSensors = m_agentPtr->sensors;
         if ( _kinSensors.size() < 1 )
         {
             // no sensors to add to the model
@@ -660,7 +654,7 @@ namespace mujoco {
 
     void TMjcKinTreeAgentWrapper::_createMjcActuatorsFromKinTree()
     {
-        auto _kinActuators = m_kinTreeAgentPtr->getKinTreeActuators();
+        auto _kinActuators = m_agentPtr->actuators;
         if ( _kinActuators.size() < 1 )
         {
             // No actuators to add to the model
@@ -712,7 +706,7 @@ namespace mujoco {
 
     void TMjcKinTreeAgentWrapper::_createMjcExclusionContactsFromKinTree()
     {
-        auto _kinExclusionContacts = m_kinTreeAgentPtr->exclusionContacts();
+        auto _kinExclusionContacts = m_agentPtr->exclusionContacts;
         if ( _kinExclusionContacts.size() < 1 )
         {
             return;
@@ -775,20 +769,20 @@ namespace mujoco {
         return _res;
     }
 
-    extern "C" TKinTreeAgentWrapper* agent_createFromAbstract( agent::TAgentKinTree* kinTreeAgentPtr,
+    extern "C" TAgentWrapper* agent_createFromAbstract( agent::TAgent* agentPtr,
                                                                const std::string& workingDir )
     {
-        return new TMjcKinTreeAgentWrapper( kinTreeAgentPtr, workingDir );
+        return new TMjcKinTreeAgentWrapper( agentPtr, workingDir );
     }
 
-    extern "C" TKinTreeAgentWrapper* agent_createFromFile( const std::string& name,
+    extern "C" TAgentWrapper* agent_createFromFile( const std::string& name,
                                                            const std::string& filename,
                                                            const std::string& workingDir )
     {
         return NULL;
     }
 
-    extern "C" TKinTreeAgentWrapper* agent_createFromId( const std::string& name,
+    extern "C" TAgentWrapper* agent_createFromId( const std::string& name,
                                                          const std::string& format,
                                                          const std::string& id,
                                                          const std::string& workingDir )

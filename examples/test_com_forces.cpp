@@ -25,7 +25,7 @@ int main( int argc, const char** argv )
 
     auto _modelLoader = tysoc::TModelLoader::Create();
     auto _modelData = _modelLoader->getMjcfModel( "ant" );
-    auto _agent = tysoc::agent::createKinTreeAgent( "agent0", _modelData, { 0.0f, 0.0f, 1.0f } );
+    auto _agent = tysoc::agent::createAgentFromModel( _modelData, "agent0", { 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } );
     auto _sensor = new tysoc::sensor::TAgentIntrinsicsSensor( "ss0int", _agent );
 
     auto _scenario = new tysoc::TScenario();

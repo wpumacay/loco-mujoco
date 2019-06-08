@@ -1,5 +1,9 @@
 
+// Includes from core functionality
 #include <runtime.h>
+#include <model_loader.h>
+// Includes from mujoco functionality
+#include <mujoco_common.h>
 
 static std::string MODEL_FORMAT = "urdf";
 static std::string MODEL_NAME = "laikago";
@@ -8,31 +12,31 @@ static std::string TYSOC_MJCF_TEMPLATES     = std::string( TYSOC_PATH_MJCF_TEMPL
 static std::string TYSOC_URDF_TEMPLATES     = std::string( TYSOC_PATH_URDF_TEMPLATES );
 static std::string TYSOC_RLSIM_TEMPLATES    = std::string( TYSOC_PATH_RLSIM_TEMPLATES );
 
-tysoc::agent::TAgentKinTree* createAgent( const std::string& format,
-                                          const std::string& modelName,
-                                          const std::string& agentName,
-                                          const tysoc::TVec3& position )
+tysoc::agent::TAgent* createAgent( const std::string& format,
+                                   const std::string& modelName,
+                                   const std::string& agentName,
+                                   const tysoc::TVec3& position )
 {
     if ( format == "urdf" )
     {
         auto _modelPath = TYSOC_URDF_TEMPLATES + modelName + std::string( ".urdf" );
         auto _modelData = tysoc::urdf::loadGenericModel( _modelPath );
 
-        return tysoc::agent::createKinTreeAgent( agentName, _modelData, position );
+        return tysoc::agent::createAgentFromModel( _modelData, agentName, position, { 0.0f, 0.0f, 0.0f } );
     }
     else if ( format == "rlsim" )
     {
         auto _modelPath = TYSOC_RLSIM_TEMPLATES + modelName + std::string( ".json" );
         auto _modelData = tysoc::rlsim::loadGenericModel( _modelPath );
         
-        return tysoc::agent::createKinTreeAgent( agentName, _modelData, position );
+        return tysoc::agent::createAgentFromModel( _modelData, agentName, position, { 0.0f, 0.0f, 0.0f } );
     }
     else if ( format == "mjcf" )
     {
         auto _modelPath = TYSOC_MJCF_TEMPLATES + modelName + std::string( ".xml" );
         auto _modelData = tysoc::mjcf::loadGenericModel( _modelPath );
         
-        return tysoc::agent::createKinTreeAgent( agentName, _modelData, position );
+        return tysoc::agent::createAgentFromModel( _modelData, agentName, position, { 0.0f, 0.0f, 0.0f } );
     }
 
     std::cout << "ERROR> format: " << format << " not supported" << std::endl;

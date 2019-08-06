@@ -145,3 +145,8 @@ if ( TYSOCMJC_IS_MASTER_PROJECT )
     # Configure examples
     add_subdirectory( examples )
 endif()
+
+#*****************************************************************************
+
+# Configure tests (barebone external tests)
+add_subdirectory( tests )

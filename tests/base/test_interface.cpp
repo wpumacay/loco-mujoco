@@ -1,0 +1,408 @@
+
+#include "test_interface.h"
+
+
+namespace mujoco
+{
+
+    /***************************************************************************
+    *                                                                          *
+    *                               UTILITIES                                  *
+    *                                                                          *
+    ***************************************************************************/
+
+    std::string mjtGeom2string( int type )
+    {
+        if ( type == mjGEOM_PLANE )
+            return "plane";
+        if ( type == mjGEOM_HFIELD )
+            return "hfield";
+        if ( type == mjGEOM_SPHERE )
+            return "sphere";
+        if ( type == mjGEOM_CAPSULE )
+            return "capsule";
+        if ( type == mjGEOM_ELLIPSOID )
+            return "ellipsoid";
+        if ( type == mjGEOM_CYLINDER )
+            return "cylinder";
+        if ( type == mjGEOM_BOX )
+            return "box";
+        if ( type == mjGEOM_MESH )
+            return "mesh";
+
+        return "undefined";
+    }
+
+    tysoc::TVec3 mjtNum2vec3( mjtNum* numPtr )
+    {
+        assert( numPtr != NULL );
+        // Grab exactly 3 elements (so, can throw in 3-vecs, 4-vecs, 5-vecs, ...)
+        return tysoc::TVec3( numPtr[0], numPtr[1], numPtr[2] );
+    }
+
+    tysoc::TVec4 mjtNum2vec4( mjtNum* numPtr )
+    {
+        assert( numPtr != NULL );
+        // Grab exactly 4 elements (so, can throw in 4-vecs, 5-vecs, 6-vecs, ...)
+        return tysoc::TVec4( numPtr[0], numPtr[1], numPtr[2], numPtr[3] );
+    }
+
+    tysoc::TVec4 mjtNumQuat2vec4( mjtNum* numPtr )
+    {
+        assert( numPtr != NULL );
+        // Grab exactly 4 elements (so, can throw in 4-vecs, 5-vecs, 6-vecs, ...)
+        return tysoc::TVec4( numPtr[1], numPtr[2], numPtr[3], numPtr[0] );
+    }
+
+    tysoc::TVec3 floatptr2vec3( float* floatPtr )
+    {
+        assert( floatPtr != NULL );
+        // Grab exactly 3 elements (so, can throw in 3-vecs, 4-vecs, 5-vecs, ...)
+        return tysoc::TVec3( floatPtr[0], floatPtr[1], floatPtr[2] );
+    }
+
+    tysoc::TVec4 floatptr2vec4( float* floatPtr )
+    {
+        assert( floatPtr != NULL );
+        // Grab exactly 4 elements (so, can throw in 4-vecs, 5-vecs, 6-vecs, ...)
+        return tysoc::TVec4( floatPtr[0], floatPtr[1], floatPtr[2], floatPtr[3] );
+    }
+
+    /***************************************************************************
+    *                                                                          *
+    *                            BODY-WRAPPER                                  *
+    *                                                                          *
+    ***************************************************************************/
+
+    SimBody::SimBody( const std::string& bodyName,
+                      mjModel* mjcModelPtr,
+                      mjData* mjcDataPtr )
+    {
+        m_bodyName = bodyName;
+        m_bodyId = -1;
+
+        m_mjcModelPtr = mjcModelPtr;
+        m_mjcDataPtr = mjcDataPtr;
+
+        /******************** Grab information from mujoco ********************/
+
+        m_bodyId = mj_name2id( m_mjcModelPtr, mjOBJ_BODY, m_bodyName.c_str() );
+        if ( m_bodyId == -1 )
+            std::cout << "ERROR> can't grab id from body: " << m_bodyName << std::endl;
+        else
+            _grabGeometries();
+    }
+
+    SimBody::~SimBody()
+    {
+        m_mjcModelPtr = NULL;
+        m_mjcDataPtr = NULL;
+
+        for ( size_t i = 0; i < m_geomsGraphics.size(); i++ )
+            delete m_geomsGraphics[i];
+
+        m_geomsLocalTransforms.clear();
+        m_geomsGraphics.clear();
+        m_geomsNames.clear();
+        m_geomsIds.clear();
+    }
+
+    void SimBody::_grabGeometries()
+    {
+        // Sanity check: make sure no other geometries were created
+        assert( m_geomsGraphics.size() == 0 );
+        assert( m_geomsLocalTransforms.size() == 0 );
+
+        // Take the number of geometries in this body
+        int _numGeoms = m_mjcModelPtr->body_geomnum[m_bodyId];
+        int _startGeoms = m_mjcModelPtr->body_geomadr[m_bodyId];
+
+        // std::cout << "LOG> _numGeoms: " << _numGeoms << std::endl;
+        // std::cout << "LOG> _startGeoms: " << _startGeoms << std::endl;
+
+        // Grab all geometries from the model
+        for ( int i = 0; i < _numGeoms; i++ )
+        {
+            auto _geomId = _startGeoms + i;
+            auto _geomName = std::string( "" );
+            auto _geomNameChars = mj_id2name( m_mjcModelPtr, mjOBJ_GEOM, _geomId );
+            if ( _geomNameChars )
+                _geomName = std::string( _geomNameChars );
+            m_geomsIds.push_back( _geomId );
+            m_geomsNames.push_back( _geomName );
+
+            auto _geomType = mjtGeom2string( m_mjcModelPtr->geom_type[_geomId] );
+            auto _geomSize = mjtNum2vec3( m_mjcModelPtr->geom_size + 3 * _geomId );
+            auto _geomColor = floatptr2vec4( m_mjcModelPtr->geom_rgba + 4 * _geomId );
+            auto _geomGraphics = _buildGeomGraphics( _geomType, _geomSize, _geomColor );
+            m_geomsGraphics.push_back( _geomGraphics );
+
+            auto _geomLocalPos = mjtNum2vec3( m_mjcModelPtr->geom_pos + 3 * _geomId );
+            auto _geomLocalQuat = mjtNumQuat2vec4( m_mjcModelPtr->geom_quat + 4 * _geomId );
+            auto _geomLocalTransform = tysoc::TMat4( _geomLocalPos, _geomLocalQuat );
+            m_geomsLocalTransforms.push_back( _geomLocalTransform );
+        }
+    }
+
+    engine::LIRenderable* SimBody::_buildGeomGraphics( const std::string& type,
+                                                       const tysoc::TVec3& size,
+                                                       const tysoc::TVec4& color )
+    {
+        engine::LIRenderable* _renderable = NULL;
+
+        if ( type == "plane" )
+            _renderable = engine::LMeshBuilder::createPlane( 2.0 * size.x, 2.0 * size.y );
+        else if ( type == "box" )
+            _renderable = engine::LMeshBuilder::createBox( 2.0 * size.x, 2.0 * size.y, 2.0 * size.z );
+        else if ( type == "sphere" )
+            _renderable = engine::LMeshBuilder::createSphere( size.x );
+        else if ( type == "capsule" )
+            _renderable = engine::LMeshBuilder::createCapsule( size.x, 2.0 * size.y );
+        else if ( type == "cylinder" )
+            _renderable = engine::LMeshBuilder::createCylinder( size.x, 2.0 * size.y );
+
+        if ( _renderable )
+            _renderable->getMaterial()->setColor( { color.x, color.y, color.z } );
+
+        return _renderable;
+    }
+
+    void SimBody::update()
+    {
+        assert( m_bodyId != -1 );
+
+        // Grab the current position and orientation of the body
+        m_bodyWorldPos = mjtNum2vec3( m_mjcDataPtr->xpos + 3 * m_bodyId );
+        m_bodyWorldQuat = mjtNumQuat2vec4( m_mjcDataPtr->xquat + 4 * m_bodyId );
+        m_bodyWorldTransform = tysoc::TMat4( m_bodyWorldPos, m_bodyWorldQuat );
+
+        // Update the position of the geometries from the
+        for ( size_t i = 0; i < m_geomsGraphics.size(); i++ )
+        {
+            if ( !m_geomsGraphics[i] )
+                continue;
+
+            auto _geomWorldTransform = m_bodyWorldTransform * m_geomsLocalTransforms[i];
+            auto _geomWorldPos = _geomWorldTransform.getPosition();
+            auto _geomWorldRot = _geomWorldTransform.getRotation();
+
+            // grab position
+            m_geomsGraphics[i]->pos = { _geomWorldPos.x, _geomWorldPos.y, _geomWorldPos.z };
+            // grab rotation
+            for ( size_t row = 0; row < 3; row++ )
+                for ( size_t col = 0; col < 3; col++ )
+                    m_geomsGraphics[i]->rotation.buff[row + 4 * col] = _geomWorldRot.buff[row + 3 * col];
+        }
+    }
+
+    /***************************************************************************
+    *                                                                          *
+    *                             BASE-APPLICATION                             *
+    *                                                                          *
+    ***************************************************************************/
+
+    ITestApplication::ITestApplication()
+    {
+        m_mjcModelPtr = NULL;
+        m_mjcDataPtr = NULL;
+        m_mjcScenePtr = NULL;
+        m_mjcCameraPtr = NULL;
+        m_mjcOptionPtr = NULL;
+        m_mjcModelFile = "";
+        m_isTerminated = false;
+        m_isRunning = true;
+    }
+
+    ITestApplication::~ITestApplication()
+    {
+        for ( size_t i = 0; i < m_simBodies.size(); i++ )
+            delete m_simBodies[i];
+        m_simBodies.clear();
+        m_simBodiesMap.clear();
+
+        delete m_graphicsApp;
+        m_graphicsApp = NULL;
+        m_graphicsScene = NULL;
+
+        mjv_freeScene( m_mjcScenePtr );
+        mj_deleteData( m_mjcDataPtr );
+        mj_deleteModel( m_mjcModelPtr );
+        mj_deactivate();
+
+        m_mjcCameraPtr = NULL;
+        m_mjcOptionPtr = NULL;
+        m_mjcScenePtr = NULL;
+        m_mjcDataPtr = NULL;
+        m_mjcModelPtr = NULL;
+    }
+
+    void ITestApplication::init()
+    {
+        _initScenario();
+        _initGraphics();
+        _initPhysics();
+    }
+
+    void ITestApplication::_initScenario()
+    {
+        // delegate to virtual method
+        _initScenarioInternal();
+    }
+
+    void ITestApplication::_initPhysics()
+    {
+        assert( m_graphicsApp != NULL );
+        assert( m_graphicsScene != NULL );
+
+        // Activate using the appropriate licence file
+        mj_activate( "/home/gregor/.mujoco/mjkey.txt" );
+
+        // Create the model (by now the model-file must have been already set)
+        m_mjcModelPtr = mj_loadXML( m_mjcModelFile.c_str(), NULL, m_mjcErrorMsg, 1000 );
+        if ( !m_mjcModelPtr )
+        {
+            std::cout << "ERROR> could not create model: " << m_mjcModelFile << std::endl;
+            std::cout << "ERROR> mujoco error message: " << m_mjcErrorMsg << std::endl;
+            return;
+        }
+
+        // Create other mujoco-structures
+        m_mjcDataPtr = mj_makeData( m_mjcModelPtr );
+        m_mjcCameraPtr = new mjvCamera();
+        m_mjcOptionPtr = new mjvOption();
+        m_mjcScenePtr  = new mjvScene();
+        mjv_defaultCamera( m_mjcCameraPtr );
+        mjv_defaultOption( m_mjcOptionPtr );
+        mjv_makeScene( m_mjcModelPtr, m_mjcScenePtr, 2000 );
+
+        // grab all bodies and wrap them
+        int _numBodies = m_mjcModelPtr->nbody;
+        for ( size_t _bodyId = 0; _bodyId < _numBodies; _bodyId++ )
+        {
+            auto _bodyName = std::string( "" );
+            auto _bodyNameChars = mj_id2name( m_mjcModelPtr, mjOBJ_BODY, _bodyId );
+            if ( _bodyNameChars )
+                _bodyName = std::string( _bodyNameChars );
+            auto _bodyObj = new SimBody( _bodyName, m_mjcModelPtr, m_mjcDataPtr );
+
+            m_simBodies.push_back( _bodyObj );
+            m_simBodiesMap[ _bodyName ] = _bodyObj;
+
+            // add renderables to the graphics scene
+            auto _renderables = _bodyObj->geomsGraphics();
+            for ( size_t i = 0; i < _renderables.size(); i++ )
+                m_graphicsScene->addRenderable( _renderables[i] );
+        }
+    }
+
+    void ITestApplication::_initGraphics()
+    {
+        m_graphicsApp = engine::LApp::GetInstance();
+        m_graphicsScene = engine::LApp::GetInstance()->scene();
+
+        auto _camera = new engine::LFpsCamera( "fps",
+                                               { 1.0f, 2.0f, 1.0f },
+                                               { -2.0f, -4.0f, -2.0f },
+                                               engine::LICamera::UP_Z );
+
+        auto _light = new engine::LLightDirectional( { 0.8, 0.8, 0.8 }, 
+                                                     { 0.8, 0.8, 0.8 },
+                                                     { 0.3, 0.3, 0.3 }, 
+                                                     0, 
+                                                     { 0.0, 0.0, -1.0 } );
+        _light->setVirtualPosition( { 5.0, 0.0, 5.0 } );
+
+        m_graphicsScene->addCamera( _camera );
+        m_graphicsScene->addLight( _light );
+
+        // Initialize UI resources
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO& _io = ImGui::GetIO(); (void) _io;
+    #ifdef __APPLE__
+        ImGui_ImplOpenGL3_Init( "#version 150" );
+    #else
+        ImGui_ImplOpenGL3_Init( "#version 130" );
+    #endif
+        ImGui_ImplGlfw_InitForOpenGL( m_graphicsApp->window()->getGLFWwindow(), false );
+        ImGui::StyleColorsDark();
+    }
+
+    void ITestApplication::reset()
+    {
+        // do some specific initialization
+        _resetInternal();
+    }
+
+    void ITestApplication::step()
+    {
+        // Take a step in the simulator (MuJoCo)
+        mjtNum _simstart = m_mjcDataPtr->time;
+        while ( m_mjcDataPtr->time - _simstart < 1.0 / 60.0 )
+            mj_step( m_mjcModelPtr, m_mjcDataPtr );
+
+        // Update all body-wrappers
+        for ( size_t i = 0; i < m_simBodies.size(); i++ )
+        {
+            if ( !m_simBodies[i] )
+                continue;
+
+            m_simBodies[i]->update();
+        }
+
+        // do some custom step functionality
+        _stepInternal();
+
+        if ( engine::InputSystem::isKeyDown( GLFW_KEY_SPACE ) )
+        {
+            m_graphicsScene->getCurrentCamera()->setActiveMode( false );
+            m_graphicsApp->window()->enableCursor();
+        }
+        else if ( engine::InputSystem::isKeyDown( GLFW_KEY_ENTER ) )
+        {
+            m_graphicsScene->getCurrentCamera()->setActiveMode( true );
+            m_graphicsApp->window()->disableCursor();
+        }
+        else if ( engine::InputSystem::isKeyDown( GLFW_KEY_ESCAPE ) )
+        {
+            m_isTerminated = true;
+        }
+
+        m_graphicsApp->begin();
+        m_graphicsApp->update();
+
+        engine::DebugSystem::drawLine( { 0.0f, 0.0f, 0.0f }, { 5.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f } );
+        engine::DebugSystem::drawLine( { 0.0f, 0.0f, 0.0f }, { 0.0f, 5.0f, 0.0f }, { 0.0f, 1.0f, 0.0f } );
+        engine::DebugSystem::drawLine( { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 5.0f }, { 0.0f, 0.0f, 1.0f } );
+        
+
+        // render the UI
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        _renderUI();
+
+        ImGui::Render();
+        int _ww, _wh;
+        glfwGetFramebufferSize( m_graphicsApp->window()->getGLFWwindow(), &_ww, &_wh );
+        glViewport( 0, 0, _ww, _wh );
+        ImGui_ImplOpenGL3_RenderDrawData( ImGui::GetDrawData() );
+
+        m_graphicsApp->end();
+    }
+
+    void ITestApplication::togglePause()
+    {
+        m_isRunning = ( m_isRunning ) ? false : true;
+    }
+
+    SimBody* ITestApplication::getBody( const std::string& name )
+    {
+        if ( m_simBodiesMap.find( name ) != m_simBodiesMap.end() )
+            return m_simBodiesMap[name];
+
+        return NULL;
+    }
+
+}

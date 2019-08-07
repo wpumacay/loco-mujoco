@@ -195,6 +195,129 @@ namespace mujoco
         }
     }
 
+    void SimBody::print()
+    {
+        assert( m_bodyId != -1 );
+
+        std::cout << "LOG> Body name: " << m_bodyName << std::endl;
+
+        // print dof-information
+        int _dofsNum = m_mjcModelPtr->body_dofnum[m_bodyId];
+        int _dofsAdr = m_mjcModelPtr->body_dofadr[m_bodyId];
+
+        std::cout << "LOG> num-dofs: " << _dofsNum << std::endl;
+        std::cout << "LOG> dof-start-address: " << _dofsAdr << std::endl;
+
+        // print qpos and qvel from joints + dofs info
+        int _jntsNum = m_mjcModelPtr->body_jntnum[m_bodyId];
+        int _jntsAdr = m_mjcModelPtr->body_jntadr[m_bodyId];
+
+        std::cout << "LOG> num-jnts: " << _jntsNum << std::endl;
+        std::cout << "LOG> jnts-start-address: " << _jntsAdr << std::endl;
+
+        for ( int i = 0; i < _jntsNum; i++ )
+        {
+            int _jntType = m_mjcModelPtr->jnt_type[_jntsAdr + i];
+            int _qposAdr = m_mjcModelPtr->jnt_qposadr[_jntsAdr + i];
+            int _qvelAdr = m_mjcModelPtr->jnt_dofadr[_jntsAdr + i];
+
+            int _numQpos = 0;
+            int _numQvel = 0;
+
+            if ( _jntType == mjJNT_FREE )
+            {
+                std::cout << "LOG> joint-type: free" << std::endl;
+                _numQpos = 7;
+                _numQvel = 6;
+            }
+            else if ( _jntType == mjJNT_BALL )
+            {
+                std::cout << "LOG> joint-type: ball" << std::endl;
+                _numQpos = 4;
+                _numQvel = 3;
+            }
+            else if ( _jntType == mjJNT_SLIDE )
+            {
+                std::cout << "LOG> joint-type: slide" << std::endl;
+                _numQpos = _numQvel = 1;
+            }
+            else if ( _jntType == mjJNT_HINGE )
+            {
+                std::cout << "LOG> joint-type: hinge" << std::endl;
+                _numQpos = _numQvel = 1;
+            }
+
+            std::cout << "LOG> qpos-address: " << _qposAdr << std::endl;
+            std::cout << "LOG> qvel(dof)-address: " << _qvelAdr << std::endl;
+            std::cout << "LOG> qpos-num: " << _numQpos << std::endl;
+            std::cout << "LOG> qvel-num: " << _numQvel << std::endl;
+
+            for ( int q = 0; q < _numQpos; q++ )
+                std::cout << "LOG> qpos(" << q << ") = " << m_mjcDataPtr->qpos[_qposAdr + q] << std::endl;
+
+            for ( int v = 0; v < _numQvel; v++ )
+                std::cout << "LOG> qvel(" << v << ") = " << m_mjcDataPtr->qvel[_qvelAdr + v] << std::endl;
+        }
+    }
+
+    void SimBody::reset()
+    {
+        assert( m_bodyId != -1 );
+
+        // print qpos and qvel from joints + dofs info
+        int _jntsNum = m_mjcModelPtr->body_jntnum[m_bodyId];
+        int _jntsAdr = m_mjcModelPtr->body_jntadr[m_bodyId];
+
+        for ( int i = 0; i < _jntsNum; i++ )
+        {
+            int _jntType = m_mjcModelPtr->jnt_type[_jntsAdr + i];
+            int _qposAdr = m_mjcModelPtr->jnt_qposadr[_jntsAdr + i];
+            int _qvelAdr = m_mjcModelPtr->jnt_dofadr[_jntsAdr + i];
+
+            int _numQpos = 0;
+            int _numQvel = 0;
+
+            if ( _jntType == mjJNT_FREE )
+            {
+                _numQpos = 7;
+                _numQvel = 6;
+
+                m_mjcDataPtr->qpos[_qposAdr + 0] = 0.0;// x-pos
+                m_mjcDataPtr->qpos[_qposAdr + 1] = 0.0;// y-pos
+                m_mjcDataPtr->qpos[_qposAdr + 2] = 5.0;// z-pos
+                m_mjcDataPtr->qpos[_qposAdr + 3] = 1.0;// quat-w-pos
+                m_mjcDataPtr->qpos[_qposAdr + 4] = 0.0;// quat-x-pos
+                m_mjcDataPtr->qpos[_qposAdr + 5] = 0.0;// quat-y-pos
+                m_mjcDataPtr->qpos[_qposAdr + 6] = 0.0;// quat-z-pos
+            }
+            else if ( _jntType == mjJNT_BALL )
+            {
+                _numQpos = 4;
+                _numQvel = 3;
+
+                m_mjcDataPtr->qpos[_qposAdr + 0] = 1.0;// quat-w-pos
+                m_mjcDataPtr->qpos[_qposAdr + 1] = 0.0;// quat-x-pos
+                m_mjcDataPtr->qpos[_qposAdr + 2] = 0.0;// quat-y-pos
+                m_mjcDataPtr->qpos[_qposAdr + 3] = 0.0;// quat-z-pos
+            }
+            else if ( _jntType == mjJNT_SLIDE )
+            {
+                _numQpos = _numQvel = 1;
+
+                m_mjcDataPtr->qpos[_qposAdr + 0] = 0.0;// q-slide
+            }
+            else if ( _jntType == mjJNT_HINGE )
+            {
+                _numQpos = _numQvel = 1;
+
+                m_mjcDataPtr->qpos[_qposAdr + 0] = 0.1;// q-angle
+            }
+
+            for ( int v = 0; v < _numQvel; v++ )
+                m_mjcDataPtr->qvel[_qvelAdr + v] = 0.0;
+        }
+    }
+
     /***************************************************************************
     *                                                                          *
     *                             BASE-APPLICATION                             *
@@ -293,6 +416,13 @@ namespace mujoco
             for ( size_t i = 0; i < _renderables.size(); i++ )
                 m_graphicsScene->addRenderable( _renderables[i] );
         }
+
+        // show some overall information
+        std::cout << "LOG> nq: " << m_mjcModelPtr->nq << std::endl;
+        std::cout << "LOG> nv: " << m_mjcModelPtr->nv << std::endl;
+        std::cout << "LOG> nbody: " << m_mjcModelPtr->nbody << std::endl;
+        std::cout << "LOG> ngeom: " << m_mjcModelPtr->ngeom << std::endl;
+        std::cout << "LOG> njnt: " << m_mjcModelPtr->njnt << std::endl;
     }
 
     void ITestApplication::_initGraphics()
@@ -336,10 +466,13 @@ namespace mujoco
 
     void ITestApplication::step()
     {
-        // Take a step in the simulator (MuJoCo)
-        mjtNum _simstart = m_mjcDataPtr->time;
-        while ( m_mjcDataPtr->time - _simstart < 1.0 / 60.0 )
-            mj_step( m_mjcModelPtr, m_mjcDataPtr );
+        if ( m_isRunning && !m_isTerminated )
+        {
+            // Take a step in the simulator (MuJoCo)
+            mjtNum _simstart = m_mjcDataPtr->time;
+            while ( m_mjcDataPtr->time - _simstart < 1.0 / 60.0 )
+                mj_step( m_mjcModelPtr, m_mjcDataPtr );
+        }
 
         // Update all body-wrappers
         for ( size_t i = 0; i < m_simBodies.size(); i++ )
@@ -353,19 +486,43 @@ namespace mujoco
         // do some custom step functionality
         _stepInternal();
 
-        if ( engine::InputSystem::isKeyDown( GLFW_KEY_SPACE ) )
+        if ( engine::InputSystem::checkSingleKeyPress( GLFW_KEY_SPACE ) )
         {
             m_graphicsScene->getCurrentCamera()->setActiveMode( false );
             m_graphicsApp->window()->enableCursor();
         }
-        else if ( engine::InputSystem::isKeyDown( GLFW_KEY_ENTER ) )
+        else if ( engine::InputSystem::checkSingleKeyPress( GLFW_KEY_ENTER ) )
         {
             m_graphicsScene->getCurrentCamera()->setActiveMode( true );
             m_graphicsApp->window()->disableCursor();
         }
-        else if ( engine::InputSystem::isKeyDown( GLFW_KEY_ESCAPE ) )
+        else if ( engine::InputSystem::checkSingleKeyPress( GLFW_KEY_ESCAPE ) )
         {
             m_isTerminated = true;
+        }
+        else if ( engine::InputSystem::checkSingleKeyPress( GLFW_KEY_P ) )
+        {
+            togglePause();
+        }
+        else if ( engine::InputSystem::checkSingleKeyPress( GLFW_KEY_Q ) )
+        {
+            for ( size_t i = 0; i < m_simBodies.size(); i++ )
+            {
+                if ( !m_simBodies[i] )
+                    continue;
+
+                m_simBodies[i]->print();
+            }
+        }
+        else if ( engine::InputSystem::checkSingleKeyPress( GLFW_KEY_R ) )
+        {
+            for ( size_t i = 0; i < m_simBodies.size(); i++ )
+            {
+                if ( !m_simBodies[i] )
+                    continue;
+
+                m_simBodies[i]->reset();
+            }
         }
 
         m_graphicsApp->begin();

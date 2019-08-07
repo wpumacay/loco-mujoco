@@ -78,6 +78,12 @@ namespace mujoco
 
         /* Returns all meshes linked to each geometry */
         std::vector< engine::LIRenderable* > geomsGraphics() { return m_geomsGraphics; }
+
+        /* Prints some debug information */
+        void print();
+
+        /* Resets the body to some configuration */
+        void reset();
     };
 
 

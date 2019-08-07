@@ -201,6 +201,14 @@ namespace mujoco
 
         std::cout << "LOG> Body name: " << m_bodyName << std::endl;
 
+        // print root body id and name
+        int _rootId     = m_mjcModelPtr->body_rootid[m_bodyId];
+        auto _rootName  = std::string( "" );
+        if ( _rootId != -1 ) 
+            _rootName = std::string( mj_id2name( m_mjcModelPtr, mjOBJ_BODY, _rootId ) );
+
+        std::cout << "LOG> Root-body name: " << _rootName << std::endl;
+
         // print dof-information
         int _dofsNum = m_mjcModelPtr->body_dofnum[m_bodyId];
         int _dofsAdr = m_mjcModelPtr->body_dofadr[m_bodyId];
@@ -282,9 +290,9 @@ namespace mujoco
                 _numQpos = 7;
                 _numQvel = 6;
 
-                m_mjcDataPtr->qpos[_qposAdr + 0] = 0.0;// x-pos
-                m_mjcDataPtr->qpos[_qposAdr + 1] = 0.0;// y-pos
-                m_mjcDataPtr->qpos[_qposAdr + 2] = 5.0;// z-pos
+                m_mjcDataPtr->qpos[_qposAdr + 0] = m_mjcModelPtr->qpos0[_qposAdr + 0];// x-pos
+                m_mjcDataPtr->qpos[_qposAdr + 1] = m_mjcModelPtr->qpos0[_qposAdr + 1];// y-pos
+                m_mjcDataPtr->qpos[_qposAdr + 2] = m_mjcModelPtr->qpos0[_qposAdr + 2];// z-pos
                 m_mjcDataPtr->qpos[_qposAdr + 3] = 1.0;// quat-w-pos
                 m_mjcDataPtr->qpos[_qposAdr + 4] = 0.0;// quat-x-pos
                 m_mjcDataPtr->qpos[_qposAdr + 5] = 0.0;// quat-y-pos
@@ -320,6 +328,72 @@ namespace mujoco
 
     /***************************************************************************
     *                                                                          *
+    *                              AGENT WRAPPER                               *
+    *                                                                          *
+    ***************************************************************************/
+
+    SimAgent::SimAgent( int rootBodyId, 
+                        const std::vector< SimBody* >& bodies,
+                        mjModel* mjcModelPtr, 
+                        mjData* mjcDataPtr )
+    {
+        m_rootBodyId = rootBodyId;
+        m_rootBodyName = "";
+        m_mjcModelPtr = mjcModelPtr;
+        m_mjcDataPtr = mjcDataPtr;
+
+        // grab the id of the root body
+        auto _rootBodyNameChars = mj_id2name( m_mjcModelPtr, mjOBJ_BODY, m_rootBodyId );
+        if ( _rootBodyNameChars )
+            m_rootBodyName = std::string( _rootBodyNameChars );
+
+        if ( m_rootBodyId != -1 )
+            _collectBodies( bodies );
+    }
+
+    void SimAgent::_collectBodies( const std::vector< SimBody* >& bodies )
+    {
+        assert( m_bodies.size() == 0 );
+
+        for ( size_t i = 0; i < bodies.size(); i++ )
+        {
+            if ( bodies[i]->id() == -1 )
+                continue;
+
+            int _rootId = m_mjcModelPtr->body_rootid[bodies[i]->id()];
+
+            if ( _rootId == m_rootBodyId )
+                m_bodies.push_back( bodies[i] );
+        }
+    }
+
+    SimAgent::~SimAgent()
+    {
+        m_mjcModelPtr = NULL;
+        m_mjcDataPtr = NULL;
+        m_bodies.clear();
+    }
+
+    void SimAgent::update()
+    {
+        if ( m_rootBodyId == -1 )
+            return;
+
+        // Grab the current position and orientation of the root-body of the agent
+        m_rootBodyWorldPos = mjtNum2vec3( m_mjcDataPtr->xpos + 3 * m_rootBodyId );
+        m_rootBodyWorldQuat = mjtNumQuat2vec4( m_mjcDataPtr->xquat + 4 * m_rootBodyId );
+        m_rootBodyWorldTransform.setPosition( m_rootBodyWorldPos );
+        m_rootBodyWorldTransform.setRotation( m_rootBodyWorldQuat );
+    }
+
+    void SimAgent::reset()
+    {
+        for ( size_t i = 0; i < m_bodies.size(); i++ )
+            m_bodies[i]->reset();
+    }
+
+    /***************************************************************************
+    *                                                                          *
     *                             BASE-APPLICATION                             *
     *                                                                          *
     ***************************************************************************/
@@ -342,6 +416,8 @@ namespace mujoco
             delete m_simBodies[i];
         m_simBodies.clear();
         m_simBodiesMap.clear();
+
+        m_simAgents.clear();
 
         delete m_graphicsApp;
         m_graphicsApp = NULL;
@@ -417,6 +493,25 @@ namespace mujoco
                 m_graphicsScene->addRenderable( _renderables[i] );
         }
 
+        // grab all agents and wrap them
+        for ( size_t _bodyId = 0; _bodyId < _numBodies; _bodyId++ )
+        {
+            int _rootBodyId = m_mjcModelPtr->body_rootid[_bodyId];
+
+            // create agents only using root bodies
+            if ( _rootBodyId != _bodyId )
+                continue;
+
+            // skip single-geom bodies of world bodies
+            if ( m_simBodies[_bodyId]->name().find( "world" ) != std::string::npos )
+                continue;
+
+            m_simAgents.push_back( new SimAgent( _rootBodyId,
+                                                 m_simBodies,
+                                                 m_mjcModelPtr,
+                                                 m_mjcDataPtr ) );
+        }
+
         // show some overall information
         std::cout << "LOG> nq: " << m_mjcModelPtr->nq << std::endl;
         std::cout << "LOG> nv: " << m_mjcModelPtr->nv << std::endl;
@@ -483,6 +578,15 @@ namespace mujoco
             m_simBodies[i]->update();
         }
 
+        // Update all agent wrappers
+        for ( size_t i = 0; i < m_simAgents.size(); i++ )
+        {
+            if ( !m_simAgents[i] )
+                continue;
+
+            m_simAgents[i]->update();
+        }
+
         // do some custom step functionality
         _stepInternal();
 
@@ -516,12 +620,12 @@ namespace mujoco
         }
         else if ( engine::InputSystem::checkSingleKeyPress( GLFW_KEY_R ) )
         {
-            for ( size_t i = 0; i < m_simBodies.size(); i++ )
+            for ( size_t i = 0; i < m_simAgents.size(); i++ )
             {
-                if ( !m_simBodies[i] )
+                if ( !m_simAgents[i] )
                     continue;
 
-                m_simBodies[i]->reset();
+                m_simAgents[i]->reset();
             }
         }
 

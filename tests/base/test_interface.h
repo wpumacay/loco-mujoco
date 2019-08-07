@@ -46,8 +46,8 @@ namespace mujoco
         std::vector< tysoc::TMat4 >             m_geomsLocalTransforms;
         std::vector< engine::LIRenderable* >    m_geomsGraphics;
 
-        mjModel* m_mjcModelPtr; // a reference to the mujoco-model data structure
-        mjData* m_mjcDataPtr;   // a reference to the mujoco-data data structure
+        mjModel*    m_mjcModelPtr; // a reference to the mujoco-model data structure
+        mjData*     m_mjcDataPtr;  // a reference to the mujoco-data data structure
 
         /* Grabs all geometries associated with this body */
         void _grabGeometries();
@@ -59,7 +59,7 @@ namespace mujoco
 
         public :
 
-        /* Construct the body wrapper given the name of the body */
+        /* Constructs the body wrapper given the name of the body */
         SimBody( const std::string& bodyName,
                  mjModel* mjcModelPtr,
                  mjData* mjcDataPtr );
@@ -86,6 +86,48 @@ namespace mujoco
         void reset();
     };
 
+    /**
+    *   Wrapper for a whole lot of bodies that conform a single agent-model
+    */
+    class SimAgent
+    {
+        protected :
+
+        int             m_rootBodyId;
+        std::string     m_rootBodyName;
+        tysoc::TVec3    m_rootBodyWorldPos;
+        tysoc::TVec4    m_rootBodyWorldQuat;
+        tysoc::TMat4    m_rootBodyWorldTransform;
+
+        std::vector< SimBody* > m_bodies;
+
+        mjModel*    m_mjcModelPtr; // a reference to the mujoco-model data structure
+        mjData*     m_mjcDataPtr;  // a reference to the mujoco-data data structure
+
+        /* Collects all bodies associated with this agent */
+        void _collectBodies( const std::vector< SimBody* >& bodies );
+
+        public :
+
+        /* Constructs the agent wrapper given the rootbody of the agent */
+        SimAgent( int rootBodyId,
+                  const std::vector< SimBody* >& bodies,
+                  mjModel* mjcModelPtr,
+                  mjData* mjcDataPtr );
+
+        /* Frees|unlinks all related resources of the currently wrapped agent */
+        ~SimAgent();
+
+        /* Updates all internal components from the backend information */
+        void update();
+
+        /* Resets the agent to some configuration */
+        void reset();
+
+        /* Returns all body wrappers associated with this agent */
+        std::vector< SimBody* > bodies() { return m_bodies; }
+    };
+
 
     class ITestApplication
     {
@@ -105,6 +147,8 @@ namespace mujoco
 
         std::vector< SimBody* >             m_simBodies;
         std::map< std::string, SimBody* >   m_simBodiesMap;
+
+        std::vector< SimAgent* > m_simAgents;
 
         bool m_isRunning;
         bool m_isTerminated;
@@ -135,6 +179,9 @@ namespace mujoco
 
         /* Returns a body-wrapper of a body with a specific name in the simulation */
         SimBody* getBody( const std::string& name );
+
+        /* Returns all agent-wrappers in the simulation */
+        std::vector< SimAgent* > agents() { return m_simAgents; }
     };
 
 }

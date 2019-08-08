@@ -400,6 +400,23 @@ namespace mujoco
             m_mjcDataPtr->qvel[m_jointQvelAdr + i] = 0.0;
     }
 
+    void SimJoint::setQpos( const std::vector< mjtNum >& qpos )
+    {
+        for ( int  i = 0; i < m_jointQposNum; i++ )
+            if ( i < qpos.size() )
+                m_mjcDataPtr->qpos[m_jointQposAdr + i] = qpos[i];
+    }
+
+    std::vector< mjtNum > SimJoint::getQpos()
+    {
+        std::vector< mjtNum > _qpos;
+
+        for ( int  i = 0; i < m_jointQposNum; i++ )
+            _qpos.push_back( m_mjcDataPtr->qpos[m_jointQposAdr + i] );
+
+        return _qpos;
+    }
+
     /***************************************************************************
     *                                                                          *
     *                              AGENT WRAPPER                               *
@@ -438,6 +455,13 @@ namespace mujoco
 
             if ( _rootId == m_rootBodyId )
                 m_bodies.push_back( bodies[i] );
+        }
+
+        for ( size_t i = 0; i < m_bodies.size(); i++ )
+        {
+            auto _joints = m_bodies[i]->joints();
+            for ( size_t j = 0; j < _joints.size(); j++ )
+                m_joints.push_back( _joints[j] );
         }
     }
 
@@ -482,6 +506,8 @@ namespace mujoco
         m_mjcModelFile = "";
         m_isTerminated = false;
         m_isRunning = true;
+        m_currentAgentIndx = -1;
+        m_currentAgentName = "";
     }
 
     ITestApplication::~ITestApplication()
@@ -721,7 +747,7 @@ namespace mujoco
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        _renderUI();
+        _renderUi();
 
         ImGui::Render();
         int _ww, _wh;
@@ -730,6 +756,64 @@ namespace mujoco
         ImGui_ImplOpenGL3_RenderDrawData( ImGui::GetDrawData() );
 
         m_graphicsApp->end();
+    }
+
+    void ITestApplication::_renderUi()
+    {
+        // render ui related to agents
+        _renderUiAgents();
+
+        // Call some custom render functionality
+        _renderUiInternal();
+    }
+
+    void ITestApplication::_renderUiAgents()
+    {
+        // Render selection menu
+        ImGui::Begin( "Agents> Select an agent from here" );
+
+        if ( ImGui::BeginCombo( "Agents", m_currentAgentName.c_str() ) )
+        {
+            for ( size_t i = 0; i < m_simAgents.size(); i++ )
+            {
+                auto _simAgent = m_simAgents[i];
+                bool _isSelected = ( i == m_currentAgentIndx );
+                auto _simAgentName = std::string( "agent-" ) + std::to_string( i );
+
+                if ( ImGui::Selectable( _simAgentName.c_str(), _isSelected ) )
+                {
+                    m_currentAgentIndx = i;
+                    m_currentAgentName = _simAgentName;
+                }
+
+                if ( _isSelected )
+                    ImGui::SetItemDefaultFocus();
+            }
+
+            ImGui::EndCombo();
+        }
+
+        ImGui::End();
+
+        // Render agent menu
+        if ( m_currentAgentIndx != -1 )
+        {
+            ImGui::Begin( "Agent-playground" );
+
+            auto _joints = m_simAgents[m_currentAgentIndx]->joints();
+            for ( size_t j = 0; j < _joints.size(); j++ )
+            {
+                if ( _joints[j]->type() == mjJNT_HINGE )
+                {
+                    float _qpos = _joints[j]->getQpos()[0];
+                    ImGui::SliderFloat( _joints[j]->name().c_str(),
+                                        &_qpos, -3.1415f, 3.1415f );
+                    _joints[j]->setQpos( { ( mjtNum )_qpos } );
+                }
+            }
+
+            ImGui::End();
+        }
     }
 
     void ITestApplication::togglePause()

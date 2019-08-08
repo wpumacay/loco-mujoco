@@ -73,6 +73,9 @@ namespace mujoco
         /* Returns the unique name of the wrapped joint */
         std::string name() { return m_jointName; }
 
+        /* Returns the type of this joint */
+        int type() { return m_jointType; }
+
         /* Prints some debug information */
         void print();
 
@@ -81,6 +84,12 @@ namespace mujoco
 
         /* Resets the joint qpos->qpos-given and qvel->zeros */
         void reset( const std::vector< mjtNum >& qpos );
+
+        /* Sets the qpos-values given */
+        void setQpos( const std::vector< mjtNum >& qpos );
+
+        /* Gets the qpos-values */
+        std::vector< mjtNum > getQpos();
 
         /* Returns the local transform of the joint w.r.t. its parent body */
         tysoc::TVec3 localPosition() { return m_jointLocalPos; }
@@ -188,6 +197,7 @@ namespace mujoco
         tysoc::TMat4    m_rootBodyWorldTransform;
 
         std::vector< SimBody* > m_bodies;
+        std::vector< SimJoint* > m_joints;
 
         mjModel*    m_mjcModelPtr; // a reference to the mujoco-model data structure
         mjData*     m_mjcDataPtr;  // a reference to the mujoco-data data structure
@@ -214,6 +224,9 @@ namespace mujoco
 
         /* Returns all body wrappers associated with this agent */
         std::vector< SimBody* > bodies() { return m_bodies; }
+
+        /* Returns all joint wrappers associated with this agent */
+        std::vector< SimJoint* > joints() { return m_joints; }
     };
 
 
@@ -238,12 +251,18 @@ namespace mujoco
 
         std::vector< SimAgent* > m_simAgents;
 
+        int m_currentAgentIndx;
+        std::string m_currentAgentName;
+
         bool m_isRunning;
         bool m_isTerminated;
 
         void _initScenario();
         void _initPhysics(); 
         void _initGraphics();
+
+        void _renderUi();
+        void _renderUiAgents();
         // User should override this and create what he wants
         virtual void _initScenarioInternal() = 0;
         // Special functionality used after taking a step
@@ -251,7 +270,7 @@ namespace mujoco
         // Special functionality used before calling reset
         virtual void _resetInternal() {};
         // UI functionality
-        virtual void _renderUI() {};
+        virtual void _renderUiInternal() {};
 
         public :
 

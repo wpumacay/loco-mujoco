@@ -121,9 +121,6 @@ namespace mujoco
         m_mjcModelPtr = NULL;
         m_mjcDataPtr = NULL;
 
-        for ( size_t i = 0; i < m_geomsGraphics.size(); i++ )
-            delete m_geomsGraphics[i];
-
         m_geomsLocalTransforms.clear();
         m_geomsGraphics.clear();
         m_geomsNames.clear();
@@ -491,12 +488,17 @@ namespace mujoco
     {
         for ( size_t i = 0; i < m_simBodies.size(); i++ )
             delete m_simBodies[i];
+
         m_simBodies.clear();
         m_simBodiesMap.clear();
 
         m_simAgents.clear();
 
+        // @TODO: Check glfw's master branch, as mujoco's glfw seems be older
+        // @TODO: Check why are we linking against glfw3 from mjc libs
+    #if defined(__APPLE__) || defined(_WIN32)
         delete m_graphicsApp;
+    #endif
         m_graphicsApp = NULL;
         m_graphicsScene = NULL;
 

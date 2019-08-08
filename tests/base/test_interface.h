@@ -22,11 +22,75 @@ namespace mujoco
 {
 
     std::string mjtGeom2string( int type );
+    std::string mjtJoint2string( int type );
     tysoc::TVec3 mjtNum2vec3( mjtNum* numPtr );
     tysoc::TVec4 mjtNum2vec4( mjtNum* numPtr );
     tysoc::TVec4 mjtNumQuat2vec4( mjtNum* numPtr );
     tysoc::TVec3 floatptr2vec3( float* floatPtr );
     tysoc::TVec4 floatptr2vec4( float* floatPtr );
+
+    /**
+    *   Wrapper for a single joint associated with a mjc-body
+    */
+    class SimJoint
+    {
+        protected :
+
+        int             m_jointId;
+        std::string     m_jointName;
+        tysoc::TVec3    m_jointLocalPos;
+        tysoc::TMat4    m_jointLocalTransform;
+        tysoc::TMat4    m_jointWorldTransform;
+
+        int m_jointType;            // type-id of the this joint
+        int m_jointBodyParentId;    // id of the parent body
+        int m_jointQposNum;         // number of generalized coordinates associated with this joint
+        int m_jointQposAdr;         // offset of the qpos-s in qpos buffer
+        int m_jointQvelNum;         // number of motion-degrees of freedom  associated with this joint
+        int m_jointQvelAdr;         // offset of the qvel-s in qvel buffer
+
+        std::vector< mjtNum > m_jointQpos0; // default values of the generalized coordinates
+
+        mjModel*    m_mjcModelPtr;
+        mjData*     m_mjcDataPtr;
+
+        public :
+
+        /* Constructs the joint wrapper given the joint-id of the body */
+        SimJoint( int jointId,
+                  mjModel* mjcModelPtr,
+                  mjData* mjcDataPtr );
+
+        /* Frees|unlinks all related resources of the currently wrapper joint */
+        ~SimJoint();
+
+        /* Updates all internal information by quering the backend */
+        void update();
+
+        /* Returns the unique identifier of the wrapped joint */
+        int id() { return m_jointId; }
+
+        /* Returns the unique name of the wrapped joint */
+        std::string name() { return m_jointName; }
+
+        /* Prints some debug information */
+        void print();
+
+        /* Resets the joint qpos->qpos0 and qvel->zeros */
+        void reset();
+
+        /* Resets the joint qpos->qpos-given and qvel->zeros */
+        void reset( const std::vector< mjtNum >& qpos );
+
+        /* Returns the local transform of the joint w.r.t. its parent body */
+        tysoc::TVec3 localPosition() { return m_jointLocalPos; }
+
+        /* Returns the local transform of the joint w.r.t. its parent body */
+        tysoc::TMat4 localTransform() { return m_jointLocalTransform; }
+
+        /* Returns the world transform of the joint */
+        tysoc::TMat4 worldTransform() { return m_jointWorldTransform; }
+    };
 
     /**
     *   Wrapper for a single body with geometries as children
@@ -46,11 +110,20 @@ namespace mujoco
         std::vector< tysoc::TMat4 >             m_geomsLocalTransforms;
         std::vector< engine::LIRenderable* >    m_geomsGraphics;
 
-        mjModel*    m_mjcModelPtr; // a reference to the mujoco-model data structure
-        mjData*     m_mjcDataPtr;  // a reference to the mujoco-data data structure
+        int m_jointsNum; // number of joints that this body has
+        int m_jointsAdr; // offset of this body's joints in the joints buffer
+
+        std::vector< SimJoint* >            m_simJoints;
+        std::map< std::string, SimJoint* >  m_simJointsMap;
+
+        mjModel*    m_mjcModelPtr;
+        mjData*     m_mjcDataPtr;
 
         /* Grabs all geometries associated with this body */
         void _grabGeometries();
+
+        /* Grabs some useful information from the mjc-body */
+        void _grabJoints();
 
         /* Builds a geometry's graphics */
         engine::LIRenderable* _buildGeomGraphics( const std::string& type,
@@ -67,7 +140,7 @@ namespace mujoco
         /* Frees|unlinks all related resources of the currently wrapped body */
         ~SimBody();
 
-        /* Updates all internal components from the backend information */
+        /* Updates all internal information by quering the backend */
         void update();
 
         /* Returns the unique identifier of the wrapped body */
@@ -79,11 +152,26 @@ namespace mujoco
         /* Returns all meshes linked to each geometry */
         std::vector< engine::LIRenderable* > geomsGraphics() { return m_geomsGraphics; }
 
+        /* Returns all sim-joint wrappers of the joints associated with this body */
+        std::vector< SimJoint* > joints() { return m_simJoints; }
+
+        /* Returns a joint with a given name */
+        SimJoint* getJointByName( const std::string& name );
+
         /* Prints some debug information */
         void print();
 
         /* Resets the body to some configuration */
         void reset();
+
+        /* Returns the world-position of the body */
+        tysoc::TVec3 position() { return m_bodyWorldPos; }
+
+        /* Returns the world-orientation of the body */
+        tysoc::TVec4 orientation() { return m_bodyWorldQuat; }
+
+        /* Returns the world transform of the body */
+        tysoc::TMat4 worldTransform() { return m_bodyWorldTransform; }
     };
 
     /**

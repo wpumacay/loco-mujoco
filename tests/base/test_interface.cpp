@@ -33,6 +33,20 @@ namespace mujoco
         return "undefined";
     }
 
+    std::string mjtJoint2string( int type )
+    {
+        if ( type == mjJNT_FREE )
+            return "free";
+        if ( type == mjJNT_BALL )
+            return "ball";
+        if ( type == mjJNT_SLIDE )
+            return "slide";
+        if ( type == mjJNT_HINGE )
+            return "hinge";
+
+        return "undefined";
+    }
+
     tysoc::TVec3 mjtNum2vec3( mjtNum* numPtr )
     {
         assert( numPtr != NULL );
@@ -81,6 +95,10 @@ namespace mujoco
         m_bodyName = bodyName;
         m_bodyId = -1;
 
+        // default values of some body props (to be extracted later)
+        m_jointsNum = -1;
+        m_jointsAdr = -1;
+
         m_mjcModelPtr = mjcModelPtr;
         m_mjcDataPtr = mjcDataPtr;
 
@@ -88,9 +106,14 @@ namespace mujoco
 
         m_bodyId = mj_name2id( m_mjcModelPtr, mjOBJ_BODY, m_bodyName.c_str() );
         if ( m_bodyId == -1 )
+        {
             std::cout << "ERROR> can't grab id from body: " << m_bodyName << std::endl;
+        }
         else
+        {
             _grabGeometries();
+            _grabJoints();
+        }
     }
 
     SimBody::~SimBody()
@@ -105,6 +128,12 @@ namespace mujoco
         m_geomsGraphics.clear();
         m_geomsNames.clear();
         m_geomsIds.clear();
+
+        for ( size_t i = 0; i < m_simJoints.size(); i++ )
+            delete m_simJoints[i];
+
+        m_simJoints.clear();
+        m_simJointsMap.clear();
     }
 
     void SimBody::_grabGeometries()
@@ -141,6 +170,23 @@ namespace mujoco
             auto _geomLocalQuat = mjtNumQuat2vec4( m_mjcModelPtr->geom_quat + 4 * _geomId );
             auto _geomLocalTransform = tysoc::TMat4( _geomLocalPos, _geomLocalQuat );
             m_geomsLocalTransforms.push_back( _geomLocalTransform );
+        }
+    }
+
+    void SimBody::_grabJoints()
+    {
+        // print qpos and qvel from joints + dofs info
+        m_jointsNum = m_mjcModelPtr->body_jntnum[m_bodyId];
+        m_jointsAdr = m_mjcModelPtr->body_jntadr[m_bodyId];
+
+        for ( int i = 0; i < m_jointsNum; i++ )
+        {
+            auto _joint = new SimJoint( m_jointsAdr + i,
+                                        m_mjcModelPtr,
+                                        m_mjcDataPtr );
+
+            m_simJoints.push_back( _joint );
+            m_simJointsMap[ _joint->name() ] = _joint;
         }
     }
 
@@ -195,6 +241,14 @@ namespace mujoco
         }
     }
 
+    SimJoint* SimBody::getJointByName( const std::string& name )
+    {
+        if ( m_simJointsMap.find( name ) == m_simJointsMap.end() )
+            return NULL;
+
+        return m_simJointsMap[name];
+    }
+
     void SimBody::print()
     {
         assert( m_bodyId != -1 );
@@ -223,107 +277,130 @@ namespace mujoco
         std::cout << "LOG> num-jnts: " << _jntsNum << std::endl;
         std::cout << "LOG> jnts-start-address: " << _jntsAdr << std::endl;
 
-        for ( int i = 0; i < _jntsNum; i++ )
-        {
-            int _jntType = m_mjcModelPtr->jnt_type[_jntsAdr + i];
-            int _qposAdr = m_mjcModelPtr->jnt_qposadr[_jntsAdr + i];
-            int _qvelAdr = m_mjcModelPtr->jnt_dofadr[_jntsAdr + i];
-
-            int _numQpos = 0;
-            int _numQvel = 0;
-
-            if ( _jntType == mjJNT_FREE )
-            {
-                std::cout << "LOG> joint-type: free" << std::endl;
-                _numQpos = 7;
-                _numQvel = 6;
-            }
-            else if ( _jntType == mjJNT_BALL )
-            {
-                std::cout << "LOG> joint-type: ball" << std::endl;
-                _numQpos = 4;
-                _numQvel = 3;
-            }
-            else if ( _jntType == mjJNT_SLIDE )
-            {
-                std::cout << "LOG> joint-type: slide" << std::endl;
-                _numQpos = _numQvel = 1;
-            }
-            else if ( _jntType == mjJNT_HINGE )
-            {
-                std::cout << "LOG> joint-type: hinge" << std::endl;
-                _numQpos = _numQvel = 1;
-            }
-
-            std::cout << "LOG> qpos-address: " << _qposAdr << std::endl;
-            std::cout << "LOG> qvel(dof)-address: " << _qvelAdr << std::endl;
-            std::cout << "LOG> qpos-num: " << _numQpos << std::endl;
-            std::cout << "LOG> qvel-num: " << _numQvel << std::endl;
-
-            for ( int q = 0; q < _numQpos; q++ )
-                std::cout << "LOG> qpos(" << q << ") = " << m_mjcDataPtr->qpos[_qposAdr + q] << std::endl;
-
-            for ( int v = 0; v < _numQvel; v++ )
-                std::cout << "LOG> qvel(" << v << ") = " << m_mjcDataPtr->qvel[_qvelAdr + v] << std::endl;
-        }
+        for ( size_t i = 0; i < m_simJoints.size(); i++ )
+            m_simJoints[i]->print();
     }
 
     void SimBody::reset()
     {
         assert( m_bodyId != -1 );
 
-        // print qpos and qvel from joints + dofs info
-        int _jntsNum = m_mjcModelPtr->body_jntnum[m_bodyId];
-        int _jntsAdr = m_mjcModelPtr->body_jntadr[m_bodyId];
+        for ( size_t i = 0; i < m_simJoints.size(); i++ )
+            m_simJoints[i]->reset();
+    }
 
-        for ( int i = 0; i < _jntsNum; i++ )
+    /***************************************************************************
+    *                                                                          *
+    *                              JOINT WRAPPER                               *
+    *                                                                          *
+    ***************************************************************************/
+
+    SimJoint::SimJoint( int jointId,
+                        mjModel* mjcModelPtr,
+                        mjData* mjcDataPtr )
+    {
+        m_jointId = jointId;
+        m_jointName = "undefined";
+        m_mjcModelPtr = mjcModelPtr;
+        m_mjcDataPtr = mjcDataPtr;
+
+        m_jointQposNum = -1;
+        m_jointQposAdr = -1;
+        m_jointQvelNum = -1;
+        m_jointQvelAdr = -1;
+
+        /******************** Grab information from mujoco ********************/
+
+        if ( m_jointId == -1 )
         {
-            int _jntType = m_mjcModelPtr->jnt_type[_jntsAdr + i];
-            int _qposAdr = m_mjcModelPtr->jnt_qposadr[_jntsAdr + i];
-            int _qvelAdr = m_mjcModelPtr->jnt_dofadr[_jntsAdr + i];
-
-            int _numQpos = 0;
-            int _numQvel = 0;
-
-            if ( _jntType == mjJNT_FREE )
-            {
-                _numQpos = 7;
-                _numQvel = 6;
-
-                m_mjcDataPtr->qpos[_qposAdr + 0] = m_mjcModelPtr->qpos0[_qposAdr + 0];// x-pos
-                m_mjcDataPtr->qpos[_qposAdr + 1] = m_mjcModelPtr->qpos0[_qposAdr + 1];// y-pos
-                m_mjcDataPtr->qpos[_qposAdr + 2] = m_mjcModelPtr->qpos0[_qposAdr + 2];// z-pos
-                m_mjcDataPtr->qpos[_qposAdr + 3] = 1.0;// quat-w-pos
-                m_mjcDataPtr->qpos[_qposAdr + 4] = 0.0;// quat-x-pos
-                m_mjcDataPtr->qpos[_qposAdr + 5] = 0.0;// quat-y-pos
-                m_mjcDataPtr->qpos[_qposAdr + 6] = 0.0;// quat-z-pos
-            }
-            else if ( _jntType == mjJNT_BALL )
-            {
-                _numQpos = 4;
-                _numQvel = 3;
-
-                m_mjcDataPtr->qpos[_qposAdr + 0] = 1.0;// quat-w-pos
-                m_mjcDataPtr->qpos[_qposAdr + 1] = 0.0;// quat-x-pos
-                m_mjcDataPtr->qpos[_qposAdr + 2] = 0.0;// quat-y-pos
-                m_mjcDataPtr->qpos[_qposAdr + 3] = 0.0;// quat-z-pos
-            }
-            else if ( _jntType == mjJNT_SLIDE )
-            {
-                _numQpos = _numQvel = 1;
-
-                m_mjcDataPtr->qpos[_qposAdr + 0] = 0.0;// q-slide
-            }
-            else if ( _jntType == mjJNT_HINGE )
-            {
-                _numQpos = _numQvel = 1;
-
-                m_mjcDataPtr->qpos[_qposAdr + 0] = 0.1;// q-angle
-            }
-
-            for ( int v = 0; v < _numQvel; v++ )
-                m_mjcDataPtr->qvel[_qvelAdr + v] = 0.0;
+            std::cout << "ERROR> can't grab id from joint: " << m_jointName << std::endl;
+            return;
         }
+
+        auto _jointNameChars = mj_id2name( m_mjcModelPtr, mjOBJ_JOINT, m_jointId );
+        if ( _jointNameChars ) { m_jointName = std::string( _jointNameChars ); }
+
+        m_jointType         = m_mjcModelPtr->jnt_type[m_jointId];
+        m_jointBodyParentId = m_mjcModelPtr->jnt_bodyid[m_jointId];
+        m_jointQposAdr      = m_mjcModelPtr->jnt_qposadr[m_jointId];
+        m_jointQvelAdr      = m_mjcModelPtr->jnt_dofadr[m_jointId];
+
+        if ( m_jointType == mjJNT_FREE )
+        {
+            m_jointQposNum = 7;
+            m_jointQvelNum = 6;
+        }
+        else if ( m_jointType == mjJNT_BALL )
+        {
+            m_jointQposNum = 4;
+            m_jointQvelNum = 3;
+        }
+        else if ( m_jointType == mjJNT_SLIDE )
+        {
+            m_jointQposNum = m_jointQvelNum = 1;
+        }
+        else if ( m_jointType == mjJNT_HINGE )
+        {
+            m_jointQposNum = m_jointQvelNum = 1;
+        }
+
+        m_jointLocalPos = mjtNum2vec3( m_mjcModelPtr->jnt_pos + 3 * m_jointId );
+        m_jointLocalTransform.setPosition( m_jointLocalPos );
+    }
+
+    SimJoint::~SimJoint()
+    {
+        m_mjcModelPtr = NULL;
+        m_mjcDataPtr = NULL;
+    }
+
+    void SimJoint::update()
+    {
+        if ( m_jointId == -1 || m_jointBodyParentId == -1 )
+            return;
+
+        auto _parentBodyWorldPos = mjtNum2vec3( m_mjcDataPtr->xpos + 3 * m_jointBodyParentId );
+        auto _parentBodyWorldQuat = mjtNumQuat2vec4( m_mjcDataPtr->xquat + 4 * m_jointBodyParentId );
+        auto _parentBodyWorldTransform = tysoc::TMat4( _parentBodyWorldPos, _parentBodyWorldQuat );
+
+        m_jointWorldTransform = _parentBodyWorldTransform * m_jointLocalTransform;
+    }
+
+    void SimJoint::print()
+    {
+
+        std::cout << "LOG> joint-type: " << mjtJoint2string( m_jointType ) << std::endl;
+
+        std::cout << "LOG> qpos-num: " << m_jointQposNum << std::endl;
+        std::cout << "LOG> qpos-address: " << m_jointQposAdr << std::endl;
+
+        std::cout << "LOG> qvel(dof)-num: " << m_jointQvelNum << std::endl;
+        std::cout << "LOG> qvel(dof)-address: " << m_jointQvelAdr << std::endl;
+
+        for ( int q = 0; q < m_jointQposNum; q++ )
+            std::cout << "LOG> qpos(" << q << ") = " << m_mjcDataPtr->qpos[m_jointQposAdr + q] << std::endl;
+
+        for ( int v = 0; v < m_jointQvelNum; v++ )
+            std::cout << "LOG> qvel(" << v << ") = " << m_mjcDataPtr->qvel[m_jointQvelAdr + v] << std::endl;
+    }
+
+    void SimJoint::reset()
+    {
+        for ( int i = 0; i < m_jointQposNum; i++ )
+            m_mjcDataPtr->qpos[m_jointQposAdr + i] = m_mjcModelPtr->qpos0[m_jointQposAdr + i];
+
+        for ( int i = 0; i < m_jointQvelNum; i++ )
+            m_mjcDataPtr->qvel[m_jointQvelAdr + i] = 0.0;
+    }
+
+    void SimJoint::reset( const std::vector< mjtNum >& qpos )
+    {
+        for ( int  i = 0; i < m_jointQposNum; i++ )
+            if ( i < qpos.size() )
+                m_mjcDataPtr->qpos[m_jointQposAdr + i] = qpos[i];
+
+        for ( int i = 0; i < m_jointQvelNum; i++ )
+            m_mjcDataPtr->qvel[m_jointQvelAdr + i] = 0.0;
     }
 
     /***************************************************************************

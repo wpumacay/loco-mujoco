@@ -230,6 +230,54 @@ namespace mujoco
     };
 
 
+    /**
+    *   Wrapper for contacts in the engine
+    */
+    class SimContact
+    {
+        protected :
+
+        bool                    m_active;
+        tysoc::TVec3            m_worldPos;
+        tysoc::TMat3            m_worldRot;
+        engine::LIRenderable*   m_graphicsContactPoint;
+        engine::LIRenderable*   m_graphicsContactDirection;
+
+        int m_geomId1;
+        int m_geomId2;
+
+        std::string m_geomName1;
+        std::string m_geomName2;
+
+        mjModel*    m_mjcModelPtr;
+        mjData*     m_mjcDataPtr;
+
+        public :
+
+        /* Creates a contact wrapper, by default with no contact assigned*/
+        SimContact( mjModel* mjcModelPtr,
+                    mjData* mjcDataPtr );
+
+        /* Releases the resources of this contact wrapper */
+        ~SimContact();
+
+        /* Updates the wrapper resosurces from the mujoco-contact information */
+        void update( const mjContact& contactInfo );
+
+        /* Resets the resources of this contact wrapper (no draw, etc.) */
+        void reset();
+
+        /* Returns state of this contact wrapper (active=true->wraps contact) */
+        bool active() { return m_active; }
+
+        /* Returns the graphics object for the contact point */
+        engine::LIRenderable* graphicsContactPoint() { return m_graphicsContactPoint; }
+
+        /* Returns the graphics object for the contact direction (normal) */
+        engine::LIRenderable* graphicsContactDirection() { return m_graphicsContactDirection; }
+    };
+
+
     class ITestApplication
     {
 
@@ -250,6 +298,8 @@ namespace mujoco
         std::map< std::string, SimBody* >   m_simBodiesMap;
 
         std::vector< SimAgent* > m_simAgents;
+
+        std::vector< SimContact* > m_simContacts;
 
         int m_currentAgentIndx;
         std::string m_currentAgentName;

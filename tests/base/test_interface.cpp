@@ -419,6 +419,76 @@ namespace mujoco
 
     /***************************************************************************
     *                                                                          *
+    *                             CONTACT WRAPPER                              *
+    *                                                                          *
+    ***************************************************************************/
+
+    SimContact::SimContact( mjModel* mjcModelPtr,
+                            mjData* mjcDataPtr )
+    {
+        m_active = false;
+        m_graphicsContactPoint = engine::LMeshBuilder::createSphere( 0.05 );
+        m_graphicsContactDirection = engine::LMeshBuilder::createArrow( 1.0, "x" );
+        m_worldPos = tysoc::TVec3( 0., 0., 0. ); // Origin
+        m_worldRot = tysoc::TMat3(); //Identity
+
+        m_mjcModelPtr = mjcModelPtr;
+        m_mjcDataPtr = mjcDataPtr;
+    }
+
+    SimContact::~SimContact()
+    {
+        delete m_graphicsContactPoint;
+        delete m_graphicsContactDirection;
+
+        m_graphicsContactPoint = NULL;
+        m_graphicsContactDirection = NULL;
+    }
+
+    void SimContact::update( const mjContact& contactInfo )
+    {
+        // activate this contact again
+        m_active = true;
+
+        // grab position-rotation
+        m_worldPos = { (float) contactInfo.pos[0], (float) contactInfo.pos[1], (float) contactInfo.pos[2] };
+        m_worldRot = { (float) contactInfo.frame[0], (float) contactInfo.frame[3], (float) contactInfo.frame[6],
+                       (float) contactInfo.frame[1], (float) contactInfo.frame[4], (float) contactInfo.frame[7],
+                       (float) contactInfo.frame[2], (float) contactInfo.frame[5], (float) contactInfo.frame[8] };
+
+        // update the renderables information
+        m_graphicsContactPoint->setVisibility( true );
+        m_graphicsContactDirection->setVisibility( true );
+
+        m_graphicsContactPoint->pos = { m_worldPos.x, m_worldPos.y, m_worldPos.z };
+        m_graphicsContactDirection->pos = { m_worldPos.x, m_worldPos.y, m_worldPos.z };
+        for ( size_t row = 0; row < 3; row++ )
+            for ( size_t col = 0; col < 3; col++ )
+                m_graphicsContactDirection->rotation.buff[row + 4 * col] = m_worldRot.buff[row + 3 * col];
+
+        // grab information of the geom-colliders that are in contact
+        m_geomId1 = contactInfo.geom1;
+        m_geomId2 = contactInfo.geom2;
+
+        auto _geomName1Chars = mj_id2name( m_mjcModelPtr, mjOBJ_GEOM, m_geomId1 );
+        if ( _geomName1Chars )
+            m_geomName1 = std::string( _geomName1Chars );
+
+        auto _geomName2Chars = mj_id2name( m_mjcModelPtr, mjOBJ_GEOM, m_geomId2 );
+        if ( _geomName2Chars )
+            m_geomName2 = std::string( _geomName2Chars );
+    }
+
+    void SimContact::reset()
+    {
+        m_active = true;
+        m_graphicsContactPoint->setVisibility( false );
+        m_graphicsContactDirection->setVisibility( false );
+    }
+
+
+    /***************************************************************************
+    *                                                                          *
     *                              AGENT WRAPPER                               *
     *                                                                          *
     ***************************************************************************/
@@ -519,6 +589,8 @@ namespace mujoco
         m_simBodiesMap.clear();
 
         m_simAgents.clear();
+
+        m_simContacts.clear();
 
         // @TODO: Check glfw's master branch, as mujoco's glfw seems be older
         // @TODO: Check why are we linking against glfw3 from mjc libs
@@ -673,6 +745,29 @@ namespace mujoco
             while ( m_mjcDataPtr->time - _simstart < 1.0 / 60.0 )
                 mj_step( m_mjcModelPtr, m_mjcDataPtr );
         }
+
+        // collect contacts
+        int _nContacts = m_mjcDataPtr->ncon;
+        int _nContactsExtra = _nContacts - m_simContacts.size();
+        // std::cout << "LOG> num-contacts: " << _nContacts << std::endl;
+        // std::cout << "LOG> num-extra-contacts: " << _nContactsExtra << std::endl;
+
+        // extend contacts pool in case more contacts are required
+        for ( int i = 0; i < _nContactsExtra; i++ )
+        {
+            auto _simContact = new SimContact( m_mjcModelPtr, m_mjcDataPtr );
+            m_graphicsScene->addRenderable( _simContact->graphicsContactDirection() );
+            m_graphicsScene->addRenderable( _simContact->graphicsContactPoint() );
+
+            m_simContacts.push_back( _simContact );
+        }
+        // reset all sim-contacts' information
+        for ( int i = 0; i < m_simContacts.size(); i++ )
+            m_simContacts[i]->reset();
+
+        // assign contact information to our sim-contacts
+        for ( int i = 0; i < _nContacts; i++ )
+            m_simContacts[i]->update( m_mjcDataPtr->contact[i] );
 
         // Update all body-wrappers
         for ( size_t i = 0; i < m_simBodies.size(); i++ )

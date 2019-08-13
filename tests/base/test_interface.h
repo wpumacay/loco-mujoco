@@ -164,6 +164,9 @@ namespace mujoco
         /* Returns all meshes linked to each geometry */
         std::vector< engine::LIRenderable* > geomsGraphics() { return m_geomsGraphics; }
 
+        /* Returns all ids of the geometries associated with this body */
+        std::vector< int > geomsIds() { return m_geomsIds; }
+
         /* Returns all sim-joint wrappers of the joints associated with this body */
         std::vector< SimJoint* > joints() { return m_simJoints; }
 
@@ -325,11 +328,13 @@ namespace mujoco
         // User should override this and create what he wants
         virtual void _initScenarioInternal() = 0;
         // Special functionality used after taking a step
-        virtual void _stepInternal() {};
+        virtual void _stepInternal() {}
         // Special functionality used before calling reset
-        virtual void _resetInternal() {};
+        virtual void _resetInternal() {}
         // UI functionality
-        virtual void _renderUiInternal() {};
+        virtual void _renderUiInternal() {}
+        // Entry-point for when the application is fully created
+        virtual void _onApplicationStart() {}
 
         public :
 

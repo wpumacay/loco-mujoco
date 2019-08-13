@@ -436,8 +436,8 @@ namespace mujoco
                             mjData* mjcDataPtr )
     {
         m_active = false;
-        m_graphicsContactPoint = engine::LMeshBuilder::createSphere( 0.05 );
-        m_graphicsContactDirection = engine::LMeshBuilder::createArrow( 1.0, "x" );
+        m_graphicsContactPoint = engine::LMeshBuilder::createSphere( 0.02 );
+        m_graphicsContactDirection = engine::LMeshBuilder::createArrow( 0.2, "x" );
         m_worldPos = tysoc::TVec3( 0., 0., 0. ); // Origin
         m_worldRot = tysoc::TMat3(); //Identity
 
@@ -626,6 +626,7 @@ namespace mujoco
         _initScenario();
         _initGraphics();
         _initPhysics();
+        _onApplicationStart();
     }
 
     void ITestApplication::_initScenario()
@@ -948,6 +949,7 @@ namespace mujoco
         if ( m_simBodiesMap.find( name ) != m_simBodiesMap.end() )
             return m_simBodiesMap[name];
 
+        std::cout << "ERROR> body with name: " << name << " not found" << std::endl;
         return NULL;
     }
 

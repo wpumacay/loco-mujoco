@@ -236,6 +236,15 @@ namespace mujoco
                 for ( size_t col = 0; col < 3; col++ )
                     m_geomsGraphics[i]->rotation.buff[row + 4 * col] = _geomWorldRot.buff[row + 3 * col];
         }
+
+        // grab force-torque information of the body
+        m_extComForce = { (float) m_mjcDataPtr->cfrc_ext[6 * m_bodyId + 0], 
+                          (float) m_mjcDataPtr->cfrc_ext[6 * m_bodyId + 1], 
+                          (float) m_mjcDataPtr->cfrc_ext[6 * m_bodyId + 2] };
+
+        m_extComTorque = { (float) m_mjcDataPtr->cfrc_ext[6 * m_bodyId + 3], 
+                           (float) m_mjcDataPtr->cfrc_ext[6 * m_bodyId + 4], 
+                           (float) m_mjcDataPtr->cfrc_ext[6 * m_bodyId + 5] };
     }
 
     SimJoint* SimBody::getJointByName( const std::string& name )
@@ -909,6 +918,24 @@ namespace mujoco
 
             ImGui::End();
         }
+
+        // Render bodies menu
+        ImGui::Begin( "Bodies-info" );
+
+        for ( size_t i = 0; i < m_simBodies.size(); i++ )
+        {
+            if ( !m_simBodies[i] )
+                continue;
+
+            auto _bodyName = m_simBodies[i]->name();
+            auto _comForce = m_simBodies[i]->comForce();
+            auto _comTorque = m_simBodies[i]->comTorque();
+
+            ImGui::Text( "COM-force %s: (%.5f, %.5f, %.5f)", _bodyName.c_str(), _comForce.x, _comForce.y, _comForce.z );
+            ImGui::Text( "COM-torque %s: (%.5f, %.5f, %.5f)", _bodyName.c_str(), _comTorque.x, _comTorque.y, _comTorque.z );
+        }
+
+        ImGui::End();
     }
 
     void ITestApplication::togglePause()

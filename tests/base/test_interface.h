@@ -139,6 +139,9 @@ namespace mujoco
                                                   const tysoc::TVec3& size,
                                                   const tysoc::TVec4& color );
 
+        tysoc::TVec3 m_extComForce;
+        tysoc::TVec3 m_extComTorque;
+
         public :
 
         /* Constructs the body wrapper given the name of the body */
@@ -181,6 +184,12 @@ namespace mujoco
 
         /* Returns the world transform of the body */
         tysoc::TMat4 worldTransform() { return m_bodyWorldTransform; }
+
+        /* Returns the net com-force */
+        tysoc::TVec3 comForce() { return m_extComForce; }
+
+        /* Returns the net com-torque */
+        tysoc::TVec3 comTorque() { return m_extComTorque; }
     };
 
     /**

@@ -94,9 +94,9 @@ setup(
                                 'numpy',
                                 'setuptools'
                               ],
-    package_dir             = { 'pytysoc': 'tysoc/pytysoc',
-                                'pytysoc.common': 'tysoc/pytysoc/common',
-                                'pytysoc.runtime': 'tysoc/pytysoc/runtime' },
+    package_dir             = { 'pytysoc': 'core/pytysoc',
+                                'pytysoc.common': 'core/pytysoc/common',
+                                'pytysoc.runtime': 'core/pytysoc/runtime' },
     package_data            = {
                                 'pytysoc': [ '../res/templates/mjcf/*.xml',
                                              '../res/templates/urdf/*.urdf',

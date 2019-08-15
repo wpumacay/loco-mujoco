@@ -9,7 +9,7 @@ matrix:
       env: PYTHON=3.6
 
 before_install:
-  - ./setup_dependencies.sh
+  - ./scripts/setup_dependencies.sh
   - mkdir -p ~/.mujoco
   - wget https://www.roboti.us/download/mujoco200_linux.zip
   - unzip mujoco200_linux.zip -d ~/.mujoco/

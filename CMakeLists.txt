@@ -23,11 +23,9 @@ endif()
 # Add core targets only if master project. If not, parent project must configure it
 if ( TYSOCMJC_IS_MASTER_PROJECT )
     # Configure dependencies for tysoc
-    add_subdirectory( ext/pybind11 )
-    add_subdirectory( ext/imgui )
-    add_subdirectory( ext/cat1 )
+    add_subdirectory( ext )
     # Configure core functionality
-    add_subdirectory( tysoc )
+    add_subdirectory( core )
 endif()
 
 # Configure tysocMjc project *************************************************
@@ -82,18 +80,11 @@ file( GLOB_RECURSE TYSOCMJC_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" )
 # add this project headers to includepath
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/include/" )
 
-# add the core dependency headers to includepath
-if ( TYSOCMJC_IS_MASTER_PROJECT )
-    # core dependency to use is own submodule
-    include_directories( "${CMAKE_SOURCE_DIR}/tysoc/include" )
-    include_directories( "${CMAKE_SOURCE_DIR}/tysoc/ext/json" )
-    include_directories( "${CMAKE_SOURCE_DIR}/tysoc/ext/tinyxml2" )
-else()
-    # core dependency to use if parent core submodule, names as "core"
-    include_directories( "${CMAKE_SOURCE_DIR}/core/include" )
-    include_directories( "${CMAKE_SOURCE_DIR}/core/ext/json" )
-    include_directories( "${CMAKE_SOURCE_DIR}/core/ext/tinyxml2" )
-endif()
+# include_dirs for tysoc-core dependency: either case (master or non-master project) ... 
+# we should find it at root level
+include_directories( "${CMAKE_SOURCE_DIR}/core/include" )
+include_directories( "${CMAKE_SOURCE_DIR}/core/ext/json" )
+include_directories( "${CMAKE_SOURCE_DIR}/core/ext/tinyxml2" )
 
 if ( WIN32 )
     # Path to mujoco library in the windows system

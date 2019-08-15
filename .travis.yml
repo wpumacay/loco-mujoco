@@ -7,8 +7,7 @@ matrix:
       env: PYTHON=3.6
 
 before_install:
-  - sudo apt-get install make cmake pkg-config
-  - sudo apt-get install libassimp-dev libglfw3-dev libglew-dev
+  - ./setup_dependencies.sh
   - mkdir -p ~/.mujoco
   - wget https://www.roboti.us/download/mujoco200_linux.zip
   - unzip mujoco200_linux.zip -d ~/.mujoco/

@@ -1,3 +1,4 @@
+# file-exclusions
 *.o
 *.pyc
 *.pyo
@@ -7,9 +8,16 @@
 *.a
 *.ini
 
+# folder-exclusions
 build/
 .vscode/
 _legacy/
 dist/
 pytysoc.egg-info/
 tysoc_mjc.egg-info/
+
+# dependencies-exclusions
+ext/cat1
+ext/imgui
+ext/pybind11
+core/

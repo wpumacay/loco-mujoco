@@ -23,5 +23,5 @@ script:
   - |
     if [ -n "$PYTHON" ]; then
       pip install setuptools numpy
-      python setup.py build
+      python setup.py install
     fi

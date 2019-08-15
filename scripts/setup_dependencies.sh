@@ -7,10 +7,10 @@
 echo "======== Installing apt-dependencies ============"
 
 echo "==> Installing build tools"
-sudo apt install make cmake pkg-config
+sudo apt-get install make cmake pkg-config
 
 echo "==> Installing dependencies for renderer"
-sudo apt install libassimp-dev libglfw3-dev libglew-dev
+sudo apt-get install libassimp-dev libglfw3-dev libglew-dev
 
 echo "======== Cloning dependencies -> ext/ ==========="
 

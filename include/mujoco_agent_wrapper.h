@@ -9,7 +9,45 @@
 namespace tysoc { 
 namespace mujoco {
 
-    // @TODO: Add base adapters to inherit easily and expose common API
+    class TMjcBodyWrapper
+    {
+        private :
+
+        int m_id;
+        agent::TKinTreeBody* m_kinTreeBody;
+
+        public :
+
+        TMjcBodyWrapper( int id );
+    };
+
+    class TMjcJointWrapper
+    {
+        private :
+
+        int m_id;
+        int m_nqpos;
+        int m_nqvel;
+        int m_qposAdr;
+        int m_qvelAdr;
+
+        mjModel*    m_mjcModelPtr;
+        mjData*     m_mjcDataPtr;
+
+        agent::TKinTreeJoint* m_kinTreeJointPtr;
+
+        public :
+
+        TMjcJointWrapper( mjModel* mjcModelPtr,
+                          mjData* mjcDataPtr,
+                          agent::TKinTreeJoint* jointPtr );
+
+        void setQpos( const std::vector< TScalar >& qpos );
+        void setQvel( const std::vector< TScalar >& qvel );
+
+        agent::TKinTreeJoint* jointPtr() { return m_kinTreeJointPtr; }
+        bool isRootJoint();
+    };
 
     /**
     * Agent wrapper specific for the "MuJoCo" backend. It should handle ...
@@ -22,6 +60,9 @@ namespace mujoco {
     {
 
         private :
+
+        std::vector< TMjcBodyWrapper > m_bodyWrappers;
+        std::vector< TMjcJointWrapper > m_jointWrappers;
 
         // mujoco data to be sent to the xml
         mjcf::GenericElement* m_mjcfResourcesPtr;
@@ -44,6 +85,9 @@ namespace mujoco {
         void _createMjcActuatorsFromKinTree();
         void _createMjcExclusionContactsFromKinTree();
 
+        void _cacheBodyProperties( agent::TKinTreeBody* kinTreeBody );
+        void _cacheJointProperties( agent::TKinTreeJoint* kinTreeJoints );
+
         TVec3 _extractMjcSizeFromStandardSize( const TGeometry& geometry );
 
         protected :
@@ -63,6 +107,8 @@ namespace mujoco {
         void setMjcData( mjData* mjcDataPtr );
         void setMjcScene( mjvScene* mjcScenePtr );
         void setMjcfTargetElm( mjcf::GenericElement* targetResourcesPtr );
+
+        void finishedCreatingResources();
 
     };
 

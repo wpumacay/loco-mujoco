@@ -5,7 +5,6 @@
 
 #include <mujoco_terrain_wrapper.h>
 #include <mujoco_agent_wrapper.h>
-#include <mujoco_sandbox_body_wrapper.h>
 
 #ifndef MUJOCO_LICENSE_FILE
     #define MUJOCO_LICENSE_FILE "~/.mujoco/mjkey.txt"
@@ -37,8 +36,6 @@ namespace mujoco {
         void _simStepInternal() override;
         void _postStepInternal() override;
         void _resetInternal() override;
-        std::map< std::string, std::vector<TScalar> > _getVectorizedInfoInternal() override;
-        void* _constructPayloadInternal( const std::string& type ) override;
 
         public :
 

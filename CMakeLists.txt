@@ -128,9 +128,6 @@ target_link_libraries( tysocPhysicsMujoco
 
 # ****************************************************************************
 
-# Configure visualizer with mujoco's rendering backend
-add_subdirectory( mujocoviz )
-
 # Only generate samples if not using as dependency
 if ( TYSOCMJC_IS_MASTER_PROJECT )
     # Configure examples

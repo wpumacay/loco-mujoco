@@ -4,6 +4,54 @@
 namespace tysoc {
 namespace mujoco {
 
+    TMjcJointWrapper::TMjcJointWrapper( mjModel* mjcModelPtr,
+                                        mjData* mjcDataPtr, 
+                                        agent::TKinTreeJoint* jointPtr )
+    {
+        m_kinTreeJointPtr = jointPtr;
+        m_mjcModelPtr = mjcModelPtr;
+        m_mjcDataPtr = mjcDataPtr;
+
+        // grab some backend-info for this joint
+        m_id = mj_name2id( m_mjcModelPtr, mjOBJ_JOINT, jointPtr->name.c_str() );
+        if ( m_id == -1 )
+        {
+            std::cout << "ERROR> joint (" << jointPtr->name << ") not linked to joint" << std::endl;
+            return;
+        }
+
+        m_nqpos     = jointPtr->nqpos;
+        m_nqvel     = jointPtr->nqvel;
+        m_qposAdr   = m_mjcModelPtr->jnt_qposadr[m_id];
+        m_qvelAdr   = m_mjcModelPtr->jnt_dofadr[m_id];
+    }
+
+    void TMjcJointWrapper::setQpos( const std::vector< TScalar >& qpos )
+    {
+        for ( int i = 0; i < qpos.size(); i++ )
+            m_mjcDataPtr->qpos[m_qposAdr + i] = qpos[i];
+    }
+
+    void TMjcJointWrapper::setQvel( const std::vector< TScalar >& qvel )
+    {
+        for ( int i = 0; i < qvel.size(); i++ )
+            m_mjcDataPtr->qvel[m_qvelAdr + i] = qvel[i];
+    }
+
+    bool TMjcJointWrapper::isRootJoint()
+    {
+        if ( !m_kinTreeJointPtr->parentBodyPtr )
+        {
+            std::cout << "ERROR> this joint should have a parent body" << std::endl;
+            return false;
+        }
+
+        if ( m_kinTreeJointPtr->parentBodyPtr->parentBodyPtr )
+            return false;
+
+        return true;
+    }
+
     TMjcKinTreeAgentWrapper::TMjcKinTreeAgentWrapper( agent::TAgent* agentPtr,
                                                       const std::string& workingDir )
         : TAgentWrapper( agentPtr, workingDir )
@@ -56,6 +104,20 @@ namespace mujoco {
     void TMjcKinTreeAgentWrapper::setMjcfTargetElm( mjcf::GenericElement* targetResourcesPtr )
     {
         m_mjcfTargetResourcesPtr = targetResourcesPtr;
+    }
+
+    void TMjcKinTreeAgentWrapper::finishedCreatingResources()
+    {
+        if ( !m_agentPtr )
+            return;
+
+        // collect some low-level properties of the bodies (ids and more stuff)
+        for ( size_t i = 0; i < m_agentPtr->bodies.size(); i++ )
+            _cacheBodyProperties( m_agentPtr->bodies[i] );
+
+        // collect some low-level properties of the joints (ids and more stuff)
+        for ( size_t i = 0; i < m_agentPtr->joints.size(); i++ )
+            _cacheJointProperties( m_agentPtr->joints[i] );
     }
 
     void TMjcKinTreeAgentWrapper::_initializeInternal()
@@ -117,19 +179,90 @@ namespace mujoco {
         if ( !m_agentPtr )
             return;
 
+        // set the qpos values set by the user (left in the abstract agent)
+        for ( size_t i = 0; i < m_jointWrappers.size(); i++ )
+        {
+            // joint being wrapped
+            auto _jointPtr = m_jointWrappers[i].jointPtr();
+
+            // buffer for the q-values
+            std::vector< TScalar > _qposs;
+            std::vector< TScalar > _qvels;
+
+            if ( m_jointWrappers[i].isRootJoint() )
+            {
+                if ( _jointPtr->type == "free" )
+                {
+                    auto _position = m_agentPtr->getStartPosition();
+                    auto _rotation = TMat3::toQuaternion( TMat3::fromEuler( m_agentPtr->getStartRotation() ) );
+
+                    // use the start position ( x - y - z - qw - qx - qy - qz )
+                    _qposs = { _position.x, _position.y, _position.z,
+                               _rotation.w, _rotation.x, _rotation.y, _rotation.z };
+
+                    // and no initial velocities
+                    _qvels = { 0., 0., 0., 0., 0., 0. };
+                }
+                else if ( _jointPtr->type == "slide" )
+                {
+                    auto _position = m_agentPtr->getStartPosition();
+
+                    if ( _jointPtr->axis == TVec3( 1., 0., 0. ) )
+                    {
+                        _qposs = { _position.x };
+                        _qvels = { 0. };
+                    }
+                    else if ( _jointPtr->axis == TVec3( 0., 1., 0. ) )
+                    {
+                        _qposs = { _position.y };
+                        _qvels = { 0. };
+                    }
+                    else if ( _jointPtr->axis == TVec3( 0., 0., 1. ) )
+                    {
+                        _qposs = { _position.z };
+                        _qvels = { 0. };
+                    }
+                }
+                else if ( _jointPtr->type == "hinge" )
+                {
+                    auto _rotation = m_agentPtr->getStartRotation();
+
+                    if ( _jointPtr->axis == TVec3( 1., 0., 0. ) )
+                    {
+                        _qposs = { _rotation.x };
+                        _qvels = { 0. };
+                    }
+                    else if ( _jointPtr->axis == TVec3( 0., 1., 0. ) )
+                    {
+                        _qposs = { _rotation.y };
+                        _qvels = { 0. };
+                    }
+                    else if ( _jointPtr->axis == TVec3( 0., 0., 1. ) )
+                    {
+                        _qposs = { _rotation.z };
+                        _qvels = { 0. };
+                    }
+                }
+            }
+            else
+            {
+                // collect qpos from kintree-joint
+                for ( int j = 0; j < _jointPtr->nqpos; j++ )
+                    _qposs.push_back( _jointPtr->qpos[j] );
+
+                // set qvels to zeros
+                for ( int j = 0; j < _jointPtr->nqvel; j++ )
+                    _qvels.push_back( 0. );
+            }
+
+            // and set the qposs and qvels into the backend through the wrapper
+            m_jointWrappers[i].setQpos( _qposs );
+            m_jointWrappers[i].setQvel( _qvels );
+
+        }
+
+        // reset the internal high-level resources of the kintree
         m_agentPtr->reset();
-
-        auto _rootBodyPtr = m_agentPtr->getRootBody();
-
-        utils::setBodyPosition( m_mjcModelPtr,
-                                m_mjcDataPtr,
-                                _rootBodyPtr->name,
-                                m_agentPtr->getStartPosition() );
-
-        utils::setBodyOrientation( m_mjcModelPtr,
-                                   m_mjcDataPtr,
-                                   _rootBodyPtr->name,
-                                   TMat3::fromEuler( m_agentPtr->getStartRotation() ) );
 
         m_hasMadeSummary = false;
     }
@@ -724,6 +857,38 @@ namespace mujoco {
 
             _exclusionContactsElmPtr->children.push_back( _exclusionPairElmPtr );
         }
+    }
+
+    void TMjcKinTreeAgentWrapper::_cacheBodyProperties( agent::TKinTreeBody* kinTreeBody )
+    {
+        // m_bodyWrappers.push_back( TMjcBodyWrapper() );
+    }
+
+    void TMjcKinTreeAgentWrapper::_cacheJointProperties( agent::TKinTreeJoint* kinTreeJoint )
+    {
+        // define the number of generalized coordinates and "generalized velocities" for this joint
+        if ( kinTreeJoint->type == "free" )
+        {
+            kinTreeJoint->nqpos = 7;
+            kinTreeJoint->nqvel = 6;
+        }
+        else if ( kinTreeJoint->type == "spherical" || kinTreeJoint->type == "ball" )
+        {
+            kinTreeJoint->nqpos = 4;
+            kinTreeJoint->nqvel = 3;
+        }
+        else if ( kinTreeJoint->type == "revolute" || kinTreeJoint->type == "hinge" )
+        {
+            kinTreeJoint->nqpos = 1;
+            kinTreeJoint->nqvel = 1;
+        }
+        else if ( kinTreeJoint->type == "prismatic" || kinTreeJoint->type == "slide" )
+        {
+            kinTreeJoint->nqpos = 1;
+            kinTreeJoint->nqvel = 1;
+        }
+
+        m_jointWrappers.push_back( TMjcJointWrapper( m_mjcModelPtr, m_mjcDataPtr, kinTreeJoint ) );
     }
 
     TVec3 TMjcKinTreeAgentWrapper::_extractMjcSizeFromStandardSize( const TGeometry& geometry )

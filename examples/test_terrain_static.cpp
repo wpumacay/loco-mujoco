@@ -25,7 +25,7 @@ int main( int argc, const char** argv )
 
     auto _modelLoader = tysoc::TModelLoader::Create();
     auto _modelData = _modelLoader->getMjcfModel( "walker2d_gym" );
-    auto _agent = tysoc::agent::createAgentFromModel( _modelData, "agent0", { 1.0f, 1.0f, 1.25f }, { 0.0f, 0.0f, 0.0f } );
+    auto _agent = new tysoc::agent::TAgent( _modelData, "agent0", { 1.0f, 1.0f, 1.25f }, { 0.0f, 0.0f, 0.0f } );
 
     auto _terrainGenStatic = new tysoc::terrain::TStaticTerrainGenerator( "terrainGen0" );
     _terrainGenStatic->createPrimitive( "plane", 

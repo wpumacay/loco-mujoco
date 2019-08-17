@@ -25,7 +25,7 @@ int main( int argc, const char** argv )
 
     auto _modelLoader = tysoc::TModelLoader::Create();
     auto _modelData = _modelLoader->getMjcfModel( "ant" );
-    auto _agent = tysoc::agent::createAgentFromModel( _modelData, "agent0", { 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } );
+    auto _agent = new tysoc::agent::TAgent( _modelData, "agent0", { 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } );
     auto _sensor = new tysoc::sensor::TAgentIntrinsicsSensor( "ss0int", _agent );
 
     auto _scenario = new tysoc::TScenario();
@@ -63,16 +63,6 @@ int main( int argc, const char** argv )
 //        {
 //            std::cout << "torques(" << i << "): " << tysoc::TVec3::toString( _torques[i] ) << std::endl;
 //        }
-
-
-        auto _simVectDataDict = _simulation->getVectorizedInfo();
-        auto _comForcesExt = _simVectDataDict["comForcesExt"];
-        std::cout << "comForcesExt: [ ";
-
-        for ( size_t i = 0; i < _comForcesExt.size(); i++ )
-            std::cout << _comForcesExt[i] << " ";
-
-        std::cout << "]" << std::endl;
 
     }
 

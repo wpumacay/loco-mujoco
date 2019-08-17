@@ -50,17 +50,6 @@ namespace mujoco {
 
             m_terrainGenWrappers.push_back( _terrainGenWrapper );
         }
-
-        auto _sbodies = m_scenarioPtr->getBodies();
-
-        for ( size_t q = 0; q < _sbodies.size(); q++ )
-        {
-            auto _bodyWrapper = new TMjcBodyWrapper( _sbodies[q],
-                                                     m_workingDir );
-            _bodyWrapper->setMjcfTargetElm( m_mjcfResourcesPtr );
-
-            m_bodyWrappers.push_back( _bodyWrapper );
-        }
     }
 
     TMjcSimulation::~TMjcSimulation()
@@ -102,9 +91,6 @@ namespace mujoco {
 
         for ( size_t q = 0; q < m_agentWrappers.size(); q++ )
             m_agentWrappers[q]->initialize();// Injects agent resources into m_mjcfResourcesPtr
-
-        for ( size_t q = 0; q < m_bodyWrappers.size(); q++ )
-            m_bodyWrappers[q]->initialize();
 
         /* Inject resources into the workspace xml *****************************/
         std::string _workspaceModelPath;
@@ -158,16 +144,7 @@ namespace mujoco {
             _mujocoAgentWrapper->setMjcModel( m_mjcModelPtr );
             _mujocoAgentWrapper->setMjcData( m_mjcDataPtr );
             _mujocoAgentWrapper->setMjcScene( m_mjcScenePtr );
-        }
-
-        for ( size_t q = 0; q < m_bodyWrappers.size(); q++ )
-        {
-            auto _mujocoBodyWrapper = reinterpret_cast< TMjcBodyWrapper* >
-                                            ( m_bodyWrappers[q] );
-
-            _mujocoBodyWrapper->setMjcModel( m_mjcModelPtr );
-            _mujocoBodyWrapper->setMjcData( m_mjcDataPtr );
-            _mujocoBodyWrapper->setMjcScene( m_mjcScenePtr );
+            _mujocoAgentWrapper->finishedCreatingResources();
         }
 
         std::cout << "nq: " << m_mjcModelPtr->nq << std::endl;
@@ -183,24 +160,7 @@ namespace mujoco {
 
     void TMjcSimulation::_preStepInternal()
     {
-        // collect terrain generaion info by letting ...
-        // the terrain wrappers do the job
-        for ( size_t q = 0; q < m_terrainGenWrappers.size(); q++ )
-        {
-            m_terrainGenWrappers[q]->preStep();
-        }
-
-        // Collect actuator controls by letting ...
-        // the kintree agent wrappers do the job
-        for ( size_t q = 0; q < m_agentWrappers.size(); q++ )
-        {
-            m_agentWrappers[q]->preStep();
-        }
-
-        for ( size_t q = 0; q < m_bodyWrappers.size(); q++ )
-        {
-            m_bodyWrappers[q]->preStep();
-        }
+        // do nothing here, as call to wrappers is enough (made in base)
     }
 
     void TMjcSimulation::_simStepInternal()
@@ -226,87 +186,12 @@ namespace mujoco {
 
     void TMjcSimulation::_postStepInternal()
     {
-        for ( size_t q = 0; q < m_agentWrappers.size(); q++ )
-        {
-            m_agentWrappers[q]->postStep();
-        }
-
-        for ( size_t q = 0; q < m_terrainGenWrappers.size(); q++ )
-        {
-            m_terrainGenWrappers[q]->postStep();
-        }
-
-        for ( size_t q = 0; q < m_bodyWrappers.size(); q++ )
-        {
-            m_bodyWrappers[q]->postStep();
-        }
+        // do nothing here, as call to wrappers is enough (made in base)
     }
     
     void TMjcSimulation::_resetInternal()
     {
-        for ( size_t q = 0; q < m_agentWrappers.size(); q++ )
-        {
-            m_agentWrappers[q]->reset();
-        }
-
-        for ( size_t q = 0; q < m_terrainGenWrappers.size(); q++ )
-        {
-            m_terrainGenWrappers[q]->reset();
-        }
-
-        for ( size_t q = 0; q < m_bodyWrappers.size(); q++ )
-        {
-            m_bodyWrappers[q]->reset();
-        }
-    }
-
-    std::map< std::string, std::vector<TScalar> > TMjcSimulation::_getVectorizedInfoInternal()
-    {
-        if ( !m_mjcModelPtr || !m_mjcDataPtr )
-            return std::map< std::string, std::vector<TScalar> >();
-
-        std::vector<TScalar> _qpos;
-        for ( size_t i = 0; i < m_mjcModelPtr->nq; i++ )
-            _qpos.push_back( (TScalar) m_mjcDataPtr->qpos[i] );
-
-        std::vector<TScalar> _qvel;
-        for ( size_t i = 0; i < m_mjcModelPtr->nv; i++ )
-            _qvel.push_back( (TScalar) m_mjcDataPtr->qvel[i] );
-
-        std::vector<TScalar> _comForcesExt;
-        for ( size_t i = 0; i < m_mjcModelPtr->nbody; i++ )
-        {
-            _comForcesExt.push_back( (TScalar) m_mjcDataPtr->cfrc_ext[6 * i + 0] );
-            _comForcesExt.push_back( (TScalar) m_mjcDataPtr->cfrc_ext[6 * i + 1] );
-            _comForcesExt.push_back( (TScalar) m_mjcDataPtr->cfrc_ext[6 * i + 2] );
-            _comForcesExt.push_back( (TScalar) m_mjcDataPtr->cfrc_ext[6 * i + 3] );
-            _comForcesExt.push_back( (TScalar) m_mjcDataPtr->cfrc_ext[6 * i + 4] );
-            _comForcesExt.push_back( (TScalar) m_mjcDataPtr->cfrc_ext[6 * i + 5] );
-        }
-
-        std::map< std::string, std::vector<float> > _data;
-
-        _data["qpos"] = _qpos;
-        _data["qvel"] = _qvel;
-        _data["comForcesExt"] = _comForcesExt;
-
-        return _data;
-    }
-
-    void* TMjcSimulation::_constructPayloadInternal( const std::string& type )
-    {
-        if ( type == "mjModel" )
-            return (void*) m_mjcModelPtr;
-        else if ( type == "mjData" )
-            return (void*) m_mjcDataPtr;
-        else if ( type == "mjvScene" )
-            return (void*) m_mjcScenePtr;
-        else if ( type == "mjvCamera" )
-            return (void*) m_mjcCameraPtr;
-        else if ( type == "mjvOption" )
-            return (void*) m_mjcOptionPtr;
-
-        return NULL;
+        // do nothing here, as call to wrappers is enough (made in base)
     }
 
     extern "C" TISimulation* simulation_create( TScenario* scenarioPtr,

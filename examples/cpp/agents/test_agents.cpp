@@ -22,19 +22,19 @@ tysoc::agent::TAgent* createAgent( const std::string& format,
     {
         auto _modelData = _modelLoader->getUrdfModel( modelName );
 
-        return tysoc::agent::createAgentFromModel( _modelData, agentName, position, rotation );
+        return new tysoc::agent::TAgent( _modelData, agentName, position, rotation );
     }
     else if ( format == "rlsim" )
     {
         auto _modelData = _modelLoader->getRlsimModel( modelName );
         
-        return tysoc::agent::createAgentFromModel( _modelData, agentName, position, rotation );
+        return new tysoc::agent::TAgent( _modelData, agentName, position, rotation );
     }
     else if ( format == "mjcf" )
     {
         auto _modelData = _modelLoader->getMjcfModel( modelName );
         
-        return tysoc::agent::createAgentFromModel( _modelData, agentName, position, rotation );
+        return new tysoc::agent::TAgent( _modelData, agentName, position, rotation );
     }
 
     std::cout << "ERROR> format: " << format << " not supported" << std::endl;
@@ -72,7 +72,7 @@ int main( int argc, const char** argv )
 
     auto _terrainGenStatic = new tysoc::terrain::TStaticTerrainGenerator( "terrainGen0" );
     _terrainGenStatic->createPrimitive( "box", 
-                                        { 10.0f, 10.0f, 0.1f }, 
+                                        { 10.0f, 10.0f, 0.2f }, 
                                         { 0.0f, 0.0f, -0.05f },
                                         tysoc::TMat3(),
                                         { 0.2f, 0.3f, 0.4f },
@@ -100,6 +100,9 @@ int main( int argc, const char** argv )
 
         if ( _visualizer->checkSingleKeyPress( tysoc::keys::KEY_ESCAPE ) )
             break;
+
+        if ( _visualizer->checkSingleKeyPress( tysoc::keys::KEY_R ) )
+            _simulation->reset();
 
         _simulation->step();
 

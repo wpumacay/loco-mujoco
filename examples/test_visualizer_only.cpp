@@ -22,21 +22,21 @@ tysoc::agent::TAgent* createAgent( const std::string& format,
         auto _modelPath = TYSOC_URDF_TEMPLATES + modelName + std::string( ".urdf" );
         auto _modelData = tysoc::urdf::loadGenericModel( _modelPath );
 
-        return tysoc::agent::createAgentFromModel( _modelData, agentName, position, { 0.0f, 0.0f, 0.0f } );
+        return new tysoc::agent::TAgent( _modelData, agentName, position, { 0.0f, 0.0f, 0.0f } );
     }
     else if ( format == "rlsim" )
     {
         auto _modelPath = TYSOC_RLSIM_TEMPLATES + modelName + std::string( ".json" );
         auto _modelData = tysoc::rlsim::loadGenericModel( _modelPath );
         
-        return tysoc::agent::createAgentFromModel( _modelData, agentName, position, { 0.0f, 0.0f, 0.0f } );
+        return new tysoc::agent::TAgent( _modelData, agentName, position, { 0.0f, 0.0f, 0.0f } );
     }
     else if ( format == "mjcf" )
     {
         auto _modelPath = TYSOC_MJCF_TEMPLATES + modelName + std::string( ".xml" );
         auto _modelData = tysoc::mjcf::loadGenericModel( _modelPath );
         
-        return tysoc::agent::createAgentFromModel( _modelData, agentName, position, { 0.0f, 0.0f, 0.0f } );
+        return new tysoc::agent::TAgent( _modelData, agentName, position, { 0.0f, 0.0f, 0.0f } );
     }
 
     std::cout << "ERROR> format: " << format << " not supported" << std::endl;

@@ -14,7 +14,7 @@ namespace mujoco {
 
         // grab some backend-info for this joint
         m_id = mj_name2id( m_mjcModelPtr, mjOBJ_JOINT, jointPtr->name.c_str() );
-        if ( m_id == -1 )
+        if ( m_id == -1 && jointPtr->type != "fixed" )
         {
             std::cout << "ERROR> joint (" << jointPtr->name << ") not linked to joint" << std::endl;
             return;
@@ -203,7 +203,7 @@ namespace mujoco {
                     // and no initial velocities
                     _qvels = { 0., 0., 0., 0., 0., 0. };
                 }
-                else if ( _jointPtr->type == "slide" )
+                else if ( _jointPtr->type == "slide" || _jointPtr->type == "prismatic" )
                 {
                     auto _position = m_agentPtr->getStartPosition();
 
@@ -223,7 +223,7 @@ namespace mujoco {
                         _qvels = { 0. };
                     }
                 }
-                else if ( _jointPtr->type == "hinge" )
+                else if ( _jointPtr->type == "hinge" || _jointPtr->type == "revolute" )
                 {
                     auto _rotation = m_agentPtr->getStartRotation();
 
@@ -558,9 +558,10 @@ namespace mujoco {
                 if ( _joints[i]->limited )
                 {
                     if ( _joints[i]->type == "ball" )
-                        _jointElmPtr->setAttributeVec2( "range", { 0, _joints[i]->upperLimit } );
+                        _jointElmPtr->setAttributeVec2( "range", { 0, rad2degrees( _joints[i]->upperLimit ) } );
                     else
-                        _jointElmPtr->setAttributeVec2( "range", { _joints[i]->lowerLimit, _joints[i]->upperLimit } );
+                        _jointElmPtr->setAttributeVec2( "range", { rad2degrees( _joints[i]->lowerLimit ), 
+                                                                   rad2degrees( _joints[i]->upperLimit ) } );
                 }
                 // @GENERIC
                 if ( _joints[i]->stiffness != 0.0f )
@@ -866,28 +867,6 @@ namespace mujoco {
 
     void TMjcKinTreeAgentWrapper::_cacheJointProperties( agent::TKinTreeJoint* kinTreeJoint )
     {
-        // define the number of generalized coordinates and "generalized velocities" for this joint
-        if ( kinTreeJoint->type == "free" )
-        {
-            kinTreeJoint->nqpos = 7;
-            kinTreeJoint->nqvel = 6;
-        }
-        else if ( kinTreeJoint->type == "spherical" || kinTreeJoint->type == "ball" )
-        {
-            kinTreeJoint->nqpos = 4;
-            kinTreeJoint->nqvel = 3;
-        }
-        else if ( kinTreeJoint->type == "revolute" || kinTreeJoint->type == "hinge" )
-        {
-            kinTreeJoint->nqpos = 1;
-            kinTreeJoint->nqvel = 1;
-        }
-        else if ( kinTreeJoint->type == "prismatic" || kinTreeJoint->type == "slide" )
-        {
-            kinTreeJoint->nqpos = 1;
-            kinTreeJoint->nqvel = 1;
-        }
-
         m_jointWrappers.push_back( TMjcJointWrapper( m_mjcModelPtr, m_mjcDataPtr, kinTreeJoint ) );
     }
 

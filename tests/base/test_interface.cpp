@@ -437,7 +437,7 @@ namespace mujoco
     {
         m_active = false;
         m_graphicsContactPoint = engine::LMeshBuilder::createSphere( 0.02 );
-        m_graphicsContactDirection = engine::LMeshBuilder::createArrow( 0.2, "x" );
+        m_graphicsContactDirection = engine::LMeshBuilder::createArrow( 0.75, "x" );
         m_worldPos = tysoc::TVec3( 0., 0., 0. ); // Origin
         m_worldRot = tysoc::TMat3(); //Identity
 
@@ -583,8 +583,9 @@ namespace mujoco
         m_mjcCameraPtr = NULL;
         m_mjcOptionPtr = NULL;
         m_mjcModelFile = "";
+        m_isRunning = false;
         m_isTerminated = false;
-        m_isRunning = true;
+        m_isMjcActivated = false;
         m_currentAgentIndx = -1;
         m_currentAgentName = "";
     }
@@ -641,7 +642,11 @@ namespace mujoco
         assert( m_graphicsScene != NULL );
 
         // Activate using the appropriate licence file
-        mj_activate( "/home/gregor/.mujoco/mjkey.txt" );
+        if ( !m_isMjcActivated )
+        {
+            mj_activate( "/home/gregor/.mujoco/mjkey.txt" );
+            m_isMjcActivated = true;
+        }
 
         // Create the model (by now the model-file must have been already set)
         m_mjcModelPtr = mj_loadXML( m_mjcModelFile.c_str(), NULL, m_mjcErrorMsg, 1000 );
@@ -698,6 +703,9 @@ namespace mujoco
                                                  m_mjcModelPtr,
                                                  m_mjcDataPtr ) );
         }
+
+        m_isRunning = true;
+        m_isTerminated = false;
 
         // show some overall information
         std::cout << "LOG> nq: " << m_mjcModelPtr->nq << std::endl;
@@ -838,6 +846,8 @@ namespace mujoco
                 m_simAgents[i]->reset();
             }
         }
+        else if ( engine::InputSystem::checkSingleKeyPress( GLFW_KEY_F ) )
+            reload( m_mjcModelFile );
 
         m_graphicsApp->begin();
         m_graphicsApp->update();
@@ -942,6 +952,29 @@ namespace mujoco
     void ITestApplication::togglePause()
     {
         m_isRunning = ( m_isRunning ) ? false : true;
+    }
+
+    void ITestApplication::reload( const std::string& modelfile )
+    {
+        m_mjcModelFile = modelfile;
+
+        // release old model and data
+        mj_deleteData( m_mjcDataPtr );
+        mj_deleteModel( m_mjcModelPtr );
+
+        // clear internal references
+        m_simAgents.clear();
+        m_simContacts.clear();
+        m_simBodies.clear();
+        m_simBodiesMap.clear();
+        m_currentAgentIndx = -1;
+        m_currentAgentName = "";
+
+        // release old renderables
+        m_graphicsScene->cleanScene();
+
+        _initPhysics();
+        _onApplicationStart();
     }
 
     SimBody* ITestApplication::getBody( const std::string& name )

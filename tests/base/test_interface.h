@@ -101,6 +101,19 @@ namespace mujoco
         tysoc::TMat4 worldTransform() { return m_jointWorldTransform; }
     };
 
+    class SimActuator
+    {
+        protected :
+
+        int             m_actuatorId;
+        std::string     m_actuatorName;
+
+
+        public :
+
+
+    };
+
     /**
     *   Wrapper for a single body with geometries as children
     */
@@ -318,6 +331,7 @@ namespace mujoco
 
         bool m_isRunning;
         bool m_isTerminated;
+        bool m_isMjcActivated;
 
         void _initScenario();
         void _initPhysics(); 
@@ -345,6 +359,9 @@ namespace mujoco
         void reset();
         void step();
         void togglePause();
+
+        /* construct the whole model again */
+        void reload( const std::string& modelfile );
 
         bool isTerminated() { return m_isTerminated; }
 

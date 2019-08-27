@@ -147,6 +147,31 @@ namespace mujoco
         return tysoc::TVec4( floatPtr[0], floatPtr[1], floatPtr[2], floatPtr[3] );
     }
 
+    std::vector< std::string > collectAvailableModels( const std::string& folderpath )
+    {
+        DIR* _directoryPtr;
+        struct dirent* _direntPtr;
+
+        _directoryPtr = opendir( folderpath.c_str() );
+        if ( !_directoryPtr )
+            return std::vector< std::string >();
+
+        auto _modelfiles = std::vector< std::string >();
+
+        // grab each .xml mjcf model
+        while ( _direntPtr = readdir( _directoryPtr ) )
+        {
+            std::string _fname = _direntPtr->d_name;
+            if ( _fname.find( ".xml" ) == std::string::npos )
+                continue;
+
+            _modelfiles.push_back( _fname );
+        }
+        closedir( _directoryPtr );
+
+        return _modelfiles;
+    }
+
     /***************************************************************************
     *                                                                          *
     *                             CONTACT WRAPPER                              *
@@ -200,7 +225,7 @@ namespace mujoco
 
         m_transmissionType = mjtTrn2string( m_mjcModelPtr->actuator_trntype[m_actuatorId] );
         m_dynamicsType = mjtDyn2string( m_mjcModelPtr->actuator_dyntype[m_actuatorId] );
-        m_gainType = mjtDyn2string( m_mjcModelPtr->actuator_gaintype[m_actuatorId] );
+        m_gainType = mjtGain2string( m_mjcModelPtr->actuator_gaintype[m_actuatorId] );
         m_biasType = mjtBias2string( m_mjcModelPtr->actuator_biastype[m_actuatorId] );
 
         for ( size_t i = 0; i < mjNDYN; i++ )
@@ -942,6 +967,10 @@ namespace mujoco
     #endif
         ImGui_ImplGlfw_InitForOpenGL( m_graphicsApp->window()->getGLFWwindow(), false );
         ImGui::StyleColorsDark();
+
+        // disable the current camera movement and allow to use the ui
+        m_graphicsScene->getCurrentCamera()->setActiveMode( false );
+        m_graphicsApp->window()->enableCursor();
     }
 
     void ITestApplication::reset()
@@ -1200,6 +1229,8 @@ namespace mujoco
         m_simContacts.clear();
         m_simBodies.clear();
         m_simBodiesMap.clear();
+        m_simActuators.clear();
+        m_simActuatorsMap.clear();
         m_currentAgentIndx = -1;
         m_currentAgentName = "";
 

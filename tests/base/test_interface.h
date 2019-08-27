@@ -15,6 +15,8 @@
 #include <imgui_impl_opengl3.h>
 // Base functionality (math and a few helpers) from tysoc-core
 #include <tysoc_common.h>
+// functionality to handle directories
+#include <dirent.h>
 
 #define DEFAULT_DENSITY 1000.0f // density of water, same default as in mujoco
 
@@ -34,6 +36,8 @@ namespace mujoco
     tysoc::TVec4 mjtNumQuat2vec4( mjtNum* numPtr );
     tysoc::TVec3 floatptr2vec3( float* floatPtr );
     tysoc::TVec4 floatptr2vec4( float* floatPtr );
+
+    std::vector< std::string > collectAvailableModels( const std::string& folderpath );
 
     /**
     *   Wrapper for a single joint associated with a mjc-body
@@ -181,6 +185,18 @@ namespace mujoco
 
         /* Returns the actuator type */
         std::string type() { return m_actuatorType ;}
+
+        /* Returns the type of transmission of this actuator */
+        std::string trntype() { return m_transmissionType; }
+
+        /* Returns the type of dynamics */
+        std::string dyntype() { return m_dynamicsType; }
+
+        /* Returns the type of gain */
+        std::string gaintype() { return m_gainType; }
+
+        /* Returns the type of bias */
+        std::string biastype() { return m_biasType; }
     };
 
     /**

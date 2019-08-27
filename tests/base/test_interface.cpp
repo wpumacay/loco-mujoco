@@ -228,6 +228,9 @@ namespace mujoco
         m_gainType = mjtGain2string( m_mjcModelPtr->actuator_gaintype[m_actuatorId] );
         m_biasType = mjtBias2string( m_mjcModelPtr->actuator_biastype[m_actuatorId] );
 
+        if ( m_transmissionType == "joint" )
+            m_linkedJointId = m_mjcModelPtr->actuator_trnid[2 * m_actuatorId + 0];
+
         for ( size_t i = 0; i < mjNDYN; i++ )
             dynprm[i] = m_mjcModelPtr->actuator_dynprm[mjNDYN * m_actuatorId + i];
 
@@ -749,7 +752,19 @@ namespace mujoco
             if ( actuators[i]->id() == -1 )
                 continue;
 
-            m_actuators.push_back( actuators[i] );
+            if ( actuators[i]->jointId() == -1 )
+                continue;
+
+            for ( size_t j = 0; j < m_joints.size(); j++ )
+            {
+                if ( m_joints[j]->id() == -1 )
+                    continue;
+
+                if ( m_joints[j]->id() != actuators[i]->jointId() )
+                    continue;
+
+                m_actuators.push_back( actuators[i] );
+            }
         }
     }
 

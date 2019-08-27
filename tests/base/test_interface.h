@@ -23,6 +23,12 @@ namespace mujoco
 
     std::string mjtGeom2string( int type );
     std::string mjtJoint2string( int type );
+    std::string mjtTrn2string( int type );
+    std::string mjtDyn2string( int type );
+    std::string mjtGain2string( int type );
+    std::string mjtBias2string( int type );
+
+    tysoc::TVec2 mjtNum2vec2( mjtNum* numPtr );
     tysoc::TVec3 mjtNum2vec3( mjtNum* numPtr );
     tysoc::TVec4 mjtNum2vec4( mjtNum* numPtr );
     tysoc::TVec4 mjtNumQuat2vec4( mjtNum* numPtr );
@@ -101,17 +107,80 @@ namespace mujoco
         tysoc::TMat4 worldTransform() { return m_jointWorldTransform; }
     };
 
+    /**
+    *   Wrapper for a single actuator attached to a joint of an agent. So
+    *   far we only support joints as transmissions, but will updated later.
+    *   Keep in mind that actuators in mujoco are SISO (single-input single-output)
+    */
     class SimActuator
     {
         protected :
 
-        int             m_actuatorId;
-        std::string     m_actuatorName;
+        static int s_numActuators;
 
+        int             m_actuatorId;       // unique identifier of this actuator in the mjcf model
+        int             m_linkedJointId;    // id of the joint to which this actuator is linked
+        std::string     m_actuatorName;     // name associated with this actuator
+        std::string     m_actuatorType;     // either torque, position, velocity, or general
+        std::string     m_transmissionType; // either joint|force-in-parent|slider-crank|tendon|site
+        std::string     m_dynamicsType;     // either none|integrator|filter|muscle|user
+        std::string     m_gainType;         // either fixed|muscle|user
+        std::string     m_biasType;         // either none|affine|muscle|user
+
+        mjModel* m_mjcModelPtr;
+        mjData* m_mjcDataPtr;
 
         public :
 
+        /* Whether or not this actuator has limited control to be accepted (clamped to range) */
+        bool limitedCtrl;
 
+        /* Whether or not this actuator has limited force|torque to be generated (clamped to range) */
+        bool limitedForce;
+
+        /* Range used to clamp the control inputs */
+        tysoc::TVec2 rangeControls;
+
+        /* Range used to clamp the force|torque outputs */
+        tysoc::TVec2 rangeForces;
+
+        /* Parameters for the dynamics of this actuator (if any, see mujoco-actuation-model) */
+        std::array< TScalar, mjNDYN > dynprm;
+
+        /* Parameters for the gain of this actuator (if any, see mujoco-actuation-model) */
+        std::array< TScalar, mjNGAIN > gainprm;
+
+        /* Parameters for the bias of this actuator (if any, see mujoco-actuation-model) */
+        std::array< TScalar, mjNBIAS > biasprm;
+
+        /* Scaler factors (gear) used for this actuator */
+        std::array< TScalar, 6 > gear;
+
+        /* Control value applied to this actuator */
+        TScalar ctrl;
+
+        /* Constructs a wrapper for an actuator created from a mjcf model  */
+        SimActuator( int actuatorId,
+                     mjModel* mjcModelPtr,
+                     mjData* mjcDataPtr );
+
+        /* Frees|unlinks all related resources of the currently wrapped actutaor */
+        ~SimActuator();
+
+        /* Updates internal information to and from the backend, like setting controls, etc. */
+        void update();
+
+        /* Returns the unique-id of this actuator */
+        int id() { return m_actuatorId; }
+
+        /* Returns the unique-name of this actuator */
+        std::string name() { return m_actuatorName; }
+
+        /* Returns the unique-id of the joint used for the transmission of this actuator */
+        int jointId() { return m_linkedJointId; }
+
+        /* Returns the actuator type */
+        std::string type() { return m_actuatorType ;}
     };
 
     /**
@@ -223,6 +292,7 @@ namespace mujoco
 
         std::vector< SimBody* > m_bodies;
         std::vector< SimJoint* > m_joints;
+        std::vector< SimActuator* > m_actuators;
 
         mjModel*    m_mjcModelPtr; // a reference to the mujoco-model data structure
         mjData*     m_mjcDataPtr;  // a reference to the mujoco-data data structure
@@ -230,11 +300,15 @@ namespace mujoco
         /* Collects all bodies associated with this agent */
         void _collectBodies( const std::vector< SimBody* >& bodies );
 
+        /* Collects all actuators associated with this agent */
+        void _collectActuators( const std::vector< SimActuator* >& actuators );
+
         public :
 
         /* Constructs the agent wrapper given the rootbody of the agent */
         SimAgent( int rootBodyId,
                   const std::vector< SimBody* >& bodies,
+                  const std::vector< SimActuator* >& actuators,
                   mjModel* mjcModelPtr,
                   mjData* mjcDataPtr );
 
@@ -252,6 +326,9 @@ namespace mujoco
 
         /* Returns all joint wrappers associated with this agent */
         std::vector< SimJoint* > joints() { return m_joints; }
+
+        /* Returns all actuator wrappers associated with this agent */
+        std::vector< SimActuator* > actuators() { return m_actuators; }
     };
 
 
@@ -322,6 +399,9 @@ namespace mujoco
         std::vector< SimBody* >             m_simBodies;
         std::map< std::string, SimBody* >   m_simBodiesMap;
 
+        std::vector< SimActuator* >             m_simActuators;
+        std::map< std::string, SimActuator* >   m_simActuatorsMap;
+
         std::vector< SimAgent* > m_simAgents;
 
         std::vector< SimContact* > m_simContacts;
@@ -332,6 +412,8 @@ namespace mujoco
         bool m_isRunning;
         bool m_isTerminated;
         bool m_isMjcActivated;
+
+        bool m_uiUsingActuators;
 
         void _initScenario();
         void _initPhysics(); 

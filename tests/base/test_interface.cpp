@@ -47,6 +47,71 @@ namespace mujoco
         return "undefined";
     }
 
+    std::string mjtTrn2string( int type )
+    {
+        if ( type == mjTRN_JOINT )
+            return "joint";
+        if ( type == mjTRN_JOINTINPARENT )
+            return "joint_in_parent";
+        if ( type == mjTRN_SLIDERCRANK )
+            return "slider_crank";
+        if ( type == mjTRN_TENDON )
+            return "tendon";
+        if ( type == mjTRN_SITE )
+            return "site";
+
+        return "undefined";
+    }
+
+    std::string mjtDyn2string( int type )
+    {
+        if ( type == mjDYN_NONE )
+            return "none";
+        if ( type == mjDYN_INTEGRATOR )
+            return "integrator";
+        if ( type == mjDYN_FILTER )
+            return "filter";
+        if ( type == mjDYN_MUSCLE )
+            return "muscle";
+        if ( type == mjDYN_USER )
+            return "user";
+
+        return "undefined";
+    }
+
+    std::string mjtGain2string( int type )
+    {
+        if ( type == mjGAIN_FIXED )
+            return "fixed";
+        if ( type == mjGAIN_MUSCLE )
+            return "muscle";
+        if ( type == mjGAIN_USER )
+            return "user";
+
+        return "undefined";
+    }
+
+    std::string mjtBias2string( int type )
+    {
+        if ( type == mjBIAS_NONE )
+            return "none";
+        if ( type == mjBIAS_AFFINE )
+            return "affine";
+        if ( type == mjBIAS_MUSCLE )
+            return "muscle";
+        if ( type == mjBIAS_USER )
+            return "user";
+
+        return "undefined";
+    }
+
+    tysoc::TVec2 mjtNum2vec2( mjtNum* numPtr )
+    {
+        assert( numPtr != NULL );
+        // Grab exactly 2 elements (so, can throw in 2-vecs, 3-vecs, 4-vecs, ...)
+        return tysoc::TVec2( numPtr[0], numPtr[1] );
+    }
+
     tysoc::TVec3 mjtNum2vec3( mjtNum* numPtr )
     {
         assert( numPtr != NULL );
@@ -80,6 +145,110 @@ namespace mujoco
         assert( floatPtr != NULL );
         // Grab exactly 4 elements (so, can throw in 4-vecs, 5-vecs, 6-vecs, ...)
         return tysoc::TVec4( floatPtr[0], floatPtr[1], floatPtr[2], floatPtr[3] );
+    }
+
+    /***************************************************************************
+    *                                                                          *
+    *                             CONTACT WRAPPER                              *
+    *                                                                          *
+    ***************************************************************************/
+
+    int SimActuator::s_numActuators = 0;
+
+    SimActuator::SimActuator( int actuatorId,
+                              mjModel* mjcModelPtr,
+                              mjData* mjcDataPtr )
+    {
+        m_actuatorId    = actuatorId;
+        m_mjcModelPtr   = mjcModelPtr;
+        m_mjcDataPtr    = mjcDataPtr;
+
+        m_actuatorName      = "undefined";
+        m_linkedJointId     = -1;
+        m_actuatorType      = "undefined";
+        m_transmissionType  = "joint";
+        m_dynamicsType      = "none";
+        m_gainType          = "fixed";
+        m_biasType          = "none";
+
+        limitedCtrl = false;
+        limitedForce = false;
+
+        rangeControls = { 0., 0. };
+        rangeForces = { 0., 0. };
+
+        dynprm.fill( 0. ); dynprm[0] = 1.;
+        gainprm.fill( 0. ); gainprm[0] = 1.;
+        biasprm.fill( 0. );
+
+        gear.fill( 0. ); gear[0] = 1.;
+
+        ctrl = 0.;
+
+        if ( m_actuatorId == -1 )
+            return;
+
+        s_numActuators++;
+
+        /******* Grab information from the backend *******/
+
+        auto _actuatorNameChars = mj_id2name( m_mjcModelPtr, mjOBJ_ACTUATOR, m_actuatorId );
+        if ( _actuatorNameChars ) 
+            m_actuatorName = std::string( _actuatorNameChars );
+        else
+            m_actuatorName = std::string( "actuator:" ) + std::to_string( s_numActuators );
+
+        m_transmissionType = mjtTrn2string( m_mjcModelPtr->actuator_trntype[m_actuatorId] );
+        m_dynamicsType = mjtDyn2string( m_mjcModelPtr->actuator_dyntype[m_actuatorId] );
+        m_gainType = mjtDyn2string( m_mjcModelPtr->actuator_gaintype[m_actuatorId] );
+        m_biasType = mjtBias2string( m_mjcModelPtr->actuator_biastype[m_actuatorId] );
+
+        for ( size_t i = 0; i < mjNDYN; i++ )
+            dynprm[i] = m_mjcModelPtr->actuator_dynprm[mjNDYN * m_actuatorId + i];
+
+        for ( size_t i = 0; i < mjNGAIN; i++ )
+            gainprm[i] = m_mjcModelPtr->actuator_gainprm[mjNGAIN * m_actuatorId + i];
+
+        for ( size_t i = 0; i < mjNBIAS; i++ )
+            biasprm[i] = m_mjcModelPtr->actuator_biasprm[mjNBIAS * m_actuatorId + i];
+
+        for ( size_t i = 0; i < 6; i++ )
+            gear[i] = m_mjcModelPtr->actuator_gear[6 * m_actuatorId + i];
+
+        if ( m_dynamicsType == "none" && m_gainType == "fixed" && m_biasType == "none" )
+        {
+            m_actuatorType = "motor";
+        }
+        else if ( m_dynamicsType == "none" && m_gainType == "fixed" && m_biasType == "affine" )
+        {
+            if ( ( dynprm[0] == 1.0 && dynprm[1] == 0.0 && dynprm[2] == 0.0 ) &&
+                 ( gainprm[0] > 0.0 && gainprm[1] == 0.0 && gainprm[2] == 0.0 ) &&
+                 ( biasprm[0] == 0.0 && biasprm[1] < 0.0 && biasprm[2] == 0.0 ) )
+            {
+                m_actuatorType = "position";
+            }
+            else if ( ( dynprm[0] == 1.0 && dynprm[1] == 0.0 && dynprm[2] == 0.0 ) &&
+                      ( gainprm[0] > 0.0 && gainprm[1] == 0.0 && gainprm[2] == 0.0 ) &&
+                      ( biasprm[0] == 0.0 && biasprm[1] == 0.0 && biasprm[2] < 0.0 ) )
+            {
+                m_actuatorType = "velocity";
+            }
+        }
+
+        // in case not cached by the custom types, set as general actuator
+        if ( m_actuatorType == "undefined" )
+            m_actuatorType = "general";
+
+        limitedCtrl = ( m_mjcModelPtr->actuator_ctrllimited[m_actuatorId] == 1 );
+        limitedForce = ( m_mjcModelPtr->actuator_forcelimited[m_actuatorId] == 1 );
+
+        rangeControls = mjtNum2vec2( m_mjcModelPtr->actuator_ctrlrange + 2 * m_actuatorId );
+        rangeForces = mjtNum2vec2( m_mjcModelPtr->actuator_forcerange + 2 * m_actuatorId );
+    }
+
+    void SimActuator::update()
+    {
+        m_mjcDataPtr->ctrl[m_actuatorId] = ctrl;
     }
 
     /***************************************************************************
@@ -504,6 +673,7 @@ namespace mujoco
 
     SimAgent::SimAgent( int rootBodyId, 
                         const std::vector< SimBody* >& bodies,
+                        const std::vector< SimActuator* >& actuators,
                         mjModel* mjcModelPtr, 
                         mjData* mjcDataPtr )
     {
@@ -518,7 +688,10 @@ namespace mujoco
             m_rootBodyName = std::string( _rootBodyNameChars );
 
         if ( m_rootBodyId != -1 )
+        {
             _collectBodies( bodies );
+            _collectActuators( actuators );
+        }
     }
 
     void SimAgent::_collectBodies( const std::vector< SimBody* >& bodies )
@@ -541,6 +714,17 @@ namespace mujoco
             auto _joints = m_bodies[i]->joints();
             for ( size_t j = 0; j < _joints.size(); j++ )
                 m_joints.push_back( _joints[j] );
+        }
+    }
+
+    void SimAgent::_collectActuators( const std::vector< SimActuator* >& actuators )
+    {
+        for ( size_t i = 0; i < actuators.size(); i++ )
+        {
+            if ( actuators[i]->id() == -1 )
+                continue;
+
+            m_actuators.push_back( actuators[i] );
         }
     }
 
@@ -586,6 +770,7 @@ namespace mujoco
         m_isRunning = false;
         m_isTerminated = false;
         m_isMjcActivated = false;
+        m_uiUsingActuators = true;
         m_currentAgentIndx = -1;
         m_currentAgentName = "";
     }
@@ -685,6 +870,16 @@ namespace mujoco
                 m_graphicsScene->addRenderable( _renderables[i] );
         }
 
+        // grab all actuators and wrap them
+        int _numActuators = m_mjcModelPtr->nu;
+        for ( size_t _actuatorId = 0; _actuatorId < _numActuators; _actuatorId++ )
+        {
+            auto _actuatorObj = new SimActuator( _actuatorId, m_mjcModelPtr, m_mjcDataPtr );
+
+            m_simActuators.push_back( _actuatorObj );
+            m_simActuatorsMap[ _actuatorObj->name() ] = _actuatorObj;
+        }
+
         // grab all agents and wrap them
         for ( size_t _bodyId = 0; _bodyId < _numBodies; _bodyId++ )
         {
@@ -700,6 +895,7 @@ namespace mujoco
 
             m_simAgents.push_back( new SimAgent( _rootBodyId,
                                                  m_simBodies,
+                                                 m_simActuators,
                                                  m_mjcModelPtr,
                                                  m_mjcDataPtr ) );
         }
@@ -794,6 +990,15 @@ namespace mujoco
                 continue;
 
             m_simBodies[i]->update();
+        }
+
+        // Update all actuators wrappers
+        for ( size_t i = 0; i < m_simActuators.size(); i++ )
+        {
+            if ( !m_simActuators[i] )
+                continue;
+
+            m_simActuators[i]->update();
         }
 
         // Update all agent wrappers
@@ -915,15 +1120,43 @@ namespace mujoco
         {
             ImGui::Begin( "Agent-playground" );
 
-            auto _joints = m_simAgents[m_currentAgentIndx]->joints();
-            for ( size_t j = 0; j < _joints.size(); j++ )
+            ImGui::Checkbox( "use actuators", &m_uiUsingActuators );
+            ImGui::Spacing();
+
+            if ( m_uiUsingActuators )
             {
-                if ( _joints[j]->type() == mjJNT_HINGE )
+                auto _actuators = m_simAgents[m_currentAgentIndx]->actuators();
+                for ( size_t a = 0; a < _actuators.size(); a++ )
                 {
-                    float _qpos = _joints[j]->getQpos()[0];
-                    ImGui::SliderFloat( _joints[j]->name().c_str(),
-                                        &_qpos, -3.1415f, 3.1415f );
-                    _joints[j]->setQpos( { ( mjtNum )_qpos } );
+                    float _val = 0.0f;
+                    if ( _actuators[a]->limitedCtrl )
+                    {
+                        ImGui::SliderFloat( _actuators[a]->name().c_str(),
+                                            &_val,
+                                            _actuators[a]->rangeControls.x, 
+                                            _actuators[a]->rangeControls.y );
+                    }
+                    else
+                    {
+                        ImGui::SliderFloat( _actuators[a]->name().c_str(),
+                                            &_val,
+                                            -10.0f, 10.0f );
+                    }
+                    _actuators[a]->ctrl = _val;
+                }
+            }
+            else
+            {
+                auto _joints = m_simAgents[m_currentAgentIndx]->joints();
+                for ( size_t j = 0; j < _joints.size(); j++ )
+                {
+                    if ( _joints[j]->type() == mjJNT_HINGE )
+                    {
+                        float _qpos = _joints[j]->getQpos()[0];
+                        ImGui::SliderFloat( _joints[j]->name().c_str(),
+                                            &_qpos, -3.1415f, 3.1415f );
+                        _joints[j]->setQpos( { ( mjtNum )_qpos } );
+                    }
                 }
             }
 

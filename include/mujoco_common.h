@@ -23,6 +23,6 @@
 namespace tysoc {
 namespace mujoco {
 
-    // @TODO: Here there be dragons
+    TVec4 quat2MjcfQuat( const TVec4& quat );
 
 }}

@@ -6,9 +6,6 @@
 #include <adapters/body_adapter.h>
 
 namespace tysoc {
-namespace adapters {
-namespace mujoco {
-
 
     class TMjcBodyAdapter : public TIBodyAdapter
     {
@@ -41,7 +38,7 @@ namespace mujoco {
 
         void setMjcData( mjData* mjcDataPtr ) { m_mjcDataPtr = mjcDataPtr; }
 
-        void setMjdBodyId( int mjcBodyId ) { m_mjcBodyId = mjcBodyId; }
+        void setMjcBodyId( int mjcBodyId ) { m_mjcBodyId = mjcBodyId; }
 
         mjcf::GenericElement* mjcfResource() { return m_mjcfXmlResource; }
 
@@ -64,8 +61,8 @@ namespace mujoco {
 
         mjcf::GenericElement* m_mjcfXmlResource;
 
-
     };
 
+    extern "C" TIBodyAdapter* simulation_createBodyAdapter( TBody* bodyPtr );
 
-}}} 
+}

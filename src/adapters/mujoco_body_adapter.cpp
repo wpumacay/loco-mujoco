@@ -2,8 +2,6 @@
 #include <adapters/mujoco_body_adapter.h>
 
 namespace tysoc {
-namespace adapters {
-namespace mujoco {
 
     TMjcBodyAdapter::TMjcBodyAdapter( TBody* bodyPtr )
         : TIBodyAdapter( bodyPtr )
@@ -39,7 +37,7 @@ namespace mujoco {
         m_mjcfXmlResource = new mjcf::GenericElement( "body" );
         m_mjcfXmlResource->setAttributeString( "name", m_bodyPtr->name() );
         m_mjcfXmlResource->setAttributeVec3( "pos", m_bodyPtr->pos() );
-        m_mjcfXmlResource->setAttributeVec4( "quat", tysoc::mujoco::quat2MjcfQuat( m_bodyPtr->quat() ) );
+        m_mjcfXmlResource->setAttributeVec4( "quat", mujoco::quat2MjcfQuat( m_bodyPtr->quat() ) );
 
         // add a free-joint in case the object is not static
         if ( m_bodyPtr->dyntype() != eDynamicsType::STATIC )
@@ -86,7 +84,7 @@ namespace mujoco {
 
     void TMjcBodyAdapter::update()
     {
-        // do nothing for now, as so far we only need to use the overriden methods
+        // do nothing for now, because so far we only need to use the overriden methods
     }
 
     void TMjcBodyAdapter::setPosition( const TVec3& position )
@@ -269,4 +267,9 @@ namespace mujoco {
         }
     }
 
-}}}
+    extern "C" TIBodyAdapter* simulation_createBodyAdapter( TBody* bodyPtr )
+    {
+        return new TMjcBodyAdapter( bodyPtr );
+    }
+
+}

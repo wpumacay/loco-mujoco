@@ -31,6 +31,24 @@ namespace mujoco {
         if ( !m_scenarioPtr )
             m_scenarioPtr = new TScenario();
 
+        auto _bodies = m_scenarioPtr->getBodies();
+        for ( size_t i = 0; i < _bodies.size(); i++ )
+        {
+            auto _bodyAdapter = new TMjcBodyAdapter( _bodies[i] );
+            _bodies[i]->setAdapter( _bodyAdapter );
+
+            m_bodyAdapters.push_back( _bodyAdapter );
+
+            auto _collisions = _bodies[i]->collisions();
+            for ( size_t j = 0; j < _collisions.size(); j++ )
+            {
+                auto _collisionAdapter = new TMjcCollisionAdapter( _collisions[j] );
+                _collisions[j]->setAdapter( _collisionAdapter );
+
+                m_collisionAdapters.push_back( _collisionAdapter );
+            }
+        }
+
         auto _agents = m_scenarioPtr->getAgents();
         for ( size_t q = 0; q < _agents.size(); q++ )
         {
@@ -92,6 +110,28 @@ namespace mujoco {
         for ( size_t q = 0; q < m_agentWrappers.size(); q++ )
             m_agentWrappers[q]->initialize();// Injects agent resources into m_mjcfResourcesPtr
 
+        // Grab resources from single-bodies and inject them into the mjcf global resource
+        for ( size_t i = 0; i < m_bodyAdapters.size(); i++ )
+        {
+            auto _worldBody4Body = new mjcf::GenericElement( "worldbody" );
+
+            auto _bodyAdapter = reinterpret_cast< TMjcBodyAdapter* >( m_bodyAdapters[i] );
+            _worldBody4Body->children.push_back( _bodyAdapter->mjcfResource() );
+
+            auto _body = _bodyAdapter->body();
+            auto _collisions = _body->collisions();
+
+            for ( size_t j = 0; j < _collisions.size(); j++ )
+            {
+                auto _collisionAdapter = reinterpret_cast< TMjcCollisionAdapter* >
+                                                    ( _collisions[j]->adapter() );
+
+                _bodyAdapter->mjcfResource()->children.push_back( _collisionAdapter->mjcfResource() );
+            }
+
+            m_mjcfResourcesPtr->children.push_back( _worldBody4Body );
+        }
+
         /* Inject resources into the workspace xml *****************************/
         std::string _workspaceModelPath;
         _workspaceModelPath += m_workingDir;
@@ -147,13 +187,33 @@ namespace mujoco {
             _mujocoAgentWrapper->finishedCreatingResources();
         }
 
-        std::cout << "nq: " << m_mjcModelPtr->nq << std::endl;
-        std::cout << "nv: " << m_mjcModelPtr->nv << std::endl;
-        std::cout << "nu: " << m_mjcModelPtr->nu << std::endl;
-        std::cout << "nbody: " << m_mjcModelPtr->nbody << std::endl;
-        std::cout << "njnt: " << m_mjcModelPtr->njnt << std::endl;
-        std::cout << "ngeom: " << m_mjcModelPtr->ngeom << std::endl;
-        std::cout << "nsensor: " << m_mjcModelPtr->nsensor << std::endl;
+        for ( size_t q = 0; q < m_bodyAdapters.size(); q++ )
+        {
+            auto _bodyAdapter = reinterpret_cast< TMjcBodyAdapter* >( m_bodyAdapters[q] );
+
+            _bodyAdapter->setMjcModel( m_mjcModelPtr );
+            _bodyAdapter->setMjcData( m_mjcDataPtr );
+            _bodyAdapter->setMjcBodyId( mj_name2id( m_mjcModelPtr, mjOBJ_BODY, _bodyAdapter->body()->name().c_str() ) );
+            _bodyAdapter->onResourcesCreated();
+        }
+
+        for ( size_t q = 0; q < m_collisionAdapters.size(); q++ )
+        {
+            auto _collisionAdapter = reinterpret_cast< TMjcCollisionAdapter* >( m_collisionAdapters[q] );
+
+            _collisionAdapter->setMjcModel( m_mjcModelPtr );
+            _collisionAdapter->setMjcData( m_mjcDataPtr );
+            _collisionAdapter->setMjcGeomId( mj_name2id( m_mjcModelPtr, mjOBJ_GEOM, _collisionAdapter->collision()->name().c_str() ) );
+            _collisionAdapter->onResourcesCreated();
+        }
+
+        std::cout << "total-nq: " << m_mjcModelPtr->nq << std::endl;
+        std::cout << "total-nv: " << m_mjcModelPtr->nv << std::endl;
+        std::cout << "total-nu: " << m_mjcModelPtr->nu << std::endl;
+        std::cout << "total-nbody: " << m_mjcModelPtr->nbody << std::endl;
+        std::cout << "total-njnt: " << m_mjcModelPtr->njnt << std::endl;
+        std::cout << "total-ngeom: " << m_mjcModelPtr->ngeom << std::endl;
+        std::cout << "total-nsensor: " << m_mjcModelPtr->nsensor << std::endl;
 
         return true;
     }

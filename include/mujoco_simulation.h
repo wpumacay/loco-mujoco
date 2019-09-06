@@ -6,6 +6,9 @@
 #include <mujoco_terrain_wrapper.h>
 #include <mujoco_agent_wrapper.h>
 
+#include <adapters/mujoco_collision_adapter.h>
+#include <adapters/mujoco_body_adapter.h>
+
 #ifndef MUJOCO_LICENSE_FILE
     #define MUJOCO_LICENSE_FILE "~/.mujoco/mjkey.txt"
 #endif

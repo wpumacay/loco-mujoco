@@ -28,8 +28,6 @@ namespace tysoc {
     {
         assert( m_collisionPtr );
 
-        std::cout << "building: " << m_collisionPtr->name() << std::endl;
-
         m_mjcfXmlResource = new mjcf::GenericElement( "geom" );
         m_mjcfXmlResource->setAttributeString( "name", m_collisionPtr->name() );
         m_mjcfXmlResource->setAttributeVec3( "pos", m_collisionPtr->localPos() );

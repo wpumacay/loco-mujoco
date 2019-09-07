@@ -66,9 +66,6 @@ tysoc::TBody* createSimpleBody( const std::string& name, const std::string& type
     _bodyData.collisions.push_back( _collisionData );
     _bodyData.visuals.push_back( _visualData );
 
-    // create the abstract body
-    auto _bodyPtr = new tysoc::TBody( name, _bodyData );
-
     // choose a random position
     tysoc::TVec3 _position;
     _position.x = g_randomUniformDistribution( g_randomGenerator );
@@ -81,8 +78,11 @@ tysoc::TBody* createSimpleBody( const std::string& name, const std::string& type
     _rotation.y = TYSOC_PI * g_randomUniformDistribution( g_randomGenerator ) / 4.;
     _rotation.z = TYSOC_PI * g_randomUniformDistribution( g_randomGenerator ) / 4.;
 
-    _bodyPtr->setPosition( _position );
-    _bodyPtr->setRotation( tysoc::TMat3::fromEuler( _rotation ) );
+    // create the abstract body
+    auto _bodyPtr = new tysoc::TBody( name, 
+                                      _bodyData, 
+                                      _position, 
+                                      tysoc::TMat3::fromEuler( _rotation ) );
 
     return _bodyPtr;
 }
@@ -100,25 +100,25 @@ int main()
     auto _scenario = new tysoc::TScenario();
     _scenario->addTerrainGenerator( _terrainGenStatic );
 
-    for ( size_t i = 0; i < 15; i++ )
+    for ( size_t i = 0; i < 5; i++ )
     {
         _scenario->addBody( createSimpleBody( std::string( "box_" ) + std::to_string( i ), 
                                               "box" ) );
     }
 
-    for ( size_t i = 0; i < 15; i++ )
+    for ( size_t i = 0; i < 5; i++ )
     {
         _scenario->addBody( createSimpleBody( std::string( "sphere_" ) + std::to_string( i ), 
                                               "sphere" ) );
     }
 
-    for ( size_t i = 0; i < 15; i++ )
+    for ( size_t i = 0; i < 5; i++ )
     {
         _scenario->addBody( createSimpleBody( std::string( "cylinder_" ) + std::to_string( i ), 
                                               "cylinder" ) );
     }
 
-    for ( size_t i = 0; i < 15; i++ )
+    for ( size_t i = 0; i < 5; i++ )
     {
         _scenario->addBody( createSimpleBody( std::string( "capsule_" ) + std::to_string( i ), 
                                               "capsule" ) );

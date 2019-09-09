@@ -3,6 +3,12 @@ import numpy as np
 import tysoc_bindings
 import pytysoc
 
+NUM_BOXES = 5
+NUM_SPHERES = 5
+NUM_CYLINDERS = 5
+NUM_CAPSULES = 5
+NUM_MESHES = 5
+
 def createSingleBody( name, shape ) :
     _collisionData = tysoc_bindings.PyCollisionData()
     _visualData = tysoc_bindings.PyVisualData()
@@ -35,6 +41,15 @@ def createSingleBody( name, shape ) :
 
         _visualData.type = tysoc_bindings.eShapeType.CAPSULE
         _visualData.size = [ 0.1, 0.2, 0.1 ]
+
+    elif shape == 'mesh' :
+        _collisionData.type = tysoc_bindings.eShapeType.MESH
+        _collisionData.size = [ 0.2, 0.2, 0.2 ]
+        _collisionData.filename = '/home/gregor/Documents/repos/tysoc_mujoco_workspace/tysoc_mujoco/core/res/meshes/monkey.stl'
+
+        _visualData.type = tysoc_bindings.eShapeType.MESH
+        _visualData.size = [ 0.2, 0.2, 0.2 ]
+        _visualData.filename = '/home/gregor/Documents/repos/tysoc_mujoco_workspace/tysoc_mujoco/core/res/meshes/monkey.stl'
 
     _visualData.ambient = [ 0.7, 0.5, 0.3 ]
     _visualData.diffuse = [ 0.7, 0.5, 0.3 ]
@@ -70,17 +85,20 @@ if __name__ == '__main__' :
     _scenario = tysoc_bindings.PyScenario()
     _scenario.addTerrainGen( _terrainGen )
     
-    for i in range( 5 ) :
+    for i in range( NUM_BOXES ) :
         _scenario.addBody( createSingleBody( 'box_' + str( i ), 'box' ) )
 
-    for i in range( 5 ) :
+    for i in range( NUM_SPHERES ) :
         _scenario.addBody( createSingleBody( 'sphere_' + str( i ), 'sphere' ) )
 
-    for i in range( 5 ) :
+    for i in range( NUM_CYLINDERS ) :
         _scenario.addBody( createSingleBody( 'cylinder_' + str( i ), 'cylinder' ) )
 
-    for i in range( 5 ) :
+    for i in range( NUM_CAPSULES ) :
         _scenario.addBody( createSingleBody( 'capsule_' + str( i ), 'capsule' ) )
+
+    for i in range( NUM_MESHES ) :
+        _scenario.addBody( createSingleBody( 'mesh_' + str( i ), 'mesh' ) )
     
     _runtime = pytysoc.createRuntime( physicsBackend = pytysoc.BACKENDS.PHYSICS.MUJOCO,
                                       renderingBackend = pytysoc.BACKENDS.RENDERING.GLVIZ,

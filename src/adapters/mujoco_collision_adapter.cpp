@@ -6,10 +6,11 @@ namespace tysoc {
     TMjcCollisionAdapter::TMjcCollisionAdapter( TCollision* collisionPtr )
         : TICollisionAdapter( collisionPtr )
     {
-        m_mjcModelPtr       = NULL;
-        m_mjcDataPtr        = NULL;
-        m_mjcfXmlResource   = NULL;
-        m_mjcGeomId         = -1;
+        m_mjcModelPtr           = NULL;
+        m_mjcDataPtr            = NULL;
+        m_mjcfXmlResource       = NULL;
+        m_mjcfXmlAssetResource  = NULL;
+        m_mjcGeomId             = -1;
     }
 
     TMjcCollisionAdapter::~TMjcCollisionAdapter()
@@ -22,6 +23,7 @@ namespace tysoc {
         m_mjcModelPtr = NULL;
         m_mjcDataPtr = NULL;
         m_mjcfXmlResource = NULL;
+        m_mjcfXmlAssetResource = NULL;
     }
 
     void TMjcCollisionAdapter::build()
@@ -31,7 +33,7 @@ namespace tysoc {
         m_mjcfXmlResource = new mjcf::GenericElement( "geom" );
         m_mjcfXmlResource->setAttributeString( "name", m_collisionPtr->name() );
         m_mjcfXmlResource->setAttributeVec3( "pos", m_collisionPtr->localPos() );
-        m_mjcfXmlResource->setAttributeVec4( "quat", m_collisionPtr->localQuat() );
+        m_mjcfXmlResource->setAttributeVec4( "quat", mujoco::quat2MjcfQuat( m_collisionPtr->localQuat() ) );
         m_mjcfXmlResource->setAttributeString( "type", mujoco::shapeType2MjcfShapeType( m_collisionPtr->shape() ) );
         m_mjcfXmlResource->setAttributeVec3( "size", mujoco::size2MjcfSize( m_collisionPtr->shape(), m_collisionPtr->size() ) );
 
@@ -40,6 +42,16 @@ namespace tysoc {
         // m_mjcfXmlResource->setAttributeVec3( "friction", m_collisionPtr->data().friction );
         // m_mjcfXmlResource->setAttributeInt( "contype", m_collisionPtr->data().collisionGroup );
         // m_mjcfXmlResource->setAttributeInt( "conaffinity", m_collisionPtr->data().collisionMask );
+
+        if ( m_collisionPtr->shape() == eShapeType::MESH )
+        {
+            m_mjcfXmlAssetResource = new mjcf::GenericElement( "mesh" );
+            m_mjcfXmlAssetResource->setAttributeString( "name", getFilenameNoExtensionFromFilePath( m_collisionPtr->data().filename ) );
+            m_mjcfXmlAssetResource->setAttributeString( "file", m_collisionPtr->data().filename );
+            m_mjcfXmlAssetResource->setAttributeVec3( "scale", m_collisionPtr->size() );
+
+            m_mjcfXmlResource->setAttributeString( "mesh", m_mjcfXmlAssetResource->getAttributeString( "name" ) );
+        }
     }
 
     void TMjcCollisionAdapter::reset()
@@ -95,6 +107,13 @@ namespace tysoc {
         assert( m_collisionPtr );
         assert( m_mjcGeomId != -1 );
 
+        if ( m_collisionPtr->shape() == eShapeType::MESH )
+        {
+            std::cout << "WARNING> changing mesh sizes at runtime is not supported, "
+                      << "as it requires recomputing the vertex positions of the collider" << std::endl;
+            return;
+        }
+
         auto _newSizeMjcf = mujoco::size2MjcfSize( m_collisionPtr->shape(), newSize );
         auto _newRboundMjcf = mujoco::computeRbound( m_collisionPtr->shape(), newSize );
 
@@ -117,6 +136,11 @@ namespace tysoc {
         }
 
         m_mjcRbound = m_mjcModelPtr->geom_rbound[m_mjcGeomId];
+
+        if ( m_collisionPtr->data().type == eShapeType::MESH )
+        {
+
+        }
 
         // @TODO: Add special functionality to handle HFIELDS and MESHES
     }

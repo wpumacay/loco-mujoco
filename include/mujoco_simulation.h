@@ -29,6 +29,7 @@ namespace mujoco {
         mjvOption*  m_mjcOptionPtr;
 
         mjcf::GenericElement* m_mjcfResourcesPtr;
+        std::vector< mjcf::GenericElement* > m_mjcfMeshResources;
 
         static bool HAS_ACTIVATED_MUJOCO;// @HACK: checks that mujoco is only activated once
 

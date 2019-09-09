@@ -127,10 +127,30 @@ namespace mujoco {
                                                     ( _collisions[j]->adapter() );
 
                 _bodyAdapter->mjcfResource()->children.push_back( _collisionAdapter->mjcfResource() );
+
+                if ( _collisionAdapter->mjcfAssetResource() )
+                    m_mjcfMeshResources.push_back( _collisionAdapter->mjcfAssetResource() );
             }
 
             m_mjcfResourcesPtr->children.push_back( _worldBody4Body );
         }
+
+        // add extra mesh-assets to the assets list
+        auto _assetsElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "asset" );
+        auto _assetsInModel = _assetsElmPtr->children;
+        std::set< std::string > _currentAssetsNames;
+        for ( size_t i = 0; i < _assetsInModel.size(); i++ )
+            _currentAssetsNames.emplace( _assetsInModel[i]->getAttributeString( "name" ) );
+        for ( size_t i = 0; i < m_mjcfMeshResources.size(); i++ )
+        {
+            auto _meshAssetElmName = m_mjcfMeshResources[i]->getAttributeString( "name" );
+            if ( _currentAssetsNames.find( _meshAssetElmName ) == _currentAssetsNames.end() )
+            {
+                _currentAssetsNames.emplace( _meshAssetElmName );
+                _assetsElmPtr->children.push_back( m_mjcfMeshResources[i] );
+            }
+        }
+
 
         /* Inject resources into the workspace xml *****************************/
         std::string _workspaceModelPath;

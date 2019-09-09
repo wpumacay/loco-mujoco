@@ -40,6 +40,8 @@ namespace tysoc {
 
         mjcf::GenericElement* mjcfResource() { return m_mjcfXmlResource; }
 
+        mjcf::GenericElement* mjcfAssetResource(){ return m_mjcfXmlAssetResource; }
+
         int mjcGeomId() { return m_mjcGeomId; }
 
         void onResourcesCreated();
@@ -55,7 +57,7 @@ namespace tysoc {
         TScalar m_mjcRbound;
 
         mjcf::GenericElement* m_mjcfXmlResource;
-
+        mjcf::GenericElement* m_mjcfXmlAssetResource;
     };
 
     extern "C" TICollisionAdapter* simulation_createCollisionAdapter( TCollision* collisionPtr );

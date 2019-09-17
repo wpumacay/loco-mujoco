@@ -4,11 +4,11 @@
 // MuJoCo API functionality
 #include <mujoco.h>
 // Rendering functionality from 'cat1' engine
-#include <LApp.h>
+#include <core/COpenGLApp.h>
+#include <graphics/CMeshBuilder.h>
 #include <LFpsCamera.h>
 #include <LFixedCamera3d.h>
 #include <LLightDirectional.h>
-#include <LMeshBuilder.h>
 // UI functionality (from Dear ImGui)
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -409,8 +409,8 @@ namespace mujoco
         std::string m_mjcModelFile;
         char        m_mjcErrorMsg[1000];
 
-        engine::LApp* m_graphicsApp;
-        engine::LScene* m_graphicsScene;
+        engine::COpenGLApp* m_graphicsApp;
+        engine::LScene*     m_graphicsScene;
 
         std::vector< SimBody* >             m_simBodies;
         std::map< std::string, SimBody* >   m_simBodiesMap;

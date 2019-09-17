@@ -391,15 +391,15 @@ namespace mujoco
         engine::LIRenderable* _renderable = NULL;
 
         if ( type == "plane" )
-            _renderable = engine::LMeshBuilder::createPlane( 2.0 * size.x, 2.0 * size.y );
+            _renderable = engine::CMeshBuilder::createPlane( 2.0 * size.x, 2.0 * size.y );
         else if ( type == "box" )
-            _renderable = engine::LMeshBuilder::createBox( 2.0 * size.x, 2.0 * size.y, 2.0 * size.z );
+            _renderable = engine::CMeshBuilder::createBox( 2.0 * size.x, 2.0 * size.y, 2.0 * size.z );
         else if ( type == "sphere" )
-            _renderable = engine::LMeshBuilder::createSphere( size.x );
+            _renderable = engine::CMeshBuilder::createSphere( size.x );
         else if ( type == "capsule" )
-            _renderable = engine::LMeshBuilder::createCapsule( size.x, 2.0 * size.y );
+            _renderable = engine::CMeshBuilder::createCapsule( size.x, 2.0 * size.y );
         else if ( type == "cylinder" )
-            _renderable = engine::LMeshBuilder::createCylinder( size.x, 2.0 * size.y );
+            _renderable = engine::CMeshBuilder::createCylinder( size.x, 2.0 * size.y );
 
         if ( _renderable )
             _renderable->getMaterial()->setColor( { color.x, color.y, color.z } );
@@ -633,8 +633,8 @@ namespace mujoco
                             mjData* mjcDataPtr )
     {
         m_active = false;
-        m_graphicsContactPoint = engine::LMeshBuilder::createSphere( 0.02 );
-        m_graphicsContactDirection = engine::LMeshBuilder::createArrow( 0.75, "x" );
+        m_graphicsContactPoint = engine::CMeshBuilder::createSphere( 0.02 );
+        m_graphicsContactDirection = engine::CMeshBuilder::createArrow( 0.75, engine::eAxis::X );
         m_worldPos = tysoc::TVec3( 0., 0., 0. ); // Origin
         m_worldRot = tysoc::TMat3(); //Identity
 
@@ -953,8 +953,8 @@ namespace mujoco
 
     void ITestApplication::_initGraphics()
     {
-        m_graphicsApp = engine::LApp::GetInstance();
-        m_graphicsScene = engine::LApp::GetInstance()->scene();
+        m_graphicsApp = new engine::COpenGLApp();
+        m_graphicsScene = m_graphicsApp->scene();
 
         auto _camera = new engine::LFpsCamera( "fps",
                                                { 1.0f, 2.0f, 1.0f },
@@ -980,12 +980,12 @@ namespace mujoco
     #else
         ImGui_ImplOpenGL3_Init( "#version 130" );
     #endif
-        ImGui_ImplGlfw_InitForOpenGL( m_graphicsApp->window()->getGLFWwindow(), false );
+        ImGui_ImplGlfw_InitForOpenGL( engine::COpenGLApp::GetWindow()->glfwWindow(), false );
         ImGui::StyleColorsDark();
 
         // disable the current camera movement and allow to use the ui
         m_graphicsScene->getCurrentCamera()->setActiveMode( false );
-        m_graphicsApp->window()->enableCursor();
+        engine::COpenGLApp::GetWindow()->enableCursor();
     }
 
     void ITestApplication::reset()
@@ -1060,12 +1060,12 @@ namespace mujoco
         if ( engine::InputSystem::checkSingleKeyPress( GLFW_KEY_SPACE ) )
         {
             m_graphicsScene->getCurrentCamera()->setActiveMode( false );
-            m_graphicsApp->window()->enableCursor();
+            engine::COpenGLApp::GetWindow()->enableCursor();
         }
         else if ( engine::InputSystem::checkSingleKeyPress( GLFW_KEY_ENTER ) )
         {
             m_graphicsScene->getCurrentCamera()->setActiveMode( true );
-            m_graphicsApp->window()->disableCursor();
+            engine::COpenGLApp::GetWindow()->disableCursor();
         }
         else if ( engine::InputSystem::checkSingleKeyPress( GLFW_KEY_ESCAPE ) )
         {
@@ -1115,7 +1115,7 @@ namespace mujoco
 
         ImGui::Render();
         int _ww, _wh;
-        glfwGetFramebufferSize( m_graphicsApp->window()->getGLFWwindow(), &_ww, &_wh );
+        glfwGetFramebufferSize( engine::COpenGLApp::GetWindow()->glfwWindow(), &_ww, &_wh );
         glViewport( 0, 0, _ww, _wh );
         ImGui_ImplOpenGL3_RenderDrawData( ImGui::GetDrawData() );
 

@@ -22,10 +22,10 @@ tysoc::TBody* createSimpleBody( const std::string& name, const std::string& type
     if ( type == "box" )
     {
         _collisionData.type = tysoc::eShapeType::BOX;
-        _collisionData.size = { 0.2, 0.2, 0.2 };
+        _collisionData.size = { 0.2, 0.2, 0.4 };
 
         _visualData.type = tysoc::eShapeType::BOX;
-        _visualData.size = { 0.2, 0.2, 0.2 };
+        _visualData.size = { 0.2, 0.2, 0.4 };
     }
     else if ( type == "sphere" )
     {
@@ -89,9 +89,9 @@ tysoc::TBody* createSimpleBody( const std::string& name, const std::string& type
 
     // choose a random orientation
     tysoc::TVec3 _rotation;
-    _rotation.x = TYSOC_PI * g_randomUniformDistribution( g_randomGenerator ) / 4.;
-    _rotation.y = TYSOC_PI * g_randomUniformDistribution( g_randomGenerator ) / 4.;
-    _rotation.z = TYSOC_PI * g_randomUniformDistribution( g_randomGenerator ) / 4.;
+    // _rotation.x = TYSOC_PI * g_randomUniformDistribution( g_randomGenerator ) / 4.;
+    // _rotation.y = TYSOC_PI * g_randomUniformDistribution( g_randomGenerator ) / 4.;
+    // _rotation.z = TYSOC_PI * g_randomUniformDistribution( g_randomGenerator ) / 4.;
 
     // create the abstract body
     auto _bodyPtr = new tysoc::TBody( name, 
@@ -105,7 +105,7 @@ tysoc::TBody* createSimpleBody( const std::string& name, const std::string& type
 int main()
 {
     auto _terrainGenStatic = new tysoc::terrain::TStaticTerrainGenerator( "terrainGen0" );
-    _terrainGenStatic->createPrimitive( "box", 
+    _terrainGenStatic->createPrimitive( "plane", 
                                         { 10.0f, 10.0f, 0.2f }, 
                                         { 0.0f, 0.0f, -0.1f },
                                         tysoc::TMat3(),

@@ -52,6 +52,23 @@ namespace tysoc {
 
             m_mjcfXmlResource->setAttributeString( "mesh", m_mjcfXmlAssetResource->getAttributeString( "name" ) );
         }
+
+        if ( m_collisionPtr->shape() == eShapeType::HFIELD )
+        {
+            m_mjcfXmlAssetResource = new mjcf::GenericElement( "hfield" );
+            m_mjcfXmlAssetResource->setAttributeString( "name", m_collisionPtr->name() + "_asset" );
+            m_mjcfXmlAssetResource->setAttributeInt( "nrow", m_collisionPtr->data().hdata.nDepthSamples );
+            m_mjcfXmlAssetResource->setAttributeInt( "ncol", m_collisionPtr->data().hdata.nWidthSamples );
+
+            TVec4 _sizeprop = { 0.5f * m_collisionPtr->size().x,
+                                0.5f * m_collisionPtr->size().y,
+                                m_collisionPtr->size().z,
+                                COLLISION_DEFAULT_HFIELD_BASE };
+
+            m_mjcfXmlAssetResource->setAttributeVec4( "size", _sizeprop );
+
+            m_mjcfXmlResource->setAttributeString( "hfield", m_collisionPtr->name() + "_asset" );
+        }
     }
 
     void TMjcCollisionAdapter::reset()
@@ -114,6 +131,13 @@ namespace tysoc {
             return;
         }
 
+        if ( m_collisionPtr->shape() == eShapeType::HFIELD )
+        {
+            std::cout << "WARNING> changing hfield sizes at runtime is not supported, "
+                      << "as it requires recomputing the elevation data of the collider" << std::endl;
+            return;
+        }
+
         auto _newSizeMjcf = mujoco::size2MjcfSize( m_collisionPtr->shape(), newSize );
         auto _newRboundMjcf = mujoco::computeRbound( m_collisionPtr->shape(), newSize );
 
@@ -122,6 +146,38 @@ namespace tysoc {
         m_mjcModelPtr->geom_size[3 * m_mjcGeomId + 2] = _newSizeMjcf.z;
 
         m_mjcModelPtr->geom_rbound[m_mjcGeomId] = _newRboundMjcf;
+    }
+
+    void TMjcCollisionAdapter::changeElevationData( const std::vector< float >& heightData )
+    {
+        assert( m_collisionPtr );
+        assert( m_mjcGeomId != -1 );
+
+        if ( m_collisionPtr->shape() != eShapeType::HFIELD )
+        {
+            std::cout << "WARNING> tried setting elevation data to a non-hfield collider" << std::endl;
+            return;
+        }
+
+        // sanity check: make sure the given buffer has the required number of elements
+        if( ( m_mjcGeomHFieldNRows * m_mjcGeomHFieldNCols ) != heightData.size() )
+        {
+            std::cout << "WARNING> number of elements in internal and given elevation buffers does not match" << std::endl;
+            std::cout << "nx-samples    : " << m_mjcGeomHFieldNRows << std::endl;
+            std::cout << "ny-samples    : " << m_mjcGeomHFieldNCols << std::endl;
+            std::cout << "hdata.size()  : " << heightData.size() << std::endl;
+            return;
+        }
+
+        for ( int i = 0; i < m_mjcGeomHFieldNRows; i++ )
+        {
+            for ( int j = 0; j < m_mjcGeomHFieldNCols; j++ )
+            {
+                int _pindexUserBuffer = i + j * m_mjcGeomHFieldNRows;
+                int _pindexMujocoBuffer = j + i * m_mjcGeomHFieldNCols;
+                m_mjcModelPtr->hfield_data[m_mjcGeomHFieldStartAddr + _pindexMujocoBuffer] = heightData[_pindexUserBuffer];
+            }
+        }
     }
 
     void TMjcCollisionAdapter::onResourcesCreated()
@@ -137,12 +193,32 @@ namespace tysoc {
 
         m_mjcRbound = m_mjcModelPtr->geom_rbound[m_mjcGeomId];
 
+        // @TODO: Add special functionality to handle HFIELDS and MESHES
+
         if ( m_collisionPtr->data().type == eShapeType::MESH )
         {
-
+            m_mjcGeomMeshId = m_mjcModelPtr->geom_dataid[m_mjcGeomId];
         }
+        else if ( m_collisionPtr->data().type == eShapeType::HFIELD )
+        {
+            // hfield resource location in model structure
+            m_mjcGeomHFieldId = m_mjcModelPtr->geom_dataid[m_mjcGeomId];
+            // sanity check, make sure we have a valid hfield
+            assert( m_mjcGeomHFieldId != -1 );
 
-        // @TODO: Add special functionality to handle HFIELDS and MESHES
+            // offset of the height data in the hdata buffer
+            m_mjcGeomHFieldStartAddr = m_mjcModelPtr->hfield_adr[m_mjcGeomHFieldId];
+
+            // grab some extra information to make sure everything is setup correctly
+            m_mjcGeomHFieldNRows = m_mjcModelPtr->hfield_nrow[m_mjcGeomHFieldId];
+            m_mjcGeomHFieldNCols = m_mjcModelPtr->hfield_ncol[m_mjcGeomHFieldId];
+            // sanity check, make sure the rows and cols are linked correctly
+            assert( m_collisionPtr->data().hdata.nWidthSamples == m_mjcGeomHFieldNRows );
+            assert( m_collisionPtr->data().hdata.nDepthSamples == m_mjcGeomHFieldNCols );
+
+            // set elevation data for the first time
+            changeElevationData( m_collisionPtr->data().hdata.heightData );
+        }
     }
 
     extern "C" TICollisionAdapter* simulation_createCollisionAdapter( TCollision* collisionPtr )

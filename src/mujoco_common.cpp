@@ -19,6 +19,7 @@ namespace mujoco {
             case eShapeType::CYLINDER   : return "cylinder";
             case eShapeType::CAPSULE    : return "capsule";
             case eShapeType::MESH       : return "mesh";
+            case eShapeType::HFIELD     : return "hfield";
 
             default : return "none";
         }
@@ -49,8 +50,11 @@ namespace mujoco {
             /* halve only the height dimension (stored in y) */
             case eShapeType::CAPSULE : return { size.x, 0.5f * size.y, size.z };
 
-            /* same size, as it is ignored by the engine (uses actual mesh-sizes instead */
+            /* same size, as it is ignored by the engine (uses actual (asset) mesh-sizes instead */
             case eShapeType::MESH : return size;
+
+            /* same size, as it is ignored by the engine (uses actual (asset) hfield-sizes instead */
+            case eShapeType::HFIELD : return size;
 
             default : return size;
         }

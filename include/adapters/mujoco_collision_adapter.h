@@ -5,6 +5,8 @@
 
 #include <adapters/collision_adapter.h>
 
+#define COLLISION_DEFAULT_HFIELD_BASE 0.1f
+
 namespace tysoc {
 
     class TCollision;
@@ -32,6 +34,8 @@ namespace tysoc {
 
         void changeSize( const TVec3& newSize ) override;
 
+        void changeElevationData( const std::vector< float >& heightData ) override;
+
         void setMjcModel( mjModel* mjcModelPtr ) { m_mjcModelPtr = mjcModelPtr; }
 
         void setMjcData( mjData* mjcDataPtr ) { m_mjcDataPtr = mjcDataPtr; }
@@ -53,6 +57,11 @@ namespace tysoc {
         mjData* m_mjcDataPtr;
 
         int m_mjcGeomId;
+        int m_mjcGeomMeshId;
+        int m_mjcGeomHFieldId;
+        int m_mjcGeomHFieldStartAddr;
+        int m_mjcGeomHFieldNRows;
+        int m_mjcGeomHFieldNCols;
 
         TScalar m_mjcRbound;
 

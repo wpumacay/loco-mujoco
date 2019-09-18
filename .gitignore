@@ -5,6 +5,7 @@
 *.swp
 *.swo
 *.so
+*.so*
 *.a
 *.ini
 *.log

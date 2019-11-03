@@ -68,14 +68,13 @@ tysoc::TBody* createHfield( const std::string& name, const tysoc::TVec3& positio
 
     tysoc::TBodyData _bodyData;
     _bodyData.dyntype = tysoc::eDynamicsType::STATIC;
-    _bodyData.hasInertia = false;
     _bodyData.collisions.push_back( _collisionData );
     _bodyData.visuals.push_back( _visualData );
 
     return new tysoc::TBody( name, _bodyData, position, tysoc::TMat3() );;
 }
 
-tysoc::agent::TAgent* createAgent( const std::string& format,
+tysoc::TAgent* createAgent( const std::string& format,
                                    const std::string& modelName,
                                    const std::string& agentName,
                                    const tysoc::TVec3& position,
@@ -87,19 +86,19 @@ tysoc::agent::TAgent* createAgent( const std::string& format,
     {
         auto _modelData = _modelLoader->getUrdfModel( modelName );
 
-        return new tysoc::agent::TAgent( _modelData, agentName, position, rotation );
+        return new tysoc::TAgent( _modelData, agentName, position, rotation );
     }
     else if ( format == "rlsim" )
     {
         auto _modelData = _modelLoader->getRlsimModel( modelName );
         
-        return new tysoc::agent::TAgent( _modelData, agentName, position, rotation );
+        return new tysoc::TAgent( _modelData, agentName, position, rotation );
     }
     else if ( format == "mjcf" )
     {
         auto _modelData = _modelLoader->getMjcfModel( modelName );
         
-        return new tysoc::agent::TAgent( _modelData, agentName, position, rotation );
+        return new tysoc::TAgent( _modelData, agentName, position, rotation );
     }
 
     std::cout << "ERROR> format: " << format << " not supported" << std::endl;
@@ -143,7 +142,7 @@ int main( int argc, const char** argv )
     }
     else
     {
-        auto _terrainGenStatic = new tysoc::terrain::TStaticTerrainGenerator( "terrainGen0" );
+        auto _terrainGenStatic = new tysoc::TStaticTerrainGenerator( "terrainGen0" );
         _terrainGenStatic->createPrimitive( "box", 
                                             { 10.0f, 10.0f, 0.2f }, 
                                             { 0.0f, 0.0f, -0.05f },

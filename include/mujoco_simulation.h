@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <simulation_base.h>
@@ -43,8 +42,7 @@ namespace mujoco {
 
         public :
 
-        TMjcSimulation( TScenario* scenarioPtr,
-                        const std::string& workingDir );
+        TMjcSimulation( TScenario* scenarioPtr );
         ~TMjcSimulation();
 
         mjModel* getMjcModel() { return m_mjcModelPtr; }
@@ -54,7 +52,6 @@ namespace mujoco {
         mjvOption* getMjcOption() { return m_mjcOptionPtr; }
     };
 
-    extern "C" TISimulation* simulation_create( TScenario* scenarioPtr,
-                                                const std::string& workingDir );
+    extern "C" TISimulation* simulation_create( TScenario* scenarioPtr );
     
 }}

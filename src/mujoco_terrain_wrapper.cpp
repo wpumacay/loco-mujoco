@@ -1,19 +1,17 @@
 
 #include <mujoco_terrain_wrapper.h>
 
-
 namespace tysoc {
 namespace mujoco {
 
 
-    TMjcTerrainGenWrapper::TMjcTerrainGenWrapper( terrain::TITerrainGenerator* terrainGenPtr,
-                                                  const std::string& workingDir )
-        : TTerrainGenWrapper( terrainGenPtr, workingDir )
+    TMjcTerrainGenWrapper::TMjcTerrainGenWrapper( TITerrainGenerator* terrainGenPtr )
+        : TTerrainGenWrapper( terrainGenPtr )
     {
-        m_mjcModelPtr   = NULL;
-        m_mjcDataPtr    = NULL;
-        m_mjcScenePtr   = NULL;
-        m_mjcfTargetResourcesPtr = NULL;
+        m_mjcModelPtr   = nullptr;
+        m_mjcDataPtr    = nullptr;
+        m_mjcScenePtr   = nullptr;
+        m_mjcfTargetResourcesPtr = nullptr;
 
         // Create resources that will be fixed|static (no pool needed)
         _collectStaticFromGenerator();
@@ -41,7 +39,7 @@ namespace mujoco {
 //                                                0.5f * MJC_TERRAIN_PATH_DEFAULT_DEPTH, 
 //                                                0.5f * MJC_TERRAIN_PATH_DEFAULT_TICKNESS };
 //
-//            _mjcPrimitive->tysocPrimitiveObj = NULL;
+//            _mjcPrimitive->tysocPrimitiveObj = nullptr;
 //
 //            m_mjcTerrainPrimitives.push_back( _mjcPrimitive );
 //            m_mjcAvailablePrimitives.push( _mjcPrimitive );
@@ -54,26 +52,20 @@ namespace mujoco {
 
     TMjcTerrainGenWrapper::~TMjcTerrainGenWrapper()
     {
-        m_mjcModelPtr   = NULL;
-        m_mjcDataPtr    = NULL;
-        m_mjcScenePtr   = NULL;
-        m_mjcfTargetResourcesPtr = NULL;
+        m_mjcModelPtr   = nullptr;
+        m_mjcDataPtr    = nullptr;
+        m_mjcScenePtr   = nullptr;
+        m_mjcfTargetResourcesPtr = nullptr;
 
         while ( !m_mjcAvailablePrimitives.empty() )
-        {
             m_mjcAvailablePrimitives.pop();
-        }
 
         while ( !m_mjcWorkingPrimitives.empty() )
-        {
             m_mjcWorkingPrimitives.pop();
-        }
 
-        for ( size_t i = 0; i < m_mjcTerrainPrimitives.size(); i++ )
-        {
-            delete m_mjcTerrainPrimitives[i];
-            m_mjcTerrainPrimitives[i] = NULL;
-        }
+        for ( auto _terrainWrapper : m_mjcTerrainPrimitives )
+            delete _terrainWrapper;
+
         m_mjcTerrainPrimitives.clear();
     }
 
@@ -116,22 +108,13 @@ namespace mujoco {
             auto _mjcPrimitivePtr = m_mjcTerrainPrimitives[i];
             auto _position = TVec3();
             auto _orientation = TVec4();
-            bool _isStatic = ( ( _mjcPrimitivePtr->tysocPrimitiveObj != NULL ) && 
-                               ( _mjcPrimitivePtr->tysocPrimitiveObj->type == terrain::TERRAIN_TYPE_STATIC ) );
+            bool _isStatic = ( ( _mjcPrimitivePtr->tysocPrimitiveObj != nullptr ) && 
+                               ( _mjcPrimitivePtr->tysocPrimitiveObj->type == TERRAIN_TYPE_STATIC ) );
 
             if ( _isStatic )
             {
-                // Grab the primitive that is being wrapped
-                auto _tysocPrimitiveObj = _mjcPrimitivePtr->tysocPrimitiveObj;
-                // extract the rotation matrix @TODO: Change float[9] byt TMat3 (T_T)
-                auto _rotmat = TMat3();
-                for ( size_t i = 0; i < 9; i++ )
-                    _rotmat.buff[i] = _tysocPrimitiveObj->rotmat[i];
-
-                _position = { _tysocPrimitiveObj->pos.x,
-                              _tysocPrimitiveObj->pos.y,
-                              _tysocPrimitiveObj->pos.z };
-                _orientation = TMat3::toQuaternion( _rotmat );
+                _position = _mjcPrimitivePtr->tysocPrimitiveObj->pos;
+                _orientation = TMat3::toQuaternion( _mjcPrimitivePtr->tysocPrimitiveObj->rotmat );
             }
             else
             {
@@ -177,7 +160,7 @@ namespace mujoco {
             if ( !m_mjcTerrainPrimitives[i]->tysocPrimitiveObj )
                 return;
 
-            if ( m_mjcTerrainPrimitives[i]->tysocPrimitiveObj->type == terrain::TERRAIN_TYPE_STATIC )
+            if ( m_mjcTerrainPrimitives[i]->tysocPrimitiveObj->type == TERRAIN_TYPE_STATIC )
                 return;
 
             _updateProperties( m_mjcTerrainPrimitives[i] );
@@ -233,7 +216,7 @@ namespace mujoco {
         utils::setTerrainBodyOrientation( m_mjcModelPtr,
                                            m_mjcDataPtr,
                                            mjcTerrainPritimivePtr->mjcGeomName,
-                                           _primitiveObj->rotmat );
+                                           _primitiveObj->rotmat.buff );
 
         auto _mjcSize = _extractMjcSizeFromStandardSize( _primitiveObj->geomType,
                                                          { _primitiveObj->size.x,
@@ -257,13 +240,13 @@ namespace mujoco {
                                       mjcTerrainPritimivePtr->mjcGeomName,
                                       _color );
 
-            _primitiveObj->color.r = _color[0];
-            _primitiveObj->color.g = _color[1];
-            _primitiveObj->color.b = _color[2];
+            _primitiveObj->color.x = _color[0];
+            _primitiveObj->color.y = _color[1];
+            _primitiveObj->color.z = _color[2];
         }
     }
 
-    void TMjcTerrainGenWrapper::_wrapStaticPrimitive( terrain::TTerrainPrimitive* primitivePtr )
+    void TMjcTerrainGenWrapper::_wrapStaticPrimitive( TTerrainPrimitive* primitivePtr )
     {
         // Create a new primitive for each static primitive (these do not change)
         auto _mjcPrimitive = new TMjcTerrainPrimitive();
@@ -287,7 +270,7 @@ namespace mujoco {
         m_mjcTerrainPrimitives.push_back( _mjcPrimitive );
     }
 
-    void TMjcTerrainGenWrapper::_wrapReusablePrimitive( terrain::TTerrainPrimitive* primitivePtr )
+    void TMjcTerrainGenWrapper::_wrapReusablePrimitive( TTerrainPrimitive* primitivePtr )
     {
         // if the pool is empty, force to recycle the last object
         if ( m_mjcAvailablePrimitives.empty() )
@@ -296,7 +279,7 @@ namespace mujoco {
             if ( _oldest->tysocPrimitiveObj )
             {
                 m_terrainGenPtr->recycle( _oldest->tysocPrimitiveObj );
-                _oldest->tysocPrimitiveObj = NULL;
+                _oldest->tysocPrimitiveObj = nullptr;
                 m_mjcWorkingPrimitives.pop();
             }
             m_mjcAvailablePrimitives.push( _oldest );
@@ -347,17 +330,15 @@ namespace mujoco {
         return _res;
     }
 
-    extern "C" TTerrainGenWrapper* terrain_createFromAbstract( terrain::TITerrainGenerator* terrainGenPtr,
-                                                               const std::string& workingDir )
+    extern "C" TTerrainGenWrapper* terrain_createFromAbstract( TITerrainGenerator* terrainGenPtr )
     {
-        return new TMjcTerrainGenWrapper( terrainGenPtr, workingDir );
+        return new TMjcTerrainGenWrapper( terrainGenPtr );
     }
 
     extern "C" TTerrainGenWrapper* terrain_createFromParams( const std::string& name,
-                                                             const TGenericParams& params,
-                                                             const std::string& workingDir )
+                                                             const TGenericParams& params )
     {
-        return NULL;
+        return nullptr;
     }
 
 

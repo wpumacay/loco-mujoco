@@ -2,6 +2,7 @@
 cmake_minimum_required( VERSION 3.0.0 )
 
 set( CMAKE_CXX_STANDARD 11 )
+set( CMAKE_CXX_FLAGS "-g ${CMAKE_CXX_FLAGS}" )
 
 if ( NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY )
     message( "TYSOCMJC> Sending generated libs to OWN build directory" )
@@ -139,5 +140,5 @@ endif()
 
 #*****************************************************************************
 
-# Configure tests (barebone external tests)
-add_subdirectory( tests )
+#### # Configure tests (barebone external tests)
+#### add_subdirectory( tests )

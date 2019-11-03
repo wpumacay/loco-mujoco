@@ -16,7 +16,7 @@ echo "======== Cloning dependencies -> ext/ ==========="
 
 # using own imgui version to add some extra cmake-files
 echo "==> Cloning wpumacay/imgui @ github - master branch"
-git clone https://github.com/wpumacay/imgui.git ext/imgui
+git clone --branch=docking https://github.com/wpumacay/imgui.git ext/imgui
 
 # spdlog library (for our logging system)
 echo "==> Cloning gabime/spdlog @ github - master branch"
@@ -24,7 +24,7 @@ git clone https://github.com/gabime/spdlog.git ext/spdlog
 
 # rendering engine for visualizer
 echo "==> Cloning wpumacay/cat1 @ github - master branch"
-git clone --branch v0.1.0 https://github.com/wpumacay/cat1.git ext/cat1
+git clone https://github.com/wpumacay/cat1.git ext/cat1
 
 # used for generating pytysoc|python bindings
 echo "==> Cloning pybind/pybind11 @ github - master branch"

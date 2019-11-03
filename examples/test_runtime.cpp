@@ -25,7 +25,7 @@ int main( int argc, const char** argv )
 
     auto _modelLoader = tysoc::TModelLoader::Create();
     auto _modelData = _modelLoader->getMjcfModel( "humanoid" );
-    auto _agent = new tysoc::agent::TAgent( _modelData, 
+    auto _agent = new tysoc::TAgent( _modelData, 
                                             "agent0", 
                                             { 0.0f, 0.0f, 1.0f },
                                             { 0.0f, 0.0f, 0.0f } );

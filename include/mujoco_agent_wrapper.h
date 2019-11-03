@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <mujoco_common.h>
@@ -14,12 +13,16 @@ namespace mujoco {
         private :
 
         int m_id;
-        agent::TKinTreeBody* m_kinTreeBody;
+        TKinTreeBody* m_kinTreeBody;
 
         public :
 
         TMjcBodyWrapper( int id );
     };
+
+    std::string enumJointToMjcType( const eJointType& type );
+    std::string enumShapeToMjcType( const eShapeType& type );
+    std::string enumActuatorToMjcType( const eActuatorType& type );
 
     class TMjcJointWrapper
     {
@@ -34,18 +37,18 @@ namespace mujoco {
         mjModel*    m_mjcModelPtr;
         mjData*     m_mjcDataPtr;
 
-        agent::TKinTreeJoint* m_kinTreeJointPtr;
+        TKinTreeJoint* m_kinTreeJointPtr;
 
         public :
 
         TMjcJointWrapper( mjModel* mjcModelPtr,
                           mjData* mjcDataPtr,
-                          agent::TKinTreeJoint* jointPtr );
+                          TKinTreeJoint* jointPtr );
 
         void setQpos( const std::vector< TScalar >& qpos );
         void setQvel( const std::vector< TScalar >& qvel );
 
-        agent::TKinTreeJoint* jointPtr() { return m_kinTreeJointPtr; }
+        TKinTreeJoint* jointPtr() { return m_kinTreeJointPtr; }
         bool isRootJoint();
     };
 
@@ -79,16 +82,16 @@ namespace mujoco {
 
         void _createMjcResourcesFromKinTree();
         void _createMjcResourcesFromBodyNode( mjcf::GenericElement* parentElmPtr,
-                                              agent::TKinTreeBody* kinTreeBodyPtr );
+                                              TKinTreeBody* kinTreeBodyPtr );
         void _createMjcAssetsFromKinTree();
         void _createMjcSensorsFromKinTree();
         void _createMjcActuatorsFromKinTree();
         void _createMjcExclusionContactsFromKinTree();
 
-        void _cacheBodyProperties( agent::TKinTreeBody* kinTreeBody );
-        void _cacheJointProperties( agent::TKinTreeJoint* kinTreeJoints );
+        void _cacheBodyProperties( TKinTreeBody* kinTreeBody );
+        void _cacheJointProperties( TKinTreeJoint* kinTreeJoints );
 
-        TVec3 _extractMjcSizeFromStandardSize( const TGeometry& geometry );
+        TVec3 _extractMjcSizeFromStandardSize( const TShapeData& shape );
 
         protected :
 
@@ -99,8 +102,7 @@ namespace mujoco {
 
         public :
 
-        TMjcKinTreeAgentWrapper( agent::TAgent* agentPtr,
-                                 const std::string& workingDir );
+        TMjcKinTreeAgentWrapper( TAgent* agentPtr );
         ~TMjcKinTreeAgentWrapper();
 
         void setMjcModel( mjModel* mjcModelPtr );
@@ -113,16 +115,13 @@ namespace mujoco {
     };
 
 
-    extern "C" TAgentWrapper* agent_createFromAbstract( agent::TAgent* agentPtr,
-                                                               const std::string& workingDir );
+    extern "C" TAgentWrapper* agent_createFromAbstract( TAgent* agentPtr );
 
     extern "C" TAgentWrapper* agent_createFromFile( const std::string& name,
-                                                           const std::string& filename,
-                                                           const std::string& workingDir );
+                                                    const std::string& filename );
 
     extern "C" TAgentWrapper* agent_createFromId( const std::string& name,
-                                                         const std::string& format,
-                                                         const std::string& id,
-                                                         const std::string& workingDir );
+                                                  const std::string& format,
+                                                  const std::string& id );
 
 }}

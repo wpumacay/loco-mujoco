@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <mujoco_common.h>
@@ -27,7 +26,7 @@ namespace mujoco {
         std::string                     mjcGeomType;
         TVec3                           mjcGeomSize;
         std::string                     mjcGeomFilename;
-        terrain::TTerrainPrimitive*     tysocPrimitiveObj;
+        TTerrainPrimitive*     tysocPrimitiveObj;
     };
 
 
@@ -53,8 +52,8 @@ namespace mujoco {
 
         void _collectReusableFromGenerator();// collects primitives that can be reused and rewrapped in the lifetime of the generator
         void _collectStaticFromGenerator();// collects primitives that are single in the lifetime of the generator
-        void _wrapReusablePrimitive( terrain::TTerrainPrimitive* primitivePtr );
-        void _wrapStaticPrimitive( terrain::TTerrainPrimitive* primitivePtr );
+        void _wrapReusablePrimitive( TTerrainPrimitive* primitivePtr );
+        void _wrapStaticPrimitive( TTerrainPrimitive* primitivePtr );
         void _updateProperties( TMjcTerrainPrimitive* mjcTerrainPritimivePtr );
 
         TVec3 _extractMjcSizeFromStandardSize( const std::string& shapeType,
@@ -69,8 +68,7 @@ namespace mujoco {
 
         public :
 
-        TMjcTerrainGenWrapper( terrain::TITerrainGenerator* terrainGenPtr,
-                               const std::string& workingDir );
+        TMjcTerrainGenWrapper( TITerrainGenerator* terrainGenPtr );
         ~TMjcTerrainGenWrapper();
 
         void setMjcModel( mjModel* mjcModelPtr );
@@ -80,10 +78,8 @@ namespace mujoco {
     };
 
 
-    extern "C" TTerrainGenWrapper* terrain_createFromAbstract( terrain::TITerrainGenerator* terrainGenPtr,
-                                                               const std::string& workingDir );
+    extern "C" TTerrainGenWrapper* terrain_createFromAbstract( TITerrainGenerator* terrainGenPtr );
 
     extern "C" TTerrainGenWrapper* terrain_createFromParams( const std::string& name,
-                                                             const TGenericParams& params,
-                                                             const std::string& workingDir );
+                                                             const TGenericParams& params );
 }}

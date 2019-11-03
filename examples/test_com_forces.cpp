@@ -25,8 +25,8 @@ int main( int argc, const char** argv )
 
     auto _modelLoader = tysoc::TModelLoader::Create();
     auto _modelData = _modelLoader->getMjcfModel( "ant" );
-    auto _agent = new tysoc::agent::TAgent( _modelData, "agent0", { 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } );
-    auto _sensor = new tysoc::sensor::TAgentIntrinsicsSensor( "ss0int", _agent );
+    auto _agent = new tysoc::TAgent( _modelData, "agent0", { 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } );
+    auto _sensor = new tysoc::TAgentIntrinsicsSensor( "ss0int", _agent );
 
     auto _scenario = new tysoc::TScenario();
     _scenario->addAgent( _agent );
@@ -47,7 +47,7 @@ int main( int argc, const char** argv )
 
         _visualizer->update();
 
-//        auto _measurement = ( tysoc::sensor::TAgentIntrinsicsSensorMeasurement* ) _sensor->getSensorMeasurement();
+//        auto _measurement = ( tysoc::TAgentIntrinsicsSensorMeasurement* ) _sensor->getSensorMeasurement();
 //        auto _forces = _measurement->comForces;
 //        auto _torques = _measurement->comTorques;
 //

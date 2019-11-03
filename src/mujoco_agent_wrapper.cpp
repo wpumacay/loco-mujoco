@@ -4,9 +4,48 @@
 namespace tysoc {
 namespace mujoco {
 
+    std::string enumJointToMjcType( const eJointType& type )
+    {
+        if ( type == eJointType::FIXED ) return ""; // fixed joints are just skipped in mjcf format
+        if ( type == eJointType::REVOLUTE ) return "hinge";
+        if ( type == eJointType::PRISMATIC ) return "slide";
+        if ( type == eJointType::SPHERICAL ) return "ball";
+        if ( type == eJointType::PLANAR ) return ""; // planar joints are not supported, so skip for now
+        if ( type == eJointType::FREE ) return "free";
+
+        std::cout << "WARNING> invalid eJointType enum given" << std::endl;
+
+        return "";
+    }
+
+    std::string enumShapeToMjcType( const eShapeType& type )
+    {
+        if ( type == eShapeType::BOX ) return "box";
+        if ( type == eShapeType::PLANE ) return "plane";
+        if ( type == eShapeType::SPHERE ) return "sphere";
+        if ( type == eShapeType::CYLINDER ) return "cylinder";
+        if ( type == eShapeType::CAPSULE ) return "capsule";
+        if ( type == eShapeType::ELLIPSOID ) return "ellipsoid";
+        if ( type == eShapeType::MESH ) return "mesh";
+        if ( type == eShapeType::HFIELD ) return "hfield"; // @todo: move to mujoco_common
+
+        std::cout << "WARNING> invalid eShapeType enum given" << std::endl;
+
+        return "";
+    }
+
+    std::string enumActuatorToMjcType( const eActuatorType& type )
+    {
+        if ( type == eActuatorType::TORQUE ) return "motor";
+
+        std::cout << "WARNING> unsupported type of actuator: " << tysoc::toString( type ) << std::endl;
+
+        return "";
+    }
+
     TMjcJointWrapper::TMjcJointWrapper( mjModel* mjcModelPtr,
                                         mjData* mjcDataPtr, 
-                                        agent::TKinTreeJoint* jointPtr )
+                                        TKinTreeJoint* jointPtr )
     {
         m_kinTreeJointPtr = jointPtr;
         m_mjcModelPtr = mjcModelPtr;
@@ -14,14 +53,14 @@ namespace mujoco {
 
         // grab some backend-info for this joint
         m_id = mj_name2id( m_mjcModelPtr, mjOBJ_JOINT, jointPtr->name.c_str() );
-        if ( m_id == -1 && jointPtr->type != "fixed" )
+        if ( m_id == -1 && jointPtr->data.type != eJointType::FIXED )
         {
             std::cout << "ERROR> joint (" << jointPtr->name << ") not linked to joint" << std::endl;
             return;
         }
 
-        m_nqpos     = jointPtr->nqpos;
-        m_nqvel     = jointPtr->nqvel;
+        m_nqpos     = jointPtr->data.nqpos;
+        m_nqvel     = jointPtr->data.nqvel;
         m_qposAdr   = m_mjcModelPtr->jnt_qposadr[m_id];
         m_qvelAdr   = m_mjcModelPtr->jnt_dofadr[m_id];
     }
@@ -52,13 +91,12 @@ namespace mujoco {
         return true;
     }
 
-    TMjcKinTreeAgentWrapper::TMjcKinTreeAgentWrapper( agent::TAgent* agentPtr,
-                                                      const std::string& workingDir )
-        : TAgentWrapper( agentPtr, workingDir )
+    TMjcKinTreeAgentWrapper::TMjcKinTreeAgentWrapper( TAgent* agentPtr )
+        : TAgentWrapper( agentPtr )
     {
-        m_mjcModelPtr   = NULL;
-        m_mjcDataPtr    = NULL;
-        m_mjcScenePtr   = NULL;
+        m_mjcModelPtr   = nullptr;
+        m_mjcDataPtr    = nullptr;
+        m_mjcScenePtr   = nullptr;
 
         m_hasMadeSummary = false;
 
@@ -66,7 +104,7 @@ namespace mujoco {
         m_mjcfResourcesPtr = new mjcf::GenericElement( "mujoco" );
         m_mjcfResourcesPtr->setAttributeString( "model", name() );
         // and declare the reference to the target mjcf (where to place the resources)
-        m_mjcfTargetResourcesPtr = NULL;
+        m_mjcfTargetResourcesPtr = nullptr;
 
         // collect the required data
         _createMjcResourcesFromKinTree();
@@ -77,13 +115,13 @@ namespace mujoco {
         if ( m_mjcfResourcesPtr )
         {
             delete m_mjcfResourcesPtr;
-            m_mjcfResourcesPtr = NULL;
+            m_mjcfResourcesPtr = nullptr;
         }
 
-        m_mjcModelPtr   = NULL;
-        m_mjcDataPtr    = NULL;
-        m_mjcScenePtr   = NULL;
-        m_mjcfTargetResourcesPtr = NULL;
+        m_mjcModelPtr   = nullptr;
+        m_mjcDataPtr    = nullptr;
+        m_mjcScenePtr   = nullptr;
+        m_mjcfTargetResourcesPtr = nullptr;
     }
 
     void TMjcKinTreeAgentWrapper::setMjcModel( mjModel* mjcModelPtr )
@@ -191,7 +229,7 @@ namespace mujoco {
 
             if ( m_jointWrappers[i].isRootJoint() )
             {
-                if ( _jointPtr->type == "free" )
+                if ( _jointPtr->data.type == eJointType::FREE )
                 {
                     auto _position = m_agentPtr->getStartPosition();
                     auto _rotation = TMat3::toQuaternion( TMat3::fromEuler( m_agentPtr->getStartRotation() ) );
@@ -203,41 +241,41 @@ namespace mujoco {
                     // and no initial velocities
                     _qvels = { 0., 0., 0., 0., 0., 0. };
                 }
-                else if ( _jointPtr->type == "slide" || _jointPtr->type == "prismatic" )
+                else if ( _jointPtr->data.type == eJointType::PRISMATIC )
                 {
                     auto _position = m_agentPtr->getStartPosition();
 
-                    if ( _jointPtr->axis == TVec3( 1., 0., 0. ) )
+                    if ( _jointPtr->data.axis == TVec3( 1., 0., 0. ) )
                     {
                         _qposs = { _position.x };
                         _qvels = { 0. };
                     }
-                    else if ( _jointPtr->axis == TVec3( 0., 1., 0. ) )
+                    else if ( _jointPtr->data.axis == TVec3( 0., 1., 0. ) )
                     {
                         _qposs = { _position.y };
                         _qvels = { 0. };
                     }
-                    else if ( _jointPtr->axis == TVec3( 0., 0., 1. ) )
+                    else if ( _jointPtr->data.axis == TVec3( 0., 0., 1. ) )
                     {
                         _qposs = { _position.z };
                         _qvels = { 0. };
                     }
                 }
-                else if ( _jointPtr->type == "hinge" || _jointPtr->type == "revolute" )
+                else if ( _jointPtr->data.type == eJointType::REVOLUTE )
                 {
                     auto _rotation = m_agentPtr->getStartRotation();
 
-                    if ( _jointPtr->axis == TVec3( 1., 0., 0. ) )
+                    if ( _jointPtr->data.axis == TVec3( 1., 0., 0. ) )
                     {
                         _qposs = { _rotation.x };
                         _qvels = { 0. };
                     }
-                    else if ( _jointPtr->axis == TVec3( 0., 1., 0. ) )
+                    else if ( _jointPtr->data.axis == TVec3( 0., 1., 0. ) )
                     {
                         _qposs = { _rotation.y };
                         _qvels = { 0. };
                     }
-                    else if ( _jointPtr->axis == TVec3( 0., 0., 1. ) )
+                    else if ( _jointPtr->data.axis == TVec3( 0., 0., 1. ) )
                     {
                         _qposs = { _rotation.z };
                         _qvels = { 0. };
@@ -247,11 +285,11 @@ namespace mujoco {
             else
             {
                 // collect qpos from kintree-joint
-                for ( int j = 0; j < _jointPtr->nqpos; j++ )
+                for ( int j = 0; j < _jointPtr->data.nqpos; j++ )
                     _qposs.push_back( _jointPtr->qpos[j] );
 
                 // set qvels to zeros
-                for ( int j = 0; j < _jointPtr->nqvel; j++ )
+                for ( int j = 0; j < _jointPtr->data.nqvel; j++ )
                     _qvels.push_back( 0. );
             }
 
@@ -354,59 +392,59 @@ namespace mujoco {
             _kinBodies[i]->worldTransform.setRotation( _rotation );
         }
 
-        // collect sensor readings
-        auto _kinSensors = m_agentPtr->sensors;
-        for ( size_t i = 0; i < _kinSensors.size(); i++ )
-        {
-            if ( _kinSensors[i]->type == "joint" )
-            {
-                auto _kinJointSensor = reinterpret_cast< agent::TKinTreeJointSensor* >( _kinSensors[i] );
-
-                std::vector< float > _readings;
-                // grab the reading from the jointpos sensor
-                utils::getJointSensorReading( m_mjcModelPtr,
-                                               m_mjcDataPtr,
-                                               _kinJointSensor->name + std::string( "_jointpos" ),
-                                               _readings );
-                // and also the reading from the jointvel sensor
-                utils::getJointSensorReading( m_mjcModelPtr,
-                                               m_mjcDataPtr,
-                                               _kinJointSensor->name + std::string( "_jointvel" ),
-                                               _readings );
-                // and store it into the sensor for later usage
-                _kinJointSensor->theta       = _readings[0];
-                _kinJointSensor->thetadot    = _readings[1];
-
-                // std::cout << "theta: " << _readings[0] << std::endl;
-                // std::cout << "thetadot: " << _readings[1] << std::endl;
-            }
-            else if ( _kinSensors[i]->type == "body" )
-            {
-                auto _kinBodySensor = reinterpret_cast< agent::TKinTreeBodySensor* >( _kinSensors[i] );
-
-                std::vector< float > _readings;
-                // grab the reading from the franelinvec sensor
-                utils::getJointSensorReading( m_mjcModelPtr,
-                                               m_mjcDataPtr,
-                                               _kinBodySensor->name + std::string( "_framelinvel" ),
-                                               _readings );
-                // and also the reading from the framelinacc sensor
-                utils::getJointSensorReading( m_mjcModelPtr,
-                                               m_mjcDataPtr,
-                                               _kinBodySensor->name + std::string( "_framelinacc" ),
-                                               _readings );
-                // and store it into the sensor for later usage
-                _kinBodySensor->linVelocity     = { _readings[0], _readings[1], _readings[2] };
-                _kinBodySensor->linAcceleration = { _readings[3], _readings[4], _readings[5] };
-
-                // grab the forces and torques from mjData
-                utils::getCOMForces( m_mjcModelPtr,
-                                     m_mjcDataPtr,
-                                     _kinBodySensor->bodyName,
-                                     _kinBodySensor->comForces,
-                                     _kinBodySensor->comTorques );
-            }
-        }
+////         // collect sensor readings
+////         auto _kinSensors = m_agentPtr->sensors;
+////         for ( size_t i = 0; i < _kinSensors.size(); i++ )
+////         {
+////             if ( _kinSensors[i]->data.type == eSensorType::PROP_JOINT )
+////             {
+////                 auto _kinJointSensor = dynamic_cast< TKinTreeJointSensor* >( _kinSensors[i] );
+//// 
+////                 std::vector< float > _readings;
+////                 // grab the reading from the jointpos sensor
+////                 utils::getJointSensorReading( m_mjcModelPtr,
+////                                                m_mjcDataPtr,
+////                                                _kinJointSensor->name + std::string( "_jointpos" ),
+////                                                _readings );
+////                 // and also the reading from the jointvel sensor
+////                 utils::getJointSensorReading( m_mjcModelPtr,
+////                                                m_mjcDataPtr,
+////                                                _kinJointSensor->name + std::string( "_jointvel" ),
+////                                                _readings );
+////                 // and store it into the sensor for later usage
+////                 _kinJointSensor->theta       = _readings[0];
+////                 _kinJointSensor->thetadot    = _readings[1];
+//// 
+////                 // std::cout << "theta: " << _readings[0] << std::endl;
+////                 // std::cout << "thetadot: " << _readings[1] << std::endl;
+////             }
+////             else if ( _kinSensors[i]->data.type == eSensorType::PROP_BODY )
+////             {
+////                 auto _kinBodySensor = dynamic_cast< TKinTreeBodySensor* >( _kinSensors[i] );
+//// 
+////                 std::vector< float > _readings;
+////                 // grab the reading from the franelinvec sensor
+////                 utils::getJointSensorReading( m_mjcModelPtr,
+////                                                m_mjcDataPtr,
+////                                                _kinBodySensor->name + std::string( "_framelinvel" ),
+////                                                _readings );
+////                 // and also the reading from the framelinacc sensor
+////                 utils::getJointSensorReading( m_mjcModelPtr,
+////                                                m_mjcDataPtr,
+////                                                _kinBodySensor->name + std::string( "_framelinacc" ),
+////                                                _readings );
+////                 // and store it into the sensor for later usage
+////                 _kinBodySensor->linVelocity     = { _readings[0], _readings[1], _readings[2] };
+////                 _kinBodySensor->linAcceleration = { _readings[3], _readings[4], _readings[5] };
+//// 
+////                 // grab the forces and torques from mjData
+////                 utils::getCOMForces( m_mjcModelPtr,
+////                                      m_mjcDataPtr,
+////                                      _kinBodySensor->bodyName,
+////                                      _kinBodySensor->comForce,
+////                                      _kinBodySensor->comTorque );
+////             }
+////         }
     }
 
     void TMjcKinTreeAgentWrapper::_createMjcResourcesFromKinTree()
@@ -434,7 +472,7 @@ namespace mujoco {
         _createMjcExclusionContactsFromKinTree();
 
         // Collect extra specifics depending of the type of data being parsed
-        if ( m_agentPtr->getModelFormat() == agent::MODEL_FORMAT_MJCF )
+        if ( m_agentPtr->format() == eModelFormat::MJCF )
         {
             // Collect all contacts and replace the names accordingly
             if ( mjcf::findFirstChildByType( m_mjcfModelTemplatePtr, "contact" ) )
@@ -453,14 +491,14 @@ namespace mujoco {
                 }
             }
         }
-        else if ( m_agentPtr->getModelFormat() == agent::MODEL_FORMAT_URDF )
+        else if ( m_agentPtr->format() == eModelFormat::URDF )
         {
             // Check if the root has a joint that fixes it to the world
-            auto _rootJoints = _rootBodyPtr->childJoints;
+            auto _rootJoints = _rootBodyPtr->joints;
             auto _isRootFixed = false;
             for ( size_t i = 0; i < _rootJoints.size(); i++ )
             {
-                if ( _rootJoints[i]->type == "world" )
+                if ( _rootJoints[i]->data.type == eJointType::FREE )
                 {
                     _isRootFixed = true;
                     break;
@@ -484,14 +522,14 @@ namespace mujoco {
                 
             }
         }
-        else if ( m_agentPtr->getModelFormat() == agent::MODEL_FORMAT_RLSIM )
+        else if ( m_agentPtr->format() == eModelFormat::RLSIM )
         {
             // @WIP: Add rlsim specific functionality here
         }
     }
 
     void TMjcKinTreeAgentWrapper::_createMjcResourcesFromBodyNode( mjcf::GenericElement* parentElmPtr,
-                                                                   agent::TKinTreeBody* kinTreeBodyPtr )
+                                                                   TKinTreeBody* kinTreeBodyPtr )
     {
         auto _bodyElmPtr = new mjcf::GenericElement( "body" );
         _bodyElmPtr->setAttributeString( "name", kinTreeBodyPtr->name );
@@ -505,433 +543,342 @@ namespace mujoco {
         else
         {
             // non-root bodies use its relative transform to the parent body
-            _bodyElmPtr->setAttributeVec3( "pos", kinTreeBodyPtr->relTransform.getPosition() );
-            auto _quat = TMat3::toQuaternion( kinTreeBodyPtr->relTransform.getRotation() );
+            _bodyElmPtr->setAttributeVec3( "pos", kinTreeBodyPtr->localTransformZero.getPosition() );
+            auto _quat = TMat3::toQuaternion( kinTreeBodyPtr->localTransformZero.getRotation() );
             _bodyElmPtr->setAttributeVec4( "quat", { _quat.w, _quat.x, _quat.y, _quat.z } );
         }
         
 
         // add joints
-        // if ( m_agentPtr->getModelFormat() ) @CONTINUE: traverse urdf format
-        auto _joints = kinTreeBodyPtr->childJoints;
-        for ( size_t i = 0; i < _joints.size(); i++ )
+        for ( auto _joint : kinTreeBodyPtr->joints )
         {
-            // check the joint type, standarize and check for support
-            if ( _joints[i]->type == "continuous" ||
-                 _joints[i]->type == "revolute" )
-            {
-                _joints[i]->type = "hinge";
-            }
-            else if ( _joints[i]->type == "prismatic" )
-            {
-                _joints[i]->type = "slide";
-            }
-            else if ( _joints[i]->type == "floating" )
-            {
-                _joints[i]->type = "free";
-            }
-            else if ( _joints[i]->type == "spherical" )
-            {
-                _joints[i]->type = "ball";
-            }
-            else if ( _joints[i]->type == "fixed" || _joints[i]->type == "world" )
+            if ( _joint->data.type == eJointType::FIXED )
             {
                 // for mujoco it it's like a non-existent joint in xml
                 continue;
             }
-            else if ( _joints[i]->type == "planar" )
+            else if ( _joint->data.type == eJointType::PLANAR )
             {
-                std::cout << "WARNING> joint with type: " << _joints[i]->type << " "
+                std::cout << "WARNING> joint with type: " << tysoc::toString( _joint->data.type ) << " "
                           << "not supported for mujoco backend" << std::endl;
                 continue;
             }
 
             auto _jointElmPtr = new mjcf::GenericElement( "joint" );
-            _jointElmPtr->setAttributeString( "name", _joints[i]->name );
-            _jointElmPtr->setAttributeString( "type", _joints[i]->type );
+            _jointElmPtr->setAttributeString( "name", _joint->name );
+            _jointElmPtr->setAttributeString( "type", mujoco::enumJointToMjcType( _joint->data.type ) );
 
-            if ( _joints[i]->type != "free" ) // free joints should not have any more elements
+            if ( _joint->data.type != eJointType::FREE ) // free joints should not have any more elements
             {
-                _jointElmPtr->setAttributeVec3( "pos", _joints[i]->relTransform.getPosition() );
-                _jointElmPtr->setAttributeVec3( "axis", _joints[i]->relTransform.getRotation() * _joints[i]->axis );
-                _jointElmPtr->setAttributeString( "limited", ( _joints[i]->limited ) ? "true" : "false" );
-                if ( _joints[i]->limited )
+                _jointElmPtr->setAttributeVec3( "pos", _joint->data.localTransform.getPosition() );
+                _jointElmPtr->setAttributeVec3( "axis", _joint->data.localTransform.getRotation() * _joint->data.axis );
+                _jointElmPtr->setAttributeString( "limited", ( _joint->data.limits.x < _joint->data.limits.y ) ? "true" : "false" );
+                if ( _joint->data.limits.x < _joint->data.limits.y )
                 {
-                    if ( _joints[i]->type == "ball" )
-                        _jointElmPtr->setAttributeVec2( "range", { 0, rad2degrees( _joints[i]->upperLimit ) } );
+                    if ( _joint->data.type == eJointType::SPHERICAL )
+                        _jointElmPtr->setAttributeVec2( "range", { 0, rad2degrees( _joint->data.limits.y ) } );
                     else
-                        _jointElmPtr->setAttributeVec2( "range", { rad2degrees( _joints[i]->lowerLimit ), 
-                                                                   rad2degrees( _joints[i]->upperLimit ) } );
+                        _jointElmPtr->setAttributeVec2( "range", { rad2degrees( _joint->data.limits.x ), 
+                                                                   rad2degrees( _joint->data.limits.y ) } );
                 }
-                // @GENERIC
-                if ( _joints[i]->stiffness != 0.0f )
-                    _jointElmPtr->setAttributeFloat( "stiffness", _joints[i]->stiffness );
-                // @GENERIC
-                if ( _joints[i]->armature != 0.0f )
-                    _jointElmPtr->setAttributeFloat( "armature", _joints[i]->armature );
-                // @GENERIC
-                if ( _joints[i]->damping != 0.0f )
-                    _jointElmPtr->setAttributeFloat( "damping", _joints[i]->damping );
-                // @GENERIC
-                if ( _joints[i]->ref != 0.0f )
-                    _jointElmPtr->setAttributeFloat( "ref", _joints[i]->ref );
+
+                if ( _joint->data.stiffness != 0.0f )
+                    _jointElmPtr->setAttributeFloat( "stiffness", _joint->data.stiffness );
+                if ( _joint->data.armature != 0.0f )
+                    _jointElmPtr->setAttributeFloat( "armature", _joint->data.armature );
+                if ( _joint->data.damping != 0.0f )
+                    _jointElmPtr->setAttributeFloat( "damping", _joint->data.damping );
+                if ( _joint->data.ref != 0.0f )
+                    _jointElmPtr->setAttributeFloat( "ref", _joint->data.ref );
             }
 
             _bodyElmPtr->children.push_back( _jointElmPtr );
         }
 
-        // @TODO|@CLEAN: Change this initialization from visual and collisions to ...
-        // be separate for each. In MuJoCo, only collisions should matter, and ...
-        // they are created from the geometries themselves. These same geoms are ...
-        // used for visuals, so the viz only uses those (GLVIZ), but mujoco viz uses ...
-        // the ones parsed from collisions. In rlsim, visuals and collisions are ...
-        // separate from each other in the sense that they are parse from different ...
-        // elements (visuals-> drawdefinitions, collisions-> bodydefinitions)
-
-        // add geoms
-        auto _geoms = kinTreeBodyPtr->childCollisions;
-        for ( size_t i = 0; i < _geoms.size(); i++ )
+        // add geoms (from colliders, visuals are used by the visualizer)
+        for ( auto _collision : kinTreeBodyPtr->collisions )
         {
             auto _geomElmPtr = new mjcf::GenericElement( "geom" );
-            _geomElmPtr->setAttributeString( "name", _geoms[i]->name );
-            _geomElmPtr->setAttributeString( "type", _geoms[i]->geometry.type );
-            _geomElmPtr->setAttributeVec3( "pos", _geoms[i]->relTransform.getPosition() );
-            auto _gquat = TMat3::toQuaternion( _geoms[i]->relTransform.getRotation() );
+            _geomElmPtr->setAttributeString( "name", _collision->name );
+            _geomElmPtr->setAttributeString( "type", mujoco::enumShapeToMjcType( _collision->data.type ) );
+            _geomElmPtr->setAttributeVec3( "pos", _collision->data.localTransform.getPosition() );
+            auto _gquat = TMat3::toQuaternion( _collision->data.localTransform.getRotation() );
             _geomElmPtr->setAttributeVec4( "quat", { _gquat.w, _gquat.x, _gquat.y, _gquat.z } );
-            _geomElmPtr->setAttributeVec3( "size", _extractMjcSizeFromStandardSize( _geoms[i]->geometry ) );
+            if ( _collision->data.type != eShapeType::MESH && _collision->data.type != eShapeType::HFIELD )
+                _geomElmPtr->setAttributeVec3( "size", _extractMjcSizeFromStandardSize( _collision->data ) );
+            else if ( _collision->data.type == eShapeType::MESH )
+                _geomElmPtr->setAttributeString( "mesh", tysoc::getFilenameNoExtensionFromFilePath( _collision->data.filename ) );
 
-            if ( _geoms[i]->geometry.type == "mesh" )
-            {
-                if ( _geoms[i]->geometry.meshId == "" )
-                {
-                    _geomElmPtr->setAttributeString( "mesh", _geoms[i]->geometry.filename );
-                }
-                else
-                {
-                    _geomElmPtr->setAttributeString( "mesh", _geoms[i]->geometry.meshId );
-                }
-            }
+            if ( _collision->data.collisionGroup != -1 )
+                _geomElmPtr->setAttributeInt( "contype", _collision->data.collisionGroup );
 
-            if ( _geoms[i]->contype != -1 )
-                _geomElmPtr->setAttributeInt( "contype", _geoms[i]->contype );
+            if ( _collision->data.collisionMask != -1 )
+                _geomElmPtr->setAttributeInt( "conaffinity", _collision->data.collisionMask );
 
-            if ( _geoms[i]->conaffinity != -1 )
-                _geomElmPtr->setAttributeInt( "conaffinity", _geoms[i]->conaffinity );
-
-            if ( _geoms[i]->condim != -1 )
-                _geomElmPtr->setAttributeInt( "condim", _geoms[i]->condim );
-
-            if ( _geoms[i]->friction.ndim != 0 )
-                _geomElmPtr->setAttributeArrayFloat( "friction", _geoms[i]->friction );
-
-            if ( _geoms[i]->density > 0 )
-                _geomElmPtr->setAttributeFloat( "density", _geoms[i]->density );
-
-            TVec4 _rgba = TYSOC_DEFAULT_RGBA_COLOR;
-            _geomElmPtr->setAttributeVec4( "rgba", _rgba );
+            _geomElmPtr->setAttributeVec3( "friction", _collision->data.friction );
+            _geomElmPtr->setAttributeFloat( "density", _collision->data.density );
+            _geomElmPtr->setAttributeVec4( "rgba", TYSOC_DEFAULT_RGBA_COLOR );
 
             _bodyElmPtr->children.push_back( _geomElmPtr );
         }
 
-        // add inertia element (only if not using default calculations, which is hint by NULL)
-        if ( kinTreeBodyPtr->inertiaPtr )
+        // add inertia element (only if not using default calculations, which is hint by nullptr)
+        if ( kinTreeBodyPtr->inertialData.mass < TYSOC_FLOAT_EPSILON )
         {
-            auto _kinInertiaPtr = kinTreeBodyPtr->inertiaPtr;
+            auto& _kinInertialData = kinTreeBodyPtr->inertialData;
             auto _inertiaElmPtr = new mjcf::GenericElement( "inertial" );
-            _inertiaElmPtr->setAttributeFloat( "mass", _kinInertiaPtr->mass );
+            _inertiaElmPtr->setAttributeFloat( "mass", _kinInertialData.mass );
             _inertiaElmPtr->setAttributeVec3( "pos", { 0.0f, 0.0f, 0.0f} );
-            auto _iquat = TMat3::toQuaternion( _kinInertiaPtr->relTransform.getRotation() );
+            auto _iquat = TMat3::toQuaternion( _kinInertialData.localTransform.getRotation() );
             _inertiaElmPtr->setAttributeVec4( "quat", { 1.0f, 0.0f, 0.0f, 0.0f } );
 
-            if ( _kinInertiaPtr->ixx > 0.000001 || 
-                 _kinInertiaPtr->iyy > 0.000001 ||
-                 _kinInertiaPtr->izz > 0.000001 ||
-                 _kinInertiaPtr->ixy > 0.000001 ||
-                 _kinInertiaPtr->ixz > 0.000001 ||
-                 _kinInertiaPtr->iyz > 0.000001 )
+            if ( _kinInertialData.ixx > TYSOC_FLOAT_EPSILON || _kinInertialData.iyy > TYSOC_FLOAT_EPSILON ||
+                 _kinInertialData.izz > TYSOC_FLOAT_EPSILON || _kinInertialData.ixy > TYSOC_FLOAT_EPSILON ||
+                 _kinInertialData.ixz > TYSOC_FLOAT_EPSILON || _kinInertialData.iyz > TYSOC_FLOAT_EPSILON )
             {
-                if ( _kinInertiaPtr->ixy == 0.0 &&
-                     _kinInertiaPtr->ixz == 0.0 &&
-                     _kinInertiaPtr->iyz == 0.0 )
+                if ( _kinInertialData.ixy < TYSOC_FLOAT_EPSILON &&
+                     _kinInertialData.ixz < TYSOC_FLOAT_EPSILON &&
+                     _kinInertialData.iyz < TYSOC_FLOAT_EPSILON )
                 {
                     // diagonal inertia matrix
                     _inertiaElmPtr->setAttributeVec3( "diaginertia", 
-                                                      { _kinInertiaPtr->ixx, 
-                                                        _kinInertiaPtr->iyy, 
-                                                        _kinInertiaPtr->izz } );
+                                                      { _kinInertialData.ixx, 
+                                                        _kinInertialData.iyy, 
+                                                        _kinInertialData.izz } );
                 }
                 else
                 {
                     // full inertia matrix
                     _inertiaElmPtr->setAttributeArrayFloat( "fullinertia",
                                                             { 6, 
-                                                              { _kinInertiaPtr->ixx,
-                                                                _kinInertiaPtr->iyy,
-                                                                _kinInertiaPtr->izz,
-                                                                _kinInertiaPtr->ixy,
-                                                                _kinInertiaPtr->ixz,
-                                                                _kinInertiaPtr->iyz } } );
+                                                              { _kinInertialData.ixx,
+                                                                _kinInertialData.iyy,
+                                                                _kinInertialData.izz,
+                                                                _kinInertialData.ixy,
+                                                                _kinInertialData.ixz,
+                                                                _kinInertialData.iyz } } );
                 }
             }
 
             _bodyElmPtr->children.push_back( _inertiaElmPtr );
         }
 
-        // add sites
-        // @WIP|@CHECK: Check if necessary
-
-
         // add this body element into the mjcf (in the correct place, given by the parent element)
         parentElmPtr->children.push_back( _bodyElmPtr );
 
         // and finally recursively add all bodies
-        for ( size_t i = 0; i < kinTreeBodyPtr->childBodies.size(); i++ )
-        {
-            _createMjcResourcesFromBodyNode( _bodyElmPtr, kinTreeBodyPtr->childBodies[i] );
-        }
+        for ( auto _childBody : kinTreeBodyPtr->children )
+            _createMjcResourcesFromBodyNode( _bodyElmPtr, _childBody );
     }
 
     void TMjcKinTreeAgentWrapper::_createMjcAssetsFromKinTree()
     {
-        auto _meshAssets = m_agentPtr->meshAssets;
-        if ( _meshAssets.size() < 1 )
-        {
-            // No mesh assets to add to the model
-            return;
-        }
-
-        auto _assetsElmPtr = new mjcf::GenericElement( "asset" );
-        m_mjcfResourcesPtr->children.push_back( _assetsElmPtr );
-
-        for ( size_t i = 0; i < _meshAssets.size(); i++ )
-        {
-            auto _meshAssetElmPtr = new mjcf::GenericElement( "mesh" );
-            _meshAssetElmPtr->setAttributeString( "name", _meshAssets[i]->name );
-            _meshAssetElmPtr->setAttributeString( "file", _meshAssets[i]->file );
-
-            _assetsElmPtr->children.push_back( _meshAssetElmPtr );
-        }
+////         auto _meshAssets = m_agentPtr->meshAssets;
+////         if ( _meshAssets.size() < 1 )
+////         {
+////             // No mesh assets to add to the model
+////             return;
+////         }
+//// 
+////         auto _assetsElmPtr = new mjcf::GenericElement( "asset" );
+////         m_mjcfResourcesPtr->children.push_back( _assetsElmPtr );
+//// 
+////         for ( size_t i = 0; i < _meshAssets.size(); i++ )
+////         {
+////             auto _meshAssetElmPtr = new mjcf::GenericElement( "mesh" );
+////             _meshAssetElmPtr->setAttributeString( "name", _meshAssets[i]->name );
+////             _meshAssetElmPtr->setAttributeString( "file", _meshAssets[i]->file );
+//// 
+////             _assetsElmPtr->children.push_back( _meshAssetElmPtr );
+////         }
     }
 
     void TMjcKinTreeAgentWrapper::_createMjcSensorsFromKinTree()
     {
-        auto _kinSensors = m_agentPtr->sensors;
-        if ( _kinSensors.size() < 1 )
-        {
-            // no sensors to add to the model
-            return;
-        }
-
-        auto _sensorsElmPtr = new mjcf::GenericElement( "sensor" );
-        m_mjcfResourcesPtr->children.push_back( _sensorsElmPtr );
-
-        for ( size_t i = 0; i < _kinSensors.size(); i++ )
-        {
-            if ( _kinSensors[i]->type == "joint" )
-            {
-                // cast to the sensor type
-                auto _kinJointSensor = reinterpret_cast< agent::TKinTreeJointSensor* >( _kinSensors[i] );
-                // grab the jointsensor name
-                auto _sensorName = _kinJointSensor->name;
-                // and the target joint name
-                auto _targetJointName = _kinJointSensor->jointName;
-
-                // create a jointpos sensor and a jointvel sensor
-                auto _jointPosMjcSensorResource = new mjcf::GenericElement( "jointpos" );
-                auto _jointVelMjcSensorResource = new mjcf::GenericElement( "jointvel" );
-
-                // set the necessary properties (joint angular position sensor)
-                auto _mjcJointPosSensorName = _sensorName + std::string( "_jointpos" );
-                _jointPosMjcSensorResource->setAttributeString( "name", _mjcJointPosSensorName );
-                _jointPosMjcSensorResource->setAttributeString( "joint", _targetJointName );
-
-                // set the necessary properties (joint angular speed sensor)
-                auto _mjcJointVelSensorName = _sensorName + std::string( "_jointvel" );
-                _jointVelMjcSensorResource->setAttributeString( "name", _mjcJointVelSensorName );
-                _jointVelMjcSensorResource->setAttributeString( "joint", _targetJointName );
-
-                // add these to the sensor element
-                _sensorsElmPtr->children.push_back( _jointPosMjcSensorResource );
-                _sensorsElmPtr->children.push_back( _jointVelMjcSensorResource );
-            }
-            else if ( _kinSensors[i]->type == "body" )
-            {
-                // cast to the sensor type
-                auto _kinBodySensor = reinterpret_cast< agent::TKinTreeBodySensor* >( _kinSensors[i] );
-                // grab the jointsensor name
-                auto _sensorName = _kinBodySensor->name;
-                // and target body name
-                auto _targetBodyName = _kinBodySensor->bodyName;
-
-                // create a framelinvel sensor and a framelinacc sensor
-                auto _bodyLinVelMjcSensorResource = new mjcf::GenericElement( "framelinvel" );
-                auto _bodyLinAccMjcSensorResource = new mjcf::GenericElement( "framelinacc" );
-
-                // set the necessary properties (body's linear velocity)
-                auto _mjcBodyVelSensorName = _sensorName + std::string( "_framelinvel" );
-                _bodyLinVelMjcSensorResource->setAttributeString( "name", _mjcBodyVelSensorName );
-                _bodyLinVelMjcSensorResource->setAttributeString( "objtype", "body" );// @GENERALIZE
-                _bodyLinVelMjcSensorResource->setAttributeString( "objname", _targetBodyName );
-
-                // set the necessary properties (body's linear acceleration)
-                auto _mjcBodyAccSensorName = _sensorName + std::string( "_framelinacc" );
-                _bodyLinAccMjcSensorResource->setAttributeString( "name", _mjcBodyAccSensorName );
-                _bodyLinAccMjcSensorResource->setAttributeString( "objtype", "body" );// @GENERALIZE
-                _bodyLinAccMjcSensorResource->setAttributeString( "objname", _targetBodyName );                
-
-                // add these to the sensor element
-                _sensorsElmPtr->children.push_back( _bodyLinVelMjcSensorResource );
-                _sensorsElmPtr->children.push_back( _bodyLinAccMjcSensorResource );
-            }
-        }
+////         auto _kinSensors = m_agentPtr->sensors;
+////         if ( _kinSensors.size() < 1 )
+////         {
+////             // no sensors to add to the model
+////             return;
+////         }
+//// 
+////         auto _sensorsElmPtr = new mjcf::GenericElement( "sensor" );
+////         m_mjcfResourcesPtr->children.push_back( _sensorsElmPtr );
+//// 
+////         for ( size_t i = 0; i < _kinSensors.size(); i++ )
+////         {
+////             if ( _kinSensors[i]->data.type == "joint" )
+////             {
+////                 // cast to the sensor type
+////                 auto _kinJointSensor = dynamic_cast< TKinTreeJointSensor* >( _kinSensors[i] );
+////                 // grab the jointsensor name
+////                 auto _sensorName = _kinJointSensor->name;
+////                 // and the target joint name
+////                 auto _targetJointName = _kinJointSensor->jointName;
+//// 
+////                 // create a jointpos sensor and a jointvel sensor
+////                 auto _jointPosMjcSensorResource = new mjcf::GenericElement( "jointpos" );
+////                 auto _jointVelMjcSensorResource = new mjcf::GenericElement( "jointvel" );
+//// 
+////                 // set the necessary properties (joint angular position sensor)
+////                 auto _mjcJointPosSensorName = _sensorName + std::string( "_jointpos" );
+////                 _jointPosMjcSensorResource->setAttributeString( "name", _mjcJointPosSensorName );
+////                 _jointPosMjcSensorResource->setAttributeString( "joint", _targetJointName );
+//// 
+////                 // set the necessary properties (joint angular speed sensor)
+////                 auto _mjcJointVelSensorName = _sensorName + std::string( "_jointvel" );
+////                 _jointVelMjcSensorResource->setAttributeString( "name", _mjcJointVelSensorName );
+////                 _jointVelMjcSensorResource->setAttributeString( "joint", _targetJointName );
+//// 
+////                 // add these to the sensor element
+////                 _sensorsElmPtr->children.push_back( _jointPosMjcSensorResource );
+////                 _sensorsElmPtr->children.push_back( _jointVelMjcSensorResource );
+////             }
+////             else if ( _kinSensors[i]->data.type == "body" )
+////             {
+////                 // cast to the sensor type
+////                 auto _kinBodySensor = dynamic_cast< TKinTreeBodySensor* >( _kinSensors[i] );
+////                 // grab the jointsensor name
+////                 auto _sensorName = _kinBodySensor->name;
+////                 // and target body name
+////                 auto _targetBodyName = _kinBodySensor->bodyName;
+//// 
+////                 // create a framelinvel sensor and a framelinacc sensor
+////                 auto _bodyLinVelMjcSensorResource = new mjcf::GenericElement( "framelinvel" );
+////                 auto _bodyLinAccMjcSensorResource = new mjcf::GenericElement( "framelinacc" );
+//// 
+////                 // set the necessary properties (body's linear velocity)
+////                 auto _mjcBodyVelSensorName = _sensorName + std::string( "_framelinvel" );
+////                 _bodyLinVelMjcSensorResource->setAttributeString( "name", _mjcBodyVelSensorName );
+////                 _bodyLinVelMjcSensorResource->setAttributeString( "objtype", "body" );// @GENERALIZE
+////                 _bodyLinVelMjcSensorResource->setAttributeString( "objname", _targetBodyName );
+//// 
+////                 // set the necessary properties (body's linear acceleration)
+////                 auto _mjcBodyAccSensorName = _sensorName + std::string( "_framelinacc" );
+////                 _bodyLinAccMjcSensorResource->setAttributeString( "name", _mjcBodyAccSensorName );
+////                 _bodyLinAccMjcSensorResource->setAttributeString( "objtype", "body" );// @GENERALIZE
+////                 _bodyLinAccMjcSensorResource->setAttributeString( "objname", _targetBodyName );                
+//// 
+////                 // add these to the sensor element
+////                 _sensorsElmPtr->children.push_back( _bodyLinVelMjcSensorResource );
+////                 _sensorsElmPtr->children.push_back( _bodyLinAccMjcSensorResource );
+////             }
+////         }
     }
 
     void TMjcKinTreeAgentWrapper::_createMjcActuatorsFromKinTree()
     {
-        auto _kinActuators = m_agentPtr->actuators;
-        if ( _kinActuators.size() < 1 )
-        {
-            // No actuators to add to the model
-            return;
-        }
-
-        auto _actuatorsElmPtr = new mjcf::GenericElement( "actuator" );
-        m_mjcfResourcesPtr->children.push_back( _actuatorsElmPtr );
-
-        for ( size_t i = 0; i < _kinActuators.size(); i++ )
-        {
-            if ( _kinActuators[i]->jointPtr == NULL )
-            {
-                std::cout << "WARNING> badly defined actuator: " 
-                          << _kinActuators[i]->name 
-                          << std::endl;
-                continue;
-            }
-
-            // Grab the joint actuator this actuator is using
-            auto _kinJointPtr = _kinActuators[i]->jointPtr;
-
-            // create the mjcf resource for this actuator
-            auto _actuatorResource = new mjcf::GenericElement( _kinActuators[i]->type );
-            // and set its properties
-            _actuatorResource->setAttributeString( "name", _kinActuators[i]->name );
-            _actuatorResource->setAttributeVec2( "ctrlrange", 
-                                                 { _kinActuators[i]->minCtrl,
-                                                   _kinActuators[i]->maxCtrl } );
-            _actuatorResource->setAttributeString( "joint", _kinJointPtr->name );
-
-            // @CHECK|@WIP : should change to variant with specific-params ...
-            // according to the backend (mjc allows kv, kp, but bullet does not)
-
-            // @GENERIC
-            if ( _kinActuators[i]->gear.ndim > 0 )
-                _actuatorResource->setAttributeArrayFloat( "gear", _kinActuators[i]->gear );
-            // @GENERIC
-            _actuatorResource->setAttributeString( "ctrllimited", ( _kinActuators[i]->clampCtrl ) ? "true" : "false" );
-            // @GENERIC
-            if ( _kinActuators[i]->type == "position" )
-                _actuatorResource->setAttributeFloat( "kp", _kinActuators[i]->kp );
-            else if ( _kinActuators[i]->type == "velocity" )
-                _actuatorResource->setAttributeFloat( "kv", _kinActuators[i]->kv );
-
-            _actuatorsElmPtr->children.push_back( _actuatorResource );
-        }
+////         auto _kinActuators = m_agentPtr->actuators;
+////         if ( _kinActuators.size() < 1 )
+////         {
+////             // No actuators to add to the model
+////             return;
+////         }
+//// 
+////         auto _actuatorsElmPtr = new mjcf::GenericElement( "actuator" );
+////         m_mjcfResourcesPtr->children.push_back( _actuatorsElmPtr );
+//// 
+////         for ( size_t i = 0; i < _kinActuators.size(); i++ )
+////         {
+////             if ( _kinActuators[i]->jointPtr == nullptr )
+////             {
+////                 std::cout << "WARNING> badly defined actuator: " 
+////                           << _kinActuators[i]->name 
+////                           << std::endl;
+////                 continue;
+////             }
+//// 
+////             // Grab the joint actuator this actuator is using
+////             auto _kinJointPtr = _kinActuators[i]->jointPtr;
+//// 
+////             // create the mjcf resource for this actuator
+////             auto _actuatorResource = new mjcf::GenericElement( _kinActuators[i]->type );
+////             // and set its properties
+////             _actuatorResource->setAttributeString( "name", _kinActuators[i]->name );
+////             _actuatorResource->setAttributeVec2( "ctrlrange", 
+////                                                  { _kinActuators[i]->minCtrl,
+////                                                    _kinActuators[i]->maxCtrl } );
+////             _actuatorResource->setAttributeString( "joint", _kinJointPtr->name );
+//// 
+////             // @CHECK|@WIP : should change to variant with specific-params ...
+////             // according to the backend (mjc allows kv, kp, but bullet does not)
+//// 
+////             // @GENERIC
+////             if ( _kinActuators[i]->gear.ndim > 0 )
+////                 _actuatorResource->setAttributeArrayFloat( "gear", _kinActuators[i]->gear );
+////             // @GENERIC
+////             _actuatorResource->setAttributeString( "ctrllimited", ( _kinActuators[i]->clampCtrl ) ? "true" : "false" );
+////             // @GENERIC
+////             if ( _kinActuators[i]->type == "position" )
+////                 _actuatorResource->setAttributeFloat( "kp", _kinActuators[i]->kp );
+////             else if ( _kinActuators[i]->type == "velocity" )
+////                 _actuatorResource->setAttributeFloat( "kv", _kinActuators[i]->kv );
+//// 
+////             _actuatorsElmPtr->children.push_back( _actuatorResource );
+////         }
     }
 
     void TMjcKinTreeAgentWrapper::_createMjcExclusionContactsFromKinTree()
     {
-        auto _kinExclusionContacts = m_agentPtr->exclusionContacts;
-        if ( _kinExclusionContacts.size() < 1 )
-        {
-            return;
-        }
-
-        auto _exclusionContactsElmPtr = new mjcf::GenericElement( "contact" );
-        m_mjcfResourcesPtr->children.push_back( _exclusionContactsElmPtr );
-
-        for ( size_t i = 0; i < _kinExclusionContacts.size(); i++ )
-        {
-            auto _exclusionPair = _kinExclusionContacts[i];
-            auto _exclusionPairElmPtr = new mjcf::GenericElement( "exclude" );
-            _exclusionPairElmPtr->setAttributeString( "body1", _exclusionPair.first );
-            _exclusionPairElmPtr->setAttributeString( "body2", _exclusionPair.second );
-
-            _exclusionContactsElmPtr->children.push_back( _exclusionPairElmPtr );
-        }
+////         auto _kinExclusionContacts = m_agentPtr->exclusionContacts;
+////         if ( _kinExclusionContacts.size() < 1 )
+////         {
+////             return;
+////         }
+//// 
+////         auto _exclusionContactsElmPtr = new mjcf::GenericElement( "contact" );
+////         m_mjcfResourcesPtr->children.push_back( _exclusionContactsElmPtr );
+//// 
+////         for ( size_t i = 0; i < _kinExclusionContacts.size(); i++ )
+////         {
+////             auto _exclusionPair = _kinExclusionContacts[i];
+////             auto _exclusionPairElmPtr = new mjcf::GenericElement( "exclude" );
+////             _exclusionPairElmPtr->setAttributeString( "body1", _exclusionPair.first );
+////             _exclusionPairElmPtr->setAttributeString( "body2", _exclusionPair.second );
+//// 
+////             _exclusionContactsElmPtr->children.push_back( _exclusionPairElmPtr );
+////         }
     }
 
-    void TMjcKinTreeAgentWrapper::_cacheBodyProperties( agent::TKinTreeBody* kinTreeBody )
+    void TMjcKinTreeAgentWrapper::_cacheBodyProperties( TKinTreeBody* kinTreeBody )
     {
         // m_bodyWrappers.push_back( TMjcBodyWrapper() );
     }
 
-    void TMjcKinTreeAgentWrapper::_cacheJointProperties( agent::TKinTreeJoint* kinTreeJoint )
+    void TMjcKinTreeAgentWrapper::_cacheJointProperties( TKinTreeJoint* kinTreeJoint )
     {
         m_jointWrappers.push_back( TMjcJointWrapper( m_mjcModelPtr, m_mjcDataPtr, kinTreeJoint ) );
     }
 
-    TVec3 TMjcKinTreeAgentWrapper::_extractMjcSizeFromStandardSize( const TGeometry& geometry )
+    TVec3 TMjcKinTreeAgentWrapper::_extractMjcSizeFromStandardSize( const TShapeData& data )
     {
-        TVec3 _res;
+        if ( data.type == eShapeType::PLANE ) return { data.size.x, data.size.y, data.size.z };
+        if ( data.type == eShapeType::SPHERE ) return { data.size.x, data.size.y, data.size.z };
+        if ( data.type == eShapeType::CAPSULE ) return { data.size.x, 0.5f * data.size.y, data.size.z };
+        if ( data.type == eShapeType::CYLINDER ) return { data.size.x, 0.5f * data.size.y, data.size.z };
+        if ( data.type == eShapeType::BOX ) return { 0.5f * data.size.x, 0.5f * data.size.y, 0.5f * data.size.z };
+        if ( data.type == eShapeType::MESH ) return { data.size.x, data.size.y, data.size.z };
+        if ( data.type == eShapeType::HFIELD ) return { data.size.x, data.size.y, data.size.z };
 
-        if ( geometry.type == "plane" )
-        {
-            _res = { geometry.size.x, 
-                     geometry.size.y, 
-                     geometry.size.z };
-        }
-        else if ( geometry.type == "sphere" )
-        {
-            _res = { geometry.size.x, 
-                     geometry.size.y, 
-                     geometry.size.z };
-        }
-        else if ( geometry.type == "capsule" ||
-                  geometry.type == "cylinder" )
-        {
-            if ( geometry.usesFromto )
-            {
-                _res = { geometry.size.x, 
-                         0.5f * geometry.size.y, 
-                         geometry.size.z };
-            }
-            else
-            {
-                _res = { geometry.size.x, 
-                         0.5f * geometry.size.y, 
-                         geometry.size.z };
-            }
-        }
-        else if ( geometry.type == "box" )
-        {
-            _res = { 0.5f * geometry.size.x, 
-                     0.5f * geometry.size.y, 
-                     0.5f * geometry.size.z };
-        }
-
-
-        return _res;
+        return data.size;
     }
 
-    extern "C" TAgentWrapper* agent_createFromAbstract( agent::TAgent* agentPtr,
-                                                               const std::string& workingDir )
+    extern "C" TAgentWrapper* agent_createFromAbstract( TAgent* agentPtr )
     {
-        return new TMjcKinTreeAgentWrapper( agentPtr, workingDir );
+        return new TMjcKinTreeAgentWrapper( agentPtr );
     }
 
     extern "C" TAgentWrapper* agent_createFromFile( const std::string& name,
-                                                           const std::string& filename,
-                                                           const std::string& workingDir )
+                                                    const std::string& filename )
     {
-        return NULL;
+        return nullptr;
     }
 
     extern "C" TAgentWrapper* agent_createFromId( const std::string& name,
-                                                         const std::string& format,
-                                                         const std::string& id,
-                                                         const std::string& workingDir )
+                                                  const std::string& format,
+                                                  const std::string& id )
     {
-        return NULL;
+        return nullptr;
     }
 
 }}

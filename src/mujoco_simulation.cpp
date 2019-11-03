@@ -1,28 +1,26 @@
 
 #include <mujoco_simulation.h>
 
-
-
 namespace tysoc {
 namespace mujoco {
 
     //@HACK: checks that mujoco has been activated only once
     bool TMjcSimulation::HAS_ACTIVATED_MUJOCO = false;
 
-    TMjcSimulation::TMjcSimulation( TScenario* scenarioPtr,
-                                    const std::string& workingDir )
-        : TISimulation( scenarioPtr, workingDir )
+    TMjcSimulation::TMjcSimulation( TScenario* scenarioPtr )
+        : TISimulation( scenarioPtr )
     {
-        m_mjcModelPtr   = NULL;
-        m_mjcDataPtr    = NULL;
-        m_mjcScenePtr   = NULL;
-        m_mjcCameraPtr  = NULL;
-        m_mjcOptionPtr  = NULL;
+        m_mjcModelPtr   = nullptr;
+        m_mjcDataPtr    = nullptr;
+        m_mjcScenePtr   = nullptr;
+        m_mjcCameraPtr  = nullptr;
+        m_mjcOptionPtr  = nullptr;
 
         m_runtimeType = "mujoco";
 
+        // @todo: make empty.xml into a built-in string to parse
         std::string _emptyModelPath;
-        _emptyModelPath += m_workingDir;
+        _emptyModelPath += TYSOC_PATH_WORKING_DIR;
         _emptyModelPath += "empty.xml";
 
         std::cout << "LOG> empty path: " << _emptyModelPath << std::endl;
@@ -52,8 +50,7 @@ namespace mujoco {
         auto _agents = m_scenarioPtr->getAgents();
         for ( size_t q = 0; q < _agents.size(); q++ )
         {
-            auto _agentWrapper = new TMjcKinTreeAgentWrapper( (agent::TAgent*) _agents[q],
-                                                              m_workingDir );
+            auto _agentWrapper = new TMjcKinTreeAgentWrapper( (TAgent*) _agents[q] );
             _agentWrapper->setMjcfTargetElm( m_mjcfResourcesPtr );
 
             m_agentWrappers.push_back( _agentWrapper );
@@ -62,8 +59,7 @@ namespace mujoco {
         auto _terraingens = m_scenarioPtr->getTerrainGenerators();
         for ( size_t q = 0; q < _terraingens.size(); q++ )
         {
-            auto _terrainGenWrapper = new TMjcTerrainGenWrapper( _terraingens[q],
-                                                                 m_workingDir );
+            auto _terrainGenWrapper = new TMjcTerrainGenWrapper( _terraingens[q] );
             _terrainGenWrapper->setMjcfTargetElm( m_mjcfResourcesPtr );
 
             m_terrainGenWrappers.push_back( _terrainGenWrapper );
@@ -75,29 +71,29 @@ namespace mujoco {
         if ( m_mjcfResourcesPtr )
         {
             delete m_mjcfResourcesPtr;
-            m_mjcfResourcesPtr = NULL;
+            m_mjcfResourcesPtr = nullptr;
         }
 
         if ( m_mjcScenePtr )
         {
             mjv_freeScene( m_mjcScenePtr );
-            m_mjcScenePtr = NULL;
+            m_mjcScenePtr = nullptr;
         }
 
         if ( m_mjcDataPtr )
         {
             mj_deleteData( m_mjcDataPtr );
-            m_mjcDataPtr = NULL;
+            m_mjcDataPtr = nullptr;
         }
 
         if ( m_mjcModelPtr )
         {
             mj_deleteModel( m_mjcModelPtr );
-            m_mjcModelPtr = NULL;
+            m_mjcModelPtr = nullptr;
         }
 
-        m_mjcOptionPtr = NULL;
-        m_mjcCameraPtr = NULL;
+        m_mjcOptionPtr = nullptr;
+        m_mjcCameraPtr = nullptr;
     }
 
     bool TMjcSimulation::_initializeInternal()
@@ -153,11 +149,7 @@ namespace mujoco {
 
 
         /* Inject resources into the workspace xml *****************************/
-        std::string _workspaceModelPath;
-        _workspaceModelPath += m_workingDir;
-        _workspaceModelPath += "workspace.xml";
-        std::cout << "LOG> working path: " << _workspaceModelPath << std::endl;
-        mjcf::saveGenericModel( m_mjcfResourcesPtr, _workspaceModelPath );
+        mjcf::saveGenericModel( m_mjcfResourcesPtr, "simulation.xml" );
 
         /* Initialize mujoco ***************************************************/
         if ( !TMjcSimulation::HAS_ACTIVATED_MUJOCO )
@@ -167,7 +159,7 @@ namespace mujoco {
         }
 
         char _error[1000];
-        m_mjcModelPtr = mj_loadXML( _workspaceModelPath.c_str(), NULL, _error, 1000 );
+        m_mjcModelPtr = mj_loadXML( "simulation.xml", nullptr, _error, 1000 );
         if ( !m_mjcModelPtr )
         {
             std::cout << "ERROR> could not initialize mjcAPI" << std::endl;
@@ -258,7 +250,7 @@ namespace mujoco {
         mjv_updateScene( m_mjcModelPtr, 
                          m_mjcDataPtr, 
                          m_mjcOptionPtr, 
-                         NULL,
+                         nullptr,
                          m_mjcCameraPtr,
                          mjCAT_ALL,
                          m_mjcScenePtr );
@@ -274,10 +266,9 @@ namespace mujoco {
         // do nothing here, as call to wrappers is enough (made in base)
     }
 
-    extern "C" TISimulation* simulation_create( TScenario* scenarioPtr,
-                                                const std::string& workingDir )
+    extern "C" TISimulation* simulation_create( TScenario* scenarioPtr )
     {
         std::cout << "INFO> creating mujoco simulation" << std::endl;
-        return new TMjcSimulation( scenarioPtr, workingDir );
+        return new TMjcSimulation( scenarioPtr );
     }
 }}

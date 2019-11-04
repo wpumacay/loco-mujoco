@@ -106,7 +106,7 @@ int main()
     auto _terrainGenStatic = new tysoc::TStaticTerrainGenerator( "terrainGen0" );
     _terrainGenStatic->createPrimitive( "plane", 
                                         { 10.0f, 10.0f, 0.2f }, 
-                                        { 0.0f, 0.0f, -0.1f },
+                                        { 0.0f, 0.0f, 0.0f },
                                         tysoc::TMat3(),
                                         { 0.2f, 0.3f, 0.4f },
                                         "chessboard" );

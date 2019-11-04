@@ -12,9 +12,6 @@ namespace mujoco {
     {
         m_mjcModelPtr   = nullptr;
         m_mjcDataPtr    = nullptr;
-        m_mjcScenePtr   = nullptr;
-        m_mjcCameraPtr  = nullptr;
-        m_mjcOptionPtr  = nullptr;
 
         m_runtimeType = "mujoco";
 
@@ -30,123 +27,75 @@ namespace mujoco {
             m_scenarioPtr = new TScenario();
 
         auto _bodies = m_scenarioPtr->getBodies();
-        for ( size_t i = 0; i < _bodies.size(); i++ )
+        for ( auto _body : _bodies )
         {
-            auto _bodyAdapter = new TMjcBodyAdapter( _bodies[i] );
-            _bodies[i]->setAdapter( _bodyAdapter );
+            auto _bodyAdapter = new TMjcBodyAdapter( _body );
+            _body->setAdapter( _bodyAdapter );
 
             m_bodyAdapters.push_back( _bodyAdapter );
 
-            auto _collisions = _bodies[i]->collisions();
-            for ( size_t j = 0; j < _collisions.size(); j++ )
+            auto _collisions = _body->collisions();
+            for ( auto _collision : _collisions )
             {
-                auto _collisionAdapter = new TMjcCollisionAdapter( _collisions[j] );
-                _collisions[j]->setAdapter( _collisionAdapter );
+                auto _collisionAdapter = new TMjcCollisionAdapter( _collision );
+                _collision->setAdapter( _collisionAdapter );
 
                 m_collisionAdapters.push_back( _collisionAdapter );
             }
         }
 
         auto _agents = m_scenarioPtr->getAgents();
-        for ( size_t q = 0; q < _agents.size(); q++ )
+        for ( auto _agent : _agents )
+            m_agentWrappers.push_back( new TMjcKinTreeAgentWrapper( _agent ) );
+
+        auto _terrainGens = m_scenarioPtr->getTerrainGenerators();
+        for ( auto _terrainGen : _terrainGens )
         {
-            auto _agentWrapper = new TMjcKinTreeAgentWrapper( (TAgent*) _agents[q] );
-            _agentWrapper->setMjcfTargetElm( m_mjcfResourcesPtr );
+            auto _terrainGenAdapter = new TMjcTerrainGenWrapper( _terrainGen );
+            _terrainGenAdapter->setMjcfTargetElm( m_mjcfResourcesPtr );
 
-            m_agentWrappers.push_back( _agentWrapper );
-        }
-
-        auto _terraingens = m_scenarioPtr->getTerrainGenerators();
-        for ( size_t q = 0; q < _terraingens.size(); q++ )
-        {
-            auto _terrainGenWrapper = new TMjcTerrainGenWrapper( _terraingens[q] );
-            _terrainGenWrapper->setMjcfTargetElm( m_mjcfResourcesPtr );
-
-            m_terrainGenWrappers.push_back( _terrainGenWrapper );
+            m_terrainGenWrappers.push_back( _terrainGenAdapter );
         }
     }
 
     TMjcSimulation::~TMjcSimulation()
     {
         if ( m_mjcfResourcesPtr )
-        {
             delete m_mjcfResourcesPtr;
-            m_mjcfResourcesPtr = nullptr;
-        }
-
-        if ( m_mjcScenePtr )
-        {
-            mjv_freeScene( m_mjcScenePtr );
-            m_mjcScenePtr = nullptr;
-        }
 
         if ( m_mjcDataPtr )
-        {
             mj_deleteData( m_mjcDataPtr );
-            m_mjcDataPtr = nullptr;
-        }
 
         if ( m_mjcModelPtr )
-        {
             mj_deleteModel( m_mjcModelPtr );
-            m_mjcModelPtr = nullptr;
-        }
 
-        m_mjcOptionPtr = nullptr;
-        m_mjcCameraPtr = nullptr;
+        m_mjcfResourcesPtr = nullptr;
+        m_mjcDataPtr = nullptr;
+        m_mjcModelPtr = nullptr;
     }
 
     bool TMjcSimulation::_initializeInternal()
     {
+        /* collect all resources from the adapters */
+        for ( auto _terrainGenAdapter : m_terrainGenWrappers )
+            _terrainGenAdapter->initialize();// Injects terrain resources into m_mjcfResourcesPtr
+        for ( auto _agentAdapter : m_agentWrappers )
+            _collectResourcesFromAgentAdapter( dynamic_cast< TMjcKinTreeAgentWrapper* >( _agentAdapter ) );
+        for ( auto _bodyAdapter : m_bodyAdapters )
+            _collectResourcesFromBodyAdapter( dynamic_cast< TMjcBodyAdapter* >( _bodyAdapter ) );
 
-        /* Initialize wrappers (to create their internal structures) ***********/
-        for ( size_t q = 0; q < m_terrainGenWrappers.size(); q++ )
-            m_terrainGenWrappers[q]->initialize();// Injects terrain resources into m_mjcfResourcesPtr
-
-        for ( size_t q = 0; q < m_agentWrappers.size(); q++ )
-            m_agentWrappers[q]->initialize();// Injects agent resources into m_mjcfResourcesPtr
-
-        // Grab resources from single-bodies and inject them into the mjcf global resource
-        for ( size_t i = 0; i < m_bodyAdapters.size(); i++ )
+        /* insert all collected mesh assets into the mjcf simulation resource */
+        auto _assetsSimulationElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "asset" );
+        std::set< std::string > _currentAssetsNames; // to keep assets without repetition
+        for ( auto _meshAsset : m_mjcfMeshResources )
         {
-            auto _worldBody4Body = new mjcf::GenericElement( "worldbody" );
+            auto _meshAssetElmName = _meshAsset->getAttributeString( "name" );
+            if ( _currentAssetsNames.find( _meshAssetElmName ) != _currentAssetsNames.end() )
+                continue;
 
-            auto _bodyAdapter = reinterpret_cast< TMjcBodyAdapter* >( m_bodyAdapters[i] );
-            _worldBody4Body->children.push_back( _bodyAdapter->mjcfResource() );
-
-            auto _body = _bodyAdapter->body();
-            auto _collisions = _body->collisions();
-
-            for ( size_t j = 0; j < _collisions.size(); j++ )
-            {
-                auto _collisionAdapter = reinterpret_cast< TMjcCollisionAdapter* >
-                                                    ( _collisions[j]->adapter() );
-
-                _bodyAdapter->mjcfResource()->children.push_back( _collisionAdapter->mjcfResource() );
-
-                if ( _collisionAdapter->mjcfAssetResource() )
-                    m_mjcfMeshResources.push_back( _collisionAdapter->mjcfAssetResource() );
-            }
-
-            m_mjcfResourcesPtr->children.push_back( _worldBody4Body );
+            _currentAssetsNames.emplace( _meshAssetElmName );
+            _assetsSimulationElmPtr->children.push_back( _meshAsset );
         }
-
-        // add extra mesh-assets to the assets list
-        auto _assetsElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "asset" );
-        auto _assetsInModel = _assetsElmPtr->children;
-        std::set< std::string > _currentAssetsNames;
-        for ( size_t i = 0; i < _assetsInModel.size(); i++ )
-            _currentAssetsNames.emplace( _assetsInModel[i]->getAttributeString( "name" ) );
-        for ( size_t i = 0; i < m_mjcfMeshResources.size(); i++ )
-        {
-            auto _meshAssetElmName = m_mjcfMeshResources[i]->getAttributeString( "name" );
-            if ( _currentAssetsNames.find( _meshAssetElmName ) == _currentAssetsNames.end() )
-            {
-                _currentAssetsNames.emplace( _meshAssetElmName );
-                _assetsElmPtr->children.push_back( m_mjcfMeshResources[i] );
-            }
-        }
-
 
         /* Inject resources into the workspace xml *****************************/
         mjcf::saveGenericModel( m_mjcfResourcesPtr, "simulation.xml" );
@@ -168,55 +117,44 @@ namespace mujoco {
         }
 
         m_mjcDataPtr = mj_makeData( m_mjcModelPtr );
-        m_mjcCameraPtr = new mjvCamera();
-        m_mjcOptionPtr = new mjvOption();
-        m_mjcScenePtr  = new mjvScene();
-        mjv_defaultCamera( m_mjcCameraPtr );
-        mjv_defaultOption( m_mjcOptionPtr );
-
-        mjv_makeScene( m_mjcModelPtr, m_mjcScenePtr, 2000 );
 
         /* Pass mjc structures references to the wrappers **********************/
 
-        for ( size_t q = 0; q < m_terrainGenWrappers.size(); q++ )
+        for ( auto _terrainGenAdapter : m_terrainGenWrappers )
         {
-            auto _mujocoTerrainGenWrapper = reinterpret_cast< TMjcTerrainGenWrapper* >
-                                                ( m_terrainGenWrappers[q] );
+            auto _mujocoTerrainGenAdapter = dynamic_cast< TMjcTerrainGenWrapper* >( _terrainGenAdapter );
 
-            _mujocoTerrainGenWrapper->setMjcModel( m_mjcModelPtr );
-            _mujocoTerrainGenWrapper->setMjcData( m_mjcDataPtr );
-            _mujocoTerrainGenWrapper->setMjcScene( m_mjcScenePtr );
+            _mujocoTerrainGenAdapter->setMjcModel( m_mjcModelPtr );
+            _mujocoTerrainGenAdapter->setMjcData( m_mjcDataPtr );
         }
 
-        for ( size_t q = 0; q < m_agentWrappers.size(); q++ )
+        for ( auto _agentAdapter : m_agentWrappers )
         {
-            auto _mujocoAgentWrapper = reinterpret_cast< TMjcKinTreeAgentWrapper* >
-                                            ( m_agentWrappers[q] );
+            auto _mujocoAgentAdapter = dynamic_cast< TMjcKinTreeAgentWrapper* >( _agentAdapter );
 
-            _mujocoAgentWrapper->setMjcModel( m_mjcModelPtr );
-            _mujocoAgentWrapper->setMjcData( m_mjcDataPtr );
-            _mujocoAgentWrapper->setMjcScene( m_mjcScenePtr );
-            _mujocoAgentWrapper->finishedCreatingResources();
+            _mujocoAgentAdapter->setMjcModel( m_mjcModelPtr );
+            _mujocoAgentAdapter->setMjcData( m_mjcDataPtr );
+            _mujocoAgentAdapter->finishedCreatingResources();
         }
 
-        for ( size_t q = 0; q < m_bodyAdapters.size(); q++ )
+        for ( auto _bodyAdapter : m_bodyAdapters )
         {
-            auto _bodyAdapter = reinterpret_cast< TMjcBodyAdapter* >( m_bodyAdapters[q] );
+            auto _mujocoBodyAdapter = dynamic_cast< TMjcBodyAdapter* >( _bodyAdapter );
 
-            _bodyAdapter->setMjcModel( m_mjcModelPtr );
-            _bodyAdapter->setMjcData( m_mjcDataPtr );
-            _bodyAdapter->setMjcBodyId( mj_name2id( m_mjcModelPtr, mjOBJ_BODY, _bodyAdapter->body()->name().c_str() ) );
-            _bodyAdapter->onResourcesCreated();
+            _mujocoBodyAdapter->setMjcModel( m_mjcModelPtr );
+            _mujocoBodyAdapter->setMjcData( m_mjcDataPtr );
+            _mujocoBodyAdapter->setMjcBodyId( mj_name2id( m_mjcModelPtr, mjOBJ_BODY, _bodyAdapter->body()->name().c_str() ) );
+            _mujocoBodyAdapter->onResourcesCreated();
         }
 
-        for ( size_t q = 0; q < m_collisionAdapters.size(); q++ )
+        for ( auto _collisionAdapter : m_collisionAdapters )
         {
-            auto _collisionAdapter = reinterpret_cast< TMjcCollisionAdapter* >( m_collisionAdapters[q] );
+            auto _mujocoCollisionAdapter = dynamic_cast< TMjcCollisionAdapter* >( _collisionAdapter );
 
-            _collisionAdapter->setMjcModel( m_mjcModelPtr );
-            _collisionAdapter->setMjcData( m_mjcDataPtr );
-            _collisionAdapter->setMjcGeomId( mj_name2id( m_mjcModelPtr, mjOBJ_GEOM, _collisionAdapter->collision()->name().c_str() ) );
-            _collisionAdapter->onResourcesCreated();
+            _mujocoCollisionAdapter->setMjcModel( m_mjcModelPtr );
+            _mujocoCollisionAdapter->setMjcData( m_mjcDataPtr );
+            _mujocoCollisionAdapter->setMjcGeomId( mj_name2id( m_mjcModelPtr, mjOBJ_GEOM, _collisionAdapter->collision()->name().c_str() ) );
+            _mujocoCollisionAdapter->onResourcesCreated();
         }
 
         std::cout << "total-nq: " << m_mjcModelPtr->nq << std::endl;
@@ -228,6 +166,54 @@ namespace mujoco {
         std::cout << "total-nsensor: " << m_mjcModelPtr->nsensor << std::endl;
 
         return true;
+    }
+
+    void TMjcSimulation::_collectResourcesFromBodyAdapter( TMjcBodyAdapter* bodyAdapter )
+    {
+        /* world-body element where to place the resources of the body */
+        auto _worldBody4Body = new mjcf::GenericElement( "worldbody" );
+
+        /* collect resources from the body adapter (bodies, geoms, joints, etc.) */
+        _worldBody4Body->children.push_back( bodyAdapter->mjcfResource() );
+        m_mjcfResourcesPtr->children.push_back( _worldBody4Body );
+
+        /* collect mesh-assets from the body adapter (used by colliders) */
+        auto _bodyXmlAssetResources = bodyAdapter->mjcfAssetResources();
+        for ( auto _meshAsset : _bodyXmlAssetResources->children )
+            m_mjcfMeshResources.push_back( _meshAsset );
+    }
+
+    void TMjcSimulation::_collectResourcesFromAgentAdapter( TMjcKinTreeAgentWrapper* agentAdapter )
+    {
+        auto _agentXmlResource = agentAdapter->mjcfResource();
+
+        /* grab the mjcf resources required by this agent */
+        auto _worldBodyInAgentElmPtr = mjcf::findFirstChildByType( _agentXmlResource, "worldbody" );
+        auto _actuatorsInAgentElmPtr = mjcf::findFirstChildByType( _agentXmlResource, "actuator" );
+        auto _sensorsInAgentElmPtr   = mjcf::findFirstChildByType( _agentXmlResource, "sensor" );
+        auto _contactsInAgentElmPtr  = mjcf::findFirstChildByType( _agentXmlResource, "contact" );
+
+        if ( _contactsInAgentElmPtr )
+            m_mjcfResourcesPtr->children.push_back( _contactsInAgentElmPtr );
+
+        if ( _worldBodyInAgentElmPtr )
+            m_mjcfResourcesPtr->children.push_back( _worldBodyInAgentElmPtr );
+
+        if ( _actuatorsInAgentElmPtr )
+            m_mjcfResourcesPtr->children.push_back( _actuatorsInAgentElmPtr );
+
+        if ( _sensorsInAgentElmPtr )
+            m_mjcfResourcesPtr->children.push_back( _sensorsInAgentElmPtr );
+
+        /* grab the mjcf mesh assets required by this agent's components */
+        auto _agentXmlAssetResources = agentAdapter->mjcfAssetResources();
+        for ( auto _meshAsset : _agentXmlAssetResources->children )
+            m_mjcfMeshResources.push_back( _meshAsset );
+    }
+
+    void TMjcSimulation::_collectResourcesFromTerrainGenAdapter( TMjcTerrainGenWrapper* terrainAdapter )
+    {
+        // @wip
     }
 
     void TMjcSimulation::_preStepInternal()
@@ -244,16 +230,7 @@ namespace mujoco {
             // _steps++;
             mj_step( m_mjcModelPtr, m_mjcDataPtr );
         }
-
         // std::cout << "nsteps: " << _steps << std::endl;
-
-        mjv_updateScene( m_mjcModelPtr, 
-                         m_mjcDataPtr, 
-                         m_mjcOptionPtr, 
-                         nullptr,
-                         m_mjcCameraPtr,
-                         mjCAT_ALL,
-                         m_mjcScenePtr );
     }
 
     void TMjcSimulation::_postStepInternal()

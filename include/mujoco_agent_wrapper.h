@@ -62,15 +62,60 @@ namespace mujoco {
     class TMjcKinTreeAgentWrapper : public TAgentWrapper
     {
 
-        private :
+    public :
+
+        TMjcKinTreeAgentWrapper( TAgent* agentPtr );
+        ~TMjcKinTreeAgentWrapper();
+
+        void build() override;
+
+        void setMjcModel( mjModel* mjcModelPtr );
+        void setMjcData( mjData* mjcDataPtr );
+
+        void finishedCreatingResources();
+
+        mjcf::GenericElement* mjcfResource() const { return m_mjcfXmlResource; }
+        mjcf::GenericElement* mjcfAssetResources() const { return m_mjcfXmlAssetResources; }
+
+    protected :
+
+        void _initializeInternal() override;
+        void _resetInternal() override;
+        void _preStepInternal() override;
+        void _postStepInternal() override;
+
+    private :
+
+        void _createMjcResourcesFromKinTree();
+
+        mjcf::GenericElement* _createMjcResourcesFromBodyNode( TKinTreeBody* kinBody );
+        mjcf::GenericElement* _createMjcResourcesFromJointNode( TKinTreeJoint* kinJoint );
+        mjcf::GenericElement* _createMjcResourcesFromCollisionNode( TKinTreeCollision* kinCollision );
+        mjcf::GenericElement* _createMjcResourcesFromInertialNode( const TInertialData& inertia );
+
+        void _createMjcAssetsFromKinTree();
+        void _createMjcSensorsFromKinTree();
+        void _createMjcActuatorsFromKinTree();
+        void _createMjcExclusionContactsFromKinTree();
+
+        void _configureFormatMjcf();
+        void _configureFormatUrdf();
+        void _configureFormatRlsim();
+
+        void _cacheBodyProperties( TKinTreeBody* kinTreeBody );
+        void _cacheJointProperties( TKinTreeJoint* kinTreeJoints );
+
+        TVec3 _extractMjcSizeFromStandardSize( const TShapeData& shape );
+
+        void _collectSummary();
+
+    private :
 
         std::vector< TMjcBodyWrapper > m_bodyWrappers;
         std::vector< TMjcJointWrapper > m_jointWrappers;
 
-        // mujoco data to be sent to the xml
-        mjcf::GenericElement* m_mjcfResourcesPtr;
-        // mjcf data where to send the data from above
-        mjcf::GenericElement* m_mjcfTargetResourcesPtr;
+        mjcf::GenericElement* m_mjcfXmlResource;
+        mjcf::GenericElement* m_mjcfXmlAssetResources;
 
         // mujoco simulation data
         mjModel*    m_mjcModelPtr;
@@ -79,38 +124,6 @@ namespace mujoco {
 
         // A flag to check if we already constructed a summary
         bool m_hasMadeSummary;
-
-        void _createMjcResourcesFromKinTree();
-        void _createMjcResourcesFromBodyNode( mjcf::GenericElement* parentElmPtr,
-                                              TKinTreeBody* kinTreeBodyPtr );
-        void _createMjcAssetsFromKinTree();
-        void _createMjcSensorsFromKinTree();
-        void _createMjcActuatorsFromKinTree();
-        void _createMjcExclusionContactsFromKinTree();
-
-        void _cacheBodyProperties( TKinTreeBody* kinTreeBody );
-        void _cacheJointProperties( TKinTreeJoint* kinTreeJoints );
-
-        TVec3 _extractMjcSizeFromStandardSize( const TShapeData& shape );
-
-        protected :
-
-        void _initializeInternal() override;
-        void _resetInternal() override;
-        void _preStepInternal() override;
-        void _postStepInternal() override;
-
-        public :
-
-        TMjcKinTreeAgentWrapper( TAgent* agentPtr );
-        ~TMjcKinTreeAgentWrapper();
-
-        void setMjcModel( mjModel* mjcModelPtr );
-        void setMjcData( mjData* mjcDataPtr );
-        void setMjcScene( mjvScene* mjcScenePtr );
-        void setMjcfTargetElm( mjcf::GenericElement* targetResourcesPtr );
-
-        void finishedCreatingResources();
 
     };
 

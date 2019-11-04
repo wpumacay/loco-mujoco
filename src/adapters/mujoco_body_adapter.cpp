@@ -1,14 +1,17 @@
 
 #include <adapters/mujoco_body_adapter.h>
 
+// @todo: replace wild referencing using mjcf generic elements, as we're currently leaking if restarting (not freeing xmlassets)
+// @todo: define some sort of ownership relation between generic elements to avoid dangling references
+
 namespace tysoc {
 
     TMjcBodyAdapter::TMjcBodyAdapter( TBody* bodyPtr )
         : TIBodyAdapter( bodyPtr )
     {
-        m_mjcModelPtr       = NULL;
-        m_mjcDataPtr        = NULL;
-        m_mjcfXmlResource   = NULL;
+        m_mjcModelPtr       = nullptr;
+        m_mjcDataPtr        = nullptr;
+        m_mjcfXmlResource   = nullptr;
         m_mjcBodyId         = -1;
         m_mjcJointId        = -1;
         m_mjcQposAdr        = -1;
@@ -25,16 +28,23 @@ namespace tysoc {
         m_mjcQposAdr = -1;
         m_mjcQvelAdr = -1;
 
-        m_mjcModelPtr = NULL;
-        m_mjcDataPtr = NULL;
-        m_mjcfXmlResource = NULL;
+        m_mjcModelPtr = nullptr;
+        m_mjcDataPtr = nullptr;
+        m_mjcfXmlResource = nullptr;
+        m_mjcfXmlAssetResources = nullptr;
     }
 
     void TMjcBodyAdapter::build()
     {
-        assert( m_bodyPtr );
+        if ( !m_bodyPtr )
+        {
+            std::cout << "ERROR> tried to create mjcf resources for a null body" << std::endl;
+            return;
+        }
 
         m_mjcfXmlResource = new mjcf::GenericElement( "body" );
+        m_mjcfXmlAssetResources = new mjcf::GenericElement( "asset" );
+
         m_mjcfXmlResource->setAttributeString( "name", m_bodyPtr->name() );
         m_mjcfXmlResource->setAttributeVec3( "pos", m_bodyPtr->pos() );
         m_mjcfXmlResource->setAttributeVec4( "quat", mujoco::quat2MjcfQuat( m_bodyPtr->quat() ) );
@@ -48,6 +58,21 @@ namespace tysoc {
             // add this freejoint to our body resource
             m_mjcfXmlResource->children.push_back( _freejointXmlRes );
         }
+
+        /* collect resources from colliders */
+        auto _collisions = m_bodyPtr->collisions();
+        for ( auto _collision : _collisions )
+        {
+            auto _collisionAdapter = dynamic_cast< TMjcCollisionAdapter* >( _collision->adapter() );
+            _collisionAdapter->build();
+
+            m_mjcfXmlResource->children.push_back( _collisionAdapter->mjcfResource() );
+            if ( _collisionAdapter->mjcfAssetResource() )
+                m_mjcfXmlAssetResources->children.push_back( _collisionAdapter->mjcfAssetResource() );
+        }
+
+        // @debug
+        mjcf::saveGenericModel( m_mjcfXmlResource, m_bodyPtr->name() + "_body_debug.xml" );
     }
 
     void TMjcBodyAdapter::reset()

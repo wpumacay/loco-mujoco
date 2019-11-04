@@ -30,9 +30,9 @@ tysoc::TBody* createHfield( const std::string& name, const tysoc::TVec3& positio
 
             float _z = 10.0f * ( _x * _x + _y * _y ) / ( xExtent * xExtent + yExtent * yExtent );
 
-            // float _u = _x * 2.0f;
-            // float _v = _y * 2.0f;
-            // float _z = std::cos( std::sqrt( ( _u * _u + _v * _v ) ) );
+            //// float _u = _x * 2.0f;
+            //// float _v = _y * 2.0f;
+            //// float _z = std::cos( std::sqrt( ( _u * _u + _v * _v ) ) );
 
             _heightData.push_back( _z );
 
@@ -125,7 +125,7 @@ int main( int argc, const char** argv )
     /* ***************************************************************************/
     auto _scenario = new tysoc::TScenario();
 
-    auto _agent = createAgent( MODEL_FORMAT, MODEL_NAME, "agent0", { 0.0f, 0.0f, 2.5f } );
+    auto _agent = createAgent( MODEL_FORMAT, MODEL_NAME, "agent0", { 1.0f, -1.0f, 2.5f } );
 
     if ( !_agent )
     {
@@ -143,9 +143,9 @@ int main( int argc, const char** argv )
     else
     {
         auto _terrainGenStatic = new tysoc::TStaticTerrainGenerator( "terrainGen0" );
-        _terrainGenStatic->createPrimitive( "box", 
+        _terrainGenStatic->createPrimitive( "plane", 
                                             { 10.0f, 10.0f, 0.2f }, 
-                                            { 0.0f, 0.0f, -0.05f },
+                                            { 0.0f, 0.0f, 0.0f },
                                             tysoc::TMat3(),
                                             { 0.2f, 0.3f, 0.4f },
                                             "chessboard" );

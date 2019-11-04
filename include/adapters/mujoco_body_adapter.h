@@ -4,6 +4,7 @@
 #include <mujoco_utils.h>
 
 #include <adapters/body_adapter.h>
+#include <adapters/mujoco_collision_adapter.h>
 
 namespace tysoc {
 
@@ -40,7 +41,9 @@ namespace tysoc {
 
         void setMjcBodyId( int mjcBodyId ) { m_mjcBodyId = mjcBodyId; }
 
-        mjcf::GenericElement* mjcfResource() { return m_mjcfXmlResource; }
+        mjcf::GenericElement* mjcfResource() const { return m_mjcfXmlResource; }
+
+        mjcf::GenericElement* mjcfAssetResources() const { return m_mjcfXmlAssetResources; }
 
         int mjcBodyId() { return m_mjcBodyId; }
 
@@ -60,6 +63,7 @@ namespace tysoc {
         int m_mjcQvelNum;
 
         mjcf::GenericElement* m_mjcfXmlResource;
+        mjcf::GenericElement* m_mjcfXmlAssetResources;
 
     };
 

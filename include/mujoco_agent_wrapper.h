@@ -86,17 +86,15 @@ namespace mujoco {
 
     private :
 
-        void _createMjcResourcesFromKinTree();
-
         mjcf::GenericElement* _createMjcResourcesFromBodyNode( TKinTreeBody* kinBody );
         mjcf::GenericElement* _createMjcResourcesFromJointNode( TKinTreeJoint* kinJoint );
         mjcf::GenericElement* _createMjcResourcesFromCollisionNode( TKinTreeCollision* kinCollision );
         mjcf::GenericElement* _createMjcResourcesFromInertialNode( const TInertialData& inertia );
 
-        void _createMjcAssetsFromKinTree();
         void _createMjcSensorsFromKinTree();
         void _createMjcActuatorsFromKinTree();
         void _createMjcExclusionContactsFromKinTree();
+        void _createMjcAssetsFromKinTree();
 
         void _configureFormatMjcf();
         void _configureFormatUrdf();

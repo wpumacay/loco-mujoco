@@ -489,7 +489,21 @@ namespace mujoco {
 
     void TMjcKinTreeAgentWrapper::_createMjcAssetsFromKinTree()
     {
-        // @todo: collect meshes from colliders into an assets element
+        for ( auto _kinCollision : m_agentPtr->collisions )
+        {
+            if ( _kinCollision->data.type != eShapeType::MESH )
+                continue;
+
+            if ( _kinCollision->data.filename == "" )
+                continue;
+
+            auto _xmlAssetResource = new mjcf::GenericElement( "mesh" );
+            _xmlAssetResource->setAttributeString( "name", tysoc::getFilenameNoExtensionFromFilePath( _kinCollision->data.filename ) );
+            _xmlAssetResource->setAttributeString( "file", _kinCollision->data.filename );
+            _xmlAssetResource->setAttributeVec3( "scale", _kinCollision->data.size );
+
+            m_mjcfXmlAssetResources->children.push_back( _xmlAssetResource );
+        }
     }
 
     void TMjcKinTreeAgentWrapper::_createMjcSensorsFromKinTree()
@@ -504,7 +518,23 @@ namespace mujoco {
 
     void TMjcKinTreeAgentWrapper::_createMjcExclusionContactsFromKinTree()
     {
-        // @todo: bring back code from previous version
+        if ( !m_agentPtr )
+            return;
+
+        if ( m_agentPtr->exclusionContacts.size() < 1 )
+            return;
+
+        auto _exclusionContactsElm = new mjcf::GenericElement( "contact" );
+        m_mjcfXmlResource->children.push_back( _exclusionContactsElm );
+
+        for ( auto& _kinExclusionPair : m_agentPtr->exclusionContacts )
+        {
+            auto _exclusionContactPairElm = new mjcf::GenericElement( "exclude" );
+            _exclusionContactPairElm->setAttributeString( "body1", _kinExclusionPair.first );
+            _exclusionContactPairElm->setAttributeString( "body2", _kinExclusionPair.second );
+
+            _exclusionContactsElm->children.push_back( _exclusionContactPairElm );
+        }
     }
 
     void TMjcKinTreeAgentWrapper::_configureFormatMjcf()

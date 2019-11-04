@@ -266,13 +266,23 @@ namespace mujoco {
             }
             else
             {
-                // collect qpos from kintree-joint
-                for ( int j = 0; j < _kinJoint->data.nqpos; j++ )
-                    _qposs.push_back( _kinJoint->qpos0[j] );
+                if ( _kinJoint->data.type == eJointType::SPHERICAL )
+                {
+                    _qposs.push_back( _kinJoint->qpos0[3] );
+                    _qposs.push_back( _kinJoint->qpos0[0] );
+                    _qposs.push_back( _kinJoint->qpos0[1] );
+                    _qposs.push_back( _kinJoint->qpos0[2] );
+                }
+                else
+                {
+                    // collect qpos from kintree-joint
+                    for ( int j = 0; j < _kinJoint->data.nqpos; j++ )
+                        _qposs.push_back( _kinJoint->qpos0[j] );
+                }
 
                 // set qvels to zeros
                 for ( int j = 0; j < _kinJoint->data.nqvel; j++ )
-                    _qvels.push_back( _kinJoint->qvel0[j] );
+                    _qvels.push_back( 0.0f );
             }
 
             // and set the qposs and qvels into the backend through the wrapper

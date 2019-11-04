@@ -5,7 +5,7 @@
 
 #include <adapters/collision_adapter.h>
 
-#define COLLISION_DEFAULT_HFIELD_BASE 0.1f
+#define COLLISION_DEFAULT_HFIELD_BASE 1.0f
 
 namespace tysoc {
 

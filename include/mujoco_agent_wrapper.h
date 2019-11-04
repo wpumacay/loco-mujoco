@@ -36,7 +36,7 @@ namespace mujoco {
         void setQpos( const std::vector< TScalar >& qpos );
         void setQvel( const std::vector< TScalar >& qvel );
 
-        TKinTreeJoint* jointPtr() { return m_kinTreeJointPtr; }
+        TKinTreeJoint* jointPtr() const { return m_kinTreeJointPtr; }
         bool isRootJoint();
 
     private :
@@ -58,12 +58,19 @@ namespace mujoco {
 
     public :
 
-    
+        TMjcActuatorWrapper( mjModel* mjcModelPtr,
+                             mjData* mjcDataPtr,
+                             TKinTreeActuator* actuatorPtr );
 
+        void setCtrl( float value );
+
+        TKinTreeActuator* actuatorPtr() const { return m_kinTreeActuatorPtr; }
 
     private :
 
+        int m_id;
 
+        TKinTreeActuator* m_kinTreeActuatorPtr;
     };
 
     /**

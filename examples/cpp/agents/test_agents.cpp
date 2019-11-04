@@ -28,11 +28,11 @@ tysoc::TBody* createHfield( const std::string& name, const tysoc::TVec3& positio
             float _x = xExtent * ( ( (float) i ) / nxSamples - 0.5f );
             float _y = yExtent * ( ( (float) j ) / nySamples - 0.5f );
 
-            float _z = 10.0f * ( _x * _x + _y * _y ) / ( xExtent * xExtent + yExtent * yExtent );
+            //// float _z = 10.0f * ( _x * _x + _y * _y ) / ( xExtent * xExtent + yExtent * yExtent );
 
-            //// float _u = _x * 2.0f;
-            //// float _v = _y * 2.0f;
-            //// float _z = std::cos( std::sqrt( ( _u * _u + _v * _v ) ) );
+            float _u = _x * 2.0f;
+            float _v = _y * 2.0f;
+            float _z = std::cos( std::sqrt( ( _u * _u + _v * _v ) ) );
 
             _heightData.push_back( _z );
 
@@ -125,7 +125,7 @@ int main( int argc, const char** argv )
     /* ***************************************************************************/
     auto _scenario = new tysoc::TScenario();
 
-    auto _agent = createAgent( MODEL_FORMAT, MODEL_NAME, "agent0", { 1.0f, -1.0f, 2.5f } );
+    auto _agent = createAgent( MODEL_FORMAT, MODEL_NAME, "agent0", { 0.0f, 0.0f, 2.5f } );
 
     if ( !_agent )
     {

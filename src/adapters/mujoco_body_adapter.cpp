@@ -70,9 +70,6 @@ namespace tysoc {
             if ( _collisionAdapter->mjcfAssetResource() )
                 m_mjcfXmlAssetResources->children.push_back( _collisionAdapter->mjcfAssetResource() );
         }
-
-        // @debug
-        mjcf::saveGenericModel( m_mjcfXmlResource, m_bodyPtr->name() + "_body_debug.xml" );
     }
 
     void TMjcBodyAdapter::reset()

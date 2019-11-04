@@ -26,7 +26,20 @@ namespace mujoco {
 
     class TMjcJointWrapper
     {
-        private :
+
+    public :
+
+        TMjcJointWrapper( mjModel* mjcModelPtr,
+                          mjData* mjcDataPtr,
+                          TKinTreeJoint* jointPtr );
+
+        void setQpos( const std::vector< TScalar >& qpos );
+        void setQvel( const std::vector< TScalar >& qvel );
+
+        TKinTreeJoint* jointPtr() { return m_kinTreeJointPtr; }
+        bool isRootJoint();
+
+    private :
 
         int m_id;
         int m_nqpos;
@@ -38,18 +51,19 @@ namespace mujoco {
         mjData*     m_mjcDataPtr;
 
         TKinTreeJoint* m_kinTreeJointPtr;
+    };
 
-        public :
+    class TMjcActuatorWrapper
+    {
 
-        TMjcJointWrapper( mjModel* mjcModelPtr,
-                          mjData* mjcDataPtr,
-                          TKinTreeJoint* jointPtr );
+    public :
 
-        void setQpos( const std::vector< TScalar >& qpos );
-        void setQvel( const std::vector< TScalar >& qvel );
+    
 
-        TKinTreeJoint* jointPtr() { return m_kinTreeJointPtr; }
-        bool isRootJoint();
+
+    private :
+
+
     };
 
     /**

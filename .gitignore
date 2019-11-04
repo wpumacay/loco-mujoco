@@ -24,3 +24,6 @@ ext/imgui
 ext/spdlog
 ext/pybind11
 core/
+
+# file-specific exclusions
+simulation.xml

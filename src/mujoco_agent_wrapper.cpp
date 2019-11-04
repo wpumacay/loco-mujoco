@@ -163,9 +163,6 @@ namespace mujoco {
             _configureFormatUrdf();
         else if ( m_agentPtr->format() == eModelFormat::RLSIM )
             _configureFormatRlsim();
-
-        // @debug
-        mjcf::saveGenericModel( m_mjcfXmlResource, name() + "_agent_debug.xml" );
     }
 
     void TMjcKinTreeAgentWrapper::setMjcModel( mjModel* mjcModelPtr )
@@ -271,11 +268,11 @@ namespace mujoco {
             {
                 // collect qpos from kintree-joint
                 for ( int j = 0; j < _kinJoint->data.nqpos; j++ )
-                    _qposs.push_back( _kinJoint->qpos[j] );
+                    _qposs.push_back( _kinJoint->qpos0[j] );
 
                 // set qvels to zeros
                 for ( int j = 0; j < _kinJoint->data.nqvel; j++ )
-                    _qvels.push_back( 0. );
+                    _qvels.push_back( _kinJoint->qvel0[j] );
             }
 
             // and set the qposs and qvels into the backend through the wrapper
@@ -583,6 +580,13 @@ namespace mujoco {
             // and add it to the rootbody
             _rootBodyElmPtr->children.push_back( _freeJointElmPtr );
             
+            // create the kin-joint required for this free-joint
+            auto _freeJoint = new TKinTreeJoint( eJointType::FREE );
+            _freeJoint->name = _freeJointName;
+            _freeJoint->parentBodyPtr = m_agentPtr->getRootBody();
+
+            m_agentPtr->getRootBody()->joints.push_back( _freeJoint );
+            m_agentPtr->joints.push_back( _freeJoint );
         }
     }
 

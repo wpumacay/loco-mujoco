@@ -89,6 +89,18 @@ namespace mujoco {
             m_mjcDataPtr->qvel[m_qvelAdr + i] = qvel[i];
     }
 
+    void TMjcJointWrapper::getQpos( std::array< TScalar, TYSOC_MAX_NUM_QPOS>& qpos )
+    {
+        for ( int i = 0; i < m_nqpos; i++ )
+            qpos[i] = m_mjcDataPtr->qpos[m_qposAdr + i];
+    }
+
+    void TMjcJointWrapper::getQvel( std::array< TScalar, TYSOC_MAX_NUM_QVEL>& qvel )
+    {
+        for ( int i = 0; i < m_nqvel; i++ )
+            qvel[i] = m_mjcDataPtr->qvel[m_qvelAdr + i];
+    }
+
     bool TMjcJointWrapper::isRootJoint()
     {
         if ( !m_kinTreeJointPtr->parentBodyPtr )
@@ -305,6 +317,21 @@ namespace mujoco {
         //// for ( auto _actuator : m_agentPtr->actuators )
         ////     utils::setActuatorCtrl( m_mjcModelPtr, m_mjcDataPtr, _actuator->name, _actuator->ctrlValue );
 
+        for ( auto& _jointAdapter : m_jointWrappers )
+        {
+            if ( !_jointAdapter.jointPtr() )
+                continue;
+
+            if ( _jointAdapter.jointPtr()->userControlled )
+            {
+                std::vector< TScalar > _qposs;
+                for ( size_t i = 0; i < _jointAdapter.jointPtr()->data.nqpos; i++ )
+                    _qposs.push_back( _jointAdapter.jointPtr()->qpos[i] );
+
+                _jointAdapter.setQpos( _qposs );
+            }
+        }
+
         if ( !m_hasMadeSummary )
             _collectSummary();
     }
@@ -323,6 +350,17 @@ namespace mujoco {
             _kinBody->worldTransform.setRotation( utils::getBodyOrientation( m_mjcModelPtr, 
                                                                              m_mjcDataPtr, 
                                                                              _kinBody->name ) );
+        }
+
+        for ( auto& _jointAdapter : m_jointWrappers )
+        {
+            if ( !_jointAdapter.jointPtr() )
+                continue;
+
+            if ( !_jointAdapter.jointPtr()->userControlled )
+                _jointAdapter.getQpos( _jointAdapter.jointPtr()->qpos );
+
+            _jointAdapter.getQvel( _jointAdapter.jointPtr()->qvel );
         }
 
         // @todo: bring back code from previous version used to handle sensor readings

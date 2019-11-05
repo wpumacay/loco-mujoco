@@ -36,6 +36,9 @@ namespace mujoco {
         void setQpos( const std::vector< TScalar >& qpos );
         void setQvel( const std::vector< TScalar >& qvel );
 
+        void getQpos( std::array< TScalar, TYSOC_MAX_NUM_QPOS>& qpos );
+        void getQvel( std::array< TScalar, TYSOC_MAX_NUM_QVEL>& qvel );
+
         TKinTreeJoint* jointPtr() const { return m_kinTreeJointPtr; }
         bool isRootJoint();
 

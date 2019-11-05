@@ -10,7 +10,7 @@ static std::string TYSOC_MJCF_TEMPLATES     = std::string( TYSOC_PATH_MJCF_TEMPL
 static std::string TYSOC_URDF_TEMPLATES     = std::string( TYSOC_PATH_URDF_TEMPLATES );
 static std::string TYSOC_RLSIM_TEMPLATES    = std::string( TYSOC_PATH_RLSIM_TEMPLATES );
 
-const bool USE_HFIELD = true;
+const bool USE_HFIELD = false;
 
 tysoc::TBody* createHfield( const std::string& name, const tysoc::TVec3& position )
 {

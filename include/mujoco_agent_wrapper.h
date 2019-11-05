@@ -79,6 +79,50 @@ namespace mujoco {
         TKinTreeActuator* m_kinTreeActuatorPtr;
     };
 
+    class TMjcSensorWrapper
+    {
+
+    public :
+
+        TMjcSensorWrapper( mjModel* mjcModelPtr,
+                           mjData* mjcDataPtr,
+                           TKinTreeSensor* sensorPtr );
+        ~TMjcSensorWrapper();
+
+        void _initJointSensor();
+        void _initBodySensor();
+
+        float getTheta();
+        float getThetaDot();
+
+        TVec3 getLinearVelocity();
+        TVec3 getLinearAcceleration();
+        TVec3 getComForce();
+        TVec3 getComTorque();
+
+        TKinTreeSensor* sensorPtr() const { return m_kinTreeSensorPtr; }
+
+    private :
+
+        mjModel*    m_mjcModelPtr;
+        mjData*     m_mjcDataPtr;
+
+        /* resources used by joint-sensors */
+        int m_mjcIdJointPos;
+        int m_mjcIdJointVel;
+        int m_mjcIdJointPosAdr;
+        int m_mjcIdJointVelAdr;
+
+        /* resources used by body sensors  */
+        int m_mjcIdBodyLinVel;
+        int m_mjcIdBodyLinAcc;
+        int m_mjcIdBodyLinVelAdr;
+        int m_mjcIdBodyLinAccAdr;
+        int m_mjcIdBodyLinked;
+
+        TKinTreeSensor* m_kinTreeSensorPtr;
+    };
+
     /**
     * Agent wrapper specific for the "MuJoCo" backend. It should handle ...
     * the abstract kintree initialized by the core functionality, and use it ...
@@ -130,6 +174,7 @@ namespace mujoco {
         void _cacheBodyProperties( TKinTreeBody* kinTreeBody );
         void _cacheJointProperties( TKinTreeJoint* kinTreeJoints );
         void _cacheActuatorProperties( TKinTreeActuator* kinTreeActuator );
+        void _cacheSensorProperties( TKinTreeSensor* kinTreeSensor );
 
         TVec3 _extractMjcSizeFromStandardSize( const TShapeData& shape );
 
@@ -140,6 +185,7 @@ namespace mujoco {
         std::vector< TMjcBodyWrapper > m_bodyWrappers;
         std::vector< TMjcJointWrapper > m_jointWrappers;
         std::vector< TMjcActuatorWrapper > m_actuatorWrappers;
+        std::vector< TMjcSensorWrapper > m_sensorWrappers;
 
         mjcf::GenericElement* m_mjcfXmlResource;
         mjcf::GenericElement* m_mjcfXmlAssetResources;

@@ -117,7 +117,7 @@ namespace mujoco {
 
     /***********************************************************************************************
     *                                                                                              *
-    *                                    Mujoco Joint-Adapter                                      *
+    *                                   Mujoco Actuator-Adapter                                    *
     *                                                                                              *
     ***********************************************************************************************/
 
@@ -144,6 +144,144 @@ namespace mujoco {
             return;
 
         m_mjcDataPtr->ctrl[m_id] = value;
+    }
+
+    /***********************************************************************************************
+    *                                                                                              *
+    *                                   Mujoco Sensor-Adapter                                      *
+    *                                                                                              *
+    ***********************************************************************************************/
+
+    TMjcSensorWrapper::TMjcSensorWrapper( mjModel* mjcModelPtr,
+                                          mjData* mjcDataPtr,
+                                          TKinTreeSensor* sensorPtr )
+    {
+        m_mjcModelPtr = mjcModelPtr;
+        m_mjcDataPtr = mjcDataPtr;
+        m_kinTreeSensorPtr = sensorPtr;
+
+        m_mjcIdJointPos = -1;
+        m_mjcIdJointVel = -1;
+        m_mjcIdJointPosAdr = -1;
+        m_mjcIdJointVelAdr = -1;
+
+        m_mjcIdBodyLinVel = -1;
+        m_mjcIdBodyLinAcc = -1;
+        m_mjcIdBodyLinVelAdr = -1;
+        m_mjcIdBodyLinAccAdr = -1;
+        m_mjcIdBodyLinked = -1;
+
+        if ( sensorPtr->data.type == eSensorType::PROP_JOINT )
+            _initJointSensor();
+        else if ( sensorPtr->data.type == eSensorType::PROP_BODY )
+            _initBodySensor();
+    }
+
+    TMjcSensorWrapper::~TMjcSensorWrapper()
+    {
+        m_mjcModelPtr = nullptr;
+        m_mjcDataPtr = nullptr;
+        m_kinTreeSensorPtr = nullptr;
+
+        m_mjcIdJointPos = -1;
+        m_mjcIdJointVel = -1;
+        m_mjcIdJointPosAdr = -1;
+        m_mjcIdJointVelAdr = -1;
+
+        m_mjcIdBodyLinVel = -1;
+        m_mjcIdBodyLinAcc = -1;
+        m_mjcIdBodyLinVelAdr = -1;
+        m_mjcIdBodyLinAccAdr = -1;
+        m_mjcIdBodyLinked = -1;
+    }
+
+    void TMjcSensorWrapper::_initJointSensor()
+    {
+        m_mjcIdJointPos = mj_name2id( m_mjcModelPtr, mjOBJ_SENSOR, ( m_kinTreeSensorPtr->name + "_jointpos" ).c_str() );
+        if ( m_mjcIdJointPos != -1 )
+            m_mjcIdJointPosAdr = m_mjcModelPtr->sensor_adr[m_mjcIdJointPos];
+        else
+            m_mjcIdJointPosAdr = -1;
+            
+        m_mjcIdJointVel = mj_name2id( m_mjcModelPtr, mjOBJ_SENSOR, ( m_kinTreeSensorPtr->name + "_jointvel" ).c_str() );
+        if ( m_mjcIdJointVel != -1 )
+            m_mjcIdJointVelAdr = m_mjcModelPtr->sensor_adr[m_mjcIdJointVel];
+        else
+            m_mjcIdJointVelAdr = -1;
+    }
+
+    void TMjcSensorWrapper::_initBodySensor()
+    {
+        m_mjcIdBodyLinVel = mj_name2id( m_mjcModelPtr, mjOBJ_SENSOR, ( m_kinTreeSensorPtr->name + "_linvel" ).c_str() );
+        if ( m_mjcIdBodyLinVel != -1 )
+            m_mjcIdBodyLinVelAdr = m_mjcModelPtr->sensor_adr[m_mjcIdBodyLinVel];
+        else
+            m_mjcIdBodyLinVelAdr = -1;
+            
+        m_mjcIdBodyLinAcc = mj_name2id( m_mjcModelPtr, mjOBJ_SENSOR, ( m_kinTreeSensorPtr->name + "_linacc" ).c_str() );
+        if ( m_mjcIdBodyLinAcc != -1 )
+            m_mjcIdBodyLinAccAdr = m_mjcModelPtr->sensor_adr[m_mjcIdBodyLinAcc];
+        else
+            m_mjcIdBodyLinAccAdr = -1;
+
+        if ( m_kinTreeSensorPtr->bodyPtr )
+            m_mjcIdBodyLinked = mj_name2id( m_mjcModelPtr, mjOBJ_BODY, m_kinTreeSensorPtr->bodyPtr->name.c_str() );
+    }
+
+    float TMjcSensorWrapper::getTheta()
+    {
+        if ( m_mjcIdJointPos == -1 )
+            return 0.0f;
+
+        return m_mjcDataPtr->sensordata[m_mjcIdJointPosAdr];
+    }
+
+    float TMjcSensorWrapper::getThetaDot()
+    {
+        if ( m_mjcIdJointVel == -1 )
+            return 0.0f;
+
+        return m_mjcDataPtr->sensordata[m_mjcIdJointVelAdr];
+    }
+
+    TVec3 TMjcSensorWrapper::getLinearVelocity()
+    {
+        if ( m_mjcIdBodyLinVel == -1 )
+            return { 0.0f, 0.0f, 0.0f };
+
+        return { (TScalar) m_mjcDataPtr->sensordata[m_mjcIdBodyLinVelAdr + 0],
+                 (TScalar) m_mjcDataPtr->sensordata[m_mjcIdBodyLinVelAdr + 1],
+                 (TScalar) m_mjcDataPtr->sensordata[m_mjcIdBodyLinVelAdr + 2] };
+    }
+
+    TVec3 TMjcSensorWrapper::getLinearAcceleration()
+    {
+        if ( m_mjcIdBodyLinAcc == -1 )
+            return { 0.0f, 0.0f, 0.0f };
+
+        return { (TScalar) m_mjcDataPtr->sensordata[m_mjcIdBodyLinAccAdr + 0],
+                 (TScalar) m_mjcDataPtr->sensordata[m_mjcIdBodyLinAccAdr + 1],
+                 (TScalar) m_mjcDataPtr->sensordata[m_mjcIdBodyLinAccAdr + 2] };
+    }
+
+    TVec3 TMjcSensorWrapper::getComForce()
+    {
+        if ( m_mjcIdBodyLinked == -1 )
+            return { 0.0f, 0.0f, 0.0f };
+
+        return { (TScalar) m_mjcDataPtr->cfrc_ext[6 * m_mjcIdBodyLinked + 0],
+                 (TScalar) m_mjcDataPtr->cfrc_ext[6 * m_mjcIdBodyLinked + 1],
+                 (TScalar) m_mjcDataPtr->cfrc_ext[6 * m_mjcIdBodyLinked + 2] };
+    }
+
+    TVec3 TMjcSensorWrapper::getComTorque()
+    {
+        if ( m_mjcIdBodyLinked == -1 )
+            return { 0.0f, 0.0f, 0.0f };
+
+        return { (TScalar) m_mjcDataPtr->cfrc_ext[6 * m_mjcIdBodyLinked + 3],
+                 (TScalar) m_mjcDataPtr->cfrc_ext[6 * m_mjcIdBodyLinked + 4],
+                 (TScalar) m_mjcDataPtr->cfrc_ext[6 * m_mjcIdBodyLinked + 5] };
     }
 
     /***********************************************************************************************
@@ -233,6 +371,9 @@ namespace mujoco {
 
         for ( auto _kinActuator : m_agentPtr->actuators )
             _cacheActuatorProperties( _kinActuator );
+
+        for ( auto _kinSensor : m_agentPtr->sensors )
+            _cacheSensorProperties( _kinSensor );
     }
 
     void TMjcKinTreeAgentWrapper::_initializeInternal()
@@ -408,7 +549,29 @@ namespace mujoco {
             _jointAdapter.getQvel( _jointAdapter.jointPtr()->qvel );
         }
 
-        // @todo: bring back code from previous version used to handle sensor readings
+        for ( auto& _sensorAdapter : m_sensorWrappers )
+        {
+            if ( !_sensorAdapter.sensorPtr() )
+                continue;
+
+            if ( _sensorAdapter.sensorPtr()->data.type == eSensorType::PROP_JOINT &&
+                 _sensorAdapter.sensorPtr()->jointPtr )
+            {
+                auto _kinJointSensor = dynamic_cast< TKinTreeJointSensor* >( _sensorAdapter.sensorPtr() );
+                _kinJointSensor->theta = _sensorAdapter.getTheta();
+                _kinJointSensor->thetadot = _sensorAdapter.getThetaDot();
+            }
+            else if ( _sensorAdapter.sensorPtr()->data.type == eSensorType::PROP_BODY &&
+                      _sensorAdapter.sensorPtr()->bodyPtr )
+            {
+                auto _kinBodySensor = dynamic_cast< TKinTreeBodySensor* >( _sensorAdapter.sensorPtr() );
+                _kinBodySensor->linVelocity = _sensorAdapter.getLinearVelocity();
+                _kinBodySensor->linAcceleration = _sensorAdapter.getLinearAcceleration();
+                _kinBodySensor->comForce = _sensorAdapter.getComForce();
+                _kinBodySensor->comTorque = _sensorAdapter.getComTorque();
+            }
+        }
+
     }
 
     mjcf::GenericElement* TMjcKinTreeAgentWrapper::_createMjcResourcesFromBodyNode( TKinTreeBody* kinBody )
@@ -598,7 +761,41 @@ namespace mujoco {
 
     void TMjcKinTreeAgentWrapper::_createMjcSensorsFromKinTree()
     {
-        // @todo: bring back code from previous version, and accommodate new sensor types
+        if ( m_agentPtr->sensors.size() < 1 )
+            return;
+
+        auto _sensorsXmlResource = new mjcf::GenericElement( "sensor" );
+        m_mjcfXmlResource->children.push_back( _sensorsXmlResource );
+
+        for ( auto _kinSensor : m_agentPtr->sensors )
+        {
+            if ( _kinSensor->data.type == eSensorType::PROP_JOINT && _kinSensor->jointPtr )
+            {
+                auto _sensorJointPosXmlResource = new mjcf::GenericElement( "jointpos" );
+                _sensorJointPosXmlResource->setAttributeString( "name", _kinSensor->name + "_jointpos" );
+                _sensorJointPosXmlResource->setAttributeString( "joint", _kinSensor->jointPtr->name );
+                _sensorsXmlResource->children.push_back( _sensorJointPosXmlResource );
+
+                auto _sensorJointVelXmlResource = new mjcf::GenericElement( "jointvel" );
+                _sensorJointVelXmlResource->setAttributeString( "name", _kinSensor->name + "_jointvel" );
+                _sensorJointVelXmlResource->setAttributeString( "joint", _kinSensor->jointPtr->name );
+                _sensorsXmlResource->children.push_back( _sensorJointVelXmlResource );
+            }
+            else if ( _kinSensor->data.type == eSensorType::PROP_BODY && _kinSensor->bodyPtr )
+            {
+                auto _sensorBodyLinVelXmlResource = new mjcf::GenericElement( "framelinvel" );
+                _sensorBodyLinVelXmlResource->setAttributeString( "name", _kinSensor->name + "_linvel" );
+                _sensorBodyLinVelXmlResource->setAttributeString( "objtype", "body" );
+                _sensorBodyLinVelXmlResource->setAttributeString( "objname", _kinSensor->bodyPtr->name );
+                _sensorsXmlResource->children.push_back( _sensorBodyLinVelXmlResource );
+
+                auto _sensorBodyLinAccXmlResource = new mjcf::GenericElement( "framelinacc" );
+                _sensorBodyLinAccXmlResource->setAttributeString( "name", _kinSensor->name + "_linacc" );
+                _sensorBodyLinAccXmlResource->setAttributeString( "objtype", "body" );
+                _sensorBodyLinAccXmlResource->setAttributeString( "objname", _kinSensor->bodyPtr->name );
+                _sensorsXmlResource->children.push_back( _sensorBodyLinAccXmlResource );
+            }
+        }
     }
 
     void TMjcKinTreeAgentWrapper::_createMjcActuatorsFromKinTree()
@@ -774,6 +971,12 @@ namespace mujoco {
     void TMjcKinTreeAgentWrapper::_cacheActuatorProperties( TKinTreeActuator* kinTreeActuator )
     {
         m_actuatorWrappers.push_back( TMjcActuatorWrapper( m_mjcModelPtr, m_mjcDataPtr, kinTreeActuator ) );
+    }
+
+    void TMjcKinTreeAgentWrapper::_cacheSensorProperties( TKinTreeSensor* kinTreeSensor )
+    {
+        if ( kinTreeSensor->data.type == eSensorType::PROP_JOINT || kinTreeSensor->data.type == eSensorType::PROP_BODY )
+            m_sensorWrappers.push_back( TMjcSensorWrapper( m_mjcModelPtr, m_mjcDataPtr, kinTreeSensor ) );
     }
 
     TVec3 TMjcKinTreeAgentWrapper::_extractMjcSizeFromStandardSize( const TShapeData& data )

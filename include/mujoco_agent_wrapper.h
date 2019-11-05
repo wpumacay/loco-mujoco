@@ -73,6 +73,9 @@ namespace mujoco {
 
         int m_id;
 
+        mjModel*    m_mjcModelPtr;
+        mjData*     m_mjcDataPtr;
+
         TKinTreeActuator* m_kinTreeActuatorPtr;
     };
 
@@ -126,6 +129,7 @@ namespace mujoco {
 
         void _cacheBodyProperties( TKinTreeBody* kinTreeBody );
         void _cacheJointProperties( TKinTreeJoint* kinTreeJoints );
+        void _cacheActuatorProperties( TKinTreeActuator* kinTreeActuator );
 
         TVec3 _extractMjcSizeFromStandardSize( const TShapeData& shape );
 
@@ -135,6 +139,7 @@ namespace mujoco {
 
         std::vector< TMjcBodyWrapper > m_bodyWrappers;
         std::vector< TMjcJointWrapper > m_jointWrappers;
+        std::vector< TMjcActuatorWrapper > m_actuatorWrappers;
 
         mjcf::GenericElement* m_mjcfXmlResource;
         mjcf::GenericElement* m_mjcfXmlAssetResources;

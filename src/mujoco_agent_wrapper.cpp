@@ -117,6 +117,37 @@ namespace mujoco {
 
     /***********************************************************************************************
     *                                                                                              *
+    *                                    Mujoco Joint-Adapter                                      *
+    *                                                                                              *
+    ***********************************************************************************************/
+
+    TMjcActuatorWrapper::TMjcActuatorWrapper( mjModel* mjcModelPtr,
+                                              mjData* mjcDataPtr,
+                                              TKinTreeActuator* actuatorPtr )
+    {
+        m_kinTreeActuatorPtr = actuatorPtr;
+        m_mjcModelPtr = mjcModelPtr;
+        m_mjcDataPtr = mjcDataPtr;
+
+        // grab some backend info for this actuator
+        m_id = mj_name2id( m_mjcModelPtr, mjOBJ_ACTUATOR, actuatorPtr->name.c_str() );
+        if ( m_id == -1 )
+        {
+            std::cout << "ERROR> actuator (" << actuatorPtr->name << ") not found in simulation" << std::endl;
+            return;
+        }
+    }
+
+    void TMjcActuatorWrapper::setCtrl( float value )
+    {
+        if ( m_id == -1 )
+            return;
+
+        m_mjcDataPtr->ctrl[m_id] = value;
+    }
+
+    /***********************************************************************************************
+    *                                                                                              *
     *                                 Mujoco Agent-Adapter                                         *
     *                                                                                              *
     ***********************************************************************************************/
@@ -192,13 +223,16 @@ namespace mujoco {
         if ( !m_agentPtr )
             return;
 
-        // collect some low-level properties of the bodies (ids and more stuff)
+        /* Collect adapters for some components of the agent in this backend */
+
         for ( auto _kinBody : m_agentPtr->bodies )
             _cacheBodyProperties( _kinBody );
 
-        // collect some low-level properties of the joints (ids and more stuff)
         for ( auto _kinJoint : m_agentPtr->joints )
             _cacheJointProperties( _kinJoint );
+
+        for ( auto _kinActuator : m_agentPtr->actuators )
+            _cacheActuatorProperties( _kinActuator );
     }
 
     void TMjcKinTreeAgentWrapper::_initializeInternal()
@@ -314,8 +348,19 @@ namespace mujoco {
         if ( !m_agentPtr )
             return;
 
-        //// for ( auto _actuator : m_agentPtr->actuators )
-        ////     utils::setActuatorCtrl( m_mjcModelPtr, m_mjcDataPtr, _actuator->name, _actuator->ctrlValue );
+        for ( auto& _actuatorAdapter : m_actuatorWrappers )
+        {
+            if ( !_actuatorAdapter.actuatorPtr() )
+                continue;
+
+            if ( !_actuatorAdapter.actuatorPtr()->jointPtr )
+                continue;
+
+            if ( _actuatorAdapter.actuatorPtr()->jointPtr->userControlled )
+                continue; // user is directly playing with the joint
+
+            _actuatorAdapter.setCtrl( _actuatorAdapter.actuatorPtr()->ctrlValue );
+        }
 
         for ( auto& _jointAdapter : m_jointWrappers )
         {
@@ -403,7 +448,7 @@ namespace mujoco {
         }
 
         /* create mjcf resource for inertial properties, only if valid inertia (non-zero mass) */
-        if ( kinBody->inertialData.mass < TYSOC_FLOAT_EPSILON )
+        if ( kinBody->inertialData.mass > TYSOC_FLOAT_EPSILON )
         {
             auto _inertiaElmPtr = _createMjcResourcesFromInertialNode( kinBody->inertialData );
             _bodyElmPtr->children.push_back( _inertiaElmPtr );
@@ -558,7 +603,80 @@ namespace mujoco {
 
     void TMjcKinTreeAgentWrapper::_createMjcActuatorsFromKinTree()
     {
-        // @todo: bring back code from previous version, and accommodate new actuator types
+        if ( m_agentPtr->actuators.size() < 1 )
+            return;
+
+        auto _actuatorsElm = new mjcf::GenericElement( "actuator" );
+        m_mjcfXmlResource->children.push_back( _actuatorsElm );
+
+        for ( auto _kinActuator : m_agentPtr->actuators )
+        {
+            if ( !_kinActuator->jointPtr )
+            {
+                std::cout << "ERROR> actuator (" << _kinActuator->name << ") isn't attached to a joint" << std::endl;
+                continue;
+            }
+
+            if ( _kinActuator->data.type == eActuatorType::TORQUE )
+            {
+                auto _motorXmlResource = new mjcf::GenericElement( "motor" );
+                _motorXmlResource->setAttributeString( "name", _kinActuator->name );
+
+                auto _ctrlLimited = _kinActuator->data.limits.x < _kinActuator->data.limits.y;
+                _motorXmlResource->setAttributeString( "ctrllimited", _ctrlLimited ? "true" : "false" );
+                if ( _ctrlLimited )
+                    _motorXmlResource->setAttributeVec2( "ctrlrange", _kinActuator->data.limits );
+
+                _motorXmlResource->setAttributeString( "joint", _kinActuator->jointPtr->name );
+                _motorXmlResource->setAttributeArrayFloat( "gear", _kinActuator->data.gear );
+
+                _actuatorsElm->children.push_back( _motorXmlResource );
+            }
+            else if ( _kinActuator->data.type == eActuatorType::POSITION )
+            {
+                auto _positionServoXmlResource = new mjcf::GenericElement( "position" );
+                _positionServoXmlResource->setAttributeString( "name", _kinActuator->name );
+
+                auto _ctrlLimited = _kinActuator->data.limits.x < _kinActuator->data.limits.y;
+                _positionServoXmlResource->setAttributeString( "ctrllimited", _ctrlLimited ? "true" : "false" );
+                if ( _ctrlLimited )
+                    _positionServoXmlResource->setAttributeVec2( "ctrlrange", _kinActuator->data.limits );
+
+                _positionServoXmlResource->setAttributeString( "joint", _kinActuator->jointPtr->name );
+                _positionServoXmlResource->setAttributeFloat( "kp", _kinActuator->data.kp );
+                //// _positionServoXmlResource->setAttributeArrayFloat( "gear", _kinActuator->data.gear );
+
+                _actuatorsElm->children.push_back( _positionServoXmlResource );
+            }
+            else if ( _kinActuator->data.type == eActuatorType::PD_CONTROLLER )
+            {
+                auto _positionServoXmlResource = new mjcf::GenericElement( "position" );
+                _positionServoXmlResource->setAttributeString( "name", _kinActuator->name );
+                auto _velocityServoXmlResource = new mjcf::GenericElement( "velocity" );
+                _velocityServoXmlResource->setAttributeString( "name", _kinActuator->name + "_derv" );
+
+                auto _ctrlLimited = _kinActuator->data.limits.x < _kinActuator->data.limits.y;
+                _positionServoXmlResource->setAttributeString( "ctrllimited", _ctrlLimited ? "true" : "false" );
+                _velocityServoXmlResource->setAttributeString( "ctrllimited", _ctrlLimited ? "true" : "false" );
+                if ( _ctrlLimited )
+                {
+                    _positionServoXmlResource->setAttributeVec2( "ctrlrange", _kinActuator->data.limits );
+                    _velocityServoXmlResource->setAttributeVec2( "ctrlrange", _kinActuator->data.limits );
+                }
+
+                _positionServoXmlResource->setAttributeString( "joint", _kinActuator->jointPtr->name );
+                _positionServoXmlResource->setAttributeFloat( "kp", _kinActuator->data.kp );
+                _velocityServoXmlResource->setAttributeString( "joint", _kinActuator->jointPtr->name );
+                _velocityServoXmlResource->setAttributeFloat( "kv", _kinActuator->data.kv );
+
+                _actuatorsElm->children.push_back( _positionServoXmlResource );
+                _actuatorsElm->children.push_back( _velocityServoXmlResource );
+            }
+            else
+            {
+                std::cout << "ERROR> actuator of type " << tysoc::toString( _kinActuator->data.type ) << " not supported yet" << std::endl;
+            }
+        }
     }
 
     void TMjcKinTreeAgentWrapper::_createMjcExclusionContactsFromKinTree()
@@ -651,6 +769,11 @@ namespace mujoco {
     void TMjcKinTreeAgentWrapper::_cacheJointProperties( TKinTreeJoint* kinTreeJoint )
     {
         m_jointWrappers.push_back( TMjcJointWrapper( m_mjcModelPtr, m_mjcDataPtr, kinTreeJoint ) );
+    }
+
+    void TMjcKinTreeAgentWrapper::_cacheActuatorProperties( TKinTreeActuator* kinTreeActuator )
+    {
+        m_actuatorWrappers.push_back( TMjcActuatorWrapper( m_mjcModelPtr, m_mjcDataPtr, kinTreeActuator ) );
     }
 
     TVec3 TMjcKinTreeAgentWrapper::_extractMjcSizeFromStandardSize( const TShapeData& data )

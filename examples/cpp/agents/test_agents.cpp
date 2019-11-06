@@ -1,4 +1,5 @@
 
+#include <chrono>
 #include <runtime.h>
 #include <model_loader.h>
 #include <mujoco_config.h>
@@ -32,7 +33,7 @@ tysoc::TBody* createHfield( const std::string& name, const tysoc::TVec3& positio
 
             float _u = _x * 2.0f;
             float _v = _y * 2.0f;
-            float _z = std::cos( std::sqrt( ( _u * _u + _v * _v ) ) );
+            float _z = 0.5f * std::cos( std::sqrt( ( _u * _u + _v * _v ) ) );
 
             _heightData.push_back( _z );
 
@@ -57,6 +58,7 @@ tysoc::TBody* createHfield( const std::string& name, const tysoc::TVec3& positio
     tysoc::TVisualData _visualData;
     _visualData.type = tysoc::eShapeType::HFIELD;
     _visualData.size = { xExtent, yExtent, _maxHeight };
+    _visualData.texture = "built_in_chessboard";
     _visualData.hdata.nWidthSamples = nxSamples;
     _visualData.hdata.nDepthSamples = nySamples;
     _visualData.hdata.heightData = _heightData;
@@ -148,7 +150,7 @@ int main( int argc, const char** argv )
                                             { 0.0f, 0.0f, 0.0f },
                                             tysoc::TMat3(),
                                             { 0.2f, 0.3f, 0.4f },
-                                            "chessboard" );
+                                            "built_in_chessboard" );
         _scenario->addTerrainGenerator( _terrainGenStatic );
     }
 
@@ -167,6 +169,8 @@ int main( int argc, const char** argv )
 
     while ( _visualizer->isActive() )
     {
+        //// auto _start = std::chrono::high_resolution_clock::now();
+
         if ( _visualizer->checkSingleKeyPress( tysoc::keys::KEY_P ) )
             _simulation->togglePause();
 
@@ -179,6 +183,9 @@ int main( int argc, const char** argv )
         _simulation->step();
 
         _visualizer->update();
+
+        //// auto _duration = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::high_resolution_clock::now() - _start );
+        //// std::cout << "step-time: " << _duration.count() << " ||| fps: " << ( 1000.0 / _duration.count() ) << std::endl;
     }
 
     _runtime->destroyVisualizer();

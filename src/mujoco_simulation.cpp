@@ -218,7 +218,20 @@ namespace mujoco {
 
     void TMjcSimulation::_preStepInternal()
     {
-        // do nothing here, as call to wrappers is enough (made in base)
+        // @debug: testing sensor-camera view
+        if ( m_visualizerPtr )
+        {
+            auto _agent = m_scenarioPtr->getAgents().front();
+            if ( _agent )
+            {
+                auto _rootBody = _agent->getRootBody();
+                if ( _rootBody )
+                {
+                    m_visualizerPtr->setSensorsView( _rootBody->worldTransform.getPosition() + TVec3( 0.0f, 0.25f, 0.0f ),
+                                                     _rootBody->worldTransform.getPosition() + TVec3( 0.0f, 1.25f, 0.0f ) );
+                }
+            }
+        }
     }
 
     void TMjcSimulation::_simStepInternal()

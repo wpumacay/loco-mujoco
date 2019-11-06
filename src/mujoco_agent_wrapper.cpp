@@ -269,9 +269,9 @@ namespace mujoco {
         if ( m_mjcIdBodyLinked == -1 )
             return { 0.0f, 0.0f, 0.0f };
 
-        return { (TScalar) m_mjcDataPtr->cfrc_ext[6 * m_mjcIdBodyLinked + 0],
-                 (TScalar) m_mjcDataPtr->cfrc_ext[6 * m_mjcIdBodyLinked + 1],
-                 (TScalar) m_mjcDataPtr->cfrc_ext[6 * m_mjcIdBodyLinked + 2] };
+        return { (TScalar) m_mjcDataPtr->cfrc_ext[6 * m_mjcIdBodyLinked + 3],
+                 (TScalar) m_mjcDataPtr->cfrc_ext[6 * m_mjcIdBodyLinked + 4],
+                 (TScalar) m_mjcDataPtr->cfrc_ext[6 * m_mjcIdBodyLinked + 5] };
     }
 
     TVec3 TMjcSensorWrapper::getComTorque()
@@ -279,9 +279,9 @@ namespace mujoco {
         if ( m_mjcIdBodyLinked == -1 )
             return { 0.0f, 0.0f, 0.0f };
 
-        return { (TScalar) m_mjcDataPtr->cfrc_ext[6 * m_mjcIdBodyLinked + 3],
-                 (TScalar) m_mjcDataPtr->cfrc_ext[6 * m_mjcIdBodyLinked + 4],
-                 (TScalar) m_mjcDataPtr->cfrc_ext[6 * m_mjcIdBodyLinked + 5] };
+        return { (TScalar) m_mjcDataPtr->cfrc_ext[6 * m_mjcIdBodyLinked + 0],
+                 (TScalar) m_mjcDataPtr->cfrc_ext[6 * m_mjcIdBodyLinked + 1],
+                 (TScalar) m_mjcDataPtr->cfrc_ext[6 * m_mjcIdBodyLinked + 2] };
     }
 
     /***********************************************************************************************

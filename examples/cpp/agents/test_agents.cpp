@@ -11,14 +11,14 @@ static std::string TYSOC_MJCF_TEMPLATES     = std::string( TYSOC_PATH_MJCF_TEMPL
 static std::string TYSOC_URDF_TEMPLATES     = std::string( TYSOC_PATH_URDF_TEMPLATES );
 static std::string TYSOC_RLSIM_TEMPLATES    = std::string( TYSOC_PATH_RLSIM_TEMPLATES );
 
-const bool USE_HFIELD = true;
+bool USE_HFIELD = true;
 
 tysoc::TBody* createHfield( const std::string& name, const tysoc::TVec3& position )
 {
-    const int nxSamples = 50;
-    const int nySamples = 50;
-    const float xExtent = 5.0f;
-    const float yExtent = 5.0f;
+    const int nxSamples = 100;
+    const int nySamples = 100;
+    const float xExtent = 10.0f;
+    const float yExtent = 10.0f;
 
     float _maxHeight = 0.0f;
     std::vector< float > _heightData;
@@ -122,14 +122,21 @@ int main( int argc, const char** argv )
             std::cerr << e.what() << '\n';
             return 1;
         }
+
+        if ( argc > 3 )
+            USE_HFIELD = ( std::string( argv[3] ) == "hfield" );
     }
 
     /* ***************************************************************************/
     auto _scenario = new tysoc::TScenario();
 
-    auto _agent = createAgent( MODEL_FORMAT, MODEL_NAME, "agent0", { 0.0f, 0.0f, 2.5f } );
+    auto _agent0 = createAgent( MODEL_FORMAT, MODEL_NAME, "agent0", { 0.0f, 0.0f, 2.5f } );
+    auto _agent1 = createAgent( MODEL_FORMAT, MODEL_NAME, "agent1", { 2.0f, 0.0f, 1.5f } );
+    auto _agent2 = createAgent( MODEL_FORMAT, MODEL_NAME, "agent2", { -2.0f, 0.0f, 1.5f } );
+    auto _agent3 = createAgent( MODEL_FORMAT, MODEL_NAME, "agent3", { 0.0f, 2.0f, 1.5f } );
+    auto _agent4 = createAgent( MODEL_FORMAT, MODEL_NAME, "agent4", { 0.0f, -2.0f, 1.5f } );
 
-    if ( !_agent )
+    if ( !_agent0 || !_agent1 || !_agent2 || !_agent3 )
     {
         std::cout << "ERROR> (format|model): " 
                   << MODEL_FORMAT << "|" << MODEL_NAME 
@@ -154,7 +161,11 @@ int main( int argc, const char** argv )
         _scenario->addTerrainGenerator( _terrainGenStatic );
     }
 
-    _scenario->addAgent( _agent );
+    _scenario->addAgent( _agent0 );
+    _scenario->addAgent( _agent1 );
+    _scenario->addAgent( _agent2 );
+    _scenario->addAgent( _agent3 );
+    _scenario->addAgent( _agent4 );
 
     auto _runtime = new tysoc::TRuntime( tysoc::config::physics::MUJOCO, 
                                          tysoc::config::rendering::GLVIZ );
@@ -169,7 +180,7 @@ int main( int argc, const char** argv )
 
     while ( _visualizer->isActive() )
     {
-        //// auto _start = std::chrono::high_resolution_clock::now();
+        auto _start = std::chrono::high_resolution_clock::now();
 
         if ( _visualizer->checkSingleKeyPress( tysoc::keys::KEY_P ) )
             _simulation->togglePause();
@@ -184,8 +195,8 @@ int main( int argc, const char** argv )
 
         _visualizer->update();
 
-        //// auto _duration = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::high_resolution_clock::now() - _start );
-        //// std::cout << "step-time: " << _duration.count() << " ||| fps: " << ( 1000.0 / _duration.count() ) << std::endl;
+        auto _duration = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::high_resolution_clock::now() - _start );
+        std::cout << "step-time: " << _duration.count() << " ||| fps: " << ( 1000.0 / _duration.count() ) << std::endl;
     }
 
     _runtime->destroyVisualizer();

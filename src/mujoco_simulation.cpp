@@ -296,16 +296,12 @@ namespace mujoco {
         // @debug: testing sensor-camera view
         if ( m_visualizerPtr )
         {
-            auto _agent = m_scenarioPtr->getAgents().front();
-            if ( _agent )
+            auto _agents = m_scenarioPtr->getAgents();
+            if ( _agents.size() > 0 )
             {
-                auto _rootBody = _agent->getRootBody();
+                auto _rootBody = _agents.front()->getRootBody();
                 if ( _rootBody )
-                {
-                    //// m_visualizerPtr->setSensorsView( _rootBody->worldTransform.getPosition() + TVec3( 0.0f, 0.25f, 0.0f ),
-                    ////                                  _rootBody->worldTransform.getPosition() + TVec3( 0.0f, 1.25f, 0.0f ) );
                     m_visualizerPtr->setSensorsView( _rootBody->worldTransform * TMat4::fromPositionAndRotation( { 0.25f, 0.0f, 0.0f }, TMat3() ) );
-                }
             }
         }
 

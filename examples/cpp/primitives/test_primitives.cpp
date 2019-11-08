@@ -1,4 +1,5 @@
 
+#include <chrono>
 #include <runtime.h>
 #include <model_loader.h>
 #include <mujoco_config.h>
@@ -157,6 +158,8 @@ int main()
 
     while ( _visualizer->isActive() )
     {
+        auto _start = std::chrono::high_resolution_clock::now();
+
         if ( _visualizer->checkSingleKeyPress( tysoc::keys::KEY_P ) )
             _simulation->togglePause();
 
@@ -169,6 +172,9 @@ int main()
         _simulation->step();
 
         _visualizer->update();
+
+        auto _duration = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::high_resolution_clock::now() - _start );
+        std::cout << "step-time: " << _duration.count() << " ||| fps: " << ( 1000.0 / _duration.count() ) << std::endl;
     }
 
     _runtime->destroyVisualizer();

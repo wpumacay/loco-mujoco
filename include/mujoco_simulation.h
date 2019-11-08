@@ -15,6 +15,40 @@
 namespace tysoc {
 namespace mujoco {
 
+    struct TMjcContact
+    {
+        TVec3 position;
+        TMat3 rotation;
+        TMat4 transform;
+
+        std::string collider1Name;
+        std::string collider2Name;
+    };
+
+    class TMjcContactManager
+    {
+
+    public :
+
+        TMjcContactManager( TScenario* scenario, 
+                            mjModel* mjcModel, 
+                            mjData* mjcData );
+        ~TMjcContactManager();
+
+        void update();
+        void reset();
+
+        std::vector< TMjcContact > contacts() const { return m_contacts; }
+
+    private :
+
+        std::vector< TMjcContact > m_contacts;
+
+        TScenario* m_scenario;
+        mjModel* m_mjcModel;
+        mjData* m_mjcData;
+
+    };
 
     class TMjcSimulation : public TISimulation
     {
@@ -54,6 +88,8 @@ namespace mujoco {
 
         mjcf::GenericElement* m_mjcfResourcesPtr;
         std::vector< mjcf::GenericElement* > m_mjcfMeshResources;
+
+        TMjcContactManager* m_contactManager;
 
         static bool HAS_ACTIVATED_MUJOCO;// @HACK: checks that mujoco is only activated once
     };

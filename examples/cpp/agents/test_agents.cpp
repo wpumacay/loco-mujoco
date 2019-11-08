@@ -163,9 +163,9 @@ int main( int argc, const char** argv )
 
     _scenario->addAgent( _agent0 );
     _scenario->addAgent( _agent1 );
-    _scenario->addAgent( _agent2 );
-    _scenario->addAgent( _agent3 );
-    _scenario->addAgent( _agent4 );
+    //// _scenario->addAgent( _agent2 );
+    //// _scenario->addAgent( _agent3 );
+    //// _scenario->addAgent( _agent4 );
 
     auto _runtime = new tysoc::TRuntime( tysoc::config::physics::MUJOCO, 
                                          tysoc::config::rendering::GLVIZ );
@@ -180,7 +180,7 @@ int main( int argc, const char** argv )
 
     while ( _visualizer->isActive() )
     {
-        auto _start = std::chrono::high_resolution_clock::now();
+        //// auto _start = std::chrono::high_resolution_clock::now();
 
         if ( _visualizer->checkSingleKeyPress( tysoc::keys::KEY_P ) )
             _simulation->togglePause();
@@ -195,8 +195,8 @@ int main( int argc, const char** argv )
 
         _visualizer->update();
 
-        auto _duration = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::high_resolution_clock::now() - _start );
-        std::cout << "step-time: " << _duration.count() << " ||| fps: " << ( 1000.0 / _duration.count() ) << std::endl;
+        //// auto _duration = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::high_resolution_clock::now() - _start );
+        //// std::cout << "step-time: " << _duration.count() << " ||| fps: " << ( 1000.0 / _duration.count() ) << std::endl;
     }
 
     _runtime->destroyVisualizer();

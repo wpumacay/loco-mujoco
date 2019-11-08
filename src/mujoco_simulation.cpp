@@ -4,6 +4,75 @@
 namespace tysoc {
 namespace mujoco {
 
+    /***************************************************************************
+    *                                                                          *
+    *                          TMjcContactManager Impl.                        *
+    *                                                                          *
+    ***************************************************************************/
+
+    TMjcContactManager::TMjcContactManager( TScenario* scenario, 
+                                            mjModel* mjcModel, 
+                                            mjData* mjcData )
+    {
+        m_scenario = scenario;
+        m_mjcModel = mjcModel;
+        m_mjcData = mjcData;
+    }
+
+    TMjcContactManager::~TMjcContactManager()
+    {
+        m_scenario = nullptr;
+        m_mjcModel = nullptr;
+        m_mjcData = nullptr;
+    }
+
+    void TMjcContactManager::update()
+    {
+        /* clear current contacts */
+        m_contacts.clear();
+
+        /* start collecting from the backend all available contacts */
+        int _nContacts = m_mjcData->ncon;
+        for ( size_t i = 0; i < _nContacts; i++ )
+        {
+            auto _kinContact = TMjcContact();
+            auto _contactInfo = m_mjcData->contact[i];
+
+            _kinContact.position = { (float) _contactInfo.pos[0], 
+                                     (float) _contactInfo.pos[1], 
+                                     (float) _contactInfo.pos[2] };
+
+            _kinContact.rotation = { (float) _contactInfo.frame[0], (float) _contactInfo.frame[3], (float) _contactInfo.frame[6],
+                                     (float) _contactInfo.frame[1], (float) _contactInfo.frame[4], (float) _contactInfo.frame[7],
+                                     (float) _contactInfo.frame[2], (float) _contactInfo.frame[5], (float) _contactInfo.frame[8] };
+
+            _kinContact.transform.setPosition( _kinContact.position );
+            _kinContact.transform.setRotation( _kinContact.rotation );
+
+            int _geomId1 = _contactInfo.geom1;
+            int _geomId2 = _contactInfo.geom2;
+
+            if ( _geomId1 == -1 || _geomId2 == -1 )
+                continue;
+
+            _kinContact.collider1Name = mj_id2name( m_mjcModel, mjOBJ_GEOM, _geomId1 );
+            _kinContact.collider2Name = mj_id2name( m_mjcModel, mjOBJ_GEOM, _geomId2 );
+
+            m_contacts.push_back( _kinContact );
+        }
+    }
+
+    void TMjcContactManager::reset()
+    {
+        m_contacts.clear();
+    }
+
+    /***************************************************************************
+    *                                                                          *
+    *                           TMjcSimulation-Impl.                           *
+    *                                                                          *
+    ***************************************************************************/
+
     //@HACK: checks that mujoco has been activated only once
     bool TMjcSimulation::HAS_ACTIVATED_MUJOCO = false;
 
@@ -62,6 +131,9 @@ namespace mujoco {
     {
         if ( m_mjcfResourcesPtr )
             delete m_mjcfResourcesPtr;
+
+        if ( m_contactManager )
+            delete m_contactManager;
 
         if ( m_mjcDataPtr )
             mj_deleteData( m_mjcDataPtr );
@@ -157,6 +229,9 @@ namespace mujoco {
             _mujocoCollisionAdapter->onResourcesCreated();
         }
 
+        /* create contact manager */
+        m_contactManager = new TMjcContactManager( m_scenarioPtr, m_mjcModelPtr, m_mjcDataPtr );
+
         std::cout << "total-nq: " << m_mjcModelPtr->nq << std::endl;
         std::cout << "total-nv: " << m_mjcModelPtr->nv << std::endl;
         std::cout << "total-nu: " << m_mjcModelPtr->nu << std::endl;
@@ -230,6 +305,22 @@ namespace mujoco {
                     //// m_visualizerPtr->setSensorsView( _rootBody->worldTransform.getPosition() + TVec3( 0.0f, 0.25f, 0.0f ),
                     ////                                  _rootBody->worldTransform.getPosition() + TVec3( 0.0f, 1.25f, 0.0f ) );
                     m_visualizerPtr->setSensorsView( _rootBody->worldTransform * TMat4::fromPositionAndRotation( { 0.25f, 0.0f, 0.0f }, TMat3() ) );
+                }
+            }
+        }
+
+        // @debug: collect contacts here (should move to base)
+        if ( m_contactManager )
+        {
+            m_contactManager->update();
+
+            if ( m_visualizerPtr )
+            {
+                auto _contacts = m_contactManager->contacts();
+                for ( auto& _kinContact : _contacts )
+                {
+                    m_visualizerPtr->drawSolidCylinderX( 0.1, 0.025, _kinContact.transform, { 0.1f, 0.4f, 0.9f, 1.0f } );
+                    m_visualizerPtr->drawSolidArrowX( 0.5, _kinContact.transform, { 0.4f, 0.9f, 0.1f, 1.0f } );
                 }
             }
         }

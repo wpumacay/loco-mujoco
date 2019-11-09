@@ -16,38 +16,29 @@ namespace mujoco {
         // Create resources that will be fixed|static (no pool needed)
         _collectStaticFromGenerator();
 
-        // @TODO: Commented due to some compatibility we wanted to try out with ...
-        // the statis terrain generators and the mujoco-py environments. The ...
-        // problem was that those environments extract vectorized information ...
-        // using directly the mjData structure, and if we enabled pooling, some ...
-        // information would go into this vectorized information grabbed from ...
-        // mjData (like mjData->qpos, etc.). We will fix this issue later by ...
-        // filtering out the non-working primitives (which remain in the pool) ...
-        // and pass the information required only from the active primities.
+        // Create resources that will be reused *********************************
+        int _basePrimIndex = m_mjcTerrainPrimitives.size();
+        for ( size_t i = 0; i < MJC_TERRAIN_POOL_SIZE; i++ )
+        {
+            auto _mjcPrimitive = new TMjcTerrainPrimitive();
+            auto _name = "tGen_" + name() + "_" + std::to_string( i + _basePrimIndex );
 
-//        // Create resources that will be reused *********************************
-//        for ( size_t i = 0; i < MJC_TERRAIN_POOL_SIZE; i++ )
-//        {
-//            auto _mjcPrimitive = new TMjcTerrainPrimitive();
-//            auto _name = std::string( "tGen_" ) + name() + 
-//                         std::string( "_" ) + std::to_string( i + m_mjcTerrainPrimitives.size() );
-//
-//            _mjcPrimitive->mjcBodyId        = -1;
-//            _mjcPrimitive->mjcGeomName      = _name;
-//            _mjcPrimitive->mjcGeomType      = "box";
-//            _mjcPrimitive->mjcGeomSize      = { 0.5f * MJC_TERRAIN_PATH_DEFAULT_WIDTH, 
-//                                                0.5f * MJC_TERRAIN_PATH_DEFAULT_DEPTH, 
-//                                                0.5f * MJC_TERRAIN_PATH_DEFAULT_TICKNESS };
-//
-//            _mjcPrimitive->tysocPrimitiveObj = nullptr;
-//
-//            m_mjcTerrainPrimitives.push_back( _mjcPrimitive );
-//            m_mjcAvailablePrimitives.push( _mjcPrimitive );
-//        }
-//
-//        // collect starting info from generator
-//        _collectReusableFromGenerator();
-//        // **********************************************************************
+            _mjcPrimitive->mjcBodyId        = -1;
+            _mjcPrimitive->mjcGeomName      = _name;
+            _mjcPrimitive->mjcGeomType      = "box";
+            _mjcPrimitive->mjcGeomSize      = { 0.5f * MJC_TERRAIN_PATH_DEFAULT_WIDTH, 
+                                                0.5f * MJC_TERRAIN_PATH_DEFAULT_DEPTH, 
+                                                0.5f * MJC_TERRAIN_PATH_DEFAULT_TICKNESS };
+
+            _mjcPrimitive->tysocPrimitiveObj = nullptr;
+
+            m_mjcTerrainPrimitives.push_back( _mjcPrimitive );
+            m_mjcAvailablePrimitives.push( _mjcPrimitive );
+        }
+
+        // collect starting info from generator
+        _collectReusableFromGenerator();
+        // **********************************************************************
     }
 
     TMjcTerrainGenWrapper::~TMjcTerrainGenWrapper()
@@ -250,10 +241,7 @@ namespace mujoco {
     {
         // Create a new primitive for each static primitive (these do not change)
         auto _mjcPrimitive = new TMjcTerrainPrimitive();
-        auto _mjcName = std::string( "tGen_" ) + 
-                        name() + 
-                        std::string( "_" ) + 
-                        std::to_string( m_mjcTerrainPrimitives.size() );
+        auto _mjcName = "tGen_" + name() + "_" + std::to_string( m_mjcTerrainPrimitives.size() );
 
         auto _mjcSize = _extractMjcSizeFromStandardSize( primitivePtr->geomType,
                                                          { primitivePtr->size.x,

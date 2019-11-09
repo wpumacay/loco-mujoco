@@ -10,7 +10,7 @@ namespace utils {
                                  const std::string& name, 
                                  const TVec3& pos )
     {
-        auto _id = mj_name2id( pModel, mjOBJ_BODY, name.c_str() );
+        auto _id = mj_name2id( pModel, mjOBJ_GEOM, name.c_str() );
 
         if ( _id != -1 )
         {
@@ -29,7 +29,7 @@ namespace utils {
                                     const std::string& name,
                                     float rotmat[9] )
     {
-        auto _id = mj_name2id( pModel, mjOBJ_BODY, name.c_str() );
+        auto _id = mj_name2id( pModel, mjOBJ_GEOM, name.c_str() );
 
         if ( _id != -1 )
         {

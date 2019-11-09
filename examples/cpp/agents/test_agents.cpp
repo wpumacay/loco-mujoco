@@ -7,10 +7,6 @@
 static std::string MODEL_FORMAT = "rlsim";
 static std::string MODEL_NAME = "dog3d";
 
-static std::string TYSOC_MJCF_TEMPLATES     = std::string( TYSOC_PATH_MJCF_TEMPLATES );
-static std::string TYSOC_URDF_TEMPLATES     = std::string( TYSOC_PATH_URDF_TEMPLATES );
-static std::string TYSOC_RLSIM_TEMPLATES    = std::string( TYSOC_PATH_RLSIM_TEMPLATES );
-
 bool USE_HFIELD = true;
 
 tysoc::TBody* createHfield( const std::string& name, const tysoc::TVec3& position )

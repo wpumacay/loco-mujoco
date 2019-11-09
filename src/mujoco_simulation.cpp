@@ -293,7 +293,8 @@ namespace mujoco {
 
     void TMjcSimulation::_preStepInternal()
     {
-        // @debug: testing sensor-camera view
+    #ifdef TYSOC_DEMO
+        // @demo: testing sensor-camera view
         if ( m_visualizerPtr )
         {
             auto _agents = m_scenarioPtr->getAgents();
@@ -305,7 +306,7 @@ namespace mujoco {
             }
         }
 
-        // @debug: collect contacts here (should move to base)
+        // @demo: collect contacts here (should move to base)
         if ( m_contactManager )
         {
             m_contactManager->update();
@@ -320,6 +321,9 @@ namespace mujoco {
                 }
             }
         }
+
+        // @demo:
+    #endif
     }
 
     void TMjcSimulation::_simStepInternal()

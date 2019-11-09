@@ -69,7 +69,6 @@ def createHfield( name, position ) :
 
     _bodyData = tysoc_bindings.PyBodyData()
     _bodyData.dyntype = tysoc_bindings.eDynamicsType.STATIC
-    _bodyData.hasInertia = False
     _bodyData.addCollision( _collisionData )
     _bodyData.addVisual( _visualData )
 
@@ -116,11 +115,11 @@ def createSingleBody( name, shape ) :
     elif shape == 'mesh' :
         _collisionData.type = tysoc_bindings.eShapeType.MESH
         _collisionData.size = [ 0.2, 0.2, 0.2 ]
-        _collisionData.filename = '/home/gregor/Documents/repos/tysoc_mujoco_workspace/tysoc_mujoco/core/res/meshes/monkey.stl'
+        _collisionData.filename = pytysoc.PATHS.RESOURCES_DIR + "meshes/monkey.stl"
 
         _visualData.type = tysoc_bindings.eShapeType.MESH
         _visualData.size = [ 0.2, 0.2, 0.2 ]
-        _visualData.filename = '/home/gregor/Documents/repos/tysoc_mujoco_workspace/tysoc_mujoco/core/res/meshes/monkey.stl'
+        _visualData.filename = pytysoc.PATHS.RESOURCES_DIR + "meshes/monkey.stl"
 
     _visualData.ambient = [ 0.7, 0.5, 0.3 ]
     _visualData.diffuse = [ 0.7, 0.5, 0.3 ]
@@ -129,7 +128,6 @@ def createSingleBody( name, shape ) :
 
     _bodyData = tysoc_bindings.PyBodyData()
     _bodyData.dyntype = tysoc_bindings.eDynamicsType.DYNAMIC
-    _bodyData.hasInertia = False
     _bodyData.addCollision( _collisionData )
     _bodyData.addVisual( _visualData )
     
@@ -166,8 +164,7 @@ if __name__ == '__main__' :
         _scenario.addBody( createSingleBody( 'mesh_' + str( i ), 'mesh' ) )
     
     _runtime = pytysoc.createRuntime( physicsBackend = pytysoc.BACKENDS.PHYSICS.MUJOCO,
-                                      renderingBackend = pytysoc.BACKENDS.RENDERING.GLVIZ,
-                                      workingDir = pytysoc.PATHS.WORKING_DIR )
+                                      renderingBackend = pytysoc.BACKENDS.RENDERING.GLVIZ )
     
     _simulation = _runtime.createSimulation( _scenario )
     _visualizer = _runtime.createVisualizer( _scenario )

@@ -162,7 +162,10 @@ if __name__ == '__main__' :
 
     for i in range( NUM_MESHES ) :
         _scenario.addBody( createSingleBody( 'mesh_' + str( i ), 'mesh' ) )
-    
+
+    _agent = tysoc_bindings.PyCoreAgent( 'agent0', [-1,0,3], 'urdf', 'dogbot' )
+    _scenario.addAgent( _agent )
+
     _runtime = pytysoc.createRuntime( physicsBackend = pytysoc.BACKENDS.PHYSICS.MUJOCO,
                                       renderingBackend = pytysoc.BACKENDS.RENDERING.GLVIZ )
     

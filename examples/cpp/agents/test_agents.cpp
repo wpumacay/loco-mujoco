@@ -73,10 +73,10 @@ tysoc::TBody* createHfield( const std::string& name, const tysoc::TVec3& positio
 }
 
 tysoc::TAgent* createAgent( const std::string& format,
-                                   const std::string& modelName,
-                                   const std::string& agentName,
-                                   const tysoc::TVec3& position,
-                                   const tysoc::TVec3& rotation = tysoc::TVec3() )
+                            const std::string& modelName,
+                            const std::string& agentName,
+                            const tysoc::TVec3& position,
+                            const tysoc::TVec3& rotation = tysoc::TVec3() )
 {
     auto _modelLoader = tysoc::TModelLoader::Create();
 

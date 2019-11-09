@@ -295,7 +295,7 @@ namespace mujoco {
     {
     #ifdef TYSOC_DEMO
         // @demo: testing sensor-camera view
-        if ( m_visualizerPtr )
+        if ( m_visualizerPtr && DEMO_OPTIONS.useDemoCameraSensors )
         {
             auto _agents = m_scenarioPtr->getAgents();
             if ( _agents.size() > 0 )
@@ -307,7 +307,7 @@ namespace mujoco {
         }
 
         // @demo: collect contacts here (should move to base)
-        if ( m_contactManager )
+        if ( m_contactManager && DEMO_OPTIONS.useDemoContactManager )
         {
             m_contactManager->update();
 

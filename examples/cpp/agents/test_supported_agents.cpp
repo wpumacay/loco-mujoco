@@ -4,11 +4,7 @@
 #include <model_loader.h>
 #include <mujoco_config.h>
 
-static std::string MODEL_FORMAT = "rlsim";
-static std::string MODEL_NAME = "dog3d";
-static int NUMBER_OF_AGENTS = 1;
-
-bool USE_HFIELD = true;
+bool USE_HFIELD = false;
 
 tysoc::TBody* createHfield( const std::string& name, const tysoc::TVec3& position )
 {
@@ -30,7 +26,7 @@ tysoc::TBody* createHfield( const std::string& name, const tysoc::TVec3& positio
 
             float _u = _x * 2.0f;
             float _v = _y * 2.0f;
-            float _z = 0.5f * std::cos( std::sqrt( ( _u * _u + _v * _v ) ) );
+            float _z = 0.2f * std::cos( std::sqrt( ( _u * _u + _v * _v ) ) );
 
             _heightData.push_back( _z );
 
@@ -104,45 +100,25 @@ tysoc::TAgent* createAgent( const std::string& format,
     return NULL;
 }
 
-int main( int argc, const char** argv )
+int main()
 {
-    if ( argc > 2 )
-    {
-        try
-        {
-            MODEL_FORMAT = std::string( argv[1] );
-            MODEL_NAME = std::string( argv[2] );
-        }
-        catch ( const std::exception& e )
-        {
-            std::cout << "ERROR> should pass FORMAT(mjcf|urdf|rlsim) and MODEL_NAME(see templates)" << std::endl;
-            std::cerr << e.what() << '\n';
-            return 1;
-        }
-
-        if ( argc > 3 )
-            USE_HFIELD = ( std::string( argv[3] ) == "hfield" );
-
-        if ( argc > 4 )
-            NUMBER_OF_AGENTS = std::stoi( argv[4] );
-    }
-
     /* ***************************************************************************/
     auto _scenario = new tysoc::TScenario();
 
-    auto _agent0 = createAgent( MODEL_FORMAT, MODEL_NAME , "agent0", { 0.0f, 0.0f, 2.0f } );
-    auto _agent1 = createAgent( MODEL_FORMAT, MODEL_NAME , "agent1", { 2.0f, 0.0f, 2.0f } );
-    auto _agent2 = createAgent( MODEL_FORMAT, MODEL_NAME , "agent2", { 0.0f, 2.0f, 2.0f } );
-    auto _agent3 = createAgent( MODEL_FORMAT, MODEL_NAME , "agent3", { 3.0f, -3.0f, 2.0f } );
-    auto _agent4 = createAgent( MODEL_FORMAT, MODEL_NAME , "agent4", { -3.0f, 3.0f, 2.0f } );
+    auto _agent0 = createAgent( "mjcf", "ant"       , "agent0", { -4.0f, -2.0f, 2.0f } );
+    auto _agent1 = createAgent( "mjcf", "walker"    , "agent1", { -2.0f, -2.0f, 2.0f } );
+    auto _agent2 = createAgent( "mjcf", "hopper"    , "agent2", {  0.0f, -2.0f, 2.0f } );
+    auto _agent3 = createAgent( "mjcf", "cheetah"   , "agent3", {  2.0f, -2.0f, 2.0f } );
+    auto _agent4 = createAgent( "mjcf", "humanoid"  , "agent4", {  4.0f, -2.0f, 2.0f } );
 
-    if ( !_agent0 /*|| !_agent1 || !_agent2 || !_agent3*/ )
-    {
-        std::cout << "ERROR> (format|model): " 
-                  << MODEL_FORMAT << "|" << MODEL_NAME 
-                  << " not found" << std::endl;
-        return 1;
-    }
+    auto _agent5 = createAgent( "urdf", "laikago"   , "agent6", { -0.5f,  0.0f, 2.0f } );
+    auto _agent6 = createAgent( "urdf", "dogbot"   , "agent5", { 0.5f,  0.0f, 2.0f } );
+
+    // auto _agent7 = createAgent( "rlsim", "dog3d"        , "agent7" , { -2.0f, 0.0f, 2.0f } );
+    // auto _agent8 = createAgent( "rlsim", "raptor3d"     , "agent8" , { -1.0f, 0.0f, 2.0f } );
+    // auto _agent9 = createAgent( "rlsim", "goat3d"       , "agent9" , {  0.0f, 0.0f, 2.0f } );
+    auto _agent10 = createAgent( "rlsim", "biped3d"     , "agent10", { -0.5f, 0.0f, 2.0f } );
+    auto _agent11 = createAgent( "rlsim", "humanoid3d"  , "agent11", {  0.5f, 0.0f, 2.0f } );
 
     if ( USE_HFIELD )
     {
@@ -161,15 +137,20 @@ int main( int argc, const char** argv )
         _scenario->addTerrainGenerator( _terrainGenStatic );
     }
 
-    _scenario->addAgent( _agent0 );
-    if ( NUMBER_OF_AGENTS > 1 )
-        _scenario->addAgent( _agent1 );
-    if ( NUMBER_OF_AGENTS > 2 )
-        _scenario->addAgent( _agent2 );
-    if ( NUMBER_OF_AGENTS > 3 )
-        _scenario->addAgent( _agent3 );
-    if ( NUMBER_OF_AGENTS > 4 )
-        _scenario->addAgent( _agent4 );
+    // _scenario->addAgent( _agent0 );
+    // _scenario->addAgent( _agent1 );
+    // _scenario->addAgent( _agent2 );
+    // _scenario->addAgent( _agent3 );
+    // _scenario->addAgent( _agent4 );
+
+    // _scenario->addAgent( _agent5 );
+    // _scenario->addAgent( _agent6 );
+
+    // _scenario->addAgent( _agent7 );
+    // _scenario->addAgent( _agent8 );
+    // _scenario->addAgent( _agent9 );
+    _scenario->addAgent( _agent10 );
+    _scenario->addAgent( _agent11 );
 
     auto _runtime = new tysoc::TRuntime( tysoc::config::physics::MUJOCO, 
                                          tysoc::config::rendering::GLVIZ );

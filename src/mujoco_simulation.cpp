@@ -321,8 +321,6 @@ namespace mujoco {
                 }
             }
         }
-
-        // @demo:
     #endif
     }
 

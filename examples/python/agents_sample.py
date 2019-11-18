@@ -5,30 +5,31 @@ import tysoc_bindings
 
 _humanoid   = tysoc_bindings.PyCoreAgent( 'humanoid1', [-2,-2,3], 'mjcf', 'humanoid' )
 _walker     = tysoc_bindings.PyCoreAgent( 'walker1', [0,-2,3], 'mjcf', 'walker' )
-_baxter     = tysoc_bindings.PyCoreAgent( 'baxter1', [2,-2,3], 'mjcf', 'baxter' )
+_ant        = tysoc_bindings.PyCoreAgent( 'ant1', [2,-2,3], 'mjcf', 'ant' )
 
 _laikago    = tysoc_bindings.PyCoreAgent( 'laikago1', [-1,0,3], 'urdf', 'laikago' )
-_doublePend = tysoc_bindings.PyCoreAgent( 'doublePend1', [1,0,3], 'urdf', 'double_pendulum' )
+_dogbot     = tysoc_bindings.PyCoreAgent( 'dogbot1', [1,0,3], 'urdf', 'dogbot' )
 
-_dog        = tysoc_bindings.PyCoreAgent( 'dog1', [-3,2,3], 'rlsim', 'dog3d' )
-_raptor     = tysoc_bindings.PyCoreAgent( 'raptor1', [-1,2,3], 'rlsim', 'raptor3d' )
-_goat       = tysoc_bindings.PyCoreAgent( 'goat1', [1,2,3], 'rlsim', 'goat3d' )
-_biped      = tysoc_bindings.PyCoreAgent( 'biped1', [3,2,3], 'rlsim', 'biped3d' )
+## _dog3d      = tysoc_bindings.PyCoreAgent( 'dog1', [-3,2,3], 'rlsim', 'dog3d' )
+## _raptor3d   = tysoc_bindings.PyCoreAgent( 'raptor1', [-1,2,3], 'rlsim', 'raptor3d' )
+## _goat3d     = tysoc_bindings.PyCoreAgent( 'goat1', [1,2,3], 'rlsim', 'goat3d' )
+_biped3d    = tysoc_bindings.PyCoreAgent( 'biped1', [3,2,3], 'rlsim', 'biped3d' )
+_humanoid3d = tysoc_bindings.PyCoreAgent( 'biped1', [3,2,3], 'rlsim', 'humanoid3d' )
 
 _scenario = tysoc_bindings.PyScenario()
 _scenario.addAgent( _humanoid )
 _scenario.addAgent( _walker )
-_scenario.addAgent( _baxter )
+_scenario.addAgent( _ant )
 _scenario.addAgent( _laikago )
-_scenario.addAgent( _doublePend )
-_scenario.addAgent( _dog )
-_scenario.addAgent( _raptor )
-_scenario.addAgent( _goat )
-_scenario.addAgent( _biped )
+_scenario.addAgent( _dogbot )
+## _scenario.addAgent( _dog3d )
+## _scenario.addAgent( _raptor3d )
+## _scenario.addAgent( _goat3d )
+_scenario.addAgent( _biped3d )
+_scenario.addAgent( _humanoid3d )
 
 _runtime = pytysoc.createRuntime( physicsBackend = pytysoc.BACKENDS.PHYSICS.MUJOCO,
-                                  renderingBackend = pytysoc.BACKENDS.RENDERING.GLVIZ,
-                                  workingDir = pytysoc.PATHS.WORKING_DIR )
+                                  renderingBackend = pytysoc.BACKENDS.RENDERING.GLVIZ )
 
 _simulation = _runtime.createSimulation( _scenario )
 _simulation.initialize()

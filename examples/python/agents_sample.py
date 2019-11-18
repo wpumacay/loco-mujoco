@@ -39,5 +39,12 @@ _visualizer.initialize()
 
 while _visualizer.isActive() :
 
+    if _visualizer.checkSingleKeyPress( tysoc_bindings.KEY_P ) :
+        _running = not _running
+    elif _visualizer.checkSingleKeyPress( tysoc_bindings.KEY_R ) :
+        _simulation.reset()
+    elif _visualizer.checkSingleKeyPress( tysoc_bindings.KEY_ESCAPE ) :
+        break
+
     _simulation.step()
     _visualizer.render()

@@ -182,14 +182,12 @@ if __name__ == '__main__' :
     
     while _visualizer.isActive() :
     
-        if _visualizer.checkSingleKeyPress( 80 ) :
+        if _visualizer.checkSingleKeyPress( tysoc_bindings.KEY_P ) :
             _running = not _running
-
-        if _visualizer.checkSingleKeyPress( 256 ) :
-            break
-
-        if _visualizer.checkSingleKeyPress( 82 ) :
+        elif _visualizer.checkSingleKeyPress( tysoc_bindings.KEY_R ) :
             _simulation.reset()
+        elif _visualizer.checkSingleKeyPress( tysoc_bindings.KEY_ESCAPE ) :
+            break
 
         if _running :
             _simulation.step()

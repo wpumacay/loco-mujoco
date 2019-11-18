@@ -2,6 +2,7 @@
 import numpy as np
 import tysoc_bindings
 import pytysoc
+import time
 
 NUM_BOXES = 5
 NUM_SPHERES = 5
@@ -74,12 +75,12 @@ def createSingleBody( name, shape ) :
 
 if __name__ == '__main__' :
     _terrainGen = tysoc_bindings.PyStaticTerrainGen( 'terrainGen0' ) 
-    _terrainGen.createPrimitive( 'box',
+    _terrainGen.createPrimitive( 'plane',
                                  [ 10.0, 10.0, 0.2 ],
                                  [ 0.0, 0.0, 0.0 ],
                                  [ 0.0, 0.0, 0.0 ],
                                  [ 0.2, 0.3, 0.4 ],
-                                 'chessboard' )
+                                 'built_in_chessboard' )
     
     _scenario = tysoc_bindings.PyScenario()
     _scenario.addTerrainGen( _terrainGen )
@@ -115,16 +116,18 @@ if __name__ == '__main__' :
     
     while _visualizer.isActive() :
     
-        if _visualizer.checkSingleKeyPress( 80 ) :
+        if _visualizer.checkSingleKeyPress( tysoc_bindings.KEY_P ) :
             _running = not _running
-
-        if _visualizer.checkSingleKeyPress( 256 ) :
+        elif _visualizer.checkSingleKeyPress( tysoc_bindings.KEY_R ) :
+            _simulation.reset()
+        elif _visualizer.checkSingleKeyPress( tysoc_bindings.KEY_ESCAPE ) :
             break
 
-        if _visualizer.checkSingleKeyPress( 82 ) :
-            _simulation.reset()
-
+        start = time.time()
         if _running :
             _simulation.step()
     
         _visualizer.render()
+
+        duration = time.time() - start
+        print( "step-time: {} ||| fps: {}".format( duration, 1.0 / duration ) )

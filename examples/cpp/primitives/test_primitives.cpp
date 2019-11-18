@@ -64,7 +64,7 @@ tysoc::TBody* createSimpleBody( const std::string& name, const std::string& type
     }
     else 
     {
-        return NULL;
+        return nullptr;
     }
 
     _collisionData.density = 1000.0;
@@ -89,9 +89,9 @@ tysoc::TBody* createSimpleBody( const std::string& name, const std::string& type
 
     // choose a random orientation
     tysoc::TVec3 _rotation;
-    // _rotation.x = TYSOC_PI * g_randomUniformDistribution( g_randomGenerator ) / 4.;
-    // _rotation.y = TYSOC_PI * g_randomUniformDistribution( g_randomGenerator ) / 4.;
-    // _rotation.z = TYSOC_PI * g_randomUniformDistribution( g_randomGenerator ) / 4.;
+    _rotation.x = TYSOC_PI * g_randomUniformDistribution( g_randomGenerator ) / 4.;
+    _rotation.y = TYSOC_PI * g_randomUniformDistribution( g_randomGenerator ) / 4.;
+    _rotation.z = TYSOC_PI * g_randomUniformDistribution( g_randomGenerator ) / 4.;
 
     // create the abstract body
     auto _bodyPtr = new tysoc::TBody( name, 
@@ -110,7 +110,7 @@ int main()
                                         { 0.0f, 0.0f, 0.0f },
                                         tysoc::TMat3(),
                                         { 0.2f, 0.3f, 0.4f },
-                                        "chessboard" );
+                                        "built_in_chessboard" );
 
     auto _scenario = new tysoc::TScenario();
     _scenario->addTerrainGenerator( _terrainGenStatic );
@@ -162,12 +162,10 @@ int main()
 
         if ( _visualizer->checkSingleKeyPress( tysoc::keys::KEY_P ) )
             _simulation->togglePause();
-
-        if ( _visualizer->checkSingleKeyPress( tysoc::keys::KEY_ESCAPE ) )
-            break;
-
-        if ( _visualizer->checkSingleKeyPress( tysoc::keys::KEY_R ) )
+        else if ( _visualizer->checkSingleKeyPress( tysoc::keys::KEY_R ) )
             _simulation->reset();
+        else if ( _visualizer->checkSingleKeyPress( tysoc::keys::KEY_ESCAPE ) )
+            break;
 
         _simulation->step();
 
@@ -179,8 +177,8 @@ int main()
 
     _runtime->destroyVisualizer();
     _runtime->destroySimulation();
-    _visualizer = NULL;
-    _simulation = NULL;
+    _visualizer = nullptr;
+    _simulation = nullptr;
 
     return 0;
 }

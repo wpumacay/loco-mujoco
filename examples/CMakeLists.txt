@@ -6,19 +6,4 @@ find_package( GLEW REQUIRED )
 
 include_directories( ${GLEW_INCLUDE_DIRS} )
 
-add_executable( test_runtime
-                test_runtime.cpp )
-target_link_libraries( test_runtime
-                       tysocCore )
-
-add_executable( test_com_forces
-                test_com_forces.cpp )
-target_link_libraries( test_com_forces
-                       tysocCore )
-
-add_executable( test_terrain_static
-                test_terrain_static.cpp )
-target_link_libraries( test_terrain_static
-                       tysocCore )
-
 add_subdirectory( cpp )

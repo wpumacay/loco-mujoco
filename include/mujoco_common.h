@@ -11,13 +11,6 @@
 #include <utils/parsers/urdf/urdf.h>
 #include <components/data.h>
 
-// some standard helper functions
-#include <map>
-#include <vector>
-#include <queue>
-#include <cmath>
-#include <random>
-
 // and some configurations
 #include <mujoco_config.h>
 

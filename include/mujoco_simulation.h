@@ -60,9 +60,6 @@ namespace mujoco {
 
         mjModel* getMjcModel() { return m_mjcModelPtr; }
         mjData* getMjcData() { return m_mjcDataPtr; }
-        mjvScene* getMjcScene() { return m_mjcScenePtr; }
-        mjvCamera* getMjcCamera() { return m_mjcCameraPtr; }
-        mjvOption* getMjcOption() { return m_mjcOptionPtr; }
 
     protected :
 
@@ -82,9 +79,6 @@ namespace mujoco {
 
         mjModel*    m_mjcModelPtr;
         mjData*     m_mjcDataPtr;
-        mjvScene*   m_mjcScenePtr;
-        mjvCamera*  m_mjcCameraPtr;
-        mjvOption*  m_mjcOptionPtr;
 
         mjcf::GenericElement* m_mjcfResourcesPtr;
         std::vector< mjcf::GenericElement* > m_mjcfMeshResources;

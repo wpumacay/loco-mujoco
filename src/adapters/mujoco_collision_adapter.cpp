@@ -109,6 +109,9 @@ namespace tysoc {
         auto _position = transform.getPosition();
         auto _quaternion = transform.getRotQuaternion();
 
+        // @todo: check if inertial properties are being recomputed. If not, we'll have to recompute
+        //        this properties, as the inertia-matrix would have likely changed
+
         m_mjcModelPtr->geom_pos[3 * m_mjcGeomId + 0] = _position.x;
         m_mjcModelPtr->geom_pos[3 * m_mjcGeomId + 1] = _position.y;
         m_mjcModelPtr->geom_pos[3 * m_mjcGeomId + 2] = _position.z;

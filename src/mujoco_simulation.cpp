@@ -89,7 +89,7 @@ namespace mujoco {
         _emptyModelPath += TYSOC_PATH_WORKING_DIR;
         _emptyModelPath += "empty.xml";
 
-        std::cout << "LOG> empty path: " << _emptyModelPath << std::endl;
+        TYSOC_CORE_TRACE( "Simulation-MuJoCo >>> looking for empty.xml at path: {0}", _emptyModelPath );
         m_mjcfResourcesPtr = mjcf::loadGenericModel( _emptyModelPath );
 
         if ( !m_scenarioPtr )
@@ -232,13 +232,13 @@ namespace mujoco {
         /* create contact manager */
         m_contactManager = new TMjcContactManager( m_scenarioPtr, m_mjcModelPtr, m_mjcDataPtr );
 
-        std::cout << "total-nq: " << m_mjcModelPtr->nq << std::endl;
-        std::cout << "total-nv: " << m_mjcModelPtr->nv << std::endl;
-        std::cout << "total-nu: " << m_mjcModelPtr->nu << std::endl;
-        std::cout << "total-nbody: " << m_mjcModelPtr->nbody << std::endl;
-        std::cout << "total-njnt: " << m_mjcModelPtr->njnt << std::endl;
-        std::cout << "total-ngeom: " << m_mjcModelPtr->ngeom << std::endl;
-        std::cout << "total-nsensor: " << m_mjcModelPtr->nsensor << std::endl;
+        TYSOC_CORE_TRACE( "Simulation-MuJoCo >>> total-nq: {0}", m_mjcModelPtr->nq );
+        TYSOC_CORE_TRACE( "Simulation-MuJoCo >>> total-nv: {0}", m_mjcModelPtr->nv );
+        TYSOC_CORE_TRACE( "Simulation-MuJoCo >>> total-nu: {0}", m_mjcModelPtr->nu );
+        TYSOC_CORE_TRACE( "Simulation-MuJoCo >>> total-nbody: {0}", m_mjcModelPtr->nbody );
+        TYSOC_CORE_TRACE( "Simulation-MuJoCo >>> total-njnt: {0}", m_mjcModelPtr->njnt );
+        TYSOC_CORE_TRACE( "Simulation-MuJoCo >>> total-ngeom: {0}", m_mjcModelPtr->ngeom );
+        TYSOC_CORE_TRACE( "Simulation-MuJoCo >>> total-nsensor: {0}", m_mjcModelPtr->nsensor );
 
         return true;
     }
@@ -348,7 +348,7 @@ namespace mujoco {
 
     extern "C" TISimulation* simulation_create( TScenario* scenarioPtr )
     {
-        std::cout << "INFO> creating mujoco simulation" << std::endl;
+        TYSOC_CORE_INFO( "Simulation-MuJoCo >>> creating simulation" );
         return new TMjcSimulation( scenarioPtr );
     }
 }}

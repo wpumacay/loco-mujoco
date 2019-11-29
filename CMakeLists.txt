@@ -89,6 +89,7 @@ include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/include/" )
 include_directories( "${CMAKE_SOURCE_DIR}/core/include" )
 include_directories( "${CMAKE_SOURCE_DIR}/core/ext/json" )
 include_directories( "${CMAKE_SOURCE_DIR}/core/ext/tinyxml2" )
+include_directories( "${CMAKE_SOURCE_DIR}/ext/spdlog/include" )
 
 if ( WIN32 )
     # Path to mujoco library in the windows system

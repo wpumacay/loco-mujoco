@@ -103,8 +103,8 @@ namespace mujoco {
 
             m_bodyAdapters.push_back( _bodyAdapter );
 
-            auto _collisions = _body->collisions();
-            for ( auto _collision : _collisions )
+            auto _collision = _body->collision();
+            if ( _collision )
             {
                 auto _collisionAdapter = new TMjcCollisionAdapter( _collision );
                 _collision->setAdapter( _collisionAdapter );

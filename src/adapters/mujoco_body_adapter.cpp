@@ -60,8 +60,8 @@ namespace tysoc {
         }
 
         /* collect resources from colliders */
-        auto _collisions = m_bodyPtr->collisions();
-        for ( auto _collision : _collisions )
+        auto _collision = m_bodyPtr->collision();
+        if ( _collision )
         {
             auto _collisionAdapter = dynamic_cast< TMjcCollisionAdapter* >( _collision->adapter() );
             _collisionAdapter->build();

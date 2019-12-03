@@ -29,11 +29,11 @@ tysoc::TBody* createHfield( const std::string& name, const tysoc::TVec3& positio
             float _x = xExtent * ( ( (float) i ) / nxSamples - 0.5f );
             float _y = yExtent * ( ( (float) j ) / nySamples - 0.5f );
 
-            float _z = 10.0f * ( _x * _x + _y * _y ) / ( xExtent * xExtent + yExtent * yExtent );
+            //// float _z = 10.0f * ( _x * _x + _y * _y ) / ( xExtent * xExtent + yExtent * yExtent );
 
-            // float _u = _x * 2.0f;
-            // float _v = _y * 2.0f;
-            // float _z = std::cos( std::sqrt( ( _u * _u + _v * _v ) ) );
+            float _u = _x * 2.0f;
+            float _v = _y * 2.0f;
+            float _z = 0.5f * std::cos( std::sqrt( ( _u * _u + _v * _v ) ) );
 
             _heightData.push_back( _z );
 
@@ -69,8 +69,8 @@ tysoc::TBody* createHfield( const std::string& name, const tysoc::TVec3& positio
 
     tysoc::TBodyData _bodyData;
     _bodyData.dyntype = tysoc::eDynamicsType::STATIC;
-    _bodyData.collisions.push_back( _collisionData );
-    _bodyData.visuals.push_back( _visualData );
+    _bodyData.collision = _collisionData;
+    _bodyData.visual = _visualData;
 
     return new tysoc::TBody( name, _bodyData, position, tysoc::TMat3() );;
 }
@@ -139,8 +139,8 @@ tysoc::TBody* createSimpleBody( const std::string& name, const std::string& type
     _visualData.shininess = 50.0f;
 
     _bodyData.dyntype = tysoc::eDynamicsType::DYNAMIC;
-    _bodyData.collisions.push_back( _collisionData );
-    _bodyData.visuals.push_back( _visualData );
+    _bodyData.collision = _collisionData;
+    _bodyData.visual = _visualData;
 
     // choose a random position
     tysoc::TVec3 _position;

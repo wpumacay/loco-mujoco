@@ -5,62 +5,52 @@
 #include <random>
 
 std::default_random_engine              g_randomGenerator;
-std::uniform_real_distribution<double>  g_randomUniformDistribution = std::uniform_real_distribution<double>( -2.0, 2.0 );
+std::uniform_real_distribution<double>  g_randomUniformDistribution = std::uniform_real_distribution<double>( -4.0, 4.0 );
 
-#define NUM_BOXES       1
-#define NUM_SPHERES     1
-#define NUM_CYLINDERS   1
-#define NUM_CAPSULES    1
-#define NUM_MESHES      1
+#define NUM_BOXES       5
+#define NUM_SPHERES     5
+#define NUM_CYLINDERS   5
+#define NUM_CAPSULES    5
+#define NUM_MESHES      5
 
 tysoc::TBody* createHfield( const std::string& name, const tysoc::TVec3& position )
 {
     const int nxSamples = 50;
     const int nySamples = 50;
-    const float xExtent = 5.0f;
-    const float yExtent = 5.0f;
+    const float xExtent = 15.0f;
+    const float yExtent = 10.0f;
 
-    float _maxHeight = 0.0f;
     std::vector< float > _heightData;
-    for ( size_t i = 0; i < nxSamples; i++ )
+    // recall we use row-major format (i <> y <> depth <> row, j <> x <> width <> column)
+    for ( size_t i = 0; i < nySamples; i++ )
     {
-        for ( size_t j = 0; j < nySamples; j++ )
+        for ( size_t j = 0; j < nxSamples; j++ )
         {
-            float _x = xExtent * ( ( (float) i ) / nxSamples - 0.5f );
-            float _y = yExtent * ( ( (float) j ) / nySamples - 0.5f );
+            float _x = xExtent * ( ( (float) j ) / nxSamples - 0.5f );
+            float _y = yExtent * ( ( (float) i ) / nySamples - 0.5f );
 
-            //// float _z = 10.0f * ( _x * _x + _y * _y ) / ( xExtent * xExtent + yExtent * yExtent );
-
-            float _u = _x * 2.0f;
-            float _v = _y * 2.0f;
-            float _z = 0.5f * std::cos( std::sqrt( ( _u * _u + _v * _v ) ) );
+            //// float _z = 1.0f;
+            float _z = 15.0f * ( _x * _x + _y * _y ) / ( xExtent * xExtent + yExtent * yExtent );
+            //// float _z = ( 1.0f + std::cos( std::sqrt( ( ( 2.0f * _x ) * ( 2.0f * _x ) + ( 2.0f * _y ) * ( 2.0f * _y ) ) ) ) );
 
             _heightData.push_back( _z );
-
-            // book keeping: save the max-height for later normalization
-            _maxHeight = std::max( _z, _maxHeight );
         }
-    }
-
-    if ( _maxHeight > 0.0f )
-    {
-        for ( size_t i = 0; i < _heightData.size(); i++ )
-            _heightData[i] = _heightData[i] / _maxHeight;
     }
 
     tysoc::TCollisionData _collisionData;
     _collisionData.type = tysoc::eShapeType::HFIELD;
-    _collisionData.size = { xExtent, yExtent, _maxHeight };
+    _collisionData.size = { xExtent, yExtent, 1.5f };
     _collisionData.hdata.nWidthSamples = nxSamples;
     _collisionData.hdata.nDepthSamples = nySamples;
     _collisionData.hdata.heightData = _heightData;
 
     tysoc::TVisualData _visualData;
     _visualData.type = tysoc::eShapeType::HFIELD;
-    _visualData.size = { xExtent, yExtent, _maxHeight };
+    _visualData.size = { xExtent, yExtent, 1.5f };
     _visualData.hdata.nWidthSamples = nxSamples;
     _visualData.hdata.nDepthSamples = nySamples;
     _visualData.hdata.heightData = _heightData;
+    _visualData.texture = "built_in_chessboard";
 
     _visualData.ambient     = { 0.2f, 0.3f, 0.4f };
     _visualData.diffuse     = { 0.2f, 0.3f, 0.4f };

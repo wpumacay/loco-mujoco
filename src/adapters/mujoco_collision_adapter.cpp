@@ -55,14 +55,17 @@ namespace tysoc {
 
         if ( m_collisionPtr->shape() == eShapeType::HFIELD )
         {
+            auto& _hdata = m_collisionPtr->dataRef().hdata;
             m_mjcfXmlAssetResource = new mjcf::GenericElement( "hfield" );
             m_mjcfXmlAssetResource->setAttributeString( "name", m_collisionPtr->name() + "_asset" );
-            m_mjcfXmlAssetResource->setAttributeInt( "nrow", m_collisionPtr->data().hdata.nDepthSamples );
-            m_mjcfXmlAssetResource->setAttributeInt( "ncol", m_collisionPtr->data().hdata.nWidthSamples );
+            m_mjcfXmlAssetResource->setAttributeInt( "nrow", _hdata.nDepthSamples );
+            m_mjcfXmlAssetResource->setAttributeInt( "ncol", _hdata.nWidthSamples );
 
+            // compute z-max for size-prop
+            float _zMax = *std::max_element( _hdata.heightData.begin(), _hdata.heightData.end() );
             TVec4 _sizeprop = { 0.5f * m_collisionPtr->size().x,
                                 0.5f * m_collisionPtr->size().y,
-                                m_collisionPtr->size().z,
+                                _zMax * m_collisionPtr->size().z, // size is zmax (because of normalization) times z-scale
                                 COLLISION_DEFAULT_HFIELD_BASE };
 
             m_mjcfXmlAssetResource->setAttributeVec4( "size", _sizeprop );
@@ -172,15 +175,17 @@ namespace tysoc {
             return;
         }
 
-        for ( int i = 0; i < m_mjcGeomHFieldNRows; i++ )
-        {
-            for ( int j = 0; j < m_mjcGeomHFieldNCols; j++ )
-            {
-                int _pindexUserBuffer = i + j * m_mjcGeomHFieldNRows;
-                int _pindexMujocoBuffer = j + i * m_mjcGeomHFieldNCols;
-                m_mjcModelPtr->hfield_data[m_mjcGeomHFieldStartAddr + _pindexMujocoBuffer] = heightData[_pindexUserBuffer];
-            }
-        }
+        // compute max-height to normalize the data (and force negative-heights to zero)
+        const float _zMax = *std::max_element( heightData.begin(), heightData.end() );
+        const int _xSamples = m_mjcGeomHFieldNCols;
+        const int _ySamples = m_mjcGeomHFieldNRows;
+        for ( int i = 0; i < _ySamples; i++ )
+            for ( int j = 0; j < _xSamples; j++ )
+                m_mjcModelPtr->hfield_data[m_mjcGeomHFieldStartAddr + (i * _xSamples + j)] = 
+                                    std::max( 0.0f, heightData[i * _xSamples + j] / _zMax );
+
+        // update size property in mjModel, as max-elevation might have changed (@todo: support to change x-y extents)
+        m_mjcModelPtr->hfield_size[4 * m_mjcGeomHFieldId + 2] = _zMax * m_collisionPtr->data().size.z;
     }
 
     void TMjcCollisionAdapter::onResourcesCreated()

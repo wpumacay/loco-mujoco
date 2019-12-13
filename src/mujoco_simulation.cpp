@@ -95,15 +95,15 @@ namespace mujoco {
         if ( !m_scenarioPtr )
             m_scenarioPtr = new TScenario();
 
-        auto _bodies = m_scenarioPtr->getBodies();
-        for ( auto _body : _bodies )
+        auto _singleBodies = m_scenarioPtr->getSingleBodies();
+        for ( auto _singleBody : _singleBodies )
         {
-            auto _bodyAdapter = new TMjcBodyAdapter( _body );
-            _body->setAdapter( _bodyAdapter );
+            auto _singleBodyAdapter = new TMjcBodyAdapter( _singleBody );
+            _singleBody->setAdapter( _singleBodyAdapter );
 
-            m_bodyAdapters.push_back( _bodyAdapter );
+            m_bodyAdapters.push_back( _singleBodyAdapter );
 
-            auto _collision = _body->collision();
+            auto _collision = _singleBody->collision();
             if ( _collision )
             {
                 auto _collisionAdapter = new TMjcCollisionAdapter( _collision );
@@ -153,8 +153,8 @@ namespace mujoco {
             _terrainGenAdapter->initialize();// Injects terrain resources into m_mjcfResourcesPtr
         for ( auto _agentAdapter : m_agentWrappers )
             _collectResourcesFromAgentAdapter( dynamic_cast< TMjcKinTreeAgentWrapper* >( _agentAdapter ) );
-        for ( auto _bodyAdapter : m_bodyAdapters )
-            _collectResourcesFromBodyAdapter( dynamic_cast< TMjcBodyAdapter* >( _bodyAdapter ) );
+        for ( auto _singleBodyAdapter : m_bodyAdapters )
+            _collectResourcesFromBodyAdapter( dynamic_cast< TMjcBodyAdapter* >( _singleBodyAdapter ) );
 
         /* insert all collected mesh assets into the mjcf simulation resource */
         auto _assetsSimulationElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "asset" );
@@ -209,13 +209,13 @@ namespace mujoco {
             _mujocoAgentAdapter->finishedCreatingResources();
         }
 
-        for ( auto _bodyAdapter : m_bodyAdapters )
+        for ( auto _singleBodyAdapter : m_bodyAdapters )
         {
-            auto _mujocoBodyAdapter = dynamic_cast< TMjcBodyAdapter* >( _bodyAdapter );
+            auto _mujocoBodyAdapter = dynamic_cast< TMjcBodyAdapter* >( _singleBodyAdapter );
 
             _mujocoBodyAdapter->setMjcModel( m_mjcModelPtr );
             _mujocoBodyAdapter->setMjcData( m_mjcDataPtr );
-            _mujocoBodyAdapter->setMjcBodyId( mj_name2id( m_mjcModelPtr, mjOBJ_BODY, _bodyAdapter->body()->name().c_str() ) );
+            _mujocoBodyAdapter->setMjcBodyId( mj_name2id( m_mjcModelPtr, mjOBJ_BODY, _singleBodyAdapter->body()->name().c_str() ) );
             _mujocoBodyAdapter->onResourcesCreated();
         }
 
@@ -326,9 +326,10 @@ namespace mujoco {
 
     void TMjcSimulation::_simStepInternal()
     {
-        mjtNum _simstart = m_mjcDataPtr->time;
+        const double _targetFps = 1.0 / 60.0;
+        const mjtNum _simstart = m_mjcDataPtr->time;
         // int _steps = 0;
-        while ( m_mjcDataPtr->time - _simstart < 1.0 / 60.0 )
+        while ( m_mjcDataPtr->time - _simstart < _targetFps )
         {
             // _steps++;
             mj_step( m_mjcModelPtr, m_mjcDataPtr );

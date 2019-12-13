@@ -6,8 +6,8 @@
 
 namespace tysoc {
 
-    TMjcBodyAdapter::TMjcBodyAdapter( TBody* bodyPtr )
-        : TIBodyAdapter( bodyPtr )
+    TMjcBodyAdapter::TMjcBodyAdapter( TSingleBody* bodyRef )
+        : TIBodyAdapter( bodyRef )
     {
         m_mjcModelPtr       = nullptr;
         m_mjcDataPtr        = nullptr;
@@ -36,7 +36,7 @@ namespace tysoc {
 
     void TMjcBodyAdapter::build()
     {
-        if ( !m_bodyPtr )
+        if ( !m_bodyRef )
         {
             std::cout << "ERROR> tried to create mjcf resources for a null body" << std::endl;
             return;
@@ -45,22 +45,22 @@ namespace tysoc {
         m_mjcfXmlResource = new mjcf::GenericElement( "body" );
         m_mjcfXmlAssetResources = new mjcf::GenericElement( "asset" );
 
-        m_mjcfXmlResource->setAttributeString( "name", m_bodyPtr->name() );
-        m_mjcfXmlResource->setAttributeVec3( "pos", m_bodyPtr->pos() );
-        m_mjcfXmlResource->setAttributeVec4( "quat", mujoco::quat2MjcfQuat( m_bodyPtr->quat() ) );
+        m_mjcfXmlResource->setAttributeString( "name", m_bodyRef->name() );
+        m_mjcfXmlResource->setAttributeVec3( "pos", m_bodyRef->pos() );
+        m_mjcfXmlResource->setAttributeVec4( "quat", mujoco::quat2MjcfQuat( m_bodyRef->quat() ) );
 
         // add a free-joint in case the object is not static
-        if ( m_bodyPtr->dyntype() != eDynamicsType::STATIC )
+        if ( m_bodyRef->dyntype() != eDynamicsType::STATIC )
         {
             auto _freejointXmlRes = new mjcf::GenericElement( "freejoint" );
-            _freejointXmlRes->setAttributeString( "name", m_bodyPtr->name() + "_jnt_free" );
+            _freejointXmlRes->setAttributeString( "name", m_bodyRef->name() + "_jnt_free" );
 
             // add this freejoint to our body resource
             m_mjcfXmlResource->children.push_back( _freejointXmlRes );
         }
 
         /* collect resources from colliders */
-        auto _collision = m_bodyPtr->collision();
+        auto _collision = m_bodyRef->collision();
         if ( _collision )
         {
             auto _collisionAdapter = dynamic_cast< TMjcCollisionAdapter* >( _collision->adapter() );
@@ -74,10 +74,10 @@ namespace tysoc {
 
     void TMjcBodyAdapter::reset()
     {
-        assert( m_bodyPtr );
+        assert( m_bodyRef );
         assert( m_mjcBodyId != -1 );
 
-        if ( m_bodyPtr->dyntype() != eDynamicsType::STATIC )
+        if ( m_bodyRef->dyntype() != eDynamicsType::STATIC )
         {
             // set all generalized coordinates to their initial values
             for ( size_t i = 0; i < m_mjcQposNum; i++ )
@@ -90,8 +90,8 @@ namespace tysoc {
         else
         {
             // use directly the relative position stored in the model
-            auto _pos0 = m_bodyPtr->pos0();
-            auto _quat0 = m_bodyPtr->quat0();
+            auto _pos0 = m_bodyRef->pos0();
+            auto _quat0 = m_bodyRef->quat0();
 
             m_mjcModelPtr->body_pos[3 * m_mjcBodyId + 0] = _pos0.x;
             m_mjcModelPtr->body_pos[3 * m_mjcBodyId + 1] = _pos0.y;
@@ -111,10 +111,10 @@ namespace tysoc {
 
     void TMjcBodyAdapter::setPosition( const TVec3& position )
     {
-        assert( m_bodyPtr );
+        assert( m_bodyRef );
         assert( m_mjcBodyId != -1 );
 
-        if ( m_bodyPtr->dyntype() != eDynamicsType::STATIC )
+        if ( m_bodyRef->dyntype() != eDynamicsType::STATIC )
         {
             m_mjcDataPtr->qpos[m_mjcQposAdr + 0] = position.x;
             m_mjcDataPtr->qpos[m_mjcQposAdr + 1] = position.y;
@@ -130,12 +130,12 @@ namespace tysoc {
 
     void TMjcBodyAdapter::setRotation( const TMat3& rotation )
     {
-        assert( m_bodyPtr );
+        assert( m_bodyRef );
         assert( m_mjcBodyId != -1 );
 
         auto _quat = TMat3::toQuaternion( rotation );
 
-        if ( m_bodyPtr->dyntype() != eDynamicsType::STATIC )
+        if ( m_bodyRef->dyntype() != eDynamicsType::STATIC )
         {
             m_mjcDataPtr->qpos[m_mjcQposAdr + 3] = _quat.w;
             m_mjcDataPtr->qpos[m_mjcQposAdr + 4] = _quat.x;
@@ -153,13 +153,13 @@ namespace tysoc {
 
     void TMjcBodyAdapter::setTransform( const TMat4& transform )
     {
-        assert( m_bodyPtr );
+        assert( m_bodyRef );
         assert( m_mjcBodyId != -1 );
 
         auto _pos = transform.getPosition();
         auto _quat = transform.getRotQuaternion();
 
-        if ( m_bodyPtr->dyntype() != eDynamicsType::STATIC )
+        if ( m_bodyRef->dyntype() != eDynamicsType::STATIC )
         {
             m_mjcDataPtr->qpos[m_mjcQposAdr + 0] = _pos.x;
             m_mjcDataPtr->qpos[m_mjcQposAdr + 1] = _pos.y;
@@ -185,10 +185,10 @@ namespace tysoc {
 
     void TMjcBodyAdapter::getPosition( TVec3& dstPosition )
     {
-        assert( m_bodyPtr );
+        assert( m_bodyRef );
         assert( m_mjcBodyId != -1 );
 
-        if ( m_bodyPtr->dyntype() != eDynamicsType::STATIC )
+        if ( m_bodyRef->dyntype() != eDynamicsType::STATIC )
         {
             dstPosition.x = m_mjcDataPtr->qpos[m_mjcQposAdr + 0];
             dstPosition.y = m_mjcDataPtr->qpos[m_mjcQposAdr + 1];
@@ -204,10 +204,10 @@ namespace tysoc {
 
     void TMjcBodyAdapter::getRotation( TMat3& dstRotation )
     {
-        assert( m_bodyPtr );
+        assert( m_bodyRef );
         assert( m_mjcBodyId != -1 );
 
-        if ( m_bodyPtr->dyntype() != eDynamicsType::STATIC )
+        if ( m_bodyRef->dyntype() != eDynamicsType::STATIC )
         {
             TVec4 _quat;
             _quat.w = m_mjcDataPtr->qpos[m_mjcQposAdr + 3];
@@ -241,6 +241,36 @@ namespace tysoc {
         dstTransform.setRotation( _rot );
     }
 
+    void TMjcBodyAdapter::setLocalPosition( const TVec3& position )
+    {
+        // nothing to do here for single-bodies
+    }
+
+    void TMjcBodyAdapter::setLocalRotation( const TMat3& rotation )
+    {
+        // nothing to do here for single-bodies
+    }
+
+    void TMjcBodyAdapter::setLocalTransform( const TMat4& transform )
+    {
+        // nothing to do here for single-bodies
+    }
+
+    void TMjcBodyAdapter::getLocalPosition( TVec3& dstPosition )
+    {
+        // nothing to do here for single-bodies
+    }
+
+    void TMjcBodyAdapter::getLocalRotation( TMat3& dstRotation )
+    {
+        // nothing to do here for single-bodies
+    }
+
+    void TMjcBodyAdapter::getLocalTransform( TMat4& dstTransform )
+    {
+        // nothing to do here for single-bodies
+    }
+
     void TMjcBodyAdapter::onResourcesCreated()
     {
         assert( m_mjcModelPtr );
@@ -253,7 +283,7 @@ namespace tysoc {
         }
 
         // set the start position in the model (only if non-static)
-        if ( m_bodyPtr->dyntype() != eDynamicsType::STATIC )
+        if ( m_bodyRef->dyntype() != eDynamicsType::STATIC )
         {
             // grab the joint-addr for the free-joint created for this body
             m_mjcJointId = m_mjcModelPtr->body_jntadr[m_mjcBodyId];
@@ -269,8 +299,8 @@ namespace tysoc {
             assert( m_mjcQvelNum == m_mjcModelPtr->body_dofnum[m_mjcBodyId] );
 
             // set the starting generalized coordinates (qpos0) in the mjc-model
-            auto _pos0 = m_bodyPtr->pos0();
-            auto _quat0 = m_bodyPtr->quat0();
+            auto _pos0 = m_bodyRef->pos0();
+            auto _quat0 = m_bodyRef->quat0();
 
             m_mjcModelPtr->qpos0[m_mjcQposAdr + 0] = _pos0.x;
             m_mjcModelPtr->qpos0[m_mjcQposAdr + 1] = _pos0.y;
@@ -289,9 +319,9 @@ namespace tysoc {
         }
     }
 
-    extern "C" TIBodyAdapter* simulation_createBodyAdapter( TBody* bodyPtr )
+    extern "C" TIBodyAdapter* simulation_createBodyAdapter( TSingleBody* bodyRef )
     {
-        return new TMjcBodyAdapter( bodyPtr );
+        return new TMjcBodyAdapter( bodyRef );
     }
 
 }

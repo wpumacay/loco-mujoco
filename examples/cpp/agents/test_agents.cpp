@@ -10,7 +10,7 @@ static int NUMBER_OF_AGENTS = 1;
 
 bool USE_HFIELD = true;
 
-tysoc::TBody* createHfield( const std::string& name, const tysoc::TVec3& position )
+tysoc::TSingleBody* createHfield( const std::string& name, const tysoc::TVec3& position )
 {
     const int nxSamples = 100;
     const int nySamples = 100;
@@ -70,7 +70,7 @@ tysoc::TBody* createHfield( const std::string& name, const tysoc::TVec3& positio
     _bodyData.collision = _collisionData;
     _bodyData.visual = _visualData;
 
-    return new tysoc::TBody( name, _bodyData, position, tysoc::TMat3() );;
+    return new tysoc::TSingleBody( name, _bodyData, position, tysoc::TMat3() );;
 }
 
 tysoc::TAgent* createAgent( const std::string& format,
@@ -147,7 +147,7 @@ int main( int argc, const char** argv )
     if ( USE_HFIELD )
     {
         auto _hfield = createHfield( "terrain_0", { 0.0f, 0.0f, 0.0f } );
-        _scenario->addBody( _hfield );
+        _scenario->addSingleBody( _hfield );
     }
     else
     {

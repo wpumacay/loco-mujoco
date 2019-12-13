@@ -19,13 +19,13 @@ std::uniform_real_distribution<TScalar>  g_randomUniformDistribution = std::unif
 const tysoc::TVec3 NOISE_POSITION = { 0.0f, 0.0f, 0.0f };
 const tysoc::TVec3 NOISE_ROTATION = { 0.0f, 0.0f, 0.0f };
 
-tysoc::TBody* createSingleBody( const std::string& name, 
-                                const tysoc::eShapeType& type,
-                                const tysoc::TVec3& size,
-                                const tysoc::TVec3& position,
-                                const tysoc::TMat3& rotation,
-                                const tysoc::TVec3& color,
-                                const tysoc::eDynamicsType& dyntype = tysoc::eDynamicsType::DYNAMIC );
+tysoc::TSingleBody* createSingleBody( const std::string& name, 
+                                      const tysoc::eShapeType& type,
+                                      const tysoc::TVec3& size,
+                                      const tysoc::TVec3& position,
+                                      const tysoc::TMat3& rotation,
+                                      const tysoc::TVec3& color,
+                                      const tysoc::eDynamicsType& dyntype = tysoc::eDynamicsType::DYNAMIC );
 
 int main()
 {
@@ -38,7 +38,7 @@ int main()
                                     tysoc::TMat3(), 
                                     { 0.3f, 0.5f, 0.7f },
                                     tysoc::eDynamicsType::STATIC );
-    _scenario->addBody( _plane );
+    _scenario->addSingleBody( _plane );
 
     for ( size_t i = 0; i < STACK_SIZE; i++ )
     {
@@ -54,12 +54,12 @@ int main()
                 const float _factor = g_randomUniformDistribution( g_randomGenerator );
                 const tysoc::TVec3 _position = { _posX + _factor * NOISE_POSITION.x, _posY + _factor * NOISE_POSITION.y, _posZ + _factor * NOISE_POSITION.z };
                 const tysoc::TMat3 _rotation = tysoc::TMat3::fromEuler( { _factor * NOISE_ROTATION.x, _factor * NOISE_ROTATION.y, _factor * NOISE_ROTATION.z } );
-                _scenario->addBody( createSingleBody( _bodyName,
-                                                      _bodyShape, 
-                                                      BODY_SIZE, 
-                                                      _position,
-                                                      _rotation, // it seems extreme case of all vertical blows up the simulation
-                                                      { 0.7f, 0.5f, 0.3f } ) );
+                _scenario->addSingleBody( createSingleBody( _bodyName,
+                                                            _bodyShape, 
+                                                            BODY_SIZE, 
+                                                            _position,
+                                                            _rotation, // it seems extreme case of all vertical blows up the simulation
+                                                            { 0.7f, 0.5f, 0.3f } ) );
             }
         }
     }
@@ -102,13 +102,13 @@ int main()
     return 0;
 }
 
-tysoc::TBody* createSingleBody( const std::string& name,
-                                const tysoc::eShapeType& type,
-                                const tysoc::TVec3& size,
-                                const tysoc::TVec3& position,
-                                const tysoc::TMat3& rotation,
-                                const tysoc::TVec3& color,
-                                const tysoc::eDynamicsType& dyntype )
+tysoc::TSingleBody* createSingleBody( const std::string& name,
+                                      const tysoc::eShapeType& type,
+                                      const tysoc::TVec3& size,
+                                      const tysoc::TVec3& position,
+                                      const tysoc::TMat3& rotation,
+                                      const tysoc::TVec3& color,
+                                      const tysoc::eDynamicsType& dyntype )
 {
     tysoc::TCollisionData _collisionData;
     tysoc::TVisualData _visualData;
@@ -132,5 +132,5 @@ tysoc::TBody* createSingleBody( const std::string& name,
     _bodyData.collision = _collisionData;
     _bodyData.visual = _visualData;
 
-    return new tysoc::TBody( name, _bodyData, position, rotation );
+    return new tysoc::TSingleBody( name, _bodyData, position, rotation );
 }

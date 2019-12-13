@@ -3,6 +3,7 @@
 #include <mujoco_common.h>
 #include <mujoco_utils.h>
 
+#include <primitives/single_body.h>
 #include <adapters/body_adapter.h>
 #include <adapters/mujoco_collision_adapter.h>
 
@@ -13,7 +14,7 @@ namespace tysoc {
 
     public :
 
-        TMjcBodyAdapter( TBody* bodyPtr );
+        TMjcBodyAdapter( TSingleBody* bodyRef );
 
         ~TMjcBodyAdapter();
 
@@ -34,6 +35,18 @@ namespace tysoc {
         void getRotation( TMat3& dstRotation ) override;
 
         void getTransform( TMat4& dstTransform ) override;
+
+        void setLocalPosition( const TVec3& position ) override;
+
+        void setLocalRotation( const TMat3& rotation ) override;
+
+        void setLocalTransform( const TMat4& transform ) override;
+
+        void getLocalPosition( TVec3& dstPosition ) override;
+
+        void getLocalRotation( TMat3& dstRotation ) override;
+
+        void getLocalTransform( TMat4& dstTransform ) override;
 
         void setMjcModel( mjModel* mjcModelPtr ) { m_mjcModelPtr = mjcModelPtr; }
 
@@ -67,6 +80,6 @@ namespace tysoc {
 
     };
 
-    extern "C" TIBodyAdapter* simulation_createBodyAdapter( TBody* bodyPtr );
+    extern "C" TIBodyAdapter* simulation_createBodyAdapter( TSingleBody* bodyRef );
 
 }

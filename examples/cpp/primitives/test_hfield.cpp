@@ -13,7 +13,7 @@ std::uniform_real_distribution<double>  g_randomUniformDistribution = std::unifo
 #define NUM_CAPSULES    5
 #define NUM_MESHES      5
 
-tysoc::TBody* createHfield( const std::string& name, const tysoc::TVec3& position )
+tysoc::TSingleBody* createHfield( const std::string& name, const tysoc::TVec3& position )
 {
     const int nxSamples = 50;
     const int nySamples = 50;
@@ -62,10 +62,10 @@ tysoc::TBody* createHfield( const std::string& name, const tysoc::TVec3& positio
     _bodyData.collision = _collisionData;
     _bodyData.visual = _visualData;
 
-    return new tysoc::TBody( name, _bodyData, position, tysoc::TMat3() );;
+    return new tysoc::TSingleBody( name, _bodyData, position, tysoc::TMat3() );;
 }
 
-tysoc::TBody* createSimpleBody( const std::string& name, const std::string& type )
+tysoc::TSingleBody* createSimpleBody( const std::string& name, const std::string& type )
 {
     tysoc::TCollisionData _collisionData;
     tysoc::TVisualData _visualData;
@@ -145,10 +145,8 @@ tysoc::TBody* createSimpleBody( const std::string& name, const std::string& type
     // _rotation.z = TYSOC_PI / 4.0f;
 
     // create the abstract body
-    auto _bodyPtr = new tysoc::TBody( name, 
-                                      _bodyData, 
-                                      _position, 
-                                      tysoc::TMat3::fromEuler( _rotation ) );
+    auto _bodyPtr = new tysoc::TSingleBody( name, _bodyData, _position, 
+                                            tysoc::TMat3::fromEuler( _rotation ) );
 
     return _bodyPtr;
 }
@@ -158,37 +156,22 @@ int main()
     auto _scenario = new tysoc::TScenario();
 
     auto _hfield = createHfield( "terrain_0", { 0.0f, 0.0f, 0.0f } );
-    _scenario->addBody( _hfield );
+    _scenario->addSingleBody( _hfield );
 
     for ( size_t i = 0; i < NUM_BOXES; i++ )
-    {
-        _scenario->addBody( createSimpleBody( std::string( "box_" ) + std::to_string( i ), 
-                                              "box" ) );
-    }
+        _scenario->addSingleBody( createSimpleBody( std::string( "box_" ) + std::to_string( i ), "box" ) );
 
     for ( size_t i = 0; i < NUM_SPHERES; i++ )
-    {
-        _scenario->addBody( createSimpleBody( std::string( "sphere_" ) + std::to_string( i ), 
-                                              "sphere" ) );
-    }
+        _scenario->addSingleBody( createSimpleBody( std::string( "sphere_" ) + std::to_string( i ), "sphere" ) );
 
     for ( size_t i = 0; i < NUM_CYLINDERS; i++ )
-    {
-        _scenario->addBody( createSimpleBody( std::string( "cylinder_" ) + std::to_string( i ), 
-                                              "cylinder" ) );
-    }
+        _scenario->addSingleBody( createSimpleBody( std::string( "cylinder_" ) + std::to_string( i ), "cylinder" ) );
 
     for ( size_t i = 0; i < NUM_CAPSULES; i++ )
-    {
-        _scenario->addBody( createSimpleBody( std::string( "capsule_" ) + std::to_string( i ), 
-                                              "capsule" ) );
-    }
+        _scenario->addSingleBody( createSimpleBody( std::string( "capsule_" ) + std::to_string( i ), "capsule" ) );
 
     for ( size_t i = 0; i < NUM_MESHES; i++ )
-    {
-        _scenario->addBody( createSimpleBody( std::string( "mesh_" ) + std::to_string( i ), 
-                                              "mesh" ) );
-    }
+        _scenario->addSingleBody( createSimpleBody( std::string( "mesh_" ) + std::to_string( i ), "mesh" ) );
 
     auto _runtime = new tysoc::TRuntime( tysoc::config::physics::MUJOCO, 
                                          tysoc::config::rendering::GLVIZ );

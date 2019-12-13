@@ -92,6 +92,7 @@ setup(
     zip_safe                = False,
     install_requires        = [
                                 'numpy',
+                                'scipy',
                                 'setuptools'
                               ],
     package_dir             = { 'pytysoc': 'core/pytysoc',

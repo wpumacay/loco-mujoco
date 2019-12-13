@@ -1,29 +1,63 @@
 language: cpp
-dist: xenial
 sudo: required
 git:
     submodules: false
 matrix: 
   include:
-    - os: linux
-      env: PYTHON=3.6
+    # build for ubuntu-16, gcc8-toolchain
+    - name: "gcc8 - ubuntu 16.04 - xenial"
+      os: linux
+      dist: xenial
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-8
+      env:
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+      python: 3.6
+    # build for ubuntu-18, gcc8-toolchain
+    - name: "gcc8 - ubuntu 18.04 - bionic"
+      os: linux
+      dist: bionic
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-8
+      env: 
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+      python: 3.6
 
 before_install:
-  - sudo apt-get install make cmake pkg-config
-  - sudo apt-get install libassimp-dev libglfw3-dev libglew-dev
-  - ./scripts/travis_setup.sh
+  - echo "Installing dependencies from Apt"
+  - sudo apt install make cmake pkg-config
+  - sudo apt install libassimp-dev libglfw3-dev libglew-dev
+  - echo "Cloning repo-dependencies from github"
+  - git clone --branch=docking https://github.com/wpumacay/imgui.git ext/imgui
+  - git clone https://github.com/gabime/spdlog.git ext/spdlog
+  - git clone https://github.com/wpumacay/cat1.git ext/cat1
+  - git clone https://github.com/pybind/pybind11.git ext/pybind11
+  - git clone https://github.com/wpumacay/tysoc.git core
+  - echo "Downloading MuJoCo for build"
   - mkdir -p ~/.mujoco
   - wget https://www.roboti.us/download/mujoco200_linux.zip
   - unzip mujoco200_linux.zip -d ~/.mujoco/
-  - |
-    if [ -n "$PYTHON" ]; then
-      pip install --user --upgrade pip virtualenv
-      virtualenv -p $(which python3) venv
-      source venv/bin/activate
-    fi
+  - echo "Setting gcc-8 as main toolchain"
+  - eval "${MATRIX_EVAL}"
+  - echo "Configuring anaconda and making and env. for the build"
+  - wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - source "$HOME/miniconda/etc/profile.d/conda.sh"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda info -a
+  - conda create -q -n travis_env python=3.6 setuptools numpy scipy
+  - conda activate travis_env
 script:
-  - |
-    if [ -n "$PYTHON" ]; then
-      pip install setuptools numpy
-      python setup.py install
-    fi
+  - mkdir build && cd build
+  - cmake -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=$HOME/miniconda/envs/travis_env/bin/python3.6 -DPYTHON_LIBRARY=$HOME/miniconda/envs/travis_env/lib/libpython3.6m.so -DPYTHON_INCLUDE_DIR=$HOME/miniconda/envs/travis_env/include/python3.6m ..
+  - make -j4

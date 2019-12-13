@@ -25,7 +25,7 @@ class Door( object ) :
         """
         self._name = name
         self._angle0 = angle
-        self._root = pytysoc.CreateCompound( 'door_{}'.format( name ) )
+        self._compound = pytysoc.CreateCompound( 'door_{}'.format( name ) )
 
         # create the frame of the door (one single part, but separated into fixed linked-components)
         #          top
@@ -35,7 +35,7 @@ class Door( object ) :
         #       |       |
         #       ---------
         #         bottom
-        self._frame_base, _ = self._root.addBody( 'frame_support' )
+        self._frame_base = self._compound.createRootBody( 'frame_support' )
         self._frame_top, _ = self._frame_support.addBody( 'frame_top' )
         self._frame_bottom, _ = self._frame_support.addBody( 'frame_bottom' )
         self._frame_right, _ self._frame_support.addBody( 'frame_right' )

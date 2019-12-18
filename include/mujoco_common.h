@@ -27,4 +27,14 @@ namespace mujoco {
 
     /* compute rbound given a shape of some type and size */
     TScalar computeRbound( const eShapeType& type, const TVec3& size );
+
+    /* converts joint-type enum to mjc-type enum */
+    std::string enumJointToMjcType( const eJointType& type );
+
+    /* converts shape-type enum to mjc-geom enum */
+    std::string enumShapeToMjcType( const eShapeType& type );
+
+    /* converts actuator-type enum to mjc-actuator enum */
+    std::string enumActuatorToMjcType( const eActuatorType& type );
+
 }}

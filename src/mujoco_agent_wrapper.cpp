@@ -6,51 +6,6 @@ namespace mujoco {
 
     /***********************************************************************************************
     *                                                                                              *
-    *                                     Helper-Functions                                         *
-    *                                                                                              *
-    ***********************************************************************************************/
-
-    std::string enumJointToMjcType( const eJointType& type )
-    {
-        if ( type == eJointType::FIXED ) return ""; // fixed joints are just skipped in mjcf format
-        if ( type == eJointType::REVOLUTE ) return "hinge";
-        if ( type == eJointType::PRISMATIC ) return "slide";
-        if ( type == eJointType::SPHERICAL ) return "ball";
-        if ( type == eJointType::PLANAR ) return ""; // planar joints are not supported, so skip for now
-        if ( type == eJointType::FREE ) return "free";
-
-        std::cout << "WARNING> invalid eJointType enum given" << std::endl;
-
-        return "";
-    }
-
-    std::string enumShapeToMjcType( const eShapeType& type )
-    {
-        if ( type == eShapeType::BOX ) return "box";
-        if ( type == eShapeType::PLANE ) return "plane";
-        if ( type == eShapeType::SPHERE ) return "sphere";
-        if ( type == eShapeType::CYLINDER ) return "cylinder";
-        if ( type == eShapeType::CAPSULE ) return "capsule";
-        if ( type == eShapeType::ELLIPSOID ) return "ellipsoid";
-        if ( type == eShapeType::MESH ) return "mesh";
-        if ( type == eShapeType::HFIELD ) return "hfield"; // @todo: move to mujoco_common
-
-        std::cout << "WARNING> invalid eShapeType enum given" << std::endl;
-
-        return "";
-    }
-
-    std::string enumActuatorToMjcType( const eActuatorType& type )
-    {
-        if ( type == eActuatorType::TORQUE ) return "motor";
-
-        std::cout << "WARNING> unsupported type of actuator: " << tysoc::toString( type ) << std::endl;
-
-        return "";
-    }
-
-    /***********************************************************************************************
-    *                                                                                              *
     *                                    Mujoco Joint-Adapter                                      *
     *                                                                                              *
     ***********************************************************************************************/
@@ -346,12 +301,12 @@ namespace mujoco {
             _configureFormatRlsim();
     }
 
-    void TMjcKinTreeAgentWrapper::setMjcModel( mjModel* mjcModelPtr )
+    void TMjcKinTreeAgentWrapper::setMjcModelRef( mjModel* mjcModelPtr )
     {
         m_mjcModelPtr = mjcModelPtr;
     }
 
-    void TMjcKinTreeAgentWrapper::setMjcData( mjData* mjcDataPtr )
+    void TMjcKinTreeAgentWrapper::setMjcDataRef( mjData* mjcDataPtr )
     {
         m_mjcDataPtr = mjcDataPtr;
     }

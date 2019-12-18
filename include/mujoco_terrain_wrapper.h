@@ -71,9 +71,8 @@ namespace mujoco {
         TMjcTerrainGenWrapper( TITerrainGenerator* terrainGenPtr );
         ~TMjcTerrainGenWrapper();
 
-        void setMjcModel( mjModel* mjcModelPtr );
-        void setMjcData( mjData* mjcDataPtr );
-        void setMjcScene( mjvScene* mjcScenePtr );
+        void setMjcModelRef( mjModel* mjcModelPtr );
+        void setMjcDataRef( mjData* mjcDataPtr );
         void setMjcfTargetElm( mjcf::GenericElement* targetResourcesPtr );
     };
 

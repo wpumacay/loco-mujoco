@@ -8,9 +8,8 @@ namespace mujoco {
     TMjcTerrainGenWrapper::TMjcTerrainGenWrapper( TITerrainGenerator* terrainGenPtr )
         : TTerrainGenWrapper( terrainGenPtr )
     {
-        m_mjcModelPtr   = nullptr;
-        m_mjcDataPtr    = nullptr;
-        m_mjcScenePtr   = nullptr;
+        m_mjcModelPtr = nullptr;
+        m_mjcDataPtr = nullptr;
         m_mjcfTargetResourcesPtr = nullptr;
 
         // Create resources that will be fixed|static (no pool needed)
@@ -43,9 +42,8 @@ namespace mujoco {
 
     TMjcTerrainGenWrapper::~TMjcTerrainGenWrapper()
     {
-        m_mjcModelPtr   = nullptr;
-        m_mjcDataPtr    = nullptr;
-        m_mjcScenePtr   = nullptr;
+        m_mjcModelPtr = nullptr;
+        m_mjcDataPtr = nullptr;
         m_mjcfTargetResourcesPtr = nullptr;
 
         while ( !m_mjcAvailablePrimitives.empty() )
@@ -60,19 +58,14 @@ namespace mujoco {
         m_mjcTerrainPrimitives.clear();
     }
 
-    void TMjcTerrainGenWrapper::setMjcModel( mjModel* mjcModelPtr )
+    void TMjcTerrainGenWrapper::setMjcModelRef( mjModel* mjcModelPtr )
     {
         m_mjcModelPtr = mjcModelPtr;
     }
 
-    void TMjcTerrainGenWrapper::setMjcData( mjData* mjcDataPtr )
+    void TMjcTerrainGenWrapper::setMjcDataRef( mjData* mjcDataPtr )
     {
         m_mjcDataPtr = mjcDataPtr;
-    }
-
-    void TMjcTerrainGenWrapper::setMjcScene( mjvScene* mjcScenePtr )
-    {
-        m_mjcScenePtr = mjcScenePtr;
     }
 
     void TMjcTerrainGenWrapper::setMjcfTargetElm( mjcf::GenericElement* targetResourcesPtr )
@@ -222,19 +215,6 @@ namespace mujoco {
         utils::setRbound( m_mjcModelPtr,
                            mjcTerrainPritimivePtr->mjcGeomName,
                            _primitiveObj->rbound );
-
-        if ( !_primitiveObj->useCustomColor )
-        {
-            float _color[3];
-            utils::getGeometryColor( m_mjcModelPtr,
-                                      m_mjcScenePtr,
-                                      mjcTerrainPritimivePtr->mjcGeomName,
-                                      _color );
-
-            _primitiveObj->color.x = _color[0];
-            _primitiveObj->color.y = _color[1];
-            _primitiveObj->color.z = _color[2];
-        }
     }
 
     void TMjcTerrainGenWrapper::_wrapStaticPrimitive( TTerrainPrimitive* primitivePtr )

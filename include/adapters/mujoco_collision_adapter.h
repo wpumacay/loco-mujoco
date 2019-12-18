@@ -24,7 +24,9 @@ namespace tysoc {
 
         void reset() override;
 
-        void update() override;
+        void preStep() override;
+
+        void postStep() override;
 
         void setLocalPosition( const TVec3& position ) override;
 
@@ -36,11 +38,10 @@ namespace tysoc {
 
         void changeElevationData( const std::vector< float >& heightData ) override;
 
-        void setMjcModel( mjModel* mjcModelPtr ) { m_mjcModelPtr = mjcModelPtr; }
+        void setMjcModelRef( mjModel* mjcModelPtr ) { m_mjcModelPtr = mjcModelPtr; }
 
-        void setMjcData( mjData* mjcDataPtr ) { m_mjcDataPtr = mjcDataPtr; }
+        void setMjcDataRef( mjData* mjcDataPtr ) { m_mjcDataPtr = mjcDataPtr; }
 
-        void setMjcGeomId( int mjcGeomId ) { m_mjcGeomId = mjcGeomId; }
 
         mjcf::GenericElement* mjcfResource() { return m_mjcfXmlResource; }
 

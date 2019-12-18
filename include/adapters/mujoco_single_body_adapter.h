@@ -9,20 +9,22 @@
 
 namespace tysoc {
 
-    class TMjcBodyAdapter : public TIBodyAdapter
+    class TMjcSingleBodyAdapter : public TIBodyAdapter
     {
 
     public :
 
-        TMjcBodyAdapter( TSingleBody* bodyRef );
+        TMjcSingleBodyAdapter( TSingleBody* bodyRef );
 
-        ~TMjcBodyAdapter();
+        ~TMjcSingleBodyAdapter();
 
         void build() override;
 
         void reset() override;
 
-        void update() override;
+        void preStep() override;
+
+        void postStep() override;
 
         void setPosition( const TVec3& position ) override;
 
@@ -48,11 +50,9 @@ namespace tysoc {
 
         void getLocalTransform( TMat4& dstTransform ) override;
 
-        void setMjcModel( mjModel* mjcModelPtr ) { m_mjcModelPtr = mjcModelPtr; }
+        void setMjcModelRef( mjModel* mjcModelPtr ) { m_mjcModelPtr = mjcModelPtr; }
 
-        void setMjcData( mjData* mjcDataPtr ) { m_mjcDataPtr = mjcDataPtr; }
-
-        void setMjcBodyId( int mjcBodyId ) { m_mjcBodyId = mjcBodyId; }
+        void setMjcDataRef( mjData* mjcDataPtr ) { m_mjcDataPtr = mjcDataPtr; }
 
         mjcf::GenericElement* mjcfResource() const { return m_mjcfXmlResource; }
 

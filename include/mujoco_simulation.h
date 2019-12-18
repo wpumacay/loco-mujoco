@@ -6,7 +6,8 @@
 #include <mujoco_agent_wrapper.h>
 
 #include <adapters/mujoco_collision_adapter.h>
-#include <adapters/mujoco_body_adapter.h>
+#include <adapters/mujoco_single_body_adapter.h>
+#include <adapters/mujoco_compound_adapter.h>
 
 #ifndef MUJOCO_LICENSE_FILE
     #define MUJOCO_LICENSE_FILE "~/.mujoco/mjkey.txt"
@@ -71,14 +72,20 @@ namespace mujoco {
 
     private :
 
-        void _collectResourcesFromBodyAdapter( TMjcBodyAdapter* bodyAdapter );
+        void _constructSingleBodyAdapters();
+        void _constructCompoundAdapters();
+        void _constructAgentAdapters();
+        void _constructTerrainGeneratorAdapters();
+
+        void _collectResourcesFromBodyAdapter( TMjcSingleBodyAdapter* bodyAdapter );
+        void _collectResourcesFromCompoundAdapter( TMjcCompoundAdapter* compoundAdapter );
         void _collectResourcesFromAgentAdapter( TMjcKinTreeAgentWrapper* agentAdapter );
         void _collectResourcesFromTerrainGenAdapter( TMjcTerrainGenWrapper* terrainGenAdapter );
 
     private :
 
-        mjModel*    m_mjcModelPtr;
-        mjData*     m_mjcDataPtr;
+        mjModel* m_mjcModelPtr;
+        mjData* m_mjcDataPtr;
 
         mjcf::GenericElement* m_mjcfResourcesPtr;
         std::vector< mjcf::GenericElement* > m_mjcfMeshResources;

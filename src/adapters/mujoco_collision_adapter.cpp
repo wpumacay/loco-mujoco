@@ -79,7 +79,12 @@ namespace tysoc {
         // nothing required for now, as the functionality exposed in the other methods seems enough
     }
 
-    void TMjcCollisionAdapter::update()
+    void TMjcCollisionAdapter::preStep()
+    {
+        // do nothing for now, because so far we only need to use the overriden methods
+    }
+
+    void TMjcCollisionAdapter::postStep()
     {
         // do nothing for now, because so far we only need to use the overriden methods
     }
@@ -193,9 +198,12 @@ namespace tysoc {
         assert( m_mjcModelPtr );
         assert( m_mjcDataPtr );
 
+        m_mjcGeomId = mj_name2id( m_mjcModelPtr, mjOBJ_GEOM, m_collisionPtr->name().c_str() );
+
         if ( m_mjcGeomId == -1 )
         {
-            std::cout << "ERROR> mjc-collision-adapter should have been assigned a mjc-id by now" << std::endl;
+            TYSOC_CORE_ERROR( "TMjcCollisionAdapter::onResourcesCreated() >>> couldn't find the associated \
+                               mjc-geom for collision \"{0}\"", m_collisionPtr->name() );
             return;
         }
 

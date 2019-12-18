@@ -20,10 +20,6 @@ namespace mujoco {
         TMjcBodyWrapper( int id );
     };
 
-    std::string enumJointToMjcType( const eJointType& type );
-    std::string enumShapeToMjcType( const eShapeType& type );
-    std::string enumActuatorToMjcType( const eActuatorType& type );
-
     class TMjcJointWrapper
     {
 
@@ -140,8 +136,8 @@ namespace mujoco {
 
         void build() override;
 
-        void setMjcModel( mjModel* mjcModelPtr );
-        void setMjcData( mjData* mjcDataPtr );
+        void setMjcModelRef( mjModel* mjcModelPtr );
+        void setMjcDataRef( mjData* mjcDataPtr );
 
         void finishedCreatingResources();
 

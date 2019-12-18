@@ -95,36 +95,10 @@ namespace mujoco {
         if ( !m_scenarioPtr )
             m_scenarioPtr = new TScenario();
 
-        auto _singleBodies = m_scenarioPtr->getSingleBodies();
-        for ( auto _singleBody : _singleBodies )
-        {
-            auto _singleBodyAdapter = new TMjcBodyAdapter( _singleBody );
-            _singleBody->setAdapter( _singleBodyAdapter );
-
-            m_bodyAdapters.push_back( _singleBodyAdapter );
-
-            auto _collision = _singleBody->collision();
-            if ( _collision )
-            {
-                auto _collisionAdapter = new TMjcCollisionAdapter( _collision );
-                _collision->setAdapter( _collisionAdapter );
-
-                m_collisionAdapters.push_back( _collisionAdapter );
-            }
-        }
-
-        auto _agents = m_scenarioPtr->getAgents();
-        for ( auto _agent : _agents )
-            m_agentWrappers.push_back( new TMjcKinTreeAgentWrapper( _agent ) );
-
-        auto _terrainGens = m_scenarioPtr->getTerrainGenerators();
-        for ( auto _terrainGen : _terrainGens )
-        {
-            auto _terrainGenAdapter = new TMjcTerrainGenWrapper( _terrainGen );
-            _terrainGenAdapter->setMjcfTargetElm( m_mjcfResourcesPtr );
-
-            m_terrainGenWrappers.push_back( _terrainGenAdapter );
-        }
+        _constructSingleBodyAdapters();
+        _constructCompoundAdapters();
+        _constructAgentAdapters();
+        _constructTerrainGeneratorAdapters();
     }
 
     TMjcSimulation::~TMjcSimulation()
@@ -146,15 +120,102 @@ namespace mujoco {
         m_mjcModelPtr = nullptr;
     }
 
+    void TMjcSimulation::_constructSingleBodyAdapters()
+    {
+        auto _singleBodies = m_scenarioPtr->getSingleBodies();
+        for ( auto _singleBody : _singleBodies )
+        {
+            auto _singleBodyAdapter = new TMjcSingleBodyAdapter( _singleBody );
+            _singleBody->setAdapter( _singleBodyAdapter );
+
+            m_bodyAdapters.push_back( _singleBodyAdapter );
+
+            auto _collision = _singleBody->collision();
+            if ( _collision )
+            {
+                auto _collisionAdapter = new TMjcCollisionAdapter( _collision );
+                _collision->setAdapter( _collisionAdapter );
+
+                m_collisionAdapters.push_back( _collisionAdapter );
+            }
+        }
+    }
+
+    void TMjcSimulation::_constructCompoundAdapters()
+    {
+        auto _compounds = m_scenarioPtr->getCompounds();
+        for ( auto _compound : _compounds )
+        {
+            auto _compoundAdapter = new TMjcCompoundAdapter( _compound );
+            _compound->setAdapter( _compoundAdapter );
+
+            m_compoundAdapters.push_back( _compoundAdapter );
+
+            auto _compoundBodies = _compound->bodies();
+            for ( auto _compoundBody : _compoundBodies )
+            {
+                auto _compoundBodyAdapter = new TMjcCompoundBodyAdapter( _compoundBody );
+                _compoundBody->setAdapter( _compoundBodyAdapter );
+
+                m_bodyAdapters.push_back( _compoundBodyAdapter );
+
+                auto _compoundCollision = _compoundBody->collision();
+                if ( _compoundCollision )
+                {
+                    auto _compoundCollisionAdapter = new TMjcCollisionAdapter( _compoundCollision );
+                    _compoundCollision->setAdapter( _compoundCollisionAdapter );
+
+                    m_collisionAdapters.push_back( _compoundCollisionAdapter );
+                }
+
+                auto _compoundJoint = _compoundBody->joint();
+                if ( _compoundJoint )
+                {
+                    auto _compoundJointAdapter = new TMjcCompoundJointAdapter( _compoundJoint );
+                    _compoundJoint->setAdapter( _compoundJointAdapter );
+
+                    m_jointAdapters.push_back( _compoundJointAdapter );
+                }
+            }
+        }
+    }
+
+    void TMjcSimulation::_constructAgentAdapters()
+    {
+        auto _agents = m_scenarioPtr->getAgents();
+        for ( auto _agent : _agents )
+            m_agentWrappers.push_back( new TMjcKinTreeAgentWrapper( _agent ) );
+    }
+
+    void TMjcSimulation::_constructTerrainGeneratorAdapters()
+    {
+        auto _terrainGens = m_scenarioPtr->getTerrainGenerators();
+        for ( auto _terrainGen : _terrainGens )
+        {
+            auto _terrainGenAdapter = new TMjcTerrainGenWrapper( _terrainGen );
+            _terrainGenAdapter->setMjcfTargetElm( m_mjcfResourcesPtr );
+
+            m_terrainGenWrappers.push_back( _terrainGenAdapter );
+        }
+    }
+
     bool TMjcSimulation::_initializeInternal()
     {
         /* collect all resources from the adapters */
         for ( auto _terrainGenAdapter : m_terrainGenWrappers )
             _terrainGenAdapter->initialize();// Injects terrain resources into m_mjcfResourcesPtr
+
         for ( auto _agentAdapter : m_agentWrappers )
             _collectResourcesFromAgentAdapter( dynamic_cast< TMjcKinTreeAgentWrapper* >( _agentAdapter ) );
+
         for ( auto _singleBodyAdapter : m_bodyAdapters )
-            _collectResourcesFromBodyAdapter( dynamic_cast< TMjcBodyAdapter* >( _singleBodyAdapter ) );
+        {
+            if ( _singleBodyAdapter->body()->classType() == eBodyClassType::SINGLE_BODY )
+                _collectResourcesFromBodyAdapter( dynamic_cast< TMjcSingleBodyAdapter* >( _singleBodyAdapter ) );
+        }
+
+        for ( auto _compoundAdapter : m_compoundAdapters )
+            _collectResourcesFromCompoundAdapter( dynamic_cast< TMjcCompoundAdapter* >( _compoundAdapter ) );
 
         /* insert all collected mesh assets into the mjcf simulation resource */
         auto _assetsSimulationElmPtr = mjcf::findFirstChildByType( m_mjcfResourcesPtr, "asset" );
@@ -196,37 +257,38 @@ namespace mujoco {
         {
             auto _mujocoTerrainGenAdapter = dynamic_cast< TMjcTerrainGenWrapper* >( _terrainGenAdapter );
 
-            _mujocoTerrainGenAdapter->setMjcModel( m_mjcModelPtr );
-            _mujocoTerrainGenAdapter->setMjcData( m_mjcDataPtr );
+            _mujocoTerrainGenAdapter->setMjcModelRef( m_mjcModelPtr );
+            _mujocoTerrainGenAdapter->setMjcDataRef( m_mjcDataPtr );
         }
 
         for ( auto _agentAdapter : m_agentWrappers )
         {
             auto _mujocoAgentAdapter = dynamic_cast< TMjcKinTreeAgentWrapper* >( _agentAdapter );
 
-            _mujocoAgentAdapter->setMjcModel( m_mjcModelPtr );
-            _mujocoAgentAdapter->setMjcData( m_mjcDataPtr );
+            _mujocoAgentAdapter->setMjcModelRef( m_mjcModelPtr );
+            _mujocoAgentAdapter->setMjcDataRef( m_mjcDataPtr );
             _mujocoAgentAdapter->finishedCreatingResources();
         }
 
         for ( auto _singleBodyAdapter : m_bodyAdapters )
         {
-            auto _mujocoBodyAdapter = dynamic_cast< TMjcBodyAdapter* >( _singleBodyAdapter );
+            if ( _singleBodyAdapter->body()->classType() != eBodyClassType::SINGLE_BODY )
+                continue;
 
-            _mujocoBodyAdapter->setMjcModel( m_mjcModelPtr );
-            _mujocoBodyAdapter->setMjcData( m_mjcDataPtr );
-            _mujocoBodyAdapter->setMjcBodyId( mj_name2id( m_mjcModelPtr, mjOBJ_BODY, _singleBodyAdapter->body()->name().c_str() ) );
+            auto _mujocoBodyAdapter = dynamic_cast< TMjcSingleBodyAdapter* >( _singleBodyAdapter );
+
+            _mujocoBodyAdapter->setMjcModelRef( m_mjcModelPtr );
+            _mujocoBodyAdapter->setMjcDataRef( m_mjcDataPtr );
             _mujocoBodyAdapter->onResourcesCreated();
         }
 
-        for ( auto _collisionAdapter : m_collisionAdapters )
+        for ( auto _compoundAdapter : m_compoundAdapters )
         {
-            auto _mujocoCollisionAdapter = dynamic_cast< TMjcCollisionAdapter* >( _collisionAdapter );
+            auto _mujocoCompoundAdapter = dynamic_cast< TMjcCompoundAdapter* >( _compoundAdapter );
 
-            _mujocoCollisionAdapter->setMjcModel( m_mjcModelPtr );
-            _mujocoCollisionAdapter->setMjcData( m_mjcDataPtr );
-            _mujocoCollisionAdapter->setMjcGeomId( mj_name2id( m_mjcModelPtr, mjOBJ_GEOM, _collisionAdapter->collision()->name().c_str() ) );
-            _mujocoCollisionAdapter->onResourcesCreated();
+            _mujocoCompoundAdapter->setMjcModelRef( m_mjcModelPtr );
+            _mujocoCompoundAdapter->setMjcDataRef( m_mjcDataPtr );
+            _mujocoCompoundAdapter->onResourcesCreated();
         }
 
         /* create contact manager */
@@ -243,7 +305,7 @@ namespace mujoco {
         return true;
     }
 
-    void TMjcSimulation::_collectResourcesFromBodyAdapter( TMjcBodyAdapter* bodyAdapter )
+    void TMjcSimulation::_collectResourcesFromBodyAdapter( TMjcSingleBodyAdapter* bodyAdapter )
     {
         /* world-body element where to place the resources of the body */
         auto _worldBody4Body = new mjcf::GenericElement( "worldbody" );
@@ -256,6 +318,14 @@ namespace mujoco {
         auto _bodyXmlAssetResources = bodyAdapter->mjcfAssetResources();
         for ( auto _meshAsset : _bodyXmlAssetResources->children )
             m_mjcfMeshResources.push_back( _meshAsset );
+    }
+
+    void TMjcSimulation::_collectResourcesFromCompoundAdapter( TMjcCompoundAdapter* compoundAdapter )
+    {
+        auto _compoundXmlResource = compoundAdapter->mjcfResource();
+
+        if ( _compoundXmlResource )
+            m_mjcfResourcesPtr->children.push_back( _compoundXmlResource );
     }
 
     void TMjcSimulation::_collectResourcesFromAgentAdapter( TMjcKinTreeAgentWrapper* agentAdapter )

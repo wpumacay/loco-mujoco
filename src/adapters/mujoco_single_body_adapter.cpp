@@ -1,44 +1,39 @@
 
-#include <adapters/mujoco_body_adapter.h>
+#include <adapters/mujoco_single_body_adapter.h>
 
 // @todo: replace wild referencing using mjcf generic elements, as we're currently leaking if restarting (not freeing xmlassets)
 // @todo: define some sort of ownership relation between generic elements to avoid dangling references
 
 namespace tysoc {
 
-    TMjcBodyAdapter::TMjcBodyAdapter( TSingleBody* bodyRef )
+    TMjcSingleBodyAdapter::TMjcSingleBodyAdapter( TSingleBody* bodyRef )
         : TIBodyAdapter( bodyRef )
     {
         m_mjcModelPtr       = nullptr;
         m_mjcDataPtr        = nullptr;
         m_mjcfXmlResource   = nullptr;
-        m_mjcBodyId         = -1;
-        m_mjcJointId        = -1;
-        m_mjcQposAdr        = -1;
-        m_mjcQvelAdr        = -1;
-    }
 
-    TMjcBodyAdapter::~TMjcBodyAdapter()
-    {
-        if ( m_mjcfXmlResource )
-            delete m_mjcfXmlResource;
-
-        m_mjcBodyId  = -1;
+        m_mjcBodyId = -1;
         m_mjcJointId = -1;
         m_mjcQposAdr = -1;
         m_mjcQvelAdr = -1;
+        m_mjcQposNum = 0;
+        m_mjcQvelNum = 0;
+    }
 
+    TMjcSingleBodyAdapter::~TMjcSingleBodyAdapter()
+    {
         m_mjcModelPtr = nullptr;
         m_mjcDataPtr = nullptr;
         m_mjcfXmlResource = nullptr;
         m_mjcfXmlAssetResources = nullptr;
     }
 
-    void TMjcBodyAdapter::build()
+    void TMjcSingleBodyAdapter::build()
     {
         if ( !m_bodyRef )
         {
-            std::cout << "ERROR> tried to create mjcf resources for a null body" << std::endl;
+            TYSOC_CORE_ERROR( "TMjcSingleBodyAdapter::build() >>> tried to create mjcf resources for a null body" );
             return;
         }
 
@@ -72,7 +67,7 @@ namespace tysoc {
         }
     }
 
-    void TMjcBodyAdapter::reset()
+    void TMjcSingleBodyAdapter::reset()
     {
         assert( m_bodyRef );
         assert( m_mjcBodyId != -1 );
@@ -104,12 +99,17 @@ namespace tysoc {
         }
     }
 
-    void TMjcBodyAdapter::update()
+    void TMjcSingleBodyAdapter::preStep()
     {
         // do nothing for now, because so far we only need to use the overriden methods
     }
 
-    void TMjcBodyAdapter::setPosition( const TVec3& position )
+    void TMjcSingleBodyAdapter::postStep()
+    {
+        // do nothing for now, because so far we only need to use the overriden methods
+    }
+
+    void TMjcSingleBodyAdapter::setPosition( const TVec3& position )
     {
         assert( m_bodyRef );
         assert( m_mjcBodyId != -1 );
@@ -128,7 +128,7 @@ namespace tysoc {
         }
     }
 
-    void TMjcBodyAdapter::setRotation( const TMat3& rotation )
+    void TMjcSingleBodyAdapter::setRotation( const TMat3& rotation )
     {
         assert( m_bodyRef );
         assert( m_mjcBodyId != -1 );
@@ -151,7 +151,7 @@ namespace tysoc {
         }
     }
 
-    void TMjcBodyAdapter::setTransform( const TMat4& transform )
+    void TMjcSingleBodyAdapter::setTransform( const TMat4& transform )
     {
         assert( m_bodyRef );
         assert( m_mjcBodyId != -1 );
@@ -183,7 +183,7 @@ namespace tysoc {
         }
     }
 
-    void TMjcBodyAdapter::getPosition( TVec3& dstPosition )
+    void TMjcSingleBodyAdapter::getPosition( TVec3& dstPosition )
     {
         assert( m_bodyRef );
         assert( m_mjcBodyId != -1 );
@@ -202,7 +202,7 @@ namespace tysoc {
         }
     }
 
-    void TMjcBodyAdapter::getRotation( TMat3& dstRotation )
+    void TMjcSingleBodyAdapter::getRotation( TMat3& dstRotation )
     {
         assert( m_bodyRef );
         assert( m_mjcBodyId != -1 );
@@ -229,7 +229,7 @@ namespace tysoc {
         }
     }
 
-    void TMjcBodyAdapter::getTransform( TMat4& dstTransform )
+    void TMjcSingleBodyAdapter::getTransform( TMat4& dstTransform )
     {
         TVec3 _pos;
         TMat3 _rot;
@@ -241,45 +241,58 @@ namespace tysoc {
         dstTransform.setRotation( _rot );
     }
 
-    void TMjcBodyAdapter::setLocalPosition( const TVec3& position )
+    void TMjcSingleBodyAdapter::setLocalPosition( const TVec3& position )
     {
         // nothing to do here for single-bodies
     }
 
-    void TMjcBodyAdapter::setLocalRotation( const TMat3& rotation )
+    void TMjcSingleBodyAdapter::setLocalRotation( const TMat3& rotation )
     {
         // nothing to do here for single-bodies
     }
 
-    void TMjcBodyAdapter::setLocalTransform( const TMat4& transform )
+    void TMjcSingleBodyAdapter::setLocalTransform( const TMat4& transform )
     {
         // nothing to do here for single-bodies
     }
 
-    void TMjcBodyAdapter::getLocalPosition( TVec3& dstPosition )
+    void TMjcSingleBodyAdapter::getLocalPosition( TVec3& dstPosition )
     {
         // nothing to do here for single-bodies
     }
 
-    void TMjcBodyAdapter::getLocalRotation( TMat3& dstRotation )
+    void TMjcSingleBodyAdapter::getLocalRotation( TMat3& dstRotation )
     {
         // nothing to do here for single-bodies
     }
 
-    void TMjcBodyAdapter::getLocalTransform( TMat4& dstTransform )
+    void TMjcSingleBodyAdapter::getLocalTransform( TMat4& dstTransform )
     {
         // nothing to do here for single-bodies
     }
 
-    void TMjcBodyAdapter::onResourcesCreated()
+    void TMjcSingleBodyAdapter::onResourcesCreated()
     {
         assert( m_mjcModelPtr );
         assert( m_mjcDataPtr );
 
+        m_mjcBodyId = mj_name2id( m_mjcModelPtr, mjOBJ_BODY, m_bodyRef->name().c_str() );
+
         if ( m_mjcBodyId == -1 )
         {
-            std::cout << "ERROR> mjc-body-adapter should have been assigned a mjc-id by now" << std::endl;
+            TYSOC_CORE_ERROR( "TMjcSingleBodyAdapter::onResourcesCreated() >>> couldn't find the associated \
+                               mjc-body for body \"{0}\"", m_bodyRef->name() );
             return;
+        }
+
+        // notify the collider that the simulation has been initialized
+        auto _collision = m_bodyRef->collision();
+        if ( _collision && _collision->adapter() )
+        {
+            auto _collisionAdapter = dynamic_cast< TMjcCollisionAdapter* >( _collision->adapter() );
+            _collisionAdapter->setMjcModelRef( m_mjcModelPtr );
+            _collisionAdapter->setMjcDataRef( m_mjcDataPtr );
+            _collisionAdapter->onResourcesCreated();
         }
 
         // set the start position in the model (only if non-static)
@@ -321,7 +334,7 @@ namespace tysoc {
 
     extern "C" TIBodyAdapter* simulation_createBodyAdapter( TSingleBody* bodyRef )
     {
-        return new TMjcBodyAdapter( bodyRef );
+        return new TMjcSingleBodyAdapter( bodyRef );
     }
 
 }

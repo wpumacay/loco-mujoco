@@ -8,7 +8,7 @@ tysoc::TCompound* createDoorVersion1( const std::string& name, const tysoc::TVec
 {
     tysoc::TCompound* _compound = new tysoc::TCompound( name, 
                                                         position, 
-                                                        tysoc::TMat3::fromEuler( { 0.0f, 0.0f, 0.0f } ),
+                                                        tysoc::TMat3::fromEuler( { 0.1f, 0.2f, 0.3f } ),
                                                         tysoc::eDynamicsType::DYNAMIC );
 
     /* create compound bodies separately, compose them and add to the compound afterwards *********/
@@ -95,8 +95,8 @@ tysoc::TCompound* createDoorVersion1( const std::string& name, const tysoc::TVec
     auto _panel_joint_data = tysoc::TJointData();
     _panel_joint_data.type = tysoc::eJointType::REVOLUTE;
     _panel_joint_data.axis = { 0.0f, 0.0f, 1.0f };
-    _panel_joint_data.limits = { -0.5f * TYSOC_PI, 0.5F * TYSOC_PI };
-    _panel_joint_data.localTransform = tysoc::TMat4::fromPositionAndRotation( { 0.1f, -0.1f, 0.0f }, tysoc::TMat3() );
+    _panel_joint_data.limits = { -0.5f * TYSOC_PI, 0.5f * TYSOC_PI };
+    _panel_joint_data.localTransform = tysoc::TMat4::fromPositionAndRotation( { -0.6f, -0.05f, 0.0f }, tysoc::TMat3() );
     auto _panel_local_tf = tysoc::TMat4::fromPositionAndRotation( { 0.7f, -0.15f, 0.0f }, tysoc::TMat3() );
     auto _panel_body = new tysoc::TCompoundBody( "panel",
                                                  _panel_body_data,
@@ -163,7 +163,7 @@ int main()
     auto _terrainGenStatic = new tysoc::TStaticTerrainGenerator( "terrainGen0" );
     _terrainGenStatic->createPrimitive( "plane", 
                                         { 10.0f, 10.0f, 0.2f }, 
-                                        { 0.0f, 0.0f, -1.0f },
+                                        { 0.0f, 0.0f, 0.0f },
                                         tysoc::TMat3(),
                                         { 0.2f, 0.3f, 0.4f },
                                         "built_in_chessboard" );
@@ -171,7 +171,7 @@ int main()
     auto _scenario = new tysoc::TScenario();
     _scenario->addTerrainGenerator( _terrainGenStatic );
 
-    auto _compoundDoor = createDoorVersion1( "door", { 0.0f, 0.0f, 2.0f } );
+    auto _compoundDoor = createDoorVersion1( "door", { 0.0f, 0.0f, 1.0f } );
     _scenario->addCompound( _compoundDoor );
 
     auto _runtime = new tysoc::TRuntime( tysoc::config::physics::MUJOCO, 

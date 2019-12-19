@@ -15,15 +15,15 @@ namespace mujoco {
                                             mjData* mjcData )
     {
         m_scenario = scenario;
-        m_mjcModel = mjcModel;
-        m_mjcData = mjcData;
+        m_mjcModelPtr = mjcModel;
+        m_mjcDataPtr = mjcData;
     }
 
     TMjcContactManager::~TMjcContactManager()
     {
         m_scenario = nullptr;
-        m_mjcModel = nullptr;
-        m_mjcData = nullptr;
+        m_mjcModelPtr = nullptr;
+        m_mjcDataPtr = nullptr;
     }
 
     void TMjcContactManager::update()
@@ -32,11 +32,11 @@ namespace mujoco {
         m_contacts.clear();
 
         /* start collecting from the backend all available contacts */
-        int _nContacts = m_mjcData->ncon;
+        int _nContacts = m_mjcDataPtr->ncon;
         for ( size_t i = 0; i < _nContacts; i++ )
         {
             auto _kinContact = TMjcContact();
-            auto _contactInfo = m_mjcData->contact[i];
+            auto _contactInfo = m_mjcDataPtr->contact[i];
 
             _kinContact.position = { (float) _contactInfo.pos[0], 
                                      (float) _contactInfo.pos[1], 
@@ -55,8 +55,8 @@ namespace mujoco {
             if ( _geomId1 == -1 || _geomId2 == -1 )
                 continue;
 
-            _kinContact.collider1Name = mj_id2name( m_mjcModel, mjOBJ_GEOM, _geomId1 );
-            _kinContact.collider2Name = mj_id2name( m_mjcModel, mjOBJ_GEOM, _geomId2 );
+            _kinContact.collider1Name = mj_id2name( m_mjcModelPtr, mjOBJ_GEOM, _geomId1 );
+            _kinContact.collider2Name = mj_id2name( m_mjcModelPtr, mjOBJ_GEOM, _geomId2 );
 
             m_contacts.push_back( _kinContact );
         }
@@ -293,6 +293,9 @@ namespace mujoco {
 
         /* create contact manager */
         m_contactManager = new TMjcContactManager( m_scenarioPtr, m_mjcModelPtr, m_mjcDataPtr );
+
+        /* take a single step of kinematic computation */
+        mj_kinematics( m_mjcModelPtr, m_mjcDataPtr );
 
         TYSOC_CORE_TRACE( "Simulation-MuJoCo >>> total-nq: {0}", m_mjcModelPtr->nq );
         TYSOC_CORE_TRACE( "Simulation-MuJoCo >>> total-nv: {0}", m_mjcModelPtr->nv );

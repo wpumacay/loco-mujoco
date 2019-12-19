@@ -105,24 +105,16 @@ namespace tysoc {
             return;
         }
         auto _compoundBodyRef = dynamic_cast< TCompoundBody* >( m_bodyRef );
+        auto _compoundRef = _compoundBodyRef->compound();
+        assert( _compoundRef );
 
-        /* Check if the body has to delegate reset to joint, or it has to handle reset itself. In 
-           case the joint handles the reset, the request is already made by the body::reset core func. */
-        if ( _compoundBodyRef->isRoot() && _compoundBodyRef->dyntype() == eDynamicsType::STATIC )
+        if ( _compoundBodyRef->isRoot() )
         {
-            // Root bodies that are fixed have no dof, so we can't delegate to the joint
             auto _worldTf = _compoundBodyRef->compound()->tf0() * _compoundBodyRef->localTf0();
-            auto _pos0 = _worldTf.getPosition();
-            auto _quat0 = _worldTf.getRotQuaternion();
-
-            m_mjcModelRef->body_pos[3 * m_mjcBodyId + 0] = _pos0.x;
-            m_mjcModelRef->body_pos[3 * m_mjcBodyId + 1] = _pos0.y;
-            m_mjcModelRef->body_pos[3 * m_mjcBodyId + 2] = _pos0.z;
-
-            m_mjcModelRef->body_quat[4 * m_mjcBodyId + 0] = _quat0.w;
-            m_mjcModelRef->body_quat[4 * m_mjcBodyId + 1] = _quat0.x;
-            m_mjcModelRef->body_quat[4 * m_mjcBodyId + 2] = _quat0.y;
-            m_mjcModelRef->body_quat[4 * m_mjcBodyId + 3] = _quat0.z;
+            if ( _compoundRef->dyntype() != eDynamicsType::STATIC )
+                _updateWorldTransform_freeRoot( _worldTf );
+            else
+                _updateWorldTransform_fixedRoot( _worldTf );
         }
     }
 
@@ -273,7 +265,6 @@ namespace tysoc {
     {
         // grab mjc-body id associated with the body in simulation
         m_mjcBodyId = mj_name2id( m_mjcModelRef, mjOBJ_BODY, m_bodyRef->name().c_str() );
-
         // upcast to the actual compound-body (we need those resources)
         auto _compoundBodyRef = dynamic_cast< TCompoundBody* >( m_bodyRef );
 
@@ -314,12 +305,15 @@ namespace tysoc {
         }
 
         auto _compoundBodyRef = dynamic_cast< TCompoundBody* >( m_bodyRef );
+        assert( _compoundBodyRef );
+        auto _compoundRef = _compoundBodyRef->compound();
+        assert( _compoundRef );
         /* for root bodies, we either move using the available generalized coordinates (free root-body), 
            or using the body_pos|body_quat directly in the mjModel struct (fixed root-body) */
         if ( _compoundBodyRef->isRoot() )
         {
             // move the whole structure to the body's frame in world-space (world-tf was updated by caller)
-            if ( _compoundBodyRef->dyntype() != eDynamicsType::STATIC )
+            if ( _compoundRef->dyntype() != eDynamicsType::STATIC )
                 _updateWorldTransform_freeRoot( _compoundBodyRef->tf() );
             else
                 _updateWorldTransform_fixedRoot( _compoundBodyRef->tf() );

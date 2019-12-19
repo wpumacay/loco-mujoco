@@ -46,8 +46,8 @@ namespace mujoco {
         std::vector< TMjcContact > m_contacts;
 
         TScenario* m_scenario;
-        mjModel* m_mjcModel;
-        mjData* m_mjcData;
+        mjModel* m_mjcModelPtr;
+        mjData* m_mjcDataPtr;
 
     };
 

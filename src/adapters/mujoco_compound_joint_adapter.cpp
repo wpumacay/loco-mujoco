@@ -70,7 +70,14 @@ namespace tysoc {
 
     void TMjcCompoundJointAdapter::reset()
     {
-        
+        if ( m_jointRef->type() == eJointType::FREE )
+            return;
+
+        for ( int i = 0; i < m_mjcQposNum; i++ )
+            m_mjcDataRef->qpos[m_mjcQposAdr + i] = m_mjcModelRef->qpos0[m_mjcQposAdr + i];
+
+        for ( int i = 0; i < m_mjcQvelNum; i++ )
+            m_mjcDataRef->qvel[m_mjcQvelAdr + i] = 0.0f;
     }
 
     void TMjcCompoundJointAdapter::preStep()
@@ -100,22 +107,26 @@ namespace tysoc {
 
     void TMjcCompoundJointAdapter::setQpos( const std::array< TScalar, TYSOC_MAX_NUM_QPOS >& qpos )
     {
-
+        for ( int i = 0; i < m_mjcQposNum; i++ )
+            m_mjcDataRef->qpos[m_mjcQposAdr + i] = qpos[i];
     }
 
     void TMjcCompoundJointAdapter::setQvel( const std::array< TScalar, TYSOC_MAX_NUM_QVEL >& qvel )
     {
-
+        for ( int i = 0; i < m_mjcQvelNum; i++ )
+            m_mjcDataRef->qvel[m_mjcQvelAdr + i] = qvel[i];
     }
 
     void TMjcCompoundJointAdapter::getQpos( std::array< TScalar, TYSOC_MAX_NUM_QPOS >& dstQpos )
     {
-
+        for ( int i = 0; i < m_mjcQposNum; i++ )
+            dstQpos[i] = m_mjcDataRef->qpos[m_mjcQposAdr + i];
     }
 
     void TMjcCompoundJointAdapter::getQvel( std::array< TScalar, TYSOC_MAX_NUM_QVEL >& dstQvel )
     {
-
+        for ( int i = 0; i < m_mjcQvelNum; i++ )
+            dstQvel[i] = m_mjcDataRef->qvel[m_mjcQvelAdr + i];
     }
 
     void TMjcCompoundJointAdapter::changeLimits( const TVec2& limits )
@@ -128,6 +139,9 @@ namespace tysoc {
         assert( m_mjcModelRef );
         assert( m_mjcDataRef );
         assert( m_jointRef );
+
+        if ( m_jointRef->type() == eJointType::FIXED )
+            return; // fixed-joints are just not added in a mjc-model
 
         m_mjcJointId = mj_name2id( m_mjcModelRef, mjOBJ_JOINT, m_jointRef->name().c_str() );
 
@@ -181,6 +195,10 @@ namespace tysoc {
                                unsupported type \"{1}\"", m_jointRef->name(), tysoc::toString( _jointType ) );
         }
 
+        /* setup initial generalized coordinates and degrees of freedom */
+        auto _qpos0 = m_jointRef->getQpos0();
+        for ( int i = 0; i < m_mjcQposNum; i++ )
+            m_mjcModelRef->qpos0[m_mjcQposAdr + i] = _qpos0[i];
     }
 
     extern "C" TIJointAdapter* simulation_createCompoundJointAdapter( TJoint* jointRef )

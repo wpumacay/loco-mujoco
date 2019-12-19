@@ -110,20 +110,7 @@ namespace tysoc
 
     void TMjcCompoundAdapter::reset()
     {
-        if ( !m_compoundRef )
-        {
-            TYSOC_CORE_ERROR( "TMjcCompoundAdapter::reset() >>> can't reset adapter for null compound" );
-            return;
-        }
-
-        if ( !m_compoundRef->root() )
-        {
-            TYSOC_CORE_ERROR( "TMjcCompoundAdapter::reset() >>> to reset resources we require a root-body\
-                               to start the traversal, but body \"{0}\" doesn't have it", m_compoundRef->name() );
-            return;
-        }
-
-        auto _compoundRootBodyRef = m_compoundRef->root();
+        // nothing to do here, as the reset is handled by the root body's adapter
     }
 
     void TMjcCompoundAdapter::preStep()
@@ -136,7 +123,7 @@ namespace tysoc
         // nothing required here (world-pose is grabbed with getters below)
     }
 
-    void TMjcCompoundAdapter::setPosition( const TVec3& position )
+    void TMjcCompoundAdapter::setPosition( const TVec3& unused_position )
     {
         auto _compoundRootBodyRef = m_compoundRef->root();
         // compute the world-transform where the root-body should be
@@ -145,7 +132,7 @@ namespace tysoc
         _compoundRootBodyRef->setPosition( _compoundRootBodyWorldTf.getPosition() );
     }
 
-    void TMjcCompoundAdapter::setRotation( const TMat3& rotation )
+    void TMjcCompoundAdapter::setRotation( const TMat3& unused_rotation )
     {
         auto _compoundRootBodyRef = m_compoundRef->root();
         // compute the world-transform where the root-body should be
@@ -154,7 +141,7 @@ namespace tysoc
         _compoundRootBodyRef->setRotation( _compoundRootBodyWorldTf.getRotation() );
     }
 
-    void TMjcCompoundAdapter::setTransform( const TMat4& transform )
+    void TMjcCompoundAdapter::setTransform( const TMat4& unused_transform )
     {
         auto _compoundRootBodyRef = m_compoundRef->root();
         // compute the world-transform where the root-body should be

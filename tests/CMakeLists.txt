@@ -2,7 +2,8 @@
 message( "Configuring tysoc-mujoco::tests" )
 
 include_directories( "~/.mujoco/mujoco200_linux/include" )
-include_directories( "${CMAKE_SOURCE_DIR}/ext/cat1/include" )
+include_directories( "${CMAKE_SOURCE_DIR}/ext/tiny_math/include" )
+include_directories( "${CMAKE_SOURCE_DIR}/ext/tiny_renderer/include" )
 include_directories( "${CMAKE_SOURCE_DIR}/ext/imgui" )
 include_directories( "${CMAKE_SOURCE_DIR}/ext/imgui/examples" )
 include_directories( "${CMAKE_SOURCE_DIR}/core/include" )

@@ -36,11 +36,12 @@ before_install:
   - sudo apt install make cmake pkg-config
   - sudo apt install libassimp-dev libglfw3-dev libglew-dev
   - echo "Cloning repo-dependencies from github"
-  - git clone --branch=docking https://github.com/wpumacay/imgui.git ext/imgui
-  - git clone https://github.com/gabime/spdlog.git ext/spdlog
-  - git clone https://github.com/wpumacay/cat1.git ext/cat1
-  - git clone https://github.com/pybind/pybind11.git ext/pybind11
-  - git clone https://github.com/wpumacay/tysoc.git core
+  - git clone --branch=docking      https://github.com/wpumacay/imgui.git ext/imgui
+  - git clone --branch=v1.x         https://github.com/gabime/spdlog.git ext/spdlog
+  - git clone --branch=master       https://github.com/pybind/pybind11.git ext/pybind11
+  - git clone --branch=tysoc-stable https://github.com/wpumacay/tiny_math.git ext/tiny_math
+  - git clone --branch=tysoc-stable https://github.com/wpumacay/tiny_renderer.git ext/tiny_renderer
+  - git clone --branch=master       https://github.com/wpumacay/tysoc.git core
   - echo "Downloading MuJoCo for build"
   - mkdir -p ~/.mujoco
   - wget https://www.roboti.us/download/mujoco200_linux.zip

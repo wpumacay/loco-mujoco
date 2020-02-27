@@ -4,51 +4,49 @@ git:
     submodules: false
 matrix: 
   include:
-    # build for ubuntu-16, gcc8-toolchain
-    - name: "gcc8 - ubuntu 16.04 - xenial"
-      os: linux
+    # build-configuration for ubuntu 16.04 - gcc
+    - os: linux
       dist: xenial
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-8
+      compiler: gcc
       env:
-        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
-      python: 3.6
-    # build for ubuntu-18, gcc8-toolchain
-    - name: "gcc8 - ubuntu 18.04 - bionic"
-      os: linux
+        - BUILD_TYPE=Debug
+        - DIST_NAME="xenial"
+    - os: linux
+      dist: xenial
+      compiler: gcc
+      env:
+        - BUILD_TYPE=Release
+        - DIST_NAME="xenial"
+    # build-configuration for ubuntu 18.04 - gcc
+    - os: linux
       dist: bionic
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-8
-      env: 
-        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
-      python: 3.6
+      compiler: gcc
+      env:
+        - BUILD_TYPE=Debug
+        - DIST_NAME="bionic"
+    - os: linux
+      dist: bionic
+      compiler: gcc
+      env:
+        - BUILD_TYPE=Release
+        - DIST_NAME="bionic"
 
 before_install:
-  - echo "Installing dependencies from Apt"
-  - sudo apt install make cmake pkg-config
-  - sudo apt install libassimp-dev libglfw3-dev libglew-dev
-  - echo "Cloning repo-dependencies from github"
-  - git clone --branch=docking      https://github.com/wpumacay/imgui.git ext/imgui
-  - git clone --branch=v1.x         https://github.com/gabime/spdlog.git ext/spdlog
-  - git clone --branch=master       https://github.com/pybind/pybind11.git ext/pybind11
-  - git clone --branch=tysoc-stable https://github.com/wpumacay/tiny_math.git ext/tiny_math
-  - git clone --branch=tysoc-stable https://github.com/wpumacay/tiny_renderer.git ext/tiny_renderer
-  - git clone --branch=master       https://github.com/wpumacay/tysoc.git core
-  - echo "Downloading MuJoCo for build"
+  - echo "Installing dependencies from apt ..."
+  - sudo apt-get -q update
+  - sudo apt-get -y install pkg-config
+  - sudo apt-get -y install libassimp-dev libglfw3-dev libglew-dev
+  - if [[ "${DIST_NAME}" == "xenial" ]]; then sudo add-apt-repository -y ppa:mc3man/xerus-media; fi
+  - if [[ "${DIST_NAME}" == "bionic" ]]; then sudo add-apt-repository -y ppa:mc3man/bionic-media; fi
+  - sudo apt-get -qq update
+  - sudo apt-get install -y ffmpeg
+  - echo "Cloning repo-dependencies from github ..."
+  - ./scripts/setup_dependencies.sh
+  - echo "Downloading MuJoCo ..."
   - mkdir -p ~/.mujoco
   - wget https://www.roboti.us/download/mujoco200_linux.zip
   - unzip mujoco200_linux.zip -d ~/.mujoco/
-  - echo "Setting gcc-8 as main toolchain"
-  - eval "${MATRIX_EVAL}"
-  - echo "Configuring anaconda and making and env. for the build"
+  - echo "Configuring anaconda and making and env. for the build ..."
   - wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
   - bash miniconda.sh -b -p $HOME/miniconda
   - source "$HOME/miniconda/etc/profile.d/conda.sh"
@@ -59,6 +57,8 @@ before_install:
   - conda create -q -n travis_env python=3.6 setuptools numpy scipy
   - conda activate travis_env
 script:
-  - mkdir build && cd build
-  - cmake -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=$HOME/miniconda/envs/travis_env/bin/python3.6 -DPYTHON_LIBRARY=$HOME/miniconda/envs/travis_env/lib/libpython3.6m.so -DPYTHON_INCLUDE_DIR=$HOME/miniconda/envs/travis_env/include/python3.6m ..
-  - make -j4
+  - if [ -n "${BUILD_TYPE}" ]; then
+      mkdir -p build && cd build;
+      cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DTINYRENDERER_BUILD_DOCS=OFF -DPYTHON_EXECUTABLE=$HOME/miniconda/envs/travis_env/bin/python3.6 -DPYTHON_LIBRARY=$HOME/miniconda/envs/travis_env/lib/libpython3.6m.so -DPYTHON_INCLUDE_DIR=$HOME/miniconda/envs/travis_env/include/python3.6m ..;
+      make -j4;
+    fi

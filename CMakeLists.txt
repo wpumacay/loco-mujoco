@@ -1,101 +1,104 @@
 cmake_minimum_required( VERSION 3.0.0 )
 
-project( tysocMujoco )
-
-# in case nobody set the project type, set it (parent project might have set it for all)
-if ( NOT CMAKE_BUILD_TYPE )
-    set( CMAKE_BUILD_TYPE Debug )
-endif()
+#### aka TysocMjc project
+project( LocoMujoco )
 
 set( CMAKE_CXX_STANDARD 11 )
 set( CMAKE_CXX_FLAGS "-g ${CMAKE_CXX_FLAGS}" )
 
+# In case nobody set the project type, set it (parent project might have set it for all)
+if ( NOT CMAKE_BUILD_TYPE )
+    set( CMAKE_BUILD_TYPE Debug )
+endif()
+
 if ( NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY )
-    message( "TYSOCMJC> Sending generated libs to OWN build directory" )
+    message( "LOCO::MUJOCO >>> Sending generated libs to OWN build directory" )
     set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/libs" )
 else()
-    message( "TYSOCMJC> Sending generated libs to EXTERNAL build directory" )
+    message( "LOCO::MUJOCO >>> Sending generated libs to EXTERNAL build directory" )
 endif()
+message( "LOCO::MUJOCO >>> LIBRARY_OUT_DIR: ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}" )
 
-message( "TYSOCMJC> LIBRARY_OUT_DIR: ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}" )
-
-set( TYSOCMJC_IS_MASTER_PROJECT OFF )
+set( LOCO_MUJOCO_IS_MASTER_PROJECT OFF )
 if( CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR )
-    message( "TYSOCMJC> Configuring as MASTER project" )
-    set( TYSOCMJC_IS_MASTER_PROJECT ON )
+    message( "LOCO::MUJOCO >>> Configuring as MASTER project" )
+    set( LOCO_MUJOCO_IS_MASTER_PROJECT ON )
 else()
-    message( "TYSOCMJC> Configuring as CHILD project" )
+    message( "LOCO::MUJOCO >>> Configuring as CHILD project" )
 endif()
 
-# Add core targets only if master project. If not, parent project must configure it
-if ( TYSOCMJC_IS_MASTER_PROJECT )
-    # Configure dependencies for tysoc
-    add_subdirectory( ext )
-    # Configure core functionality
-    add_subdirectory( core )
-endif()
+# Add external dependencies only if master project. If not, parent project must configure it
+if ( LOCO_MUJOCO_IS_MASTER_PROJECT )
+    # Setup and add core library (Loco::Core)
+    set( LOCO_CORE_BUILD_WINDOWED_VISUALIZER ON CACHE BOOL "Build Loco::Core OpenGL-based windowed(GLFW) visualizer" )
+    set( LOCO_CORE_BUILD_HEADLESS_VISUALIZER ON CACHE BOOL "Build Loco::Core OpenGL-based headless(EGL) visualizer" )
+    set( LOCO_CORE_BUILD_DOCS OFF CACHE BOOL "Don't build Loco::Core documentation" )
+    set( LOCO_CORE_BUILD_EXAMPLES ON CACHE BOOL "Build Loco::Core C/C++ examples" )
+    set( LOCO_CORE_BUILD_TESTS ON CACHE BOOL "Don't build Loco::Core C/C++ tests" )
+    set( LOCO_CORE_BUILD_PYTHON_BINDINGS ON CACHE BOOL "Build Loco::Core Python-bindings" )
+    set( LOCO_CORE_BUILD_WITH_LOGS ON CACHE BOOL "Build Loco::Core using logging functionality" )
+    set( LOCO_CORE_BUILD_WITH_TRACK_ALLOCS ON CACHE BOOL "Build Loco::Core using tracking of objects allocations|deallocations" )
 
-# Configure tysocMjc project *************************************************
-
-# Set the library paths as props to allow usage from other projects
-if ( WIN32 )
-    set_property( GLOBAL PROPERTY PROP_TYSOC_BACKEND_PHYSICS_MUJOCO "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libtysocPhysicsMujoco.dll" )
-    set_property( GLOBAL PROPERTY PROP_TYSOC_BACKEND_GRAPHICS_MJCVIZ "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libtysocRenderingMjcViz.dll" )
-elseif ( UNIX )
-    if ( APPLE )
-        set_property( GLOBAL PROPERTY PROP_TYSOC_BACKEND_PHYSICS_MUJOCO "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libtysocPhysicsMujoco.dylib" )
-        set_property( GLOBAL PROPERTY PROP_TYSOC_BACKEND_GRAPHICS_MJCVIZ "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libtysocRenderingMjcViz.dylib" )
-    else ()
-        set_property( GLOBAL PROPERTY PROP_TYSOC_BACKEND_PHYSICS_MUJOCO "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libtysocPhysicsMujoco.so" )
-        set_property( GLOBAL PROPERTY PROP_TYSOC_BACKEND_GRAPHICS_MJCVIZ "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libtysocRenderingMjcViz.so" )
+    # Resources path: if not given by other project|setup-script, then use the default (this project's core/res folder location)
+    if ( NOT LOCO_CORE_RESOURCES_PATH )
+        set( LOCO_CORE_RESOURCES_PATH "${CMAKE_SOURCE_DIR}/core/res/" )
     endif()
+    # Libraries path: if not given by other project|setup-script, then use the default (this project's build-libs folder location)
+    if ( NOT LOCO_CORE_LIBRARIES_PATH )
+        set( LOCO_CORE_LIBRARIES_PATH "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/" )
+    endif()
+
+    add_subdirectory( ext )
+    add_subdirectory( core )
+
+    # Repeat some required definitions (for mujoco-backend target and tests targets) ###############
+    if ( LOCO_CORE_BUILD_WITH_LOGS OR ( CMAKE_BUILD_TYPE STREQUAL Debug ) )
+        add_definitions( -DLOCO_CORE_USE_LOGS )
+    endif()
+    if ( LOCO_CORE_BUILD_WITH_TRACK_ALLOCS OR ( CMAKE_BUILD_TYPE STREQUAL Debug ) )
+        add_definitions( -DLOCO_CORE_USE_TRACK_ALLOCS )
+    endif()
+
+    add_definitions( -DLOCO_PATH_RESOURCES="${LOCO_CORE_RESOURCES_PATH}" )
+    if ( WIN32 )
+        add_definitions( -DLOCO_BACKEND_GRAPHICS_GLVIZ_GLFW="${LOCO_CORE_LIBRARIES_PATH}liblocoRenderingGlvizGLFW.dll" )
+        add_definitions( -DLOCO_BACKEND_GRAPHICS_GLVIZ_EGL="${LOCO_CORE_LIBRARIES_PATH}liblocoRenderingGlvizEGL.dll" )
+        add_definitions( -DLOCO_BACKEND_PHYSICS_MUJOCO="${LOCO_CORE_LIBRARIES_PATH}liblocoPhysicsMUJOCO.dll" )
+        add_definitions( -DLOCO_BACKEND_PHYSICS_BULLET="${LOCO_CORE_LIBRARIES_PATH}liblocoPhysicsBULLET.dll" )
+        add_definitions( -DLOCO_BACKEND_PHYSICS_RAISIM="${LOCO_CORE_LIBRARIES_PATH}liblocoPhysicsRAISIM.dll" )
+        add_definitions( -DLOCO_BACKEND_PHYSICS_DART="${LOCO_CORE_LIBRARIES_PATH}liblocoPhysicsDART.dll" )
+    elseif ( UNIX )
+        if ( APPLE )
+            add_definitions( -DLOCO_BACKEND_GRAPHICS_GLVIZ_GLFW="${LOCO_CORE_LIBRARIES_PATH}liblocoRenderingGlvizGLFW.dylib" )
+            add_definitions( -DLOCO_BACKEND_GRAPHICS_GLVIZ_EGL="${LOCO_CORE_LIBRARIES_PATH}liblocoRenderingGlvizEGL.dylib" )
+            add_definitions( -DLOCO_BACKEND_PHYSICS_MUJOCO="${LOCO_CORE_LIBRARIES_PATH}liblocoPhysicsMUJOCO.dylib" )
+            add_definitions( -DLOCO_BACKEND_PHYSICS_BULLET="${LOCO_CORE_LIBRARIES_PATH}liblocoPhysicsBULLET.dylib" )
+            add_definitions( -DLOCO_BACKEND_PHYSICS_RAISIM="${LOCO_CORE_LIBRARIES_PATH}liblocoPhysicsRAISIM.dylib" )
+            add_definitions( -DLOCO_BACKEND_PHYSICS_DART="${LOCO_CORE_LIBRARIES_PATH}liblocoPhysicsDART.dylib" )
+        else ()
+            add_definitions( -DLOCO_BACKEND_GRAPHICS_GLVIZ_GLFW="${LOCO_CORE_LIBRARIES_PATH}liblocoRenderingGlvizGLFW.so" )
+            add_definitions( -DLOCO_BACKEND_GRAPHICS_GLVIZ_EGL="${LOCO_CORE_LIBRARIES_PATH}liblocoRenderingGlvizEGL.so" )
+            add_definitions( -DLOCO_BACKEND_PHYSICS_MUJOCO="${LOCO_CORE_LIBRARIES_PATH}liblocoPhysicsMUJOCO.so" )
+            add_definitions( -DLOCO_BACKEND_PHYSICS_BULLET="${LOCO_CORE_LIBRARIES_PATH}liblocoPhysicsBULLET.so" )
+            add_definitions( -DLOCO_BACKEND_PHYSICS_RAISIM="${LOCO_CORE_LIBRARIES_PATH}liblocoPhysicsRAISIM.so" )
+            add_definitions( -DLOCO_BACKEND_PHYSICS_DART="${LOCO_CORE_LIBRARIES_PATH}liblocoPhysicsDART.so" )
+        endif ()
+    endif()
+    ################################################################################################
 endif()
 
-# get properties defined in core library
-get_property( VAR_TYSOC_PATH_RESOURCES              GLOBAL PROPERTY PROP_TYSOC_PATH_RESOURCES )
-get_property( VAR_TYSOC_PATH_WORKING_DIR            GLOBAL PROPERTY PROP_TYSOC_PATH_WORKING_DIR )
-get_property( VAR_TYSOC_PATH_MJCF_TEMPLATES         GLOBAL PROPERTY PROP_TYSOC_PATH_MJCF_TEMPLATES )
-get_property( VAR_TYSOC_PATH_URDF_TEMPLATES         GLOBAL PROPERTY PROP_TYSOC_PATH_URDF_TEMPLATES )
-get_property( VAR_TYSOC_PATH_RLSIM_TEMPLATES        GLOBAL PROPERTY PROP_TYSOC_PATH_RLSIM_TEMPLATES )
-get_property( VAR_TYSOC_PATH_MESHES_DIR             GLOBAL PROPERTY PROP_TYSOC_PATH_MESHES_DIR )
-get_property( VAR_TYSOC_BACKEND_GRAPHICS_GLVIZ      GLOBAL PROPERTY PROP_TYSOC_BACKEND_GRAPHICS_GLVIZ )
-get_property( VAR_TYSOC_BACKEND_GRAPHICS_MJCVIZ     GLOBAL PROPERTY PROP_TYSOC_BACKEND_GRAPHICS_MJCVIZ )
-get_property( VAR_TYSOC_BACKEND_PHYSICS_MUJOCO      GLOBAL PROPERTY PROP_TYSOC_BACKEND_PHYSICS_MUJOCO )
+set( LOCO_MUJOCO_SRCS
+     "${CMAKE_CURRENT_SOURCE_DIR}/src/loco_common_mujoco.cpp"
+     "${CMAKE_CURRENT_SOURCE_DIR}/src/loco_simulation_mujoco.cpp" )
 
-# repeat definitions from core library, as they are not propagated up
-add_definitions( -DTYSOC_PATH_RESOURCES="${VAR_TYSOC_PATH_RESOURCES}" )
-add_definitions( -DTYSOC_PATH_WORKING_DIR="${VAR_TYSOC_PATH_WORKING_DIR}" )
-add_definitions( -DTYSOC_PATH_MJCF_TEMPLATES="${VAR_TYSOC_PATH_MJCF_TEMPLATES}" )
-add_definitions( -DTYSOC_PATH_URDF_TEMPLATES="${VAR_TYSOC_PATH_URDF_TEMPLATES}" )
-add_definitions( -DTYSOC_PATH_RLSIM_TEMPLATES="${VAR_TYSOC_PATH_RLSIM_TEMPLATES}" )
-add_definitions( -DTYSOC_PATH_MESHES_DIR="${VAR_TYSOC_PATH_MESHES_DIR}" )
-add_definitions( -DTYSOC_BACKEND_GRAPHICS_GLVIZ="${VAR_TYSOC_BACKEND_GRAPHICS_GLVIZ}" )
-add_definitions( -DTYSOC_BACKEND_GRAPHICS_MJCVIZ="${VAR_TYSOC_BACKEND_GRAPHICS_MJCVIZ}" )
-add_definitions( -DTYSOC_BACKEND_PHYSICS_MUJOCO="${VAR_TYSOC_BACKEND_PHYSICS_MUJOCO}" )
-
-# test all properties
-message( "PROP_TYSOC_PATH_RESOURCES:            ${VAR_TYSOC_PATH_RESOURCES}" )
-message( "PROP_TYSOC_PATH_WORKING_DIR:          ${VAR_TYSOC_PATH_WORKING_DIR}" )
-message( "PROP_TYSOC_PATH_MJCF_TEMPLATES:       ${VAR_TYSOC_PATH_MJCF_TEMPLATES}" )
-message( "PROP_TYSOC_PATH_URDF_TEMPLATES:       ${VAR_TYSOC_PATH_URDF_TEMPLATES}" )
-message( "PROP_TYSOC_PATH_RLSIM_TEMPLATES:      ${VAR_TYSOC_PATH_RLSIM_TEMPLATES}" )
-message( "PROP_TYSOC_PATH_MESHES_DIR:           ${VAR_TYSOC_PATH_MESHES_DIR}" )
-message( "PROP_TYSOC_BACKEND_GRAPHICS_GLVIZ:    ${VAR_TYSOC_BACKEND_GRAPHICS_GLVIZ}" )
-message( "PROP_TYSOC_BACKEND_GRAPHICS_MJCVIZ:   ${VAR_TYSOC_BACKEND_GRAPHICS_MJCVIZ}" )
-message( "PROP_TYSOC_BACKEND_PHYSICS_MUJOCO:    ${VAR_TYSOC_BACKEND_PHYSICS_MUJOCO}" )
-
-# grab all the sources for compilation
-file( GLOB_RECURSE TYSOCMJC_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" )
-
-# add this project headers to includepath
-include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/include/" )
-
-# include_dirs for tysoc-core dependency: either case (master or non-master project) ... 
-# we should find it at root level
-include_directories( "${CMAKE_SOURCE_DIR}/core/include" )
-include_directories( "${CMAKE_SOURCE_DIR}/core/ext/json" )
-include_directories( "${CMAKE_SOURCE_DIR}/core/ext/tinyxml2" )
-include_directories( "${CMAKE_SOURCE_DIR}/ext/spdlog/include" )
+set( LOCO_MUJOCO_INCLUDE_DIRS
+     "${CMAKE_CURRENT_SOURCE_DIR}/include"
+     "${CMAKE_CURRENT_SOURCE_DIR}/core/include"
+     "${CMAKE_CURRENT_SOURCE_DIR}/core/ext/json"
+     "${CMAKE_CURRENT_SOURCE_DIR}/core/ext/tinyxml2"
+     "${CMAKE_CURRENT_SOURCE_DIR}/ext/spdlog/include"
+     "${CMAKE_CURRENT_SOURCE_DIR}/ext/tiny_math/include" )
+include_directories( ${LOCO_MUJOCO_INCLUDE_DIRS} )
 
 if ( WIN32 )
     # Path to mujoco library in the windows system
@@ -103,8 +106,7 @@ if ( WIN32 )
     link_directories( "C:/.mujoco/mujoco200_win64/bin" )
 elseif ( UNIX )
     if ( APPLE )
-        # Apple kind of needs to specify this (at least in the system I had available, ...
-        # which was a brand new macbookair from a friend)
+        # Apple kind of needs to specify this (for some systems)
         include_directories( /usr/local/include )
         link_directories( /usr/local/lib )
         # Path to mujoco library in the macos system
@@ -117,35 +119,38 @@ elseif ( UNIX )
     endif()
 endif()
 
-# mujoco configuration
-set( CMAKE_CXX_FLAGS "-mavx -pthread -g ${CMAKE_CXX_FLAGS}" )
+# Extra flags for mujoco configuration
+set( CMAKE_CXX_FLAGS "-mavx -pthread ${CMAKE_CXX_FLAGS}" )
 
 if ( WIN32 )
-    get_filename_component( MUJOCO_LICENSE_ABSOLUTE_PATH "C:/.mujoco/mjkey.txt" ABSOLUTE )
+    get_filename_component( LOCO_MUJOCO_LICENSE_ABSOLUTE_PATH "C:/.mujoco/mjkey.txt" ABSOLUTE )
 elseif ( UNIX )
-    get_filename_component( MUJOCO_LICENSE_ABSOLUTE_PATH "~/.mujoco/mjkey.txt" ABSOLUTE )
+    get_filename_component( LOCO_MUJOCO_LICENSE_ABSOLUTE_PATH "~/.mujoco/mjkey.txt" ABSOLUTE )
 endif()
 
-add_definitions( -DMUJOCO_LICENSE_FILE="${MUJOCO_LICENSE_ABSOLUTE_PATH}" )
+add_definitions( -DLOCO_MUJOCO_LICENSE_FILE="${LOCO_MUJOCO_LICENSE_ABSOLUTE_PATH}" )
 
-message( "MuJoCo license path: ${MUJOCO_LICENSE_ABSOLUTE_PATH}" )
-message( "Sources: ${TYSOCMJC_SOURCES}" )
+message( "LOCO::MUJOCO >>> MuJoCo license path: ${LOCO_MUJOCO_LICENSE_ABSOLUTE_PATH}" )
 
-add_library( tysocPhysicsMujoco SHARED
-             ${TYSOCMJC_SOURCES} )
-target_link_libraries( tysocPhysicsMujoco
-                       tysocCore
+add_library( locoPhysicsMUJOCO SHARED
+             ${LOCO_MUJOCO_SRCS} )
+target_link_libraries( locoPhysicsMUJOCO
+                       loco_core
                        mujoco200nogl )
 
-# ****************************************************************************
-
-# Only generate samples if not using as dependency
-if ( TYSOCMJC_IS_MASTER_PROJECT )
-    # Configure examples
-    add_subdirectory( examples )
+if ( LOCO_MUJOCO_IS_MASTER_PROJECT AND LOCO_CORE_BUILD_TESTS )
+    enable_testing()
+    add_subdirectory( tests )
 endif()
 
-#*****************************************************************************
-
-#### # Configure tests (barebone external tests)
-#### add_subdirectory( tests )
+if ( LOCO_MUJOCO_IS_MASTER_PROJECT )
+    message( "|---------------------------------------------------------|" )
+    message( "|      LOCOMOTION SIMULATION TOOLKIT (MuJoCo backend)     |" )
+    message( "|---------------------------------------------------------|" )
+    message( "
+                                   .--~~,__   (MuJoCo)
+                      :-....,-------`~~'._.'
+                       `-,,,  ,_      ;'~U'
+                        _,-' ,'`-__; '--.
+                       (_/'~~      ''''(;" )
+endif()

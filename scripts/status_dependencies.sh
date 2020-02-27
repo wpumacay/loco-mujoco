@@ -1,14 +1,15 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-# --------------------------------------------------------------------- #
-# script/setup: Sets up this repo by cloning all required dependencies  #
-# --------------------------------------------------------------------- #
-
-for repo in ext/cat1 ext/imgui ext/pybind11 core
+for repo in ext/imgui ext/spdlog ext/pybind11 ext/tiny_math ext/tiny_renderer ext/googletest core
 do
-    echo "Checking status: ${repo}"
-    cd "${repo}" 
-    git status 
-    cd "../.."
+    if [ -d ${repo} ]
+    then
+        echo "Checking status: ${repo}"
+        cd "${repo}" 
+        git status 
+        cd "../.."
+    else
+        echo "Repo not found: ${repo}"
+    fi
     echo "----------------------------------------------------"
 done

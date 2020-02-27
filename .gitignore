@@ -13,7 +13,6 @@
 # folder-exclusions
 build/
 .vscode/
-_legacy/
 dist/
 pytysoc.egg-info/
 tysoc_mjc.egg-info/
@@ -24,7 +23,14 @@ ext/tiny_renderer*
 ext/imgui*
 ext/spdlog*
 ext/pybind11*
+ext/googletest*
 core*
 
 # file-specific exclusions
 simulation.xml
+
+# logging .json files
+sess_*.json
+
+# @todo: delete once porting+refactoring has been completed
+## _legacy/

@@ -59,6 +59,6 @@ before_install:
 script:
   - if [ -n "${BUILD_TYPE}" ]; then
       mkdir -p build && cd build;
-      cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DTINYRENDERER_BUILD_DOCS=OFF -DPYTHON_EXECUTABLE=$HOME/miniconda/envs/travis_env/bin/python3.6 -DPYTHON_LIBRARY=$HOME/miniconda/envs/travis_env/lib/libpython3.6m.so -DPYTHON_INCLUDE_DIR=$HOME/miniconda/envs/travis_env/include/python3.6m ..;
+      cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DLOCO_CORE_BUILD_WINDOWED_VISUALIZER=ON -DLOCO_CORE_BUILD_HEADLESS_VISUALIZER=OFF -DLOCO_CORE_BUILD_DOCS=OFF -DLOCO_CORE_BUILD_EXAMPLES=ON -DLOCO_CORE_BUILD_TESTS=ON -DLOCO_CORE_BUILD_PYTHON_BINDINGS=ON  -DPYTHON_EXECUTABLE=$HOME/miniconda/envs/travis_env/bin/python3.6 -DPYTHON_LIBRARY=$HOME/miniconda/envs/travis_env/lib/libpython3.6m.so -DPYTHON_INCLUDE_DIR=$HOME/miniconda/envs/travis_env/include/python3.6m ..;
       make -j4;
     fi

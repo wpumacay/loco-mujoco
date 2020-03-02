@@ -15,6 +15,10 @@ namespace mujoco {
 
         TMujocoSimulation( TScenario* scenarioRef  );
 
+        TMujocoSimulation( const TMujocoSimulation& other ) = delete;
+
+        TMujocoSimulation& operator=( const TMujocoSimulation& other ) = delete;
+
         ~TMujocoSimulation();
 
     protected :

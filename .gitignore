@@ -1,5 +1,7 @@
 # file-exclusions
 *.o
+*.out
+*.lib
 *.pyc
 *.pyo
 *.swp

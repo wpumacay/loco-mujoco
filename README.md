@@ -4,13 +4,10 @@
 
 [![Build Status](https://travis-ci.com/wpumacay/tysocMjc.svg?branch=master)](https://travis-ci.com/wpumacay/tysocMjc)
 
-[gif-demo-sample](https://media.giphy.com/media/ZDEAQSUraLao0fOhHi/giphy.gif)
+<!-- Uncomment once all changes from legacy have been ported -->
+<!--![gif-demo-sample](https://media.giphy.com/media/ZDEAQSUraLao0fOhHi/giphy.gif)-->
 
-<!--![intro-1](https://media.giphy.com/media/ZcaynbjABz69Zyj9n9/giphy.gif) -->
-<!--![intro-2](https://media.giphy.com/media/loMkXQHDRSeHC8s2dy/giphy.gif) -->
-<!--![intro-3](https://media.giphy.com/media/9S1zriY4MMt8LjOoSq/giphy.gif)-->
-
-This is an instance of my [**tysoc**](https://github.com/wpumacay/tysocCore) framework for locomotion, 
+This is an instance of the [**loco**](https://github.com/wpumacay/tysocCore) framework for locomotion, 
 using [**MuJoCo**](http://mujoco.org) as physics backend. As explained in the core repository, the idea
 is to provide a kind of abstraction layer on top of various physics backends, and allow you to just
 focus on making your experiment regardless of the details of each specific backend.
@@ -48,6 +45,4 @@ git clone https://github.com/wpumacay/tysocMjc.git
 cd tysocMjc && ./scripts/setup_dependencies.sh
 # build the project
 mkdir build && cd build && cmake .. && make -j4
-# try an example (cwd=build)
-./examples/cpp/agents/test_agents mjcf ant
 ```

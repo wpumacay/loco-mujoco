@@ -4,7 +4,6 @@ git:
     submodules: false
 matrix: 
   include:
-    # build-configuration for ubuntu 16.04 - gcc
     - os: linux
       dist: xenial
       compiler: gcc
@@ -17,7 +16,6 @@ matrix:
       env:
         - BUILD_TYPE=Release
         - DIST_NAME="xenial"
-    # build-configuration for ubuntu 18.04 - gcc
     - os: linux
       dist: bionic
       compiler: gcc
@@ -33,12 +31,11 @@ matrix:
 
 before_install:
   - echo "Installing dependencies from apt ..."
-  - sudo apt-get -q update
-  - sudo apt-get -y install pkg-config
-  - sudo apt-get -y install libassimp-dev libglfw3-dev libglew-dev
   - if [[ "${DIST_NAME}" == "xenial" ]]; then sudo add-apt-repository -y ppa:mc3man/xerus-media; fi
   - if [[ "${DIST_NAME}" == "bionic" ]]; then sudo add-apt-repository -y ppa:mc3man/bionic-media; fi
   - sudo apt-get -qq update
+  - sudo apt-get -y install pkg-config
+  - sudo apt-get -y install libassimp-dev libglfw3-dev libglew-dev
   - sudo apt-get install -y ffmpeg
   - echo "Cloning repo-dependencies from github ..."
   - ./scripts/setup_dependencies.sh

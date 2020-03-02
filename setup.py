@@ -157,7 +157,7 @@ with open( 'requirements.txt', 'r' ) as fh :
     requiredPackages = [ line.replace( '\n', '' ) for line in fh.readlines() ]
 
 setup(
-    name                    = 'wp-loco',
+    name                    = 'wp-loco-mujoco',
     version                 = VERSION,
     description             = 'MuJoCo-backend support for Loco(locomotion framework)',
     author                  = 'Wilbert Santos Pumacay Huallpa',

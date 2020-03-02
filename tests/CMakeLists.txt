@@ -1,3 +1,4 @@
 message( "LOCO::MUJOCO::tests >>> Configuring loco-mujoco tests" )
 
-add_subdirectory( cpp )
+add_subdirectory( cpp/generic )
+add_subdirectory( cpp/mujoco )

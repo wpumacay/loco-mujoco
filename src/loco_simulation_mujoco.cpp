@@ -108,15 +108,15 @@ namespace mujoco {
     {
         if ( !m_mjcModel )
         {
-            LOCO_CORE_TRACE( "TMujocoSimulation::_SimStepInternal >>> mjModel structure is required \
-                              for taking a simulation step" );
+            LOCO_CORE_WARN( "TMujocoSimulation::_SimStepInternal >>> mjModel structure is required \
+                             for taking a simulation step" );
             return;
         }
 
         if ( !m_mjcData )
         {
-            LOCO_CORE_TRACE( "TMujocoSimulation::_SimStepInternal >>> mjData structure is required \
-                              for taking a simulation step" );
+            LOCO_CORE_WARN( "TMujocoSimulation::_SimStepInternal >>> mjData structure is required \
+                             for taking a simulation step" );
             return;
         }
 

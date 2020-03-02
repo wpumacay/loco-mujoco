@@ -89,15 +89,16 @@ endif()
 
 set( LOCO_MUJOCO_SRCS
      "${CMAKE_CURRENT_SOURCE_DIR}/src/loco_common_mujoco.cpp"
-     "${CMAKE_CURRENT_SOURCE_DIR}/src/loco_simulation_mujoco.cpp" )
+     "${CMAKE_CURRENT_SOURCE_DIR}/src/loco_simulation_mujoco.cpp"
+     "${CMAKE_CURRENT_SOURCE_DIR}/src/adapters/loco_collision_adapter_mujoco.cpp" )
 
 set( LOCO_MUJOCO_INCLUDE_DIRS
      "${CMAKE_CURRENT_SOURCE_DIR}/include"
-     "${CMAKE_CURRENT_SOURCE_DIR}/core/include"
-     "${CMAKE_CURRENT_SOURCE_DIR}/core/ext/json"
-     "${CMAKE_CURRENT_SOURCE_DIR}/core/ext/tinyxml2"
-     "${CMAKE_CURRENT_SOURCE_DIR}/ext/spdlog/include"
-     "${CMAKE_CURRENT_SOURCE_DIR}/ext/tiny_math/include" )
+     "${CMAKE_SOURCE_DIR}/core/include"
+     "${CMAKE_SOURCE_DIR}/core/ext/json"
+     "${CMAKE_SOURCE_DIR}/core/ext/tinyxml2"
+     "${CMAKE_SOURCE_DIR}/ext/spdlog/include"
+     "${CMAKE_SOURCE_DIR}/ext/tiny_math/include" )
 include_directories( ${LOCO_MUJOCO_INCLUDE_DIRS} )
 
 if ( WIN32 )

@@ -5,6 +5,17 @@
 #include <loco_simulation_mujoco.h>
 #include <adapters/loco_collision_adapter_mujoco.h>
 
+bool allclose_sf( const loco::TSizef& arr_1, const loco::TSizef& arr_2 )
+{
+    if ( arr_1.ndim != arr_2.ndim )
+        return false;
+
+    for ( size_t i = 0; i < arr_1.ndim; i++ )
+        if ( std::abs( arr_1[i] - arr_2[i] ) > 1e-5 )
+            return false;
+    return true;
+}
+
 TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterBuild )
 {
     loco::TLogger::Init();
@@ -44,4 +55,35 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterBuild )
 
     for ( size_t i = 0; i < vec_colliders_adapters.size(); i++ )
         LOCO_CORE_TRACE( "mjcf-xml-collider:\n{0}", vec_colliders_adapters[i]->element_resources()->ToString() );
+
+    std::vector<loco::TSizef> vec_expected_sizes = { { 0.05f, 0.1f, 0.15f },
+                                                     { 0.1f },
+                                                     { 5.0f, 5.0f, 1.0f },
+                                                     { 0.2f, 0.4f },
+                                                     { 0.2f, 0.4f },
+                                                     { 0.2f, 0.3f, 0.4f } };
+    std::vector<std::string> vec_expected_names = { "box_collider",
+                                                    "sphere_collider",
+                                                    "plane_collider",
+                                                    "cylinder_collider",
+                                                    "capsule_collider",
+                                                    "ellipsoid_collider" };
+    std::vector<std::string> vec_expected_types = { "box", "sphere", "plane", "cylinder", "capsule", "ellipsoid" };
+    for ( size_t i = 0; i < vec_colliders_adapters.size(); i++ )
+    {
+        auto mjc_col_adapter = dynamic_cast<loco::mujoco::TMujocoCollisionAdapter*>( vec_colliders_adapters[i].get() );
+        EXPECT_TRUE( mjc_col_adapter != nullptr );
+        auto mjcf_resources = mjc_col_adapter->element_resources();
+        EXPECT_TRUE( mjcf_resources != nullptr );
+        EXPECT_TRUE( mjcf_resources->HasAttributeArrayFloat( "size" ) );
+        EXPECT_TRUE( allclose_sf( mjcf_resources->GetArrayFloat( "size" ), vec_expected_sizes[i] ) );
+        EXPECT_TRUE( mjcf_resources->HasAttributeString( "name" ) );
+        EXPECT_EQ( mjcf_resources->GetString( "name" ), vec_expected_names[i] );
+        EXPECT_TRUE( mjcf_resources->HasAttributeString( "type" ) );
+        EXPECT_EQ( mjcf_resources->GetString( "type" ), vec_expected_types[i] );
+        EXPECT_TRUE( mjcf_resources->HasAttributeVec3( "pos" ) );
+        EXPECT_TRUE( tinymath::allclose( mjcf_resources->GetVec3( "pos" ), { 0.0f, 0.0f, 0.0f } ) );
+        EXPECT_TRUE( mjcf_resources->HasAttributeVec4( "quat" ) );
+        EXPECT_TRUE( tinymath::allclose( mjcf_resources->GetVec4( "quat" ), { 1.0f, 0.0f, 0.0f, 0.0f } ) );
+    }
 }

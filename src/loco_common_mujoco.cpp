@@ -73,6 +73,7 @@ namespace mujoco {
         return "";
     }
 
+    // @todo: move to loco-core
     float compute_primitive_rbound( const eShapeType& shape, const TVec3& size )
     {
         switch ( shape )
@@ -85,7 +86,24 @@ namespace mujoco {
             case eShapeType::ELLIPSOID  : return std::sqrt( size.x() * size.x() + size.y() * size.y() + size.z() * size.z() );
         }
 
-        LOCO_CORE_ERROR( "compute_rbound >>> unsupported shape: {0}", ToString( shape ) );
+        LOCO_CORE_ERROR( "compute_primitive_rbound >>> unsupported shape: {0}", ToString( shape ) );
+        return 1.0f;
+    }
+
+    // @todo: move to loco-core
+    float compute_primitive_volume( const eShapeType& shape, const TVec3& size )
+    {
+        switch ( shape )
+        {
+            case eShapeType::BOX        : return size.x() * size.y() * size.z();
+            case eShapeType::SPHERE     : return (4. / 3.) * loco::PI * size.x() * size.x() * size.x();
+            case eShapeType::CYLINDER   : return loco::PI * size.x() * size.x() * size.y();
+            case eShapeType::CAPSULE    : return loco::PI * size.x() * size.x() * size.y() + 
+                                                   (4. / 3.) * loco::PI * size.x() * size.x() * size.x();
+            case eShapeType::ELLIPSOID  : return (4. / 3.) * loco::PI * size.x() * size.y() * size.z();
+        }
+
+        LOCO_CORE_ERROR( "compute_primitive_volume >>> unsupported shape: {0}", ToString( shape ) );
         return 1.0f;
     }
 
@@ -99,6 +117,7 @@ namespace mujoco {
             return arr_sf;
         }
 
+        arr_sf.ndim = array_size;
         for ( size_t i = 0; i < array_size; i++ )
             arr_sf[i] = array_num[i];
         return arr_sf;

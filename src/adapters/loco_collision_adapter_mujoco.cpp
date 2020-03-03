@@ -123,6 +123,27 @@ namespace mujoco {
             m_mjcfElementAssetResources->SetVec4( "size", size );
             m_mjcfElementResources->SetString( "hfield", hfield_id );
         }
+
+        // If parent-body has only inertia.mass set, then we'll deal with it computing an appropriate density
+        if ( auto parent_body = m_collisionRef->parent() )
+        {
+            const auto& inertia = parent_body->data().inertia;
+            if ( ( inertia.mass > loco::EPS ) && 
+                 ( ( inertia.ixx <= loco::EPS ) || ( inertia.iyy <= loco::EPS ) || ( inertia.izz <= loco::EPS ) ||
+                   ( inertia.ixy <= -loco::EPS ) || ( inertia.ixz <= -loco::EPS ) || ( inertia.iyz <= -loco::EPS ) ) )
+            {
+                if ( shape == eShapeType::PLANE )
+                    LOCO_CORE_WARN( "TMujocoCollisionAdapter::Build >>> can't compute inertia of plane-collider {0}", m_collisionRef->name() );
+                else if ( shape == eShapeType::MESH )
+                    LOCO_CORE_WARN( "TMujocoCollisionAdapter::Build >>> can't compute inertia of mesh-collider {0}", m_collisionRef->name() );
+                else if ( shape == eShapeType::HFIELD )
+                    LOCO_CORE_WARN( "TMujocoCollisionAdapter::Build >>> can't compute inertia of hfield-collider {0}", m_collisionRef->name() );
+
+                const auto volume = compute_primitive_volume( shape, m_collisionRef->size() );
+                const auto density = inertia.mass / volume;
+                m_mjcfElementResources->SetFloat( "density", density );
+            }
+        }
     }
 
     void TMujocoCollisionAdapter::Initialize()
@@ -215,7 +236,7 @@ namespace mujoco {
 
     void TMujocoCollisionAdapter::PostStep()
     {
-        // Nothing to prepare after to a simulation step
+        // Nothing to process after to a simulation step
     }
 
     void TMujocoCollisionAdapter::Reset()

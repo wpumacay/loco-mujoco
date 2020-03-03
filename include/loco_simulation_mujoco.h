@@ -6,6 +6,9 @@
 #include <utils/loco_parsing_schema.h>
 #include <utils/loco_parsing_element.h>
 
+#include <adapters/loco_collision_adapter_mujoco.h>
+#include <adapters/loco_single_body_adapter_mujoco.h>
+
 namespace loco {
 namespace mujoco {
 
@@ -40,6 +43,16 @@ namespace mujoco {
         mjData* mjc_data() { return m_mjcData.get(); }
 
         const mjData* mjc_data() const { return m_mjcData.get(); }
+
+    private :
+
+        void _CreateSingleBodyAdapters();
+
+        // void _CreateCompoundAdapters();
+
+        // void _CreateKintreeAdapters();
+
+        // void _CreateTerrainGeneratorAdapters();
 
     private :
 

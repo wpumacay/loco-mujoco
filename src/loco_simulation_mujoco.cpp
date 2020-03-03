@@ -6,7 +6,7 @@ namespace mujoco {
 
     //// @sanitycheck
     //// How the simulation-creation process works (backend=MuJoCo)
-    ////    * Within the constructor, just declaration of the resources is made (as default to nullptr)
+    ////    * Within the constructor, we declare the resources (as default to nullptr) and create the adapters
     ////    * Within the _InitializeInternal method is where the bulk of the process happens :
     ////        > First we collect the mjcf-xml data from the adapters, created during their "Build" method.
     ////        > We then assemble these xml-data into a single xml-data object that represents the
@@ -25,12 +25,36 @@ namespace mujoco {
         m_mjcModel = nullptr;
         m_mjcData = nullptr;
 
+        _CreateSingleBodyAdapters();
+        //// _CreateCompoundAdapters();
+        //// _CreateKintreeAdapters();
+        //// _CreateTerrainGeneratorAdapters();
+
     #if defined( LOCO_CORE_USE_TRACK_ALLOCS )
         if ( TLogger::IsActive() )
             LOCO_CORE_TRACE( "Loco::Allocs: Created TMujocoSimulation @ {0}", loco::PointerToHexAddress( this ) );
         else
             std::cout << "Loco::Allocs: Created TMujocoSimulation @ " << loco::PointerToHexAddress( this ) << std::endl;
     #endif
+    }
+
+    void TMujocoSimulation::_CreateSingleBodyAdapters()
+    {
+        auto single_bodies = m_scenarioRef->GetSingleBodiesList();
+        for ( auto single_body : single_bodies )
+        {
+            auto single_body_adapter = std::make_unique<TMujocoSingleBodyAdapter>( single_body );
+            single_body->SetAdapter( single_body_adapter.get() );
+            m_singleBodyAdapters.push_back( std::move( single_body_adapter ) );
+
+            auto collider = single_body->collision();
+            LOCO_CORE_ASSERT( collider, "TMujocoSimulation::_CreateSingleBodyAdapters >>> single-body {0} \
+                              must have an associated collider", single_body->name() );
+
+            auto collider_adapter = std::make_unique<TMujocoCollisionAdapter>( collider );
+            collider->SetAdapter( collider_adapter.get() );
+            m_collisionAdapters.push_back( std::move( collider_adapter ) );
+        }
     }
 
     TMujocoSimulation::~TMujocoSimulation()
@@ -60,8 +84,11 @@ namespace mujoco {
             </mujoco> )";
         auto simulation_element = parsing::TElement::CreateFromXmlString( parsing::eSchemaType::MJCF, empty_mjcf_str );
 
-        // Collect xml-resources from the adapters, assemble them into a single xml-object, and save to disk
-        // @todo: implement-me ...
+        auto world_body = simulation_element->Add( LOCO_MJCF_WORLDBODY_TAG );
+        for ( auto& single_body_adapter : m_singleBodyAdapters )
+            if ( auto mjc_adapter = dynamic_cast<TMujocoSingleBodyAdapter*>( single_body_adapter.get() ) )
+                if ( auto mjcf_element = mjc_adapter->element_resources() )
+                    world_body->Add( parsing::TElement::CloneElement( mjcf_element ) );
 
         // Store the xml-resources for this simulation into disk
         simulation_element->SaveToXml( "simulation.xml" );
@@ -84,6 +111,15 @@ namespace mujoco {
         }
         m_mjcData = std::unique_ptr<mjData, MjcDataDeleter>( mj_makeData( m_mjcModel.get() ) );
         //******************************************************************************************
+
+        for ( auto& single_body_adapter : m_singleBodyAdapters )
+        {
+            if ( auto mjc_adapter = dynamic_cast<TMujocoSingleBodyAdapter*>( single_body_adapter.get() ) )
+            {
+                mjc_adapter->SetMjcModel( m_mjcModel.get() );
+                mjc_adapter->SetMjcData( m_mjcData.get() );
+            }
+        }
 
         // Take a single step of kinematics computation (to put everything in place)
         mj_kinematics( m_mjcModel.get(), m_mjcData.get() );

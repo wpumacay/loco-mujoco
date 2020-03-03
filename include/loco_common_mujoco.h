@@ -19,6 +19,8 @@ namespace mujoco {
     const std::string LOCO_MJCF_JOINT_TAG = "joint";
     const std::string LOCO_MJCF_MESH_TAG = "mesh";
     const std::string LOCO_MJCF_HFIELD_TAG = "hfield";
+    const std::string LOCO_MJCF_ASSET_TAG = "asset";
+    const std::string LOCO_MJCF_WORLDBODY_TAG = "worldbody";
 
     struct MjcModelDeleter
     {
@@ -39,6 +41,8 @@ namespace mujoco {
     std::string enumShape_to_mjcShape( const eShapeType& shape );
 
     float compute_primitive_rbound( const eShapeType& shape, const TVec3& size );
+
+    float compute_primitive_volume( const eShapeType& shape, const TVec3& size );
 
     TSizef mjarray_to_sizef( const mjtNum* array_num, size_t array_size );
 

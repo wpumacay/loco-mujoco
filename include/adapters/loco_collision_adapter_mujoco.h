@@ -19,6 +19,10 @@ namespace mujoco {
 
         TMujocoCollisionAdapter( TCollision* collisionRef );
 
+        TMujocoCollisionAdapter( const TMujocoCollisionAdapter& other ) = delete;
+
+        TMujocoCollisionAdapter& operator= ( const TMujocoCollisionAdapter& other ) = delete;
+
         ~TMujocoCollisionAdapter();
 
         void Build() override;

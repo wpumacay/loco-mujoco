@@ -283,18 +283,18 @@ namespace mujoco {
         {
             LOCO_CORE_ASSERT( m_mjcJointId >= 0, "TMujocoSingleBodyAdapter::GetRotation >>> {0} is a non-static \
                               single-body, so it requires to have an associated mjc-joint", m_bodyRef->name() );
-            const TVec4 quaternion = { (TScalar) m_mjcDataRef->qpos[m_mjcJointQposAdr + 3],
-                                       (TScalar) m_mjcDataRef->qpos[m_mjcJointQposAdr + 0],
-                                       (TScalar) m_mjcDataRef->qpos[m_mjcJointQposAdr + 1],
-                                       (TScalar) m_mjcDataRef->qpos[m_mjcJointQposAdr + 2] };
+            const TVec4 quaternion = { (TScalar) m_mjcDataRef->qpos[m_mjcJointQposAdr + 4],
+                                       (TScalar) m_mjcDataRef->qpos[m_mjcJointQposAdr + 5],
+                                       (TScalar) m_mjcDataRef->qpos[m_mjcJointQposAdr + 6],
+                                       (TScalar) m_mjcDataRef->qpos[m_mjcJointQposAdr + 3] };
             rotation = tinymath::rotation( quaternion );
         }
         else
         {
-            const TVec4 quaternion = { (TScalar) m_mjcModelRef->body_quat[4 * m_mjcBodyId + 3],
-                                       (TScalar) m_mjcModelRef->body_quat[4 * m_mjcBodyId + 0],
-                                       (TScalar) m_mjcModelRef->body_quat[4 * m_mjcBodyId + 1],
-                                       (TScalar) m_mjcModelRef->body_quat[4 * m_mjcBodyId + 2] };
+            const TVec4 quaternion = { (TScalar) m_mjcModelRef->body_quat[4 * m_mjcBodyId + 1],
+                                       (TScalar) m_mjcModelRef->body_quat[4 * m_mjcBodyId + 2],
+                                       (TScalar) m_mjcModelRef->body_quat[4 * m_mjcBodyId + 3],
+                                       (TScalar) m_mjcModelRef->body_quat[4 * m_mjcBodyId + 0] };
             rotation = tinymath::rotation( quaternion );
         }
     }

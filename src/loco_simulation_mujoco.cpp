@@ -24,6 +24,7 @@ namespace mujoco {
 
         m_mjcModel = nullptr;
         m_mjcData = nullptr;
+        m_mjcfSimulationElement = nullptr;
 
         _CreateSingleBodyAdapters();
         //// _CreateCompoundAdapters();
@@ -61,6 +62,7 @@ namespace mujoco {
     {
         m_mjcModel = nullptr;
         m_mjcData = nullptr;
+        m_mjcfSimulationElement = nullptr;
 
     #if defined( LOCO_CORE_USE_TRACK_ALLOCS )
         if ( TLogger::IsActive() )
@@ -81,17 +83,22 @@ namespace mujoco {
                 <asset>
                   <!-- place assets here -->
                 </asset>
-            </mujoco> )";
-        auto simulation_element = parsing::TElement::CreateFromXmlString( parsing::eSchemaType::MJCF, empty_mjcf_str );
 
-        auto world_body = simulation_element->Add( LOCO_MJCF_WORLDBODY_TAG );
-        for ( auto& single_body_adapter : m_singleBodyAdapters )
-            if ( auto mjc_adapter = dynamic_cast<TMujocoSingleBodyAdapter*>( single_body_adapter.get() ) )
-                if ( auto mjcf_element = mjc_adapter->element_resources() )
-                    world_body->Add( parsing::TElement::CloneElement( mjcf_element ) );
+                <worldbody>
+                  <!-- place bodies|compounds|kintrees here -->
+                </worldbody>
+            </mujoco> )";
+        m_mjcfSimulationElement = parsing::TElement::CreateFromXmlString( parsing::eSchemaType::MJCF, empty_mjcf_str );
+        m_mjcfAssetsNames = std::set<std::string>();
+        m_mjcfAssetsFilepaths = std::set<std::string>();
+
+        _CollectResourcesFromSingleBodies();
+        // _CollectResourcesFromCompounds();
+        // _CollectResourcesFromKintrees();
+        // _CollectResourcesFromTerrainGenerators();
 
         // Store the xml-resources for this simulation into disk
-        simulation_element->SaveToXml( "simulation.xml" );
+        m_mjcfSimulationElement->SaveToXml( "simulation.xml" );
 
         if ( !TMujocoSimulation::s_HasActivatedMujoco )
         {
@@ -133,6 +140,57 @@ namespace mujoco {
         LOCO_CORE_TRACE( "MuJoCo-backend >>> total-nsensor: {0}", m_mjcModel->nsensor );
 
         return true;
+    }
+
+    void TMujocoSimulation::_CollectResourcesFromSingleBodies()
+    {
+        LOCO_CORE_ASSERT( m_mjcfSimulationElement, "TMujocoSimulation::_CollectResourcesFromSingleBodies >>> \
+                          there is no mjcf-simulation-element to place the resources in" );
+
+        auto world_body_element = m_mjcfSimulationElement->GetFirstChildOfType( LOCO_MJCF_WORLDBODY_TAG );
+        auto assets_element = m_mjcfSimulationElement->GetFirstChildOfType( LOCO_MJCF_ASSET_TAG );
+
+        LOCO_CORE_ASSERT( world_body_element, "TMujocoSimulation::_CollectResourcesFromSingleBodies >>> \
+                          there is no world-body element in the mjcf-simulation-element" );
+        LOCO_CORE_ASSERT( assets_element, "TMujocoSimulation::_CollectResourcesFromSingleBodies >>> \
+                          there is no asset element in the mjcf-simulation-element" );
+
+        for ( auto& single_body_adapter : m_singleBodyAdapters )
+        {
+            auto mjc_adapter = dynamic_cast<TMujocoSingleBodyAdapter*>( single_body_adapter.get() );
+            if ( !mjc_adapter )
+            {
+                LOCO_CORE_ERROR( "TMujocoSimulation::_CollectResourcesFromSingleBodies >>> there's a \
+                                  rogue non-mujoco single-body adapter (either nullptr or different type)" );
+                continue;
+            }
+
+            if ( auto mjcf_element = mjc_adapter->element_resources() )
+                world_body_element->Add( parsing::TElement::CloneElement( mjcf_element ) );
+
+            if ( auto mjcf_asset_element = mjc_adapter->element_asset_resources() )
+            {
+                for ( size_t i = 0; i < mjcf_asset_element->num_children(); i++ )
+                {
+                    auto asset_element = mjcf_asset_element->get_child( i );
+                    const std::string asset_name = asset_element->GetString( "name" );
+                    if ( m_mjcfAssetsNames.find( asset_name ) != m_mjcfAssetsNames.end() )
+                        continue; // asset-id (mesh-id, or hfield-id) already considered
+                    else
+                        m_mjcfAssetsNames.emplace( asset_name );
+                    if ( asset_element->HasAttributeString( "file" ) )
+                    {
+                        const std::string asset_filepath = asset_element->GetString( "file" );
+                        if ( m_mjcfAssetsFilepaths.find( asset_filepath ) != m_mjcfAssetsFilepaths.end() )
+                            continue; // asset-filepath (mesh-filepath) already considered
+                        else
+                            m_mjcfAssetsFilepaths.emplace( asset_filepath );
+                    }
+
+                    assets_element->Add( parsing::TElement::CloneElement( asset_element ) );
+                }
+            }
+        }
     }
 
     void TMujocoSimulation::_PreStepInternal()

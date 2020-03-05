@@ -40,10 +40,14 @@ namespace mujoco {
 
     std::string enumShape_to_mjcShape( const eShapeType& shape );
 
-    float compute_primitive_rbound( const eShapeType& shape, const TVec3& size );
+    double compute_primitive_rbound( const eShapeType& shape, const TVec3& size );
 
-    float compute_primitive_volume( const eShapeType& shape, const TVec3& size );
+    double compute_primitive_volume( const eShapeType& shape, const TVec3& size );
 
     TSizef mjarray_to_sizef( const mjtNum* array_num, size_t array_size );
+
+    void SaveMeshToBinary( const std::string& mesh_file,
+                           const std::vector<float>& mesh_vertices,
+                           const std::vector<int>& mesh_faces );
 
 }}

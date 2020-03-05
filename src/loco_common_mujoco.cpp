@@ -74,24 +74,25 @@ namespace mujoco {
     }
 
     // @todo: move to loco-core
-    float compute_primitive_rbound( const eShapeType& shape, const TVec3& size )
+    // @todo: check against mujoco-rbound (at least, capsules are different)
+    double compute_primitive_rbound( const eShapeType& shape, const TVec3& size )
     {
         switch ( shape )
         {
-            case eShapeType::PLANE      : return 0.5f * std::sqrt( size.x() * size.x() + size.y() * size.y() );
-            case eShapeType::BOX        : return 0.5f * std::sqrt( size.x() * size.x() + size.y() * size.y() + size.z() * size.z() );
+            case eShapeType::PLANE      : return 0.0; // mujoco handles planes in a special way
+            case eShapeType::BOX        : return 0.5 * std::sqrt( size.x() * size.x() + size.y() * size.y() + size.z() * size.z() );
             case eShapeType::SPHERE     : return size.x();
-            case eShapeType::CYLINDER   : return std::sqrt( 2 * size.x() * size.x() + 0.25f * size.y() * size.y() );
-            case eShapeType::CAPSULE    : return std::sqrt( 2 * size.x() * size.x() + 0.25f * size.y() * size.y() );
-            case eShapeType::ELLIPSOID  : return std::sqrt( size.x() * size.x() + size.y() * size.y() + size.z() * size.z() );
+            case eShapeType::CYLINDER   : return std::sqrt( size.x() * size.x() + 0.25 * size.y() * size.y() );
+            case eShapeType::CAPSULE    : return size.x() + 0.5 * size.y();
+            case eShapeType::ELLIPSOID  : return std::max( std::max( size.x(), size.y() ), size.z() );
         }
 
         LOCO_CORE_ERROR( "compute_primitive_rbound >>> unsupported shape: {0}", ToString( shape ) );
-        return 1.0f;
+        return 1.0;
     }
 
     // @todo: move to loco-core
-    float compute_primitive_volume( const eShapeType& shape, const TVec3& size )
+    double compute_primitive_volume( const eShapeType& shape, const TVec3& size )
     {
         switch ( shape )
         {
@@ -104,7 +105,7 @@ namespace mujoco {
         }
 
         LOCO_CORE_ERROR( "compute_primitive_volume >>> unsupported shape: {0}", ToString( shape ) );
-        return 1.0f;
+        return 1.0;
     }
 
     TSizef mjarray_to_sizef( const mjtNum* array_num, size_t array_size )
@@ -121,6 +122,40 @@ namespace mujoco {
         for ( size_t i = 0; i < array_size; i++ )
             arr_sf[i] = array_num[i];
         return arr_sf;
+    }
+
+    void SaveMeshToBinary( const std::string& mesh_file,
+                           const std::vector<float>& mesh_vertices,
+                           const std::vector<int>& mesh_faces )
+    {
+        std::ofstream fhandle( mesh_file.c_str(), std::ofstream::out | std::ofstream::binary );
+        if ( !fhandle )
+        {
+            LOCO_CORE_ERROR( "SaveMeshToBinary >>> couldn't save user-defined binary mesh to the \
+                              filepath {0}", mesh_file );
+            return;
+        }
+
+        if ( mesh_vertices.size() % 3 != 0 )
+            LOCO_CORE_ERROR( "SaveMeshToBinary >>> there must be 3 elements per vertex, got {0}/3 (mesh: {1})", mesh_vertices.size(), mesh_file );
+        if ( mesh_faces.size() % 3 != 0 )
+            LOCO_CORE_ERROR( "SaveMeshToBinary >>> there must be 3 elements per face, got {0}/3 (mesh: {1})", mesh_faces.size(), mesh_file );
+
+        const int32_t nvertex = mesh_vertices.size() / 3;
+        const int32_t nnormal = 0;
+        const int32_t ntexcoord = 0;
+        const int32_t nface = mesh_faces.size() / 3;
+
+        fhandle.write( (const char*)&nvertex, sizeof( int32_t ) );
+        fhandle.write( (const char*)&nnormal, sizeof( int32_t ) );
+        fhandle.write( (const char*)&ntexcoord, sizeof( int32_t ) );
+        fhandle.write( (const char*)&nface, sizeof( int32_t ) );
+        fhandle.write( (const char*)mesh_vertices.data(), sizeof( float ) * mesh_vertices.size() );
+        fhandle.write( (const char*)mesh_faces.data(), sizeof( int ) * mesh_faces.size() );
+        fhandle.close();
+
+        if ( !fhandle.good() )
+            LOCO_CORE_ERROR( "SaveMeshToBinary >>> there was an error while trying to save mesh {0}", mesh_file );
     }
 
 }}

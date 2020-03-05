@@ -66,9 +66,25 @@ namespace mujoco {
 
         const parsing::TElement* element_asset_resources() const { return m_mjcfElementAssetResources.get(); }
 
+        mjModel* mjc_model() { return m_mjcModelRef; }
+
+        const mjModel* mjc_model() const { return m_mjcModelRef; }
+
+        mjData* mjc_data() { return m_mjcDataRef; }
+
+        const mjData* mjc_data() const { return m_mjcDataRef; }
+
         ssize_t mjc_body_id() const { return m_mjcBodyId; }
 
         ssize_t mjc_joint_id() const { return m_mjcJointId; }
+
+        ssize_t mjc_joint_qpos_num() const { return m_mjcJointQposNum; }
+
+        ssize_t mjc_joint_qvel_num() const { return m_mjcJointQvelNum; }
+
+        ssize_t mjc_joint_qpos_adr() const { return m_mjcJointQposAdr; }
+
+        ssize_t mjc_joint_qvel_adr() const { return m_mjcJointQvelAdr; }
 
     private :
 

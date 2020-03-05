@@ -76,7 +76,7 @@ namespace mujoco {
         const auto& inertia = m_bodyRef->data().inertia;
         if ( ( inertia.mass > loco::EPS ) && ( inertia.ixx > loco::EPS ) && ( inertia.iyy > loco::EPS ) && 
              ( inertia.izz > loco::EPS ) && ( inertia.ixy > -loco::EPS ) && ( inertia.ixz > -loco::EPS ) &&
-             ( inertia.iyz > loco::EPS ) )
+             ( inertia.iyz > -loco::EPS ) )
         {
             auto _inertia_element = m_mjcfElementResources->Add( "inertial" );
             _inertia_element->SetFloat( "mass", inertia.mass );
@@ -171,9 +171,9 @@ namespace mujoco {
 
         if ( m_bodyRef->dyntype() == eDynamicsType::DYNAMIC )
         {
-            for ( size_t i = 0; i < m_mjcJointQposNum; i++ )
+            for ( ssize_t i = 0; i < m_mjcJointQposNum; i++ )
                 m_mjcDataRef->qpos[m_mjcJointQposAdr + i] = m_mjcModelRef->qpos0[m_mjcJointQposAdr + i];
-            for ( size_t i = 0; i < m_mjcJointQvelNum; i++ )
+            for ( ssize_t i = 0; i < m_mjcJointQvelNum; i++ )
                 m_mjcDataRef->qvel[m_mjcJointQvelAdr + i] = 0.0;
         }
         else

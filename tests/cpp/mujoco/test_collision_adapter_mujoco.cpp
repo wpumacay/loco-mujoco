@@ -6,8 +6,6 @@
 #include <adapters/loco_collision_adapter_mujoco.h>
 //// #include <sys/stat.h>
 
-// @todo: test multiple meshes
-
 bool allclose_sf( const loco::TSizef& arr_1, const loco::TSizef& arr_2 )
 {
     if ( arr_1.ndim != arr_2.ndim )

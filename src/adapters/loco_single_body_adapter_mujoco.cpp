@@ -7,8 +7,12 @@ namespace mujoco {
     TMujocoSingleBodyAdapter::TMujocoSingleBodyAdapter( TIBody* bodyRef )
         : TIBodyAdapter( bodyRef )
     {
+        LOCO_CORE_ASSERT( bodyRef, "TMujocoSingleBodyAdapter >>> adaptee (body) should be a valid \
+                          refernce (nullptr given)" );
         LOCO_CORE_ASSERT( bodyRef->classType() == loco::eBodyClassType::SINGLE_BODY,
                           "TMujocoSingleBodyAdapter >>> body {0} is not of class-type single-body", bodyRef->name() );
+        LOCO_CORE_ASSERT( bodyRef->collision(), "TMujocoSingleBodyAdapter >>> body {0} doesn't have \
+                          a valid collider (found nullptr)", bodyRef->name() );
 
         m_mjcModelRef = nullptr;
         m_mjcDataRef = nullptr;
@@ -103,8 +107,10 @@ namespace mujoco {
 
     void TMujocoSingleBodyAdapter::Initialize()
     {
-        LOCO_CORE_ASSERT( m_mjcModelRef, "TMujocoSingleBodyAdapter::Initialize >>> must have a valid mjModel reference" );
-        LOCO_CORE_ASSERT( m_mjcDataRef, "TMujocoSingleBodyAdapter::Initialize >>> must have a valid mjData reference" );
+        LOCO_CORE_ASSERT( m_mjcModelRef, "TMujocoSingleBodyAdapter::Initialize >>> body {0} must have \
+                          a valid mjModel reference", m_bodyRef->name() );
+        LOCO_CORE_ASSERT( m_mjcDataRef, "TMujocoSingleBodyAdapter::Initialize >>> body {0} must have \
+                          a valid mjData reference", m_bodyRef->name() );
 
         m_mjcBodyId = mj_name2id( m_mjcModelRef, mjOBJ_BODY, m_bodyRef->name().c_str() );
         if ( m_mjcBodyId < 0 )
@@ -310,6 +316,59 @@ namespace mujoco {
         transform.set( rotation );
     }
 
+    void TMujocoSingleBodyAdapter::SetInitialPosition( const TVec3& position )
+    {
+        LOCO_CORE_ASSERT( m_mjcBodyId >= 0, "TMujocoSingleBodyAdapter::SetPosition >>> {0} must be \
+                          linked to a mjc-body", m_bodyRef->name() );
+
+        if ( m_bodyRef->dyntype() == eDynamicsType::DYNAMIC )
+        {
+            LOCO_CORE_ASSERT( m_mjcJointId >= 0, "TMujocoSingleBodyAdapter::SetRotation >>> {0} is a non-static \
+                              single-body, so it requires to have an associated mjc-joint", m_bodyRef->name() );
+            m_mjcModelRef->qpos0[m_mjcJointQposAdr + 0] = position.x();
+            m_mjcModelRef->qpos0[m_mjcJointQposAdr + 1] = position.y();
+            m_mjcModelRef->qpos0[m_mjcJointQposAdr + 2] = position.z();
+        }
+        else
+        {
+            m_mjcModelRef->body_pos[3 * m_mjcBodyId + 0] = position.x();
+            m_mjcModelRef->body_pos[3 * m_mjcBodyId + 1] = position.y();
+            m_mjcModelRef->body_pos[3 * m_mjcBodyId + 2] = position.z();
+        }
+    }
+
+    void TMujocoSingleBodyAdapter::SetInitialRotation( const TMat3& rotation )
+    {
+        LOCO_CORE_ASSERT( m_mjcBodyId >= 0, "TMujocoSingleBodyAdapter::SetRotation >>> {0} must be \
+                          linked to a mjc-body", m_bodyRef->name() );
+
+        const TVec4 quaternion = tinymath::quaternion( rotation );
+        if ( m_bodyRef->dyntype() == eDynamicsType::DYNAMIC )
+        {
+            LOCO_CORE_ASSERT( m_mjcJointId >= 0, "TMujocoSingleBodyAdapter::SetRotation >>> {0} is a non-static \
+                              single-body, so it requires to have an associated mjc-joint", m_bodyRef->name() );
+            m_mjcModelRef->qpos0[m_mjcJointQposAdr + 3] = quaternion.w();
+            m_mjcModelRef->qpos0[m_mjcJointQposAdr + 4] = quaternion.x();
+            m_mjcModelRef->qpos0[m_mjcJointQposAdr + 5] = quaternion.y();
+            m_mjcModelRef->qpos0[m_mjcJointQposAdr + 6] = quaternion.z();
+        }
+        else
+        {
+            m_mjcModelRef->body_quat[4 * m_mjcBodyId + 0] = quaternion.w();
+            m_mjcModelRef->body_quat[4 * m_mjcBodyId + 1] = quaternion.x();
+            m_mjcModelRef->body_quat[4 * m_mjcBodyId + 2] = quaternion.y();
+            m_mjcModelRef->body_quat[4 * m_mjcBodyId + 3] = quaternion.z();
+        }
+    }
+
+    void TMujocoSingleBodyAdapter::SetInitialTransform( const TMat4& transform )
+    {
+        const TVec3 position = TVec3( transform.col( 3 ) );
+        const TMat3 rotation = TMat3( transform );
+        SetInitialPosition( position );
+        SetInitialRotation( rotation );
+    }
+
     void TMujocoSingleBodyAdapter::SetLocalPosition( const TVec3& position )
     {
         // Single-bodies don't have this functionality (not part of a compound|kintree)
@@ -340,4 +399,18 @@ namespace mujoco {
         // Single-bodies don't have this functionality (not part of a compound|kintree)
     }
 
+    void TMujocoSingleBodyAdapter::SetInitialLocalPosition( const TVec3& position )
+    {
+        // Single-bodies don't have this functionality (not part of a compound|kintree)
+    }
+
+    void TMujocoSingleBodyAdapter::SetInitialLocalRotation( const TMat3& rotation )
+    {
+        // Single-bodies don't have this functionality (not part of a compound|kintree)
+    }
+
+    void TMujocoSingleBodyAdapter::SetInitialLocalTransform( const TMat4& transform )
+    {
+        // Single-bodies don't have this functionality (not part of a compound|kintree)
+    }
 }}

@@ -46,6 +46,12 @@ namespace mujoco {
 
         void GetTransform( TMat4& dstTransform ) /* const */ override;
 
+        void SetInitialPosition( const TVec3& position ) override;
+
+        void SetInitialRotation( const TMat3& rotation ) override;
+
+        void SetInitialTransform( const TMat4& transform ) override;
+
         void SetLocalPosition( const TVec3& position ) override;
 
         void SetLocalRotation( const TMat3& rotation ) override;
@@ -57,6 +63,12 @@ namespace mujoco {
         void GetLocalRotation( TMat3& dstRotation ) override;
 
         void GetLocalTransform( TMat4& dstTransform ) override;
+
+        void SetInitialLocalPosition( const TVec3& position ) override;
+
+        void SetInitialLocalRotation( const TMat3& rotation ) override;
+
+        void SetInitialLocalTransform( const TMat4& transform ) override;
 
         void SetMjcModel( mjModel* mjModelRef ) { m_mjcModelRef = mjModelRef; }
 

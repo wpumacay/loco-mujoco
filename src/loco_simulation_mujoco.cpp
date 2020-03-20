@@ -45,15 +45,15 @@ namespace mujoco {
         for ( auto single_body : single_bodies )
         {
             auto single_body_adapter = std::make_unique<TMujocoSingleBodyAdapter>( single_body );
-            single_body->SetAdapter( single_body_adapter.get() );
+            single_body->SetBodyAdapter( single_body_adapter.get() );
             m_singleBodyAdapters.push_back( std::move( single_body_adapter ) );
 
-            auto collider = single_body->collision();
+            auto collider = single_body->collider();
             LOCO_CORE_ASSERT( collider, "TMujocoSimulation::_CreateSingleBodyAdapters >>> single-body {0} \
                               must have an associated collider", single_body->name() );
 
             auto collider_adapter = std::make_unique<TMujocoCollisionAdapter>( collider );
-            collider->SetAdapter( collider_adapter.get() );
+            collider->SetColliderAdapter( collider_adapter.get() );
             m_collisionAdapters.push_back( std::move( collider_adapter ) );
         }
     }

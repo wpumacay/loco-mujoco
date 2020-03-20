@@ -6,8 +6,8 @@
 #include <utils/loco_parsing_schema.h>
 #include <utils/loco_parsing_element.h>
 
-#include <adapters/loco_collision_adapter_mujoco.h>
-#include <adapters/loco_single_body_adapter_mujoco.h>
+#include <primitives/loco_single_body_collider_adapter_mujoco.h>
+#include <primitives/loco_single_body_adapter_mujoco.h>
 
 namespace loco {
 namespace mujoco {

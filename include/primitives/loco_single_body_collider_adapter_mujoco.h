@@ -1,11 +1,11 @@
 #pragma once
 
 #include <loco_common_mujoco.h>
-#include <adapters/loco_collision_adapter.h>
 #include <utils/loco_parsing_element.h>
+#include <primitives/loco_single_body_collider_adapter.h>
 
 namespace loco {
-    class TCollision;
+    class TSingleBodyCollider;
 }
 
 namespace loco {
@@ -13,11 +13,11 @@ namespace mujoco {
 
     const float LOCO_MUJOCO_HFIELD_BASE = 1.0f;
 
-    class TMujocoCollisionAdapter : public TICollisionAdapter
+    class TMujocoCollisionAdapter : public TISingleBodyColliderAdapter
     {
     public :
 
-        TMujocoCollisionAdapter( TCollision* collisionRef );
+        TMujocoCollisionAdapter( TSingleBodyCollider* collisionRef );
 
         TMujocoCollisionAdapter( const TMujocoCollisionAdapter& other ) = delete;
 
@@ -29,17 +29,7 @@ namespace mujoco {
 
         void Initialize() override;
 
-        void PreStep() override;
-
-        void PostStep() override;
-
-        void Reset() override;
-
-        void SetLocalPosition( const TVec3& position ) override;
-
-        void SetLocalRotation( const TMat3& rotation ) override;
-
-        void SetLocalTransform( const TMat4& transform ) override;
+        void OnDetach() override;
 
         void ChangeSize( const TVec3& newSize ) override;
 

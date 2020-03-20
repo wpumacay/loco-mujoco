@@ -2,21 +2,21 @@
 
 #include <loco_common_mujoco.h>
 #include <utils/loco_parsing_element.h>
-#include <adapters/loco_body_adapter.h>
-#include <adapters/loco_collision_adapter_mujoco.h>
+#include <primitives/loco_single_body_adapter.h>
+#include <primitives/loco_single_body_collider_adapter_mujoco.h>
 
 namespace loco {
-    class TIBody;
+    class TSingleBody;
 }
 
 namespace loco {
 namespace mujoco {
 
-    class TMujocoSingleBodyAdapter : public TIBodyAdapter
+    class TMujocoSingleBodyAdapter : public TISingleBodyAdapter
     {
     public :
 
-        TMujocoSingleBodyAdapter( TIBody* bodyRef );
+        TMujocoSingleBodyAdapter( TSingleBody* bodyRef );
 
         TMujocoSingleBodyAdapter( const TMujocoSingleBodyAdapter& other ) = delete;
 
@@ -30,49 +30,27 @@ namespace mujoco {
 
         void Reset() override;
 
-        void PreStep() override;
-
-        void PostStep() override;
-
-        void SetPosition( const TVec3& position ) override;
-
-        void SetRotation( const TMat3& rotation ) override;
+        void OnDetach() override;
 
         void SetTransform( const TMat4& transform ) override;
 
-        void GetPosition( TVec3& dstPosition ) /* const */ override;
+        void SetLinearVelocity( const TVec3& linear_vel ) override;
 
-        void GetRotation( TMat3& dstRotation ) /* const */ override;
+        void SetAngularVelocity( const TVec3& angular_vel ) override;
+
+        void SetForceCOM( const TVec3& force_com ) override;
+
+        void SetTorqueCOM( const TVec3& torque_com ) override;
 
         void GetTransform( TMat4& dstTransform ) /* const */ override;
 
-        void SetInitialPosition( const TVec3& position ) override;
+        void GetLinearVelocity( TVec3& dst_linear_vel ) /* const */ override;
 
-        void SetInitialRotation( const TMat3& rotation ) override;
+        void GetAngularVelocity( TVec3& dst_angular_vel ) /* const */ override;
 
-        void SetInitialTransform( const TMat4& transform ) override;
+        void SetMjcModel( mjModel* mjModelRef );
 
-        void SetLocalPosition( const TVec3& position ) override;
-
-        void SetLocalRotation( const TMat3& rotation ) override;
-
-        void SetLocalTransform( const TMat4& transform ) override;
-
-        void GetLocalPosition( TVec3& dstPosition ) override;
-
-        void GetLocalRotation( TMat3& dstRotation ) override;
-
-        void GetLocalTransform( TMat4& dstTransform ) override;
-
-        void SetInitialLocalPosition( const TVec3& position ) override;
-
-        void SetInitialLocalRotation( const TMat3& rotation ) override;
-
-        void SetInitialLocalTransform( const TMat4& transform ) override;
-
-        void SetMjcModel( mjModel* mjModelRef ) { m_mjcModelRef = mjModelRef; }
-
-        void SetMjcData( mjData* mjDataRef ) { m_mjcDataRef = mjDataRef; }
+        void SetMjcData( mjData* mjDataRef );
 
         const parsing::TElement* element_resources() const { return m_mjcfElementResources.get(); }
 

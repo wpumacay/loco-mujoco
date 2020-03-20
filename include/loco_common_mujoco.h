@@ -1,7 +1,7 @@
 #pragma once
 
 #include <loco_common.h>
-#include <components/loco_data.h>
+#include <loco_data.h>
 // Main mujoco API
 #include <mujoco.h>
 

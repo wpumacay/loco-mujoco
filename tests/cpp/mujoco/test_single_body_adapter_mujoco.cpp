@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 
 #include <loco_simulation_mujoco.h>
-#include <adapters/loco_single_body_adapter_mujoco.h>
+#include <primitives/loco_single_body_adapter_mujoco.h>
 
 TEST( TestLocoMujocoSingleBodyAdapter, TestLocoMujocoSingleBodyAdapterBuild )
 {
@@ -21,10 +21,9 @@ TEST( TestLocoMujocoSingleBodyAdapter, TestLocoMujocoSingleBodyAdapterBuild )
 
     const std::string plane_body_name = "floor";
     auto plane_body_obj = std::make_unique<loco::TSingleBody>( plane_body_name, plane_body_data, loco::TVec3(), loco::TMat3() );
-    auto plane_body_adapter = std::make_unique<loco::mujoco::TMujocoSingleBodyAdapter>( plane_body_obj.get() );
-    plane_body_adapter->Build();
-
     {
+        auto plane_body_adapter = std::make_unique<loco::mujoco::TMujocoSingleBodyAdapter>( plane_body_obj.get() );
+        plane_body_adapter->Build();
         const std::string expected_name = "floor";
         const std::string expected_jnt_name = "floor_freejnt";
         const loco::TVec3 expected_pos = { 0.0f, 0.0f, 0.0f };
@@ -58,10 +57,9 @@ TEST( TestLocoMujocoSingleBodyAdapter, TestLocoMujocoSingleBodyAdapterBuild )
     const loco::TVec3 box_body_position = { 1.0f, 2.0f, 3.0f };
     const loco::TVec4 box_body_quaternion = { 0.146f, 0.354f, 0.354f, 0.854f };
     auto box_body_obj = std::make_unique<loco::TSingleBody>( box_body_name, box_body_data, box_body_position, tinymath::rotation( box_body_quaternion ) );
-    auto box_body_adapter = std::make_unique<loco::mujoco::TMujocoSingleBodyAdapter>( box_body_obj.get() );
-    box_body_adapter->Build();
-
     {
+        auto box_body_adapter = std::make_unique<loco::mujoco::TMujocoSingleBodyAdapter>( box_body_obj.get() );
+        box_body_adapter->Build();
         const std::string expected_name = "boxy";
         const std::string expected_jnt_name = "boxy_freejnt";
         const loco::TVec3 expected_pos = box_body_position;
@@ -108,10 +106,9 @@ TEST( TestLocoMujocoSingleBodyAdapter, TestLocoMujocoSingleBodyAdapterBuild )
     const loco::TVec3 mesh_body_position = { -1.0f, -2.0f, 3.0f };
     const loco::TVec4 mesh_body_quaternion = { 0.0f, 0.0f, 0.0f, 1.0f };
     auto mesh_body_obj = std::make_unique<loco::TSingleBody>( mesh_body_name, mesh_body_data, mesh_body_position, tinymath::rotation( mesh_body_quaternion ) );
-    auto mesh_body_adapter = std::make_unique<loco::mujoco::TMujocoSingleBodyAdapter>( mesh_body_obj.get() );
-    mesh_body_adapter->Build();
-
     {
+        auto mesh_body_adapter = std::make_unique<loco::mujoco::TMujocoSingleBodyAdapter>( mesh_body_obj.get() );
+        mesh_body_adapter->Build();
         const std::string expected_name = "monkey_head";
         const std::string expected_jnt_name = "monkey_head_freejnt";
         const loco::TVec3 expected_pos = { -1.0f, -2.0f, 3.0f };
@@ -163,13 +160,12 @@ TEST( TestLocoMujocoSingleBodyAdapter, TestLocoMujocoSingleBodyAdapterBuild )
     const loco::TVec3 sphere_body_position = { 0.0f, 0.0f, 3.0f };
     const loco::TVec4 sphere_body_quaternion = { 0.0f, 0.0f, 0.0f, 1.0f };
     auto sphere_body_obj = std::make_unique<loco::TSingleBody>( sphere_body_name, sphere_body_data, sphere_body_position, tinymath::rotation( sphere_body_quaternion ) );
-    auto sphere_body_adapter = std::make_unique<loco::mujoco::TMujocoSingleBodyAdapter>( sphere_body_obj.get() );
-    auto sphere_col_ref = sphere_body_obj->collision();
-    auto sphere_col_adapter = std::make_unique<loco::mujoco::TMujocoCollisionAdapter>( sphere_col_ref );
-    sphere_col_ref->SetAdapter( sphere_col_adapter.get() );
-    sphere_body_adapter->Build(); // will call col's adapter Build method
-
     {
+        auto sphere_body_adapter = std::make_unique<loco::mujoco::TMujocoSingleBodyAdapter>( sphere_body_obj.get() );
+        auto sphere_col_ref = sphere_body_obj->collider();
+        auto sphere_col_adapter = std::make_unique<loco::mujoco::TMujocoCollisionAdapter>( sphere_col_ref );
+        sphere_col_ref->SetColliderAdapter( sphere_col_adapter.get() );
+        sphere_body_adapter->Build(); // will call col's adapter Build method
         const std::string expected_name = "heavy_sphere";
         const std::string expected_jnt_name = "heavy_sphere_freejnt";
         const loco::TVec3 expected_pos = { 0.0f, 0.0f, 3.0f };

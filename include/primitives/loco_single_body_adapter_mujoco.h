@@ -52,6 +52,8 @@ namespace mujoco {
 
         void SetMjcData( mjData* mjDataRef );
 
+        void HideMjcObject();
+
         const parsing::TElement* element_resources() const { return m_mjcfElementResources.get(); }
 
         const parsing::TElement* element_asset_resources() const { return m_mjcfElementAssetResources.get(); }
@@ -90,6 +92,8 @@ namespace mujoco {
 
         std::unique_ptr<parsing::TElement> m_mjcfElementResources;
         std::unique_ptr<parsing::TElement> m_mjcfElementAssetResources;
+
+        TMat4 m_DetachedRestTransform;
     };
 
 }}

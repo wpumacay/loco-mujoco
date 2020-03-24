@@ -162,10 +162,9 @@ TEST( TestLocoMujocoSingleBodyAdapter, TestLocoMujocoSingleBodyAdapterBuild )
     auto sphere_body_obj = std::make_unique<loco::TSingleBody>( sphere_body_name, sphere_body_data, sphere_body_position, tinymath::rotation( sphere_body_quaternion ) );
     {
         auto sphere_body_adapter = std::make_unique<loco::mujoco::TMujocoSingleBodyAdapter>( sphere_body_obj.get() );
-        auto sphere_col_ref = sphere_body_obj->collider();
-        auto sphere_col_adapter = std::make_unique<loco::mujoco::TMujocoCollisionAdapter>( sphere_col_ref );
-        sphere_col_ref->SetColliderAdapter( sphere_col_adapter.get() );
         sphere_body_adapter->Build(); // will call col's adapter Build method
+        auto sphere_col_ref = sphere_body_obj->collider();
+        auto sphere_col_adapter = static_cast<loco::mujoco::TMujocoCollisionAdapter*>( sphere_col_ref->collider_adapter() );
         const std::string expected_name = "heavy_sphere";
         const std::string expected_jnt_name = "heavy_sphere_freejnt";
         const loco::TVec3 expected_pos = { 0.0f, 0.0f, 3.0f };

@@ -26,7 +26,6 @@ TEST( TestLocoRuntimeMujocoBackend, TestRuntimeMujocoBackend )
                                                      loco::config::rendering::NONE );
 
     auto simulationRef = runtime->CreateSimulation( scenario.get() );
-    simulationRef->Initialize();
     simulationRef->Step();
     simulationRef->Reset();
     simulationRef->Pause();
@@ -43,7 +42,6 @@ TEST( TestLocoRuntimeMujocoBackend, TestRuntimeMujocoBackend )
                                                 { 0.4f, 0.4f, 0.4f },
                                                 { 0.8f, 0.8f, 0.8f },
                                                 { 0.8f, 0.8f, 0.8f } );
-    visualizerRef->Initialize();
     visualizerRef->Update();
     visualizerRef->Reset();
     EXPECT_EQ( visualizerRef->backendId(), "null" );

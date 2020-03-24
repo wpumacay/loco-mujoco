@@ -47,14 +47,6 @@ namespace mujoco {
             auto single_body_adapter = std::make_unique<TMujocoSingleBodyAdapter>( single_body );
             single_body->SetBodyAdapter( single_body_adapter.get() );
             m_singleBodyAdapters.push_back( std::move( single_body_adapter ) );
-
-            auto collider = single_body->collider();
-            LOCO_CORE_ASSERT( collider, "TMujocoSimulation::_CreateSingleBodyAdapters >>> single-body {0} \
-                              must have an associated collider", single_body->name() );
-
-            auto collider_adapter = std::make_unique<TMujocoCollisionAdapter>( collider );
-            collider->SetColliderAdapter( collider_adapter.get() );
-            m_collisionAdapters.push_back( std::move( collider_adapter ) );
         }
     }
 
@@ -195,7 +187,10 @@ namespace mujoco {
 
     void TMujocoSimulation::_PreStepInternal()
     {
-
+        // Make sure recycled objects are not being simulated
+        for ( ssize_t i = 0; i < m_singleBodyAdaptersRecycled.size(); i++ )
+            if ( auto mjc_single_body_adapter = dynamic_cast<TMujocoSingleBodyAdapter*>( m_singleBodyAdaptersRecycled[i].get() ) )
+                mjc_single_body_adapter->HideMjcObject();
     }
 
     void TMujocoSimulation::_SimStepInternal()
@@ -233,6 +228,13 @@ namespace mujoco {
 extern "C" TISimulation* simulation_create( loco::TScenario* scenarioRef )
 {
     return new loco::mujoco::TMujocoSimulation( scenarioRef );
+}
+
+extern "C" TISingleBodyAdapter* single_body_create( loco::TSingleBody* single_body_ref )
+{
+    // if recycled available, return recycled
+    // else, return nullptr (mujoco can't create dynamically yet)
+    return nullptr;
 }
 
 }}

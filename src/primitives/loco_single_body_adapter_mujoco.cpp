@@ -38,11 +38,12 @@ namespace mujoco {
     {
         if ( m_BodyRef )
             m_BodyRef->DetachSim();
+
         m_BodyRef = nullptr;
+        m_ColliderAdapter = nullptr;
 
         m_mjcModelRef = nullptr;
         m_mjcDataRef = nullptr;
-
         m_mjcBodyId = -1;
         m_mjcJointId = -1;
         m_mjcJointQposAdr = -1;
@@ -91,20 +92,21 @@ namespace mujoco {
                                                               inertia.ixy, inertia.ixz, inertia.iyz } );
         }
 
-        auto collision = m_BodyRef->collider();
-        LOCO_CORE_ASSERT( collision, "TMujocoSingleBodyAdapter::Build >>> single-body {0} doesn't have \
+        auto collider = m_BodyRef->collider();
+        LOCO_CORE_ASSERT( collider, "TMujocoSingleBodyAdapter::Build >>> single-body {0} doesn't have \
                           a valid collider (nullptr)", m_BodyRef->name() );
 
-        if ( auto collision_adapter = dynamic_cast<TMujocoCollisionAdapter*>( collision->collider_adapter() ) )
+        m_ColliderAdapter = std::make_unique<TMujocoCollisionAdapter>( collider );
+        collider->SetColliderAdapter( m_ColliderAdapter.get() );
+
+        auto mjc_collider_adapter = static_cast<TMujocoCollisionAdapter*>( m_ColliderAdapter.get() );
+        mjc_collider_adapter->Build();
+        if ( auto collider_element_resources = mjc_collider_adapter->element_resources() )
+            m_mjcfElementResources->Add( parsing::TElement::CloneElement( collider_element_resources ) );
+        if ( auto collider_element_asset_resources = mjc_collider_adapter->element_asset_resources() )
         {
-            collision_adapter->Build();
-            if ( auto collider_element_resources = collision_adapter->element_resources() )
-                m_mjcfElementResources->Add( parsing::TElement::CloneElement( collider_element_resources ) );
-            if ( auto collider_element_asset_resources = collision_adapter->element_asset_resources() )
-            {
-                m_mjcfElementAssetResources = std::make_unique<parsing::TElement>( LOCO_MJCF_ASSET_TAG, parsing::eSchemaType::MJCF );
-                m_mjcfElementAssetResources->Add( parsing::TElement::CloneElement( collider_element_asset_resources ) );
-            }
+            m_mjcfElementAssetResources = std::make_unique<parsing::TElement>( LOCO_MJCF_ASSET_TAG, parsing::eSchemaType::MJCF );
+            m_mjcfElementAssetResources->Add( parsing::TElement::CloneElement( collider_element_asset_resources ) );
         }
     }
 
@@ -123,11 +125,10 @@ namespace mujoco {
             return;
         }
 
-        if ( auto collision = m_BodyRef->collider() )
-        {
-            if ( auto collision_adapter = dynamic_cast<TMujocoCollisionAdapter*>( collision->collider_adapter() ) )
-                collision_adapter->Initialize();
-        }
+        LOCO_CORE_ASSERT( m_ColliderAdapter, "TMujocoSingleBodyAdapter::Initialize >>> body {0} must have \
+                          a related mjc-collider-adapter for its collider. Perhaps forgot to call ->Build()?", m_BodyRef->name() );
+        auto mjc_collider_adapter = static_cast<TMujocoCollisionAdapter*>( m_ColliderAdapter.get() );
+        mjc_collider_adapter->Initialize();
 
         if ( m_BodyRef->dyntype() == eDynamicsType::DYNAMIC )
         {
@@ -377,5 +378,36 @@ namespace mujoco {
         if ( auto collider = m_BodyRef->collider() )
             if ( auto collider_adapter = dynamic_cast<TMujocoCollisionAdapter*>( collider->collider_adapter() ) )
                 collider_adapter->SetMjcData( m_mjcDataRef );
+    }
+
+    void TMujocoSingleBodyAdapter::HideMjcObject()
+    {
+        const auto position = TVec3( m_DetachedRestTransform.col( 3 ) );
+        const auto quaternion = tinymath::quaternion( m_DetachedRestTransform );
+
+        LOCO_CORE_ASSERT( m_mjcModelRef, "TMujocoSingleBodyAdapter::HideMjcObject >>> recycled adapter must have \
+                          a valid mjModel reference" );
+        LOCO_CORE_ASSERT( m_mjcDataRef, "TMujocoSingleBodyAdapter::HideMjcObject >>> recycled adapter must have \
+                          a valid mjData reference" );
+        if ( m_mjcJointId != -1 ) // Is a dynamic body
+        {
+            m_mjcDataRef->qpos[m_mjcJointQposAdr + 0] = position.x();
+            m_mjcDataRef->qpos[m_mjcJointQposAdr + 1] = position.y();
+            m_mjcDataRef->qpos[m_mjcJointQposAdr + 2] = position.z();
+            m_mjcDataRef->qpos[m_mjcJointQposAdr + 3] = quaternion.w();
+            m_mjcDataRef->qpos[m_mjcJointQposAdr + 4] = quaternion.x();
+            m_mjcDataRef->qpos[m_mjcJointQposAdr + 5] = quaternion.y();
+            m_mjcDataRef->qpos[m_mjcJointQposAdr + 6] = quaternion.z();
+        }
+        else if ( m_mjcBodyId != -1 ) // If not, then it's a static body
+        {
+            m_mjcModelRef->body_pos[3 * m_mjcBodyId + 0] = position.x();
+            m_mjcModelRef->body_pos[3 * m_mjcBodyId + 1] = position.y();
+            m_mjcModelRef->body_pos[3 * m_mjcBodyId + 2] = position.z();
+            m_mjcModelRef->body_quat[4 * m_mjcBodyId + 0] = quaternion.w();
+            m_mjcModelRef->body_quat[4 * m_mjcBodyId + 1] = quaternion.x();
+            m_mjcModelRef->body_quat[4 * m_mjcBodyId + 2] = quaternion.y();
+            m_mjcModelRef->body_quat[4 * m_mjcBodyId + 3] = quaternion.z();
+        }
     }
 }}

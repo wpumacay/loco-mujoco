@@ -4,6 +4,8 @@
 namespace loco {
 namespace mujoco {
 
+    ssize_t TMujocoSingleBodyAdapter::s_DetachedNum = 0;
+
     TMujocoSingleBodyAdapter::TMujocoSingleBodyAdapter( TSingleBody* bodyRef )
         : TISingleBodyAdapter( bodyRef )
     {
@@ -198,8 +200,14 @@ namespace mujoco {
 
     void TMujocoSingleBodyAdapter::OnDetach()
     {
+        const TVec3 grid_rest_position = DETACHED_REST_GRID_START + 
+                                         TVec3( (s_DetachedNum % DETACHED_REST_GRID_SIZE) * DETACHED_REST_GRID_DELTA.x(),
+                                                (s_DetachedNum / DETACHED_REST_GRID_SIZE) * DETACHED_REST_GRID_DELTA.y(),
+                                                (s_DetachedNum / DETACHED_REST_GRID_SIZE_POW2) * DETACHED_REST_GRID_DELTA.z() );
+        m_DetachedRestTransform.set( grid_rest_position, 3 );
         m_Detached = true;
         m_BodyRef = nullptr;
+        s_DetachedNum++;
     }
 
     void TMujocoSingleBodyAdapter::SetTransform( const TMat4& transform )

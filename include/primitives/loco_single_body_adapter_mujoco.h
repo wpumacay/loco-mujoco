@@ -12,6 +12,14 @@ namespace loco {
 namespace loco {
 namespace mujoco {
 
+    // Where the detached objects rest-grid starts
+    const TVec3 DETACHED_REST_GRID_START = { 0.0, 0.0, 100.0 };
+    // The amount in x-y-z in between elements in the rest-grid
+    const TVec3 DETACHED_REST_GRID_DELTA = { 1.0, 1.0, 1.0 };
+    // Size of the rest-grid for detached objects
+    const ssize_t DETACHED_REST_GRID_SIZE = 10;
+    const ssize_t DETACHED_REST_GRID_SIZE_POW2 = 100;
+
     class TMujocoSingleBodyAdapter : public TISingleBodyAdapter
     {
     public :
@@ -94,6 +102,7 @@ namespace mujoco {
         std::unique_ptr<parsing::TElement> m_mjcfElementAssetResources;
 
         TMat4 m_DetachedRestTransform;
+        static ssize_t s_DetachedNum;
     };
 
 }}

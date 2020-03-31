@@ -71,7 +71,6 @@ namespace mujoco {
         R"( <mujoco>
                 <compiler inertiafromgeom="true" coordinate="local" angle="degree"/>
                 <size njmax="10000" nconmax="40000"/>
-                <statistic extent="2" center="0 0 1"/>
                 <asset>
                   <!-- place assets here -->
                 </asset>

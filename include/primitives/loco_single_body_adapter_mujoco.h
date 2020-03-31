@@ -97,6 +97,7 @@ namespace mujoco {
         ssize_t m_mjcJointQvelAdr;
         ssize_t m_mjcJointQposNum;
         ssize_t m_mjcJointQvelNum;
+        ssize_t m_mjcGeomId;
 
         std::unique_ptr<parsing::TElement> m_mjcfElementResources;
         std::unique_ptr<parsing::TElement> m_mjcfElementAssetResources;

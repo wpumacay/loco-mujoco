@@ -179,6 +179,8 @@ namespace mujoco {
                 m_mjcModelRef->qpos0[m_mjcJointQposAdr + 4] = quaternion0.x();
                 m_mjcModelRef->qpos0[m_mjcJointQposAdr + 5] = quaternion0.y();
                 m_mjcModelRef->qpos0[m_mjcJointQposAdr + 6] = quaternion0.z();
+                SetLinearVelocity( m_BodyRef->linear_vel0() );
+                SetAngularVelocity( m_BodyRef->angular_vel0() );
             }
         }
         else
@@ -199,8 +201,8 @@ namespace mujoco {
         {
             for ( ssize_t i = 0; i < m_mjcJointQposNum; i++ )
                 m_mjcDataRef->qpos[m_mjcJointQposAdr + i] = m_mjcModelRef->qpos0[m_mjcJointQposAdr + i];
-            for ( ssize_t i = 0; i < m_mjcJointQvelNum; i++ )
-                m_mjcDataRef->qvel[m_mjcJointQvelAdr + i] = 0.0;
+            SetLinearVelocity( m_BodyRef->linear_vel0() );
+            SetAngularVelocity( m_BodyRef->angular_vel0() );
         }
         else
         {

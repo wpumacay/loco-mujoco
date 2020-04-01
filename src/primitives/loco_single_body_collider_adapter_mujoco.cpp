@@ -71,6 +71,8 @@ namespace mujoco {
         m_mjcfElementResources->SetVec3( "pos", { 0.0, 0.0, 0.0 } );
         m_mjcfElementResources->SetVec4( "quat", { 1.0, 0.0, 0.0, 0.0 } );
         m_mjcfElementResources->SetString( "type", enumShape_to_mjcShape( m_ColliderRef->shape() ) );
+        m_mjcfElementResources->SetInt( "contype", m_ColliderRef->collisionGroup() );
+        m_mjcfElementResources->SetInt( "conaffinity", m_ColliderRef->collisionMask() );
         auto array_size = size_to_mjcSize( m_ColliderRef->shape(), m_ColliderRef->size() );
         if ( array_size.ndim > 0 )
             m_mjcfElementResources->SetArrayFloat( "size", array_size );

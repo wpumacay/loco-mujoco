@@ -75,10 +75,10 @@ namespace mujoco {
         LOCO_CORE_ASSERT( collider, "TMujocoSingleBodyAdapter::Build >>> single-body {0} doesn't have \
                           a valid collider (nullptr)", m_BodyRef->name() );
 
-        m_ColliderAdapter = std::make_unique<TMujocoCollisionAdapter>( collider );
+        m_ColliderAdapter = std::make_unique<TMujocoSingleBodyColliderAdapter>( collider );
         collider->SetColliderAdapter( m_ColliderAdapter.get() );
 
-        auto mjc_collider_adapter = static_cast<TMujocoCollisionAdapter*>( m_ColliderAdapter.get() );
+        auto mjc_collider_adapter = static_cast<TMujocoSingleBodyColliderAdapter*>( m_ColliderAdapter.get() );
         mjc_collider_adapter->Build();
 
         // Only dynamic-bodies require actual bodies. Static ones only require geoms
@@ -135,7 +135,7 @@ namespace mujoco {
         LOCO_CORE_ASSERT( m_ColliderAdapter, "TMujocoSingleBodyAdapter::Initialize >>> body {0} must have \
                           a related mjc-collider-adapter for its collider. Perhaps forgot to call ->Build()?", m_BodyRef->name() );
         // Initialize collider-adapter first (might have geom-id required if static-body)
-        auto mjc_collider_adapter = static_cast<TMujocoCollisionAdapter*>( m_ColliderAdapter.get() );
+        auto mjc_collider_adapter = static_cast<TMujocoSingleBodyColliderAdapter*>( m_ColliderAdapter.get() );
         mjc_collider_adapter->Initialize();
 
         if ( m_BodyRef->dyntype() == eDynamicsType::DYNAMIC )
@@ -408,7 +408,7 @@ namespace mujoco {
     {
         m_mjcModelRef = mjModelRef;
         if ( auto collider = m_BodyRef->collider() )
-            if ( auto collider_adapter = dynamic_cast<TMujocoCollisionAdapter*>( collider->collider_adapter() ) )
+            if ( auto collider_adapter = dynamic_cast<TMujocoSingleBodyColliderAdapter*>( collider->collider_adapter() ) )
                 collider_adapter->SetMjcModel( m_mjcModelRef );
     }
 
@@ -416,7 +416,7 @@ namespace mujoco {
     {
         m_mjcDataRef = mjDataRef;
         if ( auto collider = m_BodyRef->collider() )
-            if ( auto collider_adapter = dynamic_cast<TMujocoCollisionAdapter*>( collider->collider_adapter() ) )
+            if ( auto collider_adapter = dynamic_cast<TMujocoSingleBodyColliderAdapter*>( collider->collider_adapter() ) )
                 collider_adapter->SetMjcData( m_mjcDataRef );
     }
 

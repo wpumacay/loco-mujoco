@@ -70,12 +70,12 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterBuild )
         vec_col_data.push_back( col_data );
     }
     std::vector<std::unique_ptr<loco::TSingleBodyCollider>> vec_colliders;
-    std::vector<std::unique_ptr<loco::mujoco::TMujocoCollisionAdapter>> vec_colliders_adapters;
+    std::vector<std::unique_ptr<loco::mujoco::TMujocoSingleBodyColliderAdapter>> vec_colliders_adapters;
     for ( size_t i = 0; i < vec_col_data.size(); i++ )
     {
         const auto collider_name = loco::mujoco::enumShape_to_mjcShape( vec_col_data[i].type ) + "_collider";
         auto col_obj = std::make_unique<loco::TSingleBodyCollider>( collider_name, vec_col_data[i] );
-        auto col_adapter = std::make_unique<loco::mujoco::TMujocoCollisionAdapter>( col_obj.get() );
+        auto col_adapter = std::make_unique<loco::mujoco::TMujocoSingleBodyColliderAdapter>( col_obj.get() );
         col_adapter->Build();
         ASSERT_TRUE( col_adapter->element_resources() != nullptr );
         vec_colliders.push_back( std::move( col_obj ) );
@@ -202,7 +202,7 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterInitialize )
     {
         auto collider = single_bodies_list[i]->collider();
         ASSERT_TRUE( collider != nullptr );
-        auto mjc_col_adapter = dynamic_cast<loco::mujoco::TMujocoCollisionAdapter*>( collider->collider_adapter() );
+        auto mjc_col_adapter = dynamic_cast<loco::mujoco::TMujocoSingleBodyColliderAdapter*>( collider->collider_adapter() );
         ASSERT_TRUE( mjc_col_adapter != nullptr );
 
         const ssize_t mjc_geom_id = mjc_col_adapter->mjc_geom_id();
@@ -232,7 +232,7 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterMeshBuild )
 
     const auto collider_name = loco::mujoco::enumShape_to_mjcShape( col_data.type ) + "_collider";
     auto col_obj = std::make_unique<loco::TSingleBodyCollider>( collider_name, col_data );
-    auto col_adapter = std::make_unique<loco::mujoco::TMujocoCollisionAdapter>( col_obj.get() );
+    auto col_adapter = std::make_unique<loco::mujoco::TMujocoSingleBodyColliderAdapter>( col_obj.get() );
     col_adapter->Build();
 
     auto mjcf_resources = col_adapter->element_resources();
@@ -276,7 +276,7 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterMeshUserBuil
 
     const auto collider_name = loco::mujoco::enumShape_to_mjcShape( col_data.type ) + "_collider";
     auto col_obj = std::make_unique<loco::TSingleBodyCollider>( collider_name, col_data );
-    auto col_adapter = std::make_unique<loco::mujoco::TMujocoCollisionAdapter>( col_obj.get() );
+    auto col_adapter = std::make_unique<loco::mujoco::TMujocoSingleBodyColliderAdapter>( col_obj.get() );
     col_adapter->Build();
 
     auto mjcf_resources = col_adapter->element_resources();
@@ -358,7 +358,7 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterMeshInitiali
     ASSERT_TRUE( mesh_body != nullptr );
     auto mesh_collider = mesh_body->collider();
     ASSERT_TRUE( mesh_collider != nullptr );
-    auto mjc_col_adapter = dynamic_cast<loco::mujoco::TMujocoCollisionAdapter*>( mesh_collider->collider_adapter() );
+    auto mjc_col_adapter = dynamic_cast<loco::mujoco::TMujocoSingleBodyColliderAdapter*>( mesh_collider->collider_adapter() );
     ASSERT_TRUE( mjc_col_adapter != nullptr );
 
     const ssize_t mjc_geom_id = mjc_col_adapter->mjc_geom_id();
@@ -408,7 +408,7 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterMeshUserInit
     ASSERT_TRUE( mesh_body != nullptr );
     auto mesh_collider = mesh_body->collider();
     ASSERT_TRUE( mesh_collider != nullptr );
-    auto mjc_col_adapter = dynamic_cast<loco::mujoco::TMujocoCollisionAdapter*>( mesh_collider->collider_adapter() );
+    auto mjc_col_adapter = dynamic_cast<loco::mujoco::TMujocoSingleBodyColliderAdapter*>( mesh_collider->collider_adapter() );
     ASSERT_TRUE( mjc_col_adapter != nullptr );
 
     const ssize_t mjc_geom_id = mjc_col_adapter->mjc_geom_id();
@@ -447,7 +447,7 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterHfieldBuild 
 
     const auto collider_name = loco::mujoco::enumShape_to_mjcShape( col_data.type ) + "_collider";
     auto col_obj = std::make_unique<loco::TSingleBodyCollider>( collider_name, col_data );
-    auto col_adapter = std::make_unique<loco::mujoco::TMujocoCollisionAdapter>( col_obj.get() );
+    auto col_adapter = std::make_unique<loco::mujoco::TMujocoSingleBodyColliderAdapter>( col_obj.get() );
     col_adapter->Build();
 
     auto mjcf_resources = col_adapter->element_resources();
@@ -518,7 +518,7 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterHfieldInitia
     ASSERT_TRUE( hfield_body != nullptr );
     auto mesh_collider = hfield_body->collider();
     ASSERT_TRUE( mesh_collider != nullptr );
-    auto mjc_col_adapter = dynamic_cast<loco::mujoco::TMujocoCollisionAdapter*>( mesh_collider->collider_adapter() );
+    auto mjc_col_adapter = dynamic_cast<loco::mujoco::TMujocoSingleBodyColliderAdapter*>( mesh_collider->collider_adapter() );
     ASSERT_TRUE( mjc_col_adapter != nullptr );
 
     const ssize_t mjc_geom_id = mjc_col_adapter->mjc_geom_id();

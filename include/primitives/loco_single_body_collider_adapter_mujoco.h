@@ -13,17 +13,17 @@ namespace mujoco {
 
     const float LOCO_MUJOCO_HFIELD_BASE = 1.0f;
 
-    class TMujocoCollisionAdapter : public TISingleBodyColliderAdapter
+    class TMujocoSingleBodyColliderAdapter : public TISingleBodyColliderAdapter
     {
     public :
 
-        TMujocoCollisionAdapter( TSingleBodyCollider* collisionRef );
+        TMujocoSingleBodyColliderAdapter( TSingleBodyCollider* collisionRef );
 
-        TMujocoCollisionAdapter( const TMujocoCollisionAdapter& other ) = delete;
+        TMujocoSingleBodyColliderAdapter( const TMujocoSingleBodyColliderAdapter& other ) = delete;
 
-        TMujocoCollisionAdapter& operator= ( const TMujocoCollisionAdapter& other ) = delete;
+        TMujocoSingleBodyColliderAdapter& operator= ( const TMujocoSingleBodyColliderAdapter& other ) = delete;
 
-        ~TMujocoCollisionAdapter();
+        ~TMujocoSingleBodyColliderAdapter();
 
         void Build() override;
 

@@ -24,7 +24,7 @@ TEST( TestLocoMujocoSingleBodyAdapter, TestLocoMujocoSingleBodyAdapterBuild )
     {
         auto plane_body_adapter = std::make_unique<loco::mujoco::TMujocoSingleBodyAdapter>( plane_body_obj.get() );
         plane_body_adapter->Build();
-        const std::string expected_name = "floor";
+        const std::string expected_name = "floor_col"; // static objects are geom-only, so add suffix _col
         const std::string expected_jnt_name = "floor_freejnt";
         const loco::TVec3 expected_pos = { 0.0f, 0.0f, 0.0f };
         const loco::TVec4 expected_quaternion = { 1.0f, 0.0f, 0.0f, 0.0f }; // w-x-y-z
@@ -263,11 +263,12 @@ TEST( TestLocoMujocoSingleBodyAdapter, TestLocoMujocoSingleBodyAdapterInitialize
         ASSERT_TRUE( single_body_adapter != nullptr );
         EXPECT_TRUE( single_body_adapter->mjc_model() != nullptr );
         EXPECT_TRUE( single_body_adapter->mjc_data() != nullptr );
-        EXPECT_NE( single_body_adapter->mjc_body_id(), -1 );
         EXPECT_EQ( single_body->dyntype(), vec_dyntypes[i] );
 
         if ( single_body->dyntype() != loco::eDynamicsType::DYNAMIC )
             continue;
+
+        EXPECT_NE( single_body_adapter->mjc_body_id(), -1 );
 
         const ssize_t num_qpos_freejoint = 7;
         const ssize_t num_qvel_freejoint = 6;

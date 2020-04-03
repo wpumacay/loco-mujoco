@@ -84,7 +84,7 @@ namespace mujoco {
             if ( mesh_data.filename != "" )
             {
                 const std::string mesh_file = mesh_data.filename;
-                const std::string mesh_id = m_ColliderRef->name() + "_" + GetFilenameNoExtensionFromFilePath( mesh_file );
+                const std::string mesh_id = GetFilenameNoExtensionFromFilePath( mesh_file );
                 const auto mesh_scale = m_ColliderRef->size();
 
                 m_mjcfElementAssetResources = std::make_unique<parsing::TElement>( LOCO_MJCF_MESH_TAG, parsing::eSchemaType::MJCF );

@@ -148,37 +148,82 @@ namespace mujoco {
 
         for ( auto& single_body_adapter : m_singleBodyAdapters )
         {
-            auto mjc_adapter = dynamic_cast<TMujocoSingleBodyAdapter*>( single_body_adapter.get() );
-            if ( !mjc_adapter )
+            if ( !single_body_adapter )
             {
                 LOCO_CORE_ERROR( "TMujocoSimulation::_CollectResourcesFromSingleBodies >>> there's a \
-                                  rogue non-mujoco single-body adapter (either nullptr or different type)" );
+                                  rogue nullptr single-body adapter that was added to the adapters list" );
                 continue;
             }
 
-            if ( auto mjcf_element = mjc_adapter->element_resources() )
-                world_body_element->Add( parsing::TElement::CloneElement( mjcf_element ) );
+            auto mjc_adapter = static_cast<TMujocoSingleBodyAdapter*>( single_body_adapter.get() );
+            auto mjcf_element = mjc_adapter->element_resources();
+            LOCO_CORE_ASSERT( mjcf_element, "TMujocoSimulation::_CollectResourcesFromSingleBodies >>> \
+                              single-body mjc-adapter must have a mjcf-element with its resources on it (got nullptr instead)" );
+            world_body_element->Add( parsing::TElement::CloneElement( mjcf_element ) );
 
             if ( auto mjcf_asset_element = mjc_adapter->element_asset_resources() )
             {
                 for ( size_t i = 0; i < mjcf_asset_element->num_children(); i++ )
                 {
                     auto asset_element = mjcf_asset_element->get_child( i );
-                    const std::string asset_name = asset_element->GetString( "name" );
-                    if ( m_mjcfAssetsNames.find( asset_name ) != m_mjcfAssetsNames.end() )
-                        continue; // asset-id (mesh-id, or hfield-id) already considered
-                    else
-                        m_mjcfAssetsNames.emplace( asset_name );
-                    if ( asset_element->HasAttributeString( "file" ) )
+                    const std::string asset_type = asset_element->elementType();
+                    if ( asset_type == LOCO_MJCF_MESH_TAG )
                     {
-                        const std::string asset_filepath = asset_element->GetString( "file" );
-                        if ( m_mjcfAssetsFilepaths.find( asset_filepath ) != m_mjcfAssetsFilepaths.end() )
-                            continue; // asset-filepath (mesh-filepath) already considered
+                        // Check that meshes that have both id and filepath equal are not duplicated,
+                        // and those that only have the same id but different filepaths should have
+                        // their medh-ids changed appropriately to distinguish them during loading
+                        bool mesh_id_already_cached = false;
+                        bool mesh_file_already_cached = false;
+                        LOCO_CORE_ASSERT( asset_element->HasAttributeString( "name" ), "TMujocoSimulation::_CollectResourcesFromSingleBodies >>> \
+                                          mesh-assets must have a valid mesh-id (but none found on mjcf element" );
+                        const std::string mesh_id = asset_element->GetString( "name" );
+                        if ( m_mjcfAssetsNames.find( mesh_id ) != m_mjcfAssetsNames.end() )
+                            mesh_id_already_cached = true;
                         else
-                            m_mjcfAssetsFilepaths.emplace( asset_filepath );
-                    }
+                            m_mjcfAssetsNames.emplace( mesh_id );
+                        LOCO_CORE_ASSERT( asset_element->HasAttributeString( "file" ), "TMujocoSimulation::_CollectResourcesFromSingleBodies >>> \
+                                          mesh-assets must have a valid mesh-file (but none found on mjcf element" );
+                        const std::string mesh_file = asset_element->GetString( "file" );
+                        if ( m_mjcfAssetsFilepaths.find( mesh_file ) != m_mjcfAssetsFilepaths.end() )
+                            mesh_file_already_cached = true;
+                        else
+                            m_mjcfAssetsFilepaths.emplace( mesh_file );
 
-                    assets_element->Add( parsing::TElement::CloneElement( asset_element ) );
+                        if ( !mesh_id_already_cached )
+                        {
+                            // Can add mesh-asset normally, as there are no id-duplicates
+                            assets_element->Add( parsing::TElement::CloneElement( asset_element ) );
+                        }
+                        else if ( !mesh_file_already_cached )
+                        {
+                            // Mesh-asset has same id, but different filepath (so it's a different resource)
+                            static ssize_t num_duplicates = 1;
+                            const std::string new_mesh_id = mesh_id + "_" + std::to_string( num_duplicates++ );
+                            auto added_mjcf_body = world_body_element->get_child( world_body_element->num_children() - 1 );
+                            auto added_mjcf_collider = added_mjcf_body->GetFirstChildOfType( LOCO_MJCF_GEOM_TAG );
+                            LOCO_CORE_ASSERT( added_mjcf_collider, "TMujocoSimulation::_CollectResourcesFromSingleBodies >>> \
+                                              added mesh-body must have a valid mesh-collider-geom (but none found on mjcf element)" );
+                            added_mjcf_collider->SetString( "mesh", new_mesh_id );
+                            asset_element->SetString( "name", new_mesh_id );
+                            // Can add modified mesh-asset, with mesh-id modified to avoid duplicates
+                            assets_element->Add( parsing::TElement::CloneElement( asset_element ) );
+                        }
+                    }
+                    else if ( asset_type == LOCO_MJCF_HFIELD_TAG )
+                    {
+                        const std::string hfield_id = asset_element->GetString( "name" );
+                        if ( m_mjcfAssetsNames.find( hfield_id ) != m_mjcfAssetsNames.end() )
+                            continue; // hfield-id already cached
+                        else
+                            m_mjcfAssetsNames.emplace( hfield_id );
+                        assets_element->Add( parsing::TElement::CloneElement( asset_element ) );
+                    }
+                    else
+                    {
+                        LOCO_CORE_ERROR( "TMujocoSimulation::_CollectResourcesFromSingleBodies >>> \
+                                          asset-type {0} not supported", asset_type );
+                        continue;
+                    }
                 }
             }
         }

@@ -62,7 +62,11 @@ namespace mujoco {
 
         void HideMjcObject();
 
+        parsing::TElement* element_resources() { return m_mjcfElementResources.get(); }
+
         const parsing::TElement* element_resources() const { return m_mjcfElementResources.get(); }
+
+        parsing::TElement* element_asset_resources() { return m_mjcfElementAssetResources.get(); }
 
         const parsing::TElement* element_asset_resources() const { return m_mjcfElementAssetResources.get(); }
 

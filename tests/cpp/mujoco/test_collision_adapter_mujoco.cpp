@@ -262,7 +262,7 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterMeshBuild )
     EXPECT_TRUE( tinymath::allclose( mjcf_asset_resources->GetVec3( "scale" ), { 0.2f, 0.2f, 0.2f } ) );
 }
 
-TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCOllisionAdapterMeshUserBuild )
+TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterMeshUserBuild )
 {
     loco::TLogger::Init();
 
@@ -346,7 +346,9 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterMeshInitiali
     simulation->Initialize();
 
     auto mjcf_simulation = simulation->mjcf_element();
+    ASSERT_TRUE( mjcf_simulation != nullptr );
     auto mjcf_assets = mjcf_simulation->GetFirstChildOfType( loco::mujoco::LOCO_MJCF_ASSET_TAG );
+    ASSERT_TRUE( mjcf_assets != nullptr );
     ASSERT_EQ( mjcf_assets->num_children(), 1 ); // Only one mesh-asset should be here (no duplicates)
 
     auto mjc_model = simulation->mjc_model();
@@ -365,9 +367,8 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterMeshInitiali
     ASSERT_TRUE( mjc_geom_mesh_id != -1 );
 
     EXPECT_EQ( mjc_model->geom_type[mjc_geom_id], mjGEOM_MESH );
-    // @todo: enable when collision-groups are enabled
-    //// EXPECT_EQ( mjc_model->geom_contype[mjc_geom_id], collider->collisionGroup() );
-    //// EXPECT_EQ( mjc_model->geom_conaffinity[mjc_geom_id], collider->collisionMask() );
+    EXPECT_EQ( mjc_model->geom_contype[mjc_geom_id], mesh_collider->collisionGroup() );
+    EXPECT_EQ( mjc_model->geom_conaffinity[mjc_geom_id], mesh_collider->collisionMask() );
 }
 
 TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterMeshUserInitialize )

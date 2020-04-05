@@ -91,6 +91,7 @@ set( LOCO_MUJOCO_SRCS
      "${CMAKE_CURRENT_SOURCE_DIR}/src/loco_common_mujoco.cpp"
      "${CMAKE_CURRENT_SOURCE_DIR}/src/loco_simulation_mujoco.cpp"
      "${CMAKE_CURRENT_SOURCE_DIR}/src/primitives/loco_single_body_collider_adapter_mujoco.cpp"
+     "${CMAKE_CURRENT_SOURCE_DIR}/src/primitives/loco_single_body_constraint_adapter_mujoco.cpp"
      "${CMAKE_CURRENT_SOURCE_DIR}/src/primitives/loco_single_body_adapter_mujoco.cpp" )
 
 set( LOCO_MUJOCO_INCLUDE_DIRS

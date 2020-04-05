@@ -4,6 +4,7 @@
 #include <utils/loco_parsing_element.h>
 #include <primitives/loco_single_body_adapter.h>
 #include <primitives/loco_single_body_collider_adapter_mujoco.h>
+#include <primitives/loco_single_body_constraint_adapter_mujoco.h>
 
 namespace loco {
     class TSingleBody;

@@ -44,6 +44,7 @@ namespace mujoco {
 
         m_BodyRef = nullptr;
         m_ColliderAdapter = nullptr;
+        m_ConstraintAdapter = nullptr;
 
         m_mjcModelRef = nullptr;
         m_mjcDataRef = nullptr;
@@ -81,6 +82,31 @@ namespace mujoco {
         auto mjc_collider_adapter = static_cast<TMujocoSingleBodyColliderAdapter*>( m_ColliderAdapter.get() );
         mjc_collider_adapter->Build();
 
+        if ( auto constraint = m_BodyRef->constraint() )
+        {
+            const eConstraintType constraint_type = constraint->constraint_type();
+            if ( constraint_type == eConstraintType::REVOLUTE )
+            {
+                m_ConstraintAdapter = std::make_unique<TMujocoSingleBodyRevoluteConstraintAdapter>( constraint );
+                constraint->SetConstraintAdapter( m_ConstraintAdapter.get() );
+
+                auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyRevoluteConstraintAdapter*>( m_ConstraintAdapter.get() );
+                mjc_constraint_adapter->Build();
+            }
+            else if ( constraint_type == eConstraintType::PRISMATIC )
+            {
+                m_ConstraintAdapter = std::make_unique<TMujocoSingleBodyPrismaticConstraintAdapter>( constraint );
+                constraint->SetConstraintAdapter( m_ConstraintAdapter.get() );
+
+                auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyPrismaticConstraintAdapter*>( m_ConstraintAdapter.get() );
+                mjc_constraint_adapter->Build();
+            }
+            else
+            {
+                LOCO_CORE_ERROR( "TMujocoSingleBodyAdapter::Build >>> constraint type {0} not supported", ToString( constraint_type ) );
+            }
+        }
+
         // Only dynamic-bodies require actual bodies. Static ones only require geoms
         if ( m_BodyRef->dyntype() == eDynamicsType::DYNAMIC )
         {
@@ -88,9 +114,6 @@ namespace mujoco {
             m_mjcfElementResources->SetString( "name", m_BodyRef->name() );
             m_mjcfElementResources->SetVec3( "pos", m_BodyRef->pos() );
             m_mjcfElementResources->SetVec4( "quat", quat_to_mjcQuat( m_BodyRef->quat() ) );
-
-            auto joint_element = m_mjcfElementResources->Add( "freejoint" );
-            joint_element->SetString( "name", m_BodyRef->name() + "_freejnt" );
 
             // Inertial mjcf-element is added only if all inertia properties are given (mass + inertia matrix).
             // If only the mass is given, then the density is computed for the collider from the mass and volume.
@@ -109,6 +132,23 @@ namespace mujoco {
             LOCO_CORE_ASSERT( mjc_collider_adapter->element_resources(), "TMujocoSingleBodyAdapter::Build >>> \
                               collider must have valid mjcf-resources once built, for body named {0}", m_BodyRef->name() );
             m_mjcfElementResources->Add( parsing::TElement::CloneElement( mjc_collider_adapter->element_resources() ) );
+
+            if ( m_ConstraintAdapter )
+            {
+                if ( auto mjc_constraint_adapter = dynamic_cast<TIMujocoSingleBodyConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+                {
+                    auto mjcf_constraint_elements = mjc_constraint_adapter->elements_resources();
+                    LOCO_CORE_ASSERT( mjcf_constraint_elements.size() > 0, "TMujocoSingleBodyAdapter::Build >>> \
+                                      constraint must have valid mjcf-resources once built, for body named {0}", m_BodyRef->name() );
+                    for ( auto mjcf_constraint_element : mjcf_constraint_elements )
+                        m_mjcfElementResources->Add( parsing::TElement::CloneElement( mjcf_constraint_element ) );
+                }
+            }
+            else
+            {
+                auto joint_element = m_mjcfElementResources->Add( "freejoint" );
+                joint_element->SetString( "name", m_BodyRef->name() + "_freejnt" );
+            }
         }
         else
         {
@@ -147,40 +187,50 @@ namespace mujoco {
                                  mjc-body for single-body {0}", m_BodyRef->name() );
                 return;
             }
-            m_mjcJointId = m_mjcModelRef->body_jntadr[m_mjcBodyId];
-            if ( m_mjcJointId < 0 )
+            if ( m_BodyRef->constraint() )
             {
-                LOCO_CORE_ERROR( "TMujocoSingleBodyAdapter::Initialize >>> couldn't find associated \
-                                  mjc-joint (free-joint) for non-static single-body {0}", m_BodyRef->name() );
-                return;
-            }
-
-            const auto jnt_type = m_mjcModelRef->jnt_type[m_mjcJointId];
-            if ( jnt_type != mjJNT_FREE )
-            {
-                LOCO_CORE_ERROR( "TMujocoSingleBodyAdapter::Initialize >>> joint associated to single-body \
-                                  {0} must be a free-joint", m_BodyRef->name() );
+                if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyRevoluteConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+                    mjc_constraint_adapter->Initialize();
+                else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyPrismaticConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+                    mjc_constraint_adapter->Initialize();
             }
             else
             {
-                m_mjcJointQposAdr = m_mjcModelRef->jnt_qposadr[m_mjcJointId];
-                m_mjcJointQvelAdr = m_mjcModelRef->jnt_dofadr[m_mjcJointId];
-                m_mjcJointQposNum = 7;
-                m_mjcJointQvelNum = 6;
+                m_mjcJointId = m_mjcModelRef->body_jntadr[m_mjcBodyId];
+                if ( m_mjcJointId < 0 )
+                {
+                    LOCO_CORE_ERROR( "TMujocoSingleBodyAdapter::Initialize >>> couldn't find associated \
+                                      mjc-joint (free-joint) for non-static single-body {0}", m_BodyRef->name() );
+                    return;
+                }
 
-                // @todo: is this required? (qpos0 should be computed from pos|quat in xml, which is our desired qpos0)
-                // Set the body's initial configuration
-                const TVec3 position0 = m_BodyRef->pos0();
-                m_mjcModelRef->qpos0[m_mjcJointQposAdr + 0] = position0.x();
-                m_mjcModelRef->qpos0[m_mjcJointQposAdr + 1] = position0.y();
-                m_mjcModelRef->qpos0[m_mjcJointQposAdr + 2] = position0.z();
-                const TVec4 quaternion0 = m_BodyRef->quat0();
-                m_mjcModelRef->qpos0[m_mjcJointQposAdr + 3] = quaternion0.w();
-                m_mjcModelRef->qpos0[m_mjcJointQposAdr + 4] = quaternion0.x();
-                m_mjcModelRef->qpos0[m_mjcJointQposAdr + 5] = quaternion0.y();
-                m_mjcModelRef->qpos0[m_mjcJointQposAdr + 6] = quaternion0.z();
-                SetLinearVelocity( m_BodyRef->linear_vel0() );
-                SetAngularVelocity( m_BodyRef->angular_vel0() );
+                const auto jnt_type = m_mjcModelRef->jnt_type[m_mjcJointId];
+                if ( jnt_type != mjJNT_FREE )
+                {
+                    LOCO_CORE_ERROR( "TMujocoSingleBodyAdapter::Initialize >>> joint associated to single-body \
+                                      {0} must be a free-joint", m_BodyRef->name() );
+                }
+                else
+                {
+                    m_mjcJointQposAdr = m_mjcModelRef->jnt_qposadr[m_mjcJointId];
+                    m_mjcJointQvelAdr = m_mjcModelRef->jnt_dofadr[m_mjcJointId];
+                    m_mjcJointQposNum = 7;
+                    m_mjcJointQvelNum = 6;
+
+                    // @todo: is this required? (qpos0 should be computed from pos|quat in xml, which is our desired qpos0)
+                    // Set the body's initial configuration
+                    const TVec3 position0 = m_BodyRef->pos0();
+                    m_mjcModelRef->qpos0[m_mjcJointQposAdr + 0] = position0.x();
+                    m_mjcModelRef->qpos0[m_mjcJointQposAdr + 1] = position0.y();
+                    m_mjcModelRef->qpos0[m_mjcJointQposAdr + 2] = position0.z();
+                    const TVec4 quaternion0 = m_BodyRef->quat0();
+                    m_mjcModelRef->qpos0[m_mjcJointQposAdr + 3] = quaternion0.w();
+                    m_mjcModelRef->qpos0[m_mjcJointQposAdr + 4] = quaternion0.x();
+                    m_mjcModelRef->qpos0[m_mjcJointQposAdr + 5] = quaternion0.y();
+                    m_mjcModelRef->qpos0[m_mjcJointQposAdr + 6] = quaternion0.z();
+                    SetLinearVelocity( m_BodyRef->linear_vel0() );
+                    SetAngularVelocity( m_BodyRef->angular_vel0() );
+                }
             }
         }
         else
@@ -188,6 +238,15 @@ namespace mujoco {
             m_mjcGeomId = mjc_collider_adapter->mjc_geom_id();
             LOCO_CORE_ASSERT( m_mjcGeomId != -1, "TMujocoSingleBodyAdapter::Initialize >>> static-body {0} must have \
                               a valid mjc-geom associated with it", m_BodyRef->name() );
+            const TVec3 position0 = m_BodyRef->pos0();
+            m_mjcModelRef->geom_pos[3 * m_mjcGeomId + 0] = position0.x();
+            m_mjcModelRef->geom_pos[3 * m_mjcGeomId + 1] = position0.y();
+            m_mjcModelRef->geom_pos[3 * m_mjcGeomId + 2] = position0.z();
+            const TVec4 quaternion0 = m_BodyRef->quat0();
+            m_mjcModelRef->geom_quat[4 * m_mjcGeomId + 0] = quaternion0.w();
+            m_mjcModelRef->geom_quat[4 * m_mjcGeomId + 1] = quaternion0.x();
+            m_mjcModelRef->geom_quat[4 * m_mjcGeomId + 2] = quaternion0.y();
+            m_mjcModelRef->geom_quat[4 * m_mjcGeomId + 3] = quaternion0.z();
         }
     }
 
@@ -199,10 +258,23 @@ namespace mujoco {
 
         if ( m_BodyRef->dyntype() == eDynamicsType::DYNAMIC )
         {
-            for ( ssize_t i = 0; i < m_mjcJointQposNum; i++ )
-                m_mjcDataRef->qpos[m_mjcJointQposAdr + i] = m_mjcModelRef->qpos0[m_mjcJointQposAdr + i];
-            SetLinearVelocity( m_BodyRef->linear_vel0() );
-            SetAngularVelocity( m_BodyRef->angular_vel0() );
+            if ( m_BodyRef->constraint() )
+            {
+                if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyRevoluteConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+                    mjc_constraint_adapter->Reset();
+                else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyPrismaticConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+                    mjc_constraint_adapter->Reset();
+                else
+                    LOCO_CORE_ERROR( "TMujocoSingleBodyAdapter::Reset >>> body \"{0}\" has constraint \"{1}\" \
+                                      with unsupported mjc-constraint-adapter", m_BodyRef->name(), m_BodyRef->constraint()->name() );
+            }
+            else
+            {
+                for ( ssize_t i = 0; i < m_mjcJointQposNum; i++ )
+                    m_mjcDataRef->qpos[m_mjcJointQposAdr + i] = m_mjcModelRef->qpos0[m_mjcJointQposAdr + i];
+                SetLinearVelocity( m_BodyRef->linear_vel0() );
+                SetAngularVelocity( m_BodyRef->angular_vel0() );
+            }
         }
         else
         {
@@ -238,18 +310,33 @@ namespace mujoco {
         {
             LOCO_CORE_ASSERT( m_mjcBodyId >= 0, "TMujocoSingleBodyAdapter::SetTransform >>> {0} must be \
                               linked to a mjc-body", m_BodyRef->name() );
-            LOCO_CORE_ASSERT( m_mjcJointId >= 0, "TMujocoSingleBodyAdapter::SetTransform >>> {0} is a non-static \
-                              single-body, so it requires to have an associated mjc-joint", m_BodyRef->name() );
-            m_mjcDataRef->qpos[m_mjcJointQposAdr + 0] = position.x();
-            m_mjcDataRef->qpos[m_mjcJointQposAdr + 1] = position.y();
-            m_mjcDataRef->qpos[m_mjcJointQposAdr + 2] = position.z();
-            m_mjcDataRef->qpos[m_mjcJointQposAdr + 3] = quaternion.w();
-            m_mjcDataRef->qpos[m_mjcJointQposAdr + 4] = quaternion.x();
-            m_mjcDataRef->qpos[m_mjcJointQposAdr + 5] = quaternion.y();
-            m_mjcDataRef->qpos[m_mjcJointQposAdr + 6] = quaternion.z();
+            if ( !m_BodyRef->constraint() )
+            {
+                LOCO_CORE_ASSERT( m_mjcJointId >= 0, "TMujocoSingleBodyAdapter::SetTransform >>> {0} is a non-static \
+                                  single-body, so it requires to have an associated mjc-joint", m_BodyRef->name() );
+                m_mjcDataRef->qpos[m_mjcJointQposAdr + 0] = position.x();
+                m_mjcDataRef->qpos[m_mjcJointQposAdr + 1] = position.y();
+                m_mjcDataRef->qpos[m_mjcJointQposAdr + 2] = position.z();
+                m_mjcDataRef->qpos[m_mjcJointQposAdr + 3] = quaternion.w();
+                m_mjcDataRef->qpos[m_mjcJointQposAdr + 4] = quaternion.x();
+                m_mjcDataRef->qpos[m_mjcJointQposAdr + 5] = quaternion.y();
+                m_mjcDataRef->qpos[m_mjcJointQposAdr + 6] = quaternion.z();
+            }
+            else
+            {
+                m_mjcModelRef->body_pos[3 * m_mjcBodyId + 0] = position.x();
+                m_mjcModelRef->body_pos[3 * m_mjcBodyId + 1] = position.y();
+                m_mjcModelRef->body_pos[3 * m_mjcBodyId + 2] = position.z();
+                m_mjcModelRef->body_quat[4 * m_mjcBodyId + 0] = quaternion.w();
+                m_mjcModelRef->body_quat[4 * m_mjcBodyId + 1] = quaternion.x();
+                m_mjcModelRef->body_quat[4 * m_mjcBodyId + 2] = quaternion.y();
+                m_mjcModelRef->body_quat[4 * m_mjcBodyId + 3] = quaternion.z();
+            }
         }
         else
         {
+            LOCO_CORE_ASSERT( m_mjcGeomId >= 0, "TMujocoSingleBodyAdapter::SetTransform >>> {0} must be \
+                              linked to a mjc-geom", m_BodyRef->name() );
             m_mjcModelRef->geom_pos[3 * m_mjcGeomId + 0] = position.x();
             m_mjcModelRef->geom_pos[3 * m_mjcGeomId + 1] = position.y();
             m_mjcModelRef->geom_pos[3 * m_mjcGeomId + 2] = position.z();
@@ -266,26 +353,16 @@ namespace mujoco {
         //        now, it just acts as the velocity of a free-body, with nv=6 <> [3xyz,3rpy]
         if ( m_BodyRef->dyntype() == eDynamicsType::DYNAMIC )
         {
-            LOCO_CORE_ASSERT( m_mjcBodyId >= 0, "TMujocoSingleBodyAdapter::SetLinearVelocity >>> {0} must be \
-                              linked to a mjc-body", m_BodyRef->name() );
-
-            if ( m_mjcJointQvelNum == 6 ) // for free-joints, nv=6 <> [3xyz,3rpy]
+            if ( !m_BodyRef->constraint() )
             {
+                LOCO_CORE_ASSERT( m_mjcBodyId >= 0, "TMujocoSingleBodyAdapter::SetLinearVelocity >>> {0} must be \
+                                  linked to a mjc-body", m_BodyRef->name() );
+                LOCO_CORE_ASSERT( m_mjcJointId >= 0, "TMujocoSingleBodyAdapter::SetLinearVelocity >>> {0} is a non-static \
+                                  single-body, so it requires to have an associated mjc-joint", m_BodyRef->name() );
+
                 m_mjcDataRef->qvel[m_mjcJointQvelAdr + 0] = linear_vel.x();
                 m_mjcDataRef->qvel[m_mjcJointQvelAdr + 1] = linear_vel.y();
                 m_mjcDataRef->qvel[m_mjcJointQvelAdr + 2] = linear_vel.z();
-            }
-            else if ( m_mjcJointQvelNum == 4 ) // for slide-xyz+rot-yaw
-            {
-                LOCO_CORE_WARN( "TMujocoSingleBodyAdapter::SetLinearVelocity >>> nqvel=4 not supported yet" );
-            }
-            else if ( m_mjcJointQvelNum == 3 ) // for ball|slide-xyz (@todo: separate cases)
-            {
-                LOCO_CORE_WARN( "TMujocoSingleBodyAdapter::SetLinearVelocity >>> nqvel=3 not supported yet" );
-            }
-            else if ( m_mjcJointQvelNum == 1 ) // for hinge|slide (@todo: separate cases)
-            {
-                LOCO_CORE_WARN( "TMujocoSingleBodyAdapter::SetLinearVelocity >>> nqvel=1 not supported yet" );
             }
         }
     }
@@ -296,26 +373,16 @@ namespace mujoco {
         //        now, it just acts as the velocity of a free-body, with nv=6 <> [3xyz,3rpy]
         if ( m_BodyRef->dyntype() == eDynamicsType::DYNAMIC )
         {
-            LOCO_CORE_ASSERT( m_mjcBodyId >= 0, "TMujocoSingleBodyAdapter::SetAngularVelocity >>> {0} must be \
-                              linked to a mjc-body", m_BodyRef->name() );
-
-            if ( m_mjcJointQvelNum == 6 ) // for free-joints, nv=6 <> [3xyz,3rpy]
+            if ( !m_BodyRef->constraint() )
             {
+                LOCO_CORE_ASSERT( m_mjcBodyId >= 0, "TMujocoSingleBodyAdapter::SetAngularVelocity >>> {0} must be \
+                                  linked to a mjc-body", m_BodyRef->name() );
+                LOCO_CORE_ASSERT( m_mjcJointId >= 0, "TMujocoSingleBodyAdapter::SetAngularVelocity >>> {0} is a non-static \
+                                  single-body, so it requires to have an associated mjc-joint", m_BodyRef->name() );
+
                 m_mjcDataRef->qvel[m_mjcJointQvelAdr + 3] = angular_vel.x();
                 m_mjcDataRef->qvel[m_mjcJointQvelAdr + 4] = angular_vel.y();
                 m_mjcDataRef->qvel[m_mjcJointQvelAdr + 5] = angular_vel.z();
-            }
-            else if ( m_mjcJointQvelNum == 4 ) // for slide-xyz+rot-yaw
-            {
-                LOCO_CORE_WARN( "TMujocoSingleBodyAdapter::SetAngularVelocity >>> nqvel=4 not supported yet" );
-            }
-            else if ( m_mjcJointQvelNum == 3 ) // for ball|slide-xyz (@todo: separate cases)
-            {
-                LOCO_CORE_WARN( "TMujocoSingleBodyAdapter::SetAngularVelocity >>> nqvel=3 not supported yet" );
-            }
-            else if ( m_mjcJointQvelNum == 1 ) // for hinge|slide (@todo: separate cases)
-            {
-                LOCO_CORE_WARN( "TMujocoSingleBodyAdapter::SetAngularVelocity >>> nqvel=1 not supported yet" );
             }
         }
     }
@@ -352,15 +419,13 @@ namespace mujoco {
         {
             LOCO_CORE_ASSERT( m_mjcBodyId >= 0, "TMujocoSingleBodyAdapter::GetTransform >>> {0} must be \
                               linked to a mjc-body", m_BodyRef->name() );
-            LOCO_CORE_ASSERT( m_mjcJointId >= 0, "TMujocoSingleBodyAdapter::GetPosition >>> {0} is a non-static \
-                              single-body, so it requires to have an associated mjc-joint", m_BodyRef->name() );
-            const TVec3 position = { (TScalar) m_mjcDataRef->qpos[m_mjcJointQposAdr + 0],
-                                     (TScalar) m_mjcDataRef->qpos[m_mjcJointQposAdr + 1],
-                                     (TScalar) m_mjcDataRef->qpos[m_mjcJointQposAdr + 2] };
-            const TVec4 quaternion = { (TScalar) m_mjcDataRef->qpos[m_mjcJointQposAdr + 4],
-                                       (TScalar) m_mjcDataRef->qpos[m_mjcJointQposAdr + 5],
-                                       (TScalar) m_mjcDataRef->qpos[m_mjcJointQposAdr + 6],
-                                       (TScalar) m_mjcDataRef->qpos[m_mjcJointQposAdr + 3] };
+            const TVec3 position = { (TScalar) m_mjcDataRef->xpos[3 * m_mjcBodyId + 0],
+                                     (TScalar) m_mjcDataRef->xpos[3 * m_mjcBodyId + 1],
+                                     (TScalar) m_mjcDataRef->xpos[3 * m_mjcBodyId + 2] };
+            const TVec4 quaternion = { (TScalar) m_mjcDataRef->xquat[4 * m_mjcBodyId + 1],
+                                       (TScalar) m_mjcDataRef->xquat[4 * m_mjcBodyId + 2],
+                                       (TScalar) m_mjcDataRef->xquat[4 * m_mjcBodyId + 3],
+                                       (TScalar) m_mjcDataRef->xquat[4 * m_mjcBodyId + 0] };
             dst_transform.set( position, 3 );
             dst_transform.set( tinymath::rotation( quaternion ) );
         }
@@ -407,17 +472,25 @@ namespace mujoco {
     void TMujocoSingleBodyAdapter::SetMjcModel( mjModel* mjModelRef )
     {
         m_mjcModelRef = mjModelRef;
-        if ( auto collider = m_BodyRef->collider() )
-            if ( auto collider_adapter = dynamic_cast<TMujocoSingleBodyColliderAdapter*>( collider->collider_adapter() ) )
-                collider_adapter->SetMjcModel( m_mjcModelRef );
+        if ( auto mjc_collider_adapter = dynamic_cast<TMujocoSingleBodyColliderAdapter*>( m_ColliderAdapter.get() ) )
+            mjc_collider_adapter->SetMjcModel( m_mjcModelRef );
+
+        if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyRevoluteConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+            mjc_constraint_adapter->SetMjcModel( m_mjcModelRef );
+        else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyPrismaticConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+            mjc_constraint_adapter->SetMjcModel( m_mjcModelRef );
     }
 
     void TMujocoSingleBodyAdapter::SetMjcData( mjData* mjDataRef )
     {
         m_mjcDataRef = mjDataRef;
-        if ( auto collider = m_BodyRef->collider() )
-            if ( auto collider_adapter = dynamic_cast<TMujocoSingleBodyColliderAdapter*>( collider->collider_adapter() ) )
-                collider_adapter->SetMjcData( m_mjcDataRef );
+        if ( auto mjc_collider_adapter = dynamic_cast<TMujocoSingleBodyColliderAdapter*>( m_ColliderAdapter.get() ) )
+            mjc_collider_adapter->SetMjcData( m_mjcDataRef );
+
+        if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyRevoluteConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+            mjc_constraint_adapter->SetMjcData( m_mjcDataRef );
+        else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyPrismaticConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+            mjc_constraint_adapter->SetMjcData( m_mjcDataRef );
     }
 
     void TMujocoSingleBodyAdapter::HideMjcObject()
@@ -438,6 +511,16 @@ namespace mujoco {
             m_mjcDataRef->qpos[m_mjcJointQposAdr + 4] = quaternion.x();
             m_mjcDataRef->qpos[m_mjcJointQposAdr + 5] = quaternion.y();
             m_mjcDataRef->qpos[m_mjcJointQposAdr + 6] = quaternion.z();
+        }
+        else if ( m_mjcBodyId != -1 )
+        {
+            m_mjcModelRef->body_pos[3 * m_mjcBodyId + 0] = position.x();
+            m_mjcModelRef->body_pos[3 * m_mjcBodyId + 1] = position.y();
+            m_mjcModelRef->body_pos[3 * m_mjcBodyId + 2] = position.z();
+            m_mjcModelRef->body_quat[4 * m_mjcBodyId + 0] = quaternion.w();
+            m_mjcModelRef->body_quat[4 * m_mjcBodyId + 1] = quaternion.x();
+            m_mjcModelRef->body_quat[4 * m_mjcBodyId + 2] = quaternion.y();
+            m_mjcModelRef->body_quat[4 * m_mjcBodyId + 3] = quaternion.z();
         }
         else if ( m_mjcGeomId != -1 ) // If not, then it's a static body
         {

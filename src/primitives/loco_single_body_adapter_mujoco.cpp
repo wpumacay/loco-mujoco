@@ -107,8 +107,11 @@ namespace mujoco {
             }
         }
 
-        // Only dynamic-bodies require actual bodies. Static ones only require geoms
-        if ( m_BodyRef->dyntype() == eDynamicsType::DYNAMIC )
+        // Only dynamic-bodies require actual bodies. Static ones only require geoms (expect meshes, that
+        // can be added as static bodies without being pure geoms)
+        const bool is_static_mesh = ( m_BodyRef->dyntype() == eDynamicsType::STATIC && 
+                                      m_BodyRef->collider()->shape() == eShapeType::MESH );
+        if ( m_BodyRef->dyntype() == eDynamicsType::DYNAMIC || is_static_mesh )
         {
             m_mjcfElementResources = std::make_unique<parsing::TElement>( LOCO_MJCF_BODY_TAG, parsing::eSchemaType::MJCF );
             m_mjcfElementResources->SetString( "name", m_BodyRef->name() );
@@ -144,7 +147,7 @@ namespace mujoco {
                         m_mjcfElementResources->Add( parsing::TElement::CloneElement( mjcf_constraint_element ) );
                 }
             }
-            else
+            else if ( !is_static_mesh )
             {
                 auto joint_element = m_mjcfElementResources->Add( "freejoint" );
                 joint_element->SetString( "name", m_BodyRef->name() + "_freejnt" );
@@ -178,7 +181,9 @@ namespace mujoco {
         auto mjc_collider_adapter = static_cast<TMujocoSingleBodyColliderAdapter*>( m_ColliderAdapter.get() );
         mjc_collider_adapter->Initialize();
 
-        if ( m_BodyRef->dyntype() == eDynamicsType::DYNAMIC )
+        const bool is_static_mesh = ( m_BodyRef->dyntype() == eDynamicsType::STATIC &&
+                                      m_BodyRef->collider()->shape() == eShapeType::MESH );
+        if ( m_BodyRef->dyntype() == eDynamicsType::DYNAMIC || is_static_mesh )
         {
             m_mjcBodyId = mj_name2id( m_mjcModelRef, mjOBJ_BODY, m_BodyRef->name().c_str() );
             if ( m_mjcBodyId < 0 )
@@ -194,7 +199,7 @@ namespace mujoco {
                 else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyPrismaticConstraintAdapter*>( m_ConstraintAdapter.get() ) )
                     mjc_constraint_adapter->Initialize();
             }
-            else
+            else if ( !is_static_mesh )
             {
                 m_mjcJointId = m_mjcModelRef->body_jntadr[m_mjcBodyId];
                 if ( m_mjcJointId < 0 )
@@ -232,6 +237,18 @@ namespace mujoco {
                     SetAngularVelocity( m_BodyRef->angular_vel0() );
                 }
             }
+            else
+            {
+                const TVec3 position0 = m_BodyRef->pos0();
+                m_mjcModelRef->body_pos[3 * m_mjcBodyId + 0] = position0.x();
+                m_mjcModelRef->body_pos[3 * m_mjcBodyId + 1] = position0.y();
+                m_mjcModelRef->body_pos[3 * m_mjcBodyId + 2] = position0.z();
+                const TVec4 quaternion0 = m_BodyRef->quat0();
+                m_mjcModelRef->body_quat[4 * m_mjcBodyId + 0] = quaternion0.w();
+                m_mjcModelRef->body_quat[4 * m_mjcBodyId + 1] = quaternion0.x();
+                m_mjcModelRef->body_quat[4 * m_mjcBodyId + 2] = quaternion0.y();
+                m_mjcModelRef->body_quat[4 * m_mjcBodyId + 3] = quaternion0.z();
+            }
         }
         else
         {
@@ -256,7 +273,9 @@ namespace mujoco {
         LOCO_CORE_ASSERT( m_mjcDataRef, "TMujocoSingleBodyAdapter::Reset >>> {0} must have a valid mjData reference", m_BodyRef->name() );
         LOCO_CORE_ASSERT( m_mjcBodyId, "TMujocoSingleBodyAdapter::Reset >>> {0} must be linked to a valid mjc-body", m_BodyRef->name() );
 
-        if ( m_BodyRef->dyntype() == eDynamicsType::DYNAMIC )
+        const bool is_static_mesh = ( m_BodyRef->dyntype() == eDynamicsType::STATIC &&
+                                      m_BodyRef->collider()->shape() == eShapeType::MESH );
+        if ( m_BodyRef->dyntype() == eDynamicsType::DYNAMIC || is_static_mesh )
         {
             if ( m_BodyRef->constraint() )
             {
@@ -268,12 +287,24 @@ namespace mujoco {
                     LOCO_CORE_ERROR( "TMujocoSingleBodyAdapter::Reset >>> body \"{0}\" has constraint \"{1}\" \
                                       with unsupported mjc-constraint-adapter", m_BodyRef->name(), m_BodyRef->constraint()->name() );
             }
-            else
+            else if ( !is_static_mesh )
             {
                 for ( ssize_t i = 0; i < m_mjcJointQposNum; i++ )
                     m_mjcDataRef->qpos[m_mjcJointQposAdr + i] = m_mjcModelRef->qpos0[m_mjcJointQposAdr + i];
                 SetLinearVelocity( m_BodyRef->linear_vel0() );
                 SetAngularVelocity( m_BodyRef->angular_vel0() );
+            }
+            else
+            {
+                const TVec3 position0 = m_BodyRef->pos0();
+                m_mjcModelRef->body_pos[3 * m_mjcBodyId + 0] = position0.x();
+                m_mjcModelRef->body_pos[3 * m_mjcBodyId + 1] = position0.y();
+                m_mjcModelRef->body_pos[3 * m_mjcBodyId + 2] = position0.z();
+                const TVec4 quaternion0 = m_BodyRef->quat0();
+                m_mjcModelRef->body_quat[4 * m_mjcBodyId + 0] = quaternion0.w();
+                m_mjcModelRef->body_quat[4 * m_mjcBodyId + 1] = quaternion0.x();
+                m_mjcModelRef->body_quat[4 * m_mjcBodyId + 2] = quaternion0.y();
+                m_mjcModelRef->body_quat[4 * m_mjcBodyId + 3] = quaternion0.z();
             }
         }
         else
@@ -306,11 +337,13 @@ namespace mujoco {
     {
         const TVec3 position = TVec3( transform.col( 3 ) );
         const TVec4 quaternion = tinymath::quaternion( TMat3( transform ) );
-        if ( m_BodyRef->dyntype() == eDynamicsType::DYNAMIC )
+        const bool is_static_mesh = ( m_BodyRef->dyntype() == eDynamicsType::STATIC && 
+                                      m_BodyRef->collider()->shape() == eShapeType::MESH );
+        if ( m_BodyRef->dyntype() == eDynamicsType::DYNAMIC || is_static_mesh )
         {
             LOCO_CORE_ASSERT( m_mjcBodyId >= 0, "TMujocoSingleBodyAdapter::SetTransform >>> {0} must be \
                               linked to a mjc-body", m_BodyRef->name() );
-            if ( !m_BodyRef->constraint() )
+            if ( !m_BodyRef->constraint() && !is_static_mesh )
             {
                 LOCO_CORE_ASSERT( m_mjcJointId >= 0, "TMujocoSingleBodyAdapter::SetTransform >>> {0} is a non-static \
                                   single-body, so it requires to have an associated mjc-joint", m_BodyRef->name() );
@@ -415,7 +448,9 @@ namespace mujoco {
 
     void TMujocoSingleBodyAdapter::GetTransform( TMat4& dst_transform ) /* const */
     {
-        if ( m_BodyRef->dyntype() == eDynamicsType::DYNAMIC )
+        const bool is_static_mesh = ( m_BodyRef->dyntype() == eDynamicsType::STATIC && 
+                                      m_BodyRef->collider()->shape() == eShapeType::MESH );
+        if ( m_BodyRef->dyntype() == eDynamicsType::DYNAMIC || is_static_mesh )
         {
             LOCO_CORE_ASSERT( m_mjcBodyId >= 0, "TMujocoSingleBodyAdapter::GetTransform >>> {0} must be \
                               linked to a mjc-body", m_BodyRef->name() );
@@ -431,13 +466,24 @@ namespace mujoco {
         }
         else
         {
-            const TVec3 position = { (TScalar) m_mjcModelRef->geom_pos[3 * m_mjcGeomId + 0],
-                                     (TScalar) m_mjcModelRef->geom_pos[3 * m_mjcGeomId + 1],
-                                     (TScalar) m_mjcModelRef->geom_pos[3 * m_mjcGeomId + 2] };
-            const TVec4 quaternion = { (TScalar) m_mjcModelRef->geom_quat[4 * m_mjcGeomId + 1],
-                                       (TScalar) m_mjcModelRef->geom_quat[4 * m_mjcGeomId + 2],
-                                       (TScalar) m_mjcModelRef->geom_quat[4 * m_mjcGeomId + 3],
-                                       (TScalar) m_mjcModelRef->geom_quat[4 * m_mjcGeomId + 0] };
+            const TVec3 position = { (TScalar) m_mjcDataRef->geom_xpos[3 * m_mjcGeomId + 0],
+                                     (TScalar) m_mjcDataRef->geom_xpos[3 * m_mjcGeomId + 1],
+                                     (TScalar) m_mjcDataRef->geom_xpos[3 * m_mjcGeomId + 2] };
+            const mjtNum mjc_rotmatrix[9] = { m_mjcDataRef->geom_xmat[9 * m_mjcGeomId + 0],
+                                              m_mjcDataRef->geom_xmat[9 * m_mjcGeomId + 1],
+                                              m_mjcDataRef->geom_xmat[9 * m_mjcGeomId + 2],
+                                              m_mjcDataRef->geom_xmat[9 * m_mjcGeomId + 3],
+                                              m_mjcDataRef->geom_xmat[9 * m_mjcGeomId + 4],
+                                              m_mjcDataRef->geom_xmat[9 * m_mjcGeomId + 5],
+                                              m_mjcDataRef->geom_xmat[9 * m_mjcGeomId + 6],
+                                              m_mjcDataRef->geom_xmat[9 * m_mjcGeomId + 7],
+                                              m_mjcDataRef->geom_xmat[9 * m_mjcGeomId + 8], };
+            mjtNum mjc_quaternion[4];
+            mju_mat2Quat( mjc_quaternion, mjc_rotmatrix );
+            const TVec4 quaternion = { (TScalar) mjc_quaternion[1],
+                                       (TScalar) mjc_quaternion[2],
+                                       (TScalar) mjc_quaternion[3],
+                                       (TScalar) mjc_quaternion[0] };
             dst_transform.set( position, 3 );
             dst_transform.set( tinymath::rotation( quaternion ) );
         }

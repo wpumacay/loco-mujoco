@@ -101,6 +101,38 @@ namespace mujoco {
                 auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyPrismaticConstraintAdapter*>( m_ConstraintAdapter.get() );
                 mjc_constraint_adapter->Build();
             }
+            else if ( constraint_type == eConstraintType::SPHERICAL )
+            {
+                m_ConstraintAdapter = std::make_unique<TMujocoSingleBodySphericalConstraintAdapter>( constraint );
+                constraint->SetConstraintAdapter( m_ConstraintAdapter.get() );
+
+                auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodySphericalConstraintAdapter*>( m_ConstraintAdapter.get() );
+                mjc_constraint_adapter->Build();
+            }
+            else if ( constraint_type == eConstraintType::TRANSLATIONAL3D )
+            {
+                m_ConstraintAdapter = std::make_unique<TMujocoSingleBodyTranslational3dConstraintAdapter>( constraint );
+                constraint->SetConstraintAdapter( m_ConstraintAdapter.get() );
+
+                auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyTranslational3dConstraintAdapter*>( m_ConstraintAdapter.get() );
+                mjc_constraint_adapter->Build();
+            }
+            else if ( constraint_type == eConstraintType::UNIVERSAL3D )
+            {
+                m_ConstraintAdapter = std::make_unique<TMujocoSingleBodyUniversal3dConstraintAdapter>( constraint );
+                constraint->SetConstraintAdapter( m_ConstraintAdapter.get() );
+
+                auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyUniversal3dConstraintAdapter*>( m_ConstraintAdapter.get() );
+                mjc_constraint_adapter->Build();
+            }
+            else if ( constraint_type == eConstraintType::PLANAR )
+            {
+                m_ConstraintAdapter = std::make_unique<TMujocoSingleBodyPlanarConstraintAdapter>( constraint );
+                constraint->SetConstraintAdapter( m_ConstraintAdapter.get() );
+
+                auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyPlanarConstraintAdapter*>( m_ConstraintAdapter.get() );
+                mjc_constraint_adapter->Build();
+            }
             else
             {
                 LOCO_CORE_ERROR( "TMujocoSingleBodyAdapter::Build >>> constraint type {0} not supported", ToString( constraint_type ) );
@@ -198,6 +230,14 @@ namespace mujoco {
                     mjc_constraint_adapter->Initialize();
                 else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyPrismaticConstraintAdapter*>( m_ConstraintAdapter.get() ) )
                     mjc_constraint_adapter->Initialize();
+                else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodySphericalConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+                    mjc_constraint_adapter->Initialize();
+                else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyTranslational3dConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+                    mjc_constraint_adapter->Initialize();
+                else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyUniversal3dConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+                    mjc_constraint_adapter->Initialize();
+                else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyPlanarConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+                    mjc_constraint_adapter->Initialize();
             }
             else if ( !is_static_mesh )
             {
@@ -282,6 +322,14 @@ namespace mujoco {
                 if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyRevoluteConstraintAdapter*>( m_ConstraintAdapter.get() ) )
                     mjc_constraint_adapter->Reset();
                 else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyPrismaticConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+                    mjc_constraint_adapter->Reset();
+                else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodySphericalConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+                    mjc_constraint_adapter->Reset();
+                else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyTranslational3dConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+                    mjc_constraint_adapter->Reset();
+                else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyUniversal3dConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+                    mjc_constraint_adapter->Reset();
+                else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyPlanarConstraintAdapter*>( m_ConstraintAdapter.get() ) )
                     mjc_constraint_adapter->Reset();
                 else
                     LOCO_CORE_ERROR( "TMujocoSingleBodyAdapter::Reset >>> body \"{0}\" has constraint \"{1}\" \
@@ -525,6 +573,14 @@ namespace mujoco {
             mjc_constraint_adapter->SetMjcModel( m_mjcModelRef );
         else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyPrismaticConstraintAdapter*>( m_ConstraintAdapter.get() ) )
             mjc_constraint_adapter->SetMjcModel( m_mjcModelRef );
+        else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodySphericalConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+            mjc_constraint_adapter->SetMjcModel( m_mjcModelRef );
+        else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyTranslational3dConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+            mjc_constraint_adapter->SetMjcModel( m_mjcModelRef );
+        else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyUniversal3dConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+            mjc_constraint_adapter->SetMjcModel( m_mjcModelRef );
+        else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyPlanarConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+            mjc_constraint_adapter->SetMjcModel( m_mjcModelRef );
     }
 
     void TMujocoSingleBodyAdapter::SetMjcData( mjData* mjDataRef )
@@ -536,6 +592,14 @@ namespace mujoco {
         if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyRevoluteConstraintAdapter*>( m_ConstraintAdapter.get() ) )
             mjc_constraint_adapter->SetMjcData( m_mjcDataRef );
         else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyPrismaticConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+            mjc_constraint_adapter->SetMjcData( m_mjcDataRef );
+        else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodySphericalConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+            mjc_constraint_adapter->SetMjcData( m_mjcDataRef );
+        else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyTranslational3dConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+            mjc_constraint_adapter->SetMjcData( m_mjcDataRef );
+        else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyUniversal3dConstraintAdapter*>( m_ConstraintAdapter.get() ) )
+            mjc_constraint_adapter->SetMjcData( m_mjcDataRef );
+        else if ( auto mjc_constraint_adapter = dynamic_cast<TMujocoSingleBodyPlanarConstraintAdapter*>( m_ConstraintAdapter.get() ) )
             mjc_constraint_adapter->SetMjcData( m_mjcDataRef );
     }
 

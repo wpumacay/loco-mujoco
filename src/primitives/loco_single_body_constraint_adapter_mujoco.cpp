@@ -48,13 +48,6 @@ namespace mujoco {
     //                              Revolute-constraint Adapter Impl                              //
     //********************************************************************************************//
 
-    TMujocoSingleBodyRevoluteConstraintAdapter::~TMujocoSingleBodyRevoluteConstraintAdapter()
-    {
-        if ( m_ConstraintRef )
-            m_ConstraintRef->DetachSim();
-        m_ConstraintRef = nullptr;
-    }
-
     void TMujocoSingleBodyRevoluteConstraintAdapter::Build()
     {
         auto revolute_constraint = dynamic_cast<TSingleBodyRevoluteConstraint*>( m_ConstraintRef );
@@ -98,12 +91,6 @@ namespace mujoco {
         m_MjcDataRef->qvel[m_MjcJointQvelAdr + 0] = 0.0;
     }
 
-    void TMujocoSingleBodyRevoluteConstraintAdapter::OnDetach()
-    {
-        m_Detached = true;
-        m_ConstraintRef = nullptr;
-    }
-
     void TMujocoSingleBodyRevoluteConstraintAdapter::SetHingeAngle( TScalar hinge_angle )
     {
         LOCO_CORE_ASSERT( m_MjcJointId >= 0, "TMujocoSingleBodyRevoluteConstraintAdapter::SetHingeAngle >>> \
@@ -137,13 +124,6 @@ namespace mujoco {
     //********************************************************************************************//
     //                              Prismatic-constraint Adapter Impl                             //
     //********************************************************************************************//
-
-    TMujocoSingleBodyPrismaticConstraintAdapter::~TMujocoSingleBodyPrismaticConstraintAdapter()
-    {
-        if ( m_ConstraintRef )
-            m_ConstraintRef->DetachSim();
-        m_ConstraintRef = nullptr;
-    }
 
     void TMujocoSingleBodyPrismaticConstraintAdapter::Build()
     {
@@ -188,12 +168,6 @@ namespace mujoco {
         m_MjcDataRef->qvel[m_MjcJointQvelAdr + 0] = 0.0;
     }
 
-    void TMujocoSingleBodyPrismaticConstraintAdapter::OnDetach()
-    {
-        m_Detached = true;
-        m_ConstraintRef = nullptr;
-    }
-
     void TMujocoSingleBodyPrismaticConstraintAdapter::SetSlidePosition( TScalar slide_position )
     {
         LOCO_CORE_ASSERT( m_MjcJointId >= 0, "TMujocoSingleBodyPrismaticConstraintAdapter::SetHingeAngle >>> \
@@ -227,13 +201,6 @@ namespace mujoco {
     //********************************************************************************************//
     //                              Spherical-constraint Adapter Impl                             //
     //********************************************************************************************//
-
-    TMujocoSingleBodySphericalConstraintAdapter::~TMujocoSingleBodySphericalConstraintAdapter()
-    {
-        if ( m_ConstraintRef )
-            m_ConstraintRef->DetachSim();
-        m_ConstraintRef = nullptr; // @todo: move to base interface
-    }
 
     void TMujocoSingleBodySphericalConstraintAdapter::Build()
     {
@@ -280,22 +247,9 @@ namespace mujoco {
         m_MjcDataRef->qvel[m_MjcJointQvelAdr + 2] = 0.0;
     }
 
-    void TMujocoSingleBodySphericalConstraintAdapter::OnDetach()
-    {
-        m_Detached = true;
-        m_ConstraintRef = nullptr;
-    }
-
     //********************************************************************************************//
     //                           Translational3d-constraint Adapter Impl                          //
     //********************************************************************************************//
-
-    TMujocoSingleBodyTranslational3dConstraintAdapter::~TMujocoSingleBodyTranslational3dConstraintAdapter()
-    {
-        if ( m_ConstraintRef )
-            m_ConstraintRef->DetachSim();
-        m_ConstraintRef = nullptr;
-    }
 
     void TMujocoSingleBodyTranslational3dConstraintAdapter::Build()
     {
@@ -375,22 +329,9 @@ namespace mujoco {
         m_MjcDataRef->qvel[m_MjcJointQvelAdrSlideZ + 0] = 0.0;
     }
 
-    void TMujocoSingleBodyTranslational3dConstraintAdapter::OnDetach()
-    {
-        m_Detached = true;
-        m_ConstraintRef = nullptr;
-    }
-
     //********************************************************************************************//
     //                             Universal3d-constraint Adapter Impl                            //
     //********************************************************************************************//
-
-    TMujocoSingleBodyUniversal3dConstraintAdapter::~TMujocoSingleBodyUniversal3dConstraintAdapter()
-    {
-        if ( m_ConstraintRef )
-            m_ConstraintRef->DetachSim();
-        m_ConstraintRef = nullptr;
-    }
 
     void TMujocoSingleBodyUniversal3dConstraintAdapter::Build()
     {
@@ -486,22 +427,9 @@ namespace mujoco {
         m_MjcDataRef->qvel[m_MjcJointQvelAdrHingeZ + 0] = 0.0;
     }
 
-    void TMujocoSingleBodyUniversal3dConstraintAdapter::OnDetach()
-    {
-        m_Detached = true;
-        m_ConstraintRef = nullptr;
-    }
-
     //********************************************************************************************//
     //                               Planar-constraint Adapter Impl                               //
     //********************************************************************************************//
-
-    TMujocoSingleBodyPlanarConstraintAdapter::~TMujocoSingleBodyPlanarConstraintAdapter()
-    {
-        if ( m_ConstraintRef )
-            m_ConstraintRef->DetachSim();
-        m_ConstraintRef = nullptr;
-    }
 
     void TMujocoSingleBodyPlanarConstraintAdapter::Build()
     {
@@ -579,11 +507,5 @@ namespace mujoco {
         m_MjcDataRef->qvel[m_MjcJointQvelAdrSlideX + 0] = 0.0;
         m_MjcDataRef->qvel[m_MjcJointQvelAdrSlideZ + 0] = 0.0;
         m_MjcDataRef->qvel[m_MjcJointQvelAdrHingeY + 0] = 0.0;
-    }
-
-    void TMujocoSingleBodyPlanarConstraintAdapter::OnDetach()
-    {
-        m_Detached = true;
-        m_ConstraintRef = nullptr;
     }
 }}

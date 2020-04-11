@@ -35,10 +35,6 @@ namespace mujoco {
 
     TMujocoSingleBodyColliderAdapter::~TMujocoSingleBodyColliderAdapter()
     {
-        if ( m_ColliderRef )
-            m_ColliderRef->DetachSim();
-        m_ColliderRef = nullptr;
-
         m_mjcModelRef = nullptr;
         m_mjcDataRef = nullptr;
 
@@ -263,12 +259,6 @@ namespace mujoco {
             LOCO_CORE_TRACE( "mjcf-xml          :\n{0}", m_mjcfElementResources->ToString() );
         if ( m_mjcfElementAssetResources )
             LOCO_CORE_TRACE( "mjcf-xml-asset    :\n{0}", m_mjcfElementAssetResources->ToString() );
-    }
-
-    void TMujocoSingleBodyColliderAdapter::OnDetach()
-    {
-        m_Detached = true;
-        m_ColliderRef = nullptr;
     }
 
     void TMujocoSingleBodyColliderAdapter::ChangeSize( const TVec3& newSize )

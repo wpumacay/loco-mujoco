@@ -62,15 +62,13 @@ namespace mujoco {
 
         TMujocoSingleBodyRevoluteConstraintAdapter& operator= ( const TMujocoSingleBodyRevoluteConstraintAdapter& other ) = delete;
 
-        ~TMujocoSingleBodyRevoluteConstraintAdapter();
+        ~TMujocoSingleBodyRevoluteConstraintAdapter() = default;
 
         void Build() override;
 
         void Initialize() override;
 
         void Reset() override;
-
-        void OnDetach() override;
 
         void SetHingeAngle( TScalar hinge_angle ) override;
 
@@ -97,15 +95,13 @@ namespace mujoco {
 
         TMujocoSingleBodyPrismaticConstraintAdapter& operator= ( const TMujocoSingleBodyPrismaticConstraintAdapter& other ) = delete;
 
-        ~TMujocoSingleBodyPrismaticConstraintAdapter();
+        ~TMujocoSingleBodyPrismaticConstraintAdapter() = default;
 
         void Build() override;
 
         void Initialize() override;
 
         void Reset() override;
-
-        void OnDetach() override;
 
         void SetSlidePosition( TScalar slide_position ) override;
 
@@ -132,15 +128,13 @@ namespace mujoco {
 
         TMujocoSingleBodySphericalConstraintAdapter& operator= ( const TMujocoSingleBodySphericalConstraintAdapter& other ) = delete;
 
-        ~TMujocoSingleBodySphericalConstraintAdapter();
+        ~TMujocoSingleBodySphericalConstraintAdapter() = default;
 
         void Build() override;
 
         void Initialize() override;
 
         void Reset() override;
-
-        void OnDetach() override;
 
     private :
 
@@ -161,15 +155,13 @@ namespace mujoco {
 
         TMujocoSingleBodyTranslational3dConstraintAdapter& operator= ( const TMujocoSingleBodyTranslational3dConstraintAdapter& other ) = delete;
 
-        ~TMujocoSingleBodyTranslational3dConstraintAdapter();
+        ~TMujocoSingleBodyTranslational3dConstraintAdapter() = default;
 
         void Build() override;
 
         void Initialize() override;
 
         void Reset() override;
-
-        void OnDetach() override;
 
     private :
 
@@ -198,15 +190,13 @@ namespace mujoco {
 
         TMujocoSingleBodyUniversal3dConstraintAdapter& operator= ( const TMujocoSingleBodyUniversal3dConstraintAdapter& other ) = delete;
 
-        ~TMujocoSingleBodyUniversal3dConstraintAdapter();
+        ~TMujocoSingleBodyUniversal3dConstraintAdapter() = default;
 
         void Build() override;
 
         void Initialize() override;
 
         void Reset() override;
-
-        void OnDetach() override;
 
     private :
 
@@ -238,15 +228,13 @@ namespace mujoco {
 
         TMujocoSingleBodyPlanarConstraintAdapter& operator= ( const TMujocoSingleBodyPlanarConstraintAdapter& other ) = delete;
 
-        ~TMujocoSingleBodyPlanarConstraintAdapter();
+        ~TMujocoSingleBodyPlanarConstraintAdapter() = default;
 
         void Build() override;
 
         void Initialize() override;
 
         void Reset() override;
-
-        void OnDetach() override;
 
     private :
 
@@ -262,5 +250,4 @@ namespace mujoco {
         ssize_t m_MjcJointQvelAdrSlideZ;
         ssize_t m_MjcJointQvelAdrHingeY;
     };
-
 }}

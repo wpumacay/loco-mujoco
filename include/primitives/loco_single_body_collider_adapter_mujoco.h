@@ -29,8 +29,6 @@ namespace mujoco {
 
         void Initialize() override;
 
-        void OnDetach() override;
-
         void ChangeSize( const TVec3& newSize ) override;
 
         void ChangeElevationData( const std::vector<float>& heights ) override;

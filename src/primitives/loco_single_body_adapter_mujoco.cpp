@@ -39,10 +39,6 @@ namespace mujoco {
 
     TMujocoSingleBodyAdapter::~TMujocoSingleBodyAdapter()
     {
-        if ( m_BodyRef )
-            m_BodyRef->DetachSim();
-
-        m_BodyRef = nullptr;
         m_ColliderAdapter = nullptr;
         m_ConstraintAdapter = nullptr;
 
@@ -346,13 +342,13 @@ namespace mujoco {
 
     void TMujocoSingleBodyAdapter::OnDetach()
     {
+        TISingleBodyAdapter::OnDetach();
+
         const TVec3 grid_rest_position = DETACHED_REST_GRID_START + 
                                          TVec3( (s_DetachedNum % DETACHED_REST_GRID_SIZE) * DETACHED_REST_GRID_DELTA.x(),
                                                 (s_DetachedNum / DETACHED_REST_GRID_SIZE) * DETACHED_REST_GRID_DELTA.y(),
                                                 (s_DetachedNum / DETACHED_REST_GRID_SIZE_POW2) * DETACHED_REST_GRID_DELTA.z() );
         m_DetachedRestTransform.set( grid_rest_position, 3 );
-        m_Detached = true;
-        m_BodyRef = nullptr;
         s_DetachedNum++;
     }
 

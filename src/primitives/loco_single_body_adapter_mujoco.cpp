@@ -30,10 +30,10 @@ namespace mujoco {
 
     #if defined( LOCO_CORE_USE_TRACK_ALLOCS )
         const std::string name = ( m_BodyRef ) ? m_BodyRef->name() : "undefined";
-        if ( TLogger::IsActive() )
-            LOCO_CORE_TRACE( "Loco::Allocs: Created TMujocoSingleBodyAdapter {0} @ {1}", name, loco::PointerToHexAddress( this ) );
+        if ( tinyutils::Logger::IsActive() )
+            LOCO_CORE_TRACE( "Loco::Allocs: Created TMujocoSingleBodyAdapter {0} @ {1}", name, tinyutils::PointerToHexAddress( this ) );
         else
-            std::cout << "Loco::Allocs: Created TMujocoSingleBodyAdapter " << name << " @ " << loco::PointerToHexAddress( this ) << std::endl;
+            std::cout << "Loco::Allocs: Created TMujocoSingleBodyAdapter " << name << " @ " << tinyutils::PointerToHexAddress( this ) << std::endl;
     #endif
     }
 
@@ -56,10 +56,10 @@ namespace mujoco {
 
     #if defined( LOCO_CORE_USE_TRACK_ALLOCS )
         const std::string name = ( m_BodyRef ) ? m_BodyRef->name() : "undefined";
-        if ( TLogger::IsActive() )
-            LOCO_CORE_TRACE( "Loco::Allocs: Destroyed TMujocoSingleBodyAdapter {0} @ {1}", name, loco::PointerToHexAddress( this ) );
+        if ( tinyutils::Logger::IsActive() )
+            LOCO_CORE_TRACE( "Loco::Allocs: Destroyed TMujocoSingleBodyAdapter {0} @ {1}", name, tinyutils::PointerToHexAddress( this ) );
         else
-            std::cout << "Loco::Allocs: Destroyed TMujocoSingleBodyAdapter " << name << " @ " << loco::PointerToHexAddress( this ) << std::endl;
+            std::cout << "Loco::Allocs: Destroyed TMujocoSingleBodyAdapter " << name << " @ " << tinyutils::PointerToHexAddress( this ) << std::endl;
     #endif
     }
 

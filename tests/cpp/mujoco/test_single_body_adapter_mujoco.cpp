@@ -7,7 +7,7 @@
 
 TEST( TestLocoMujocoSingleBodyAdapter, TestLocoMujocoSingleBodyAdapterBuild )
 {
-    loco::TLogger::Init();
+    loco::InitUtils();
 
     auto plane_col_data = loco::TCollisionData();
     auto plane_vis_data = loco::TVisualData();
@@ -205,7 +205,7 @@ TEST( TestLocoMujocoSingleBodyAdapter, TestLocoMujocoSingleBodyAdapterBuild )
 
 TEST( TestLocoMujocoSingleBodyAdapter, TestLocoMujocoSingleBodyAdapterInitialize )
 {
-    loco::TLogger::Init();
+    loco::InitUtils();
 
     auto scenario = std::make_unique<loco::TScenario>();
 

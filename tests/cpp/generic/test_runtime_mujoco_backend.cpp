@@ -4,7 +4,7 @@
 
 TEST( TestLocoRuntimeMujocoBackend, TestRuntimeMujocoBackend )
 {
-    loco::TLogger::Init();
+    loco::InitUtils();
 
     auto vis_data = loco::TVisualData();
     vis_data.type = loco::eShapeType::CAPSULE;
@@ -42,7 +42,7 @@ TEST( TestLocoRuntimeMujocoBackend, TestRuntimeMujocoBackend )
                                                 { 0.4f, 0.4f, 0.4f },
                                                 { 0.8f, 0.8f, 0.8f },
                                                 { 0.8f, 0.8f, 0.8f } );
-    visualizerRef->Update();
+    visualizerRef->Render();
     visualizerRef->Reset();
     EXPECT_EQ( visualizerRef->backendId(), "null" );
     EXPECT_TRUE( visualizerRef->HasCameraNamed( "cam_orbit_0" ) );

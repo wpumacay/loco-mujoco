@@ -25,7 +25,6 @@ def test_runtime_mujoco_backend() :
     runtime = loco.sim.Runtime( loco.sim.PHYSICS_MUJOCO, loco.sim.RENDERING_NONE )
 
     simulation = runtime.CreateSimulation( scenario )
-    simulation.Initialize()
     simulation.Step()
     simulation.Reset()
     simulation.Pause()
@@ -42,7 +41,6 @@ def test_runtime_mujoco_backend() :
                                     [ 0.4, 0.4, 0.4 ],
                                     [ 0.8, 0.8, 0.8 ],
                                     [ 0.8, 0.8, 0.8 ] )
-    visualizer.Initialize()
     visualizer.Update()
     visualizer.Reset()
     assert ( visualizer.backendId == "null" )

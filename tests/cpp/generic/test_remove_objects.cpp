@@ -4,7 +4,7 @@
 
 TEST( TestLocoRemoveObjects, TestRemoveSingleBody )
 {
-    loco::TLogger::Init();
+    loco::InitUtils();
 
     auto vis_data = loco::TVisualData();
     vis_data.type = loco::eShapeType::CAPSULE;
@@ -28,7 +28,7 @@ TEST( TestLocoRemoveObjects, TestRemoveSingleBody )
     auto simulation_ref = runtime->CreateSimulation( scenario.get() );
     auto visualizer_ref = runtime->CreateVisualizer( scenario.get() );
     simulation_ref->Step();
-    visualizer_ref->Update();
+    visualizer_ref->Render();
 
     EXPECT_EQ( scenario->HasSingleBodyNamed( "body_0" ), true );
     EXPECT_EQ( scenario->GetNumSingleBodies(), 1 );
@@ -36,7 +36,7 @@ TEST( TestLocoRemoveObjects, TestRemoveSingleBody )
     scenario->RemoveSingleBodyByName( "body_0" );
     simulation_ref->Step();
     simulation_ref->Step();
-    visualizer_ref->Update();
+    visualizer_ref->Render();
 
     EXPECT_EQ( scenario->HasSingleBodyNamed( "body_0" ), false );
     EXPECT_EQ( scenario->GetNumSingleBodies(), 0 );
@@ -47,7 +47,7 @@ TEST( TestLocoRemoveObjects, TestRemoveSingleBody )
 
 TEST( TestLocoRemoveObjects, TestRemoveDrawable )
 {
-    loco::TLogger::Init();
+    loco::InitUtils();
 
     auto vis_data = loco::TVisualData();
     vis_data.type = loco::eShapeType::CAPSULE;
@@ -63,14 +63,14 @@ TEST( TestLocoRemoveObjects, TestRemoveDrawable )
     auto simulation_ref = runtime->CreateSimulation( scenario.get() );
     auto visualizer_ref = runtime->CreateVisualizer( scenario.get() );
     simulation_ref->Step();
-    visualizer_ref->Update();
+    visualizer_ref->Render();
 
     EXPECT_EQ( scenario->HasDrawableNamed( "drawable_0" ), true );
     EXPECT_EQ( scenario->GetNumDrawables(), 1 );
 
     scenario->RemoveDrawableByName( "drawable_0" );
     simulation_ref->Step();
-    visualizer_ref->Update();
+    visualizer_ref->Render();
 
     EXPECT_EQ( scenario->HasDrawableNamed( "drawable_0" ), false );
     EXPECT_EQ( scenario->GetNumDrawables(), 0 );

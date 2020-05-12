@@ -26,10 +26,10 @@ namespace mujoco {
 
     #if defined( LOCO_CORE_USE_TRACK_ALLOCS )
         const std::string name = ( m_ColliderRef ) ? m_ColliderRef->name() : "undefined";
-        if ( TLogger::IsActive() )
-            LOCO_CORE_TRACE( "Loco::Allocs: Created TMujocoSingleBodyColliderAdapter {0} @ {1}", name, loco::PointerToHexAddress( this ) );
+        if ( tinyutils::Logger::IsActive() )
+            LOCO_CORE_TRACE( "Loco::Allocs: Created TMujocoSingleBodyColliderAdapter {0} @ {1}", name, tinyutils::PointerToHexAddress( this ) );
         else
-            std::cout << "Loco::Allocs: Created TMujocoSingleBodyColliderAdapter " << name << " @ " << loco::PointerToHexAddress( this ) << std::endl;
+            std::cout << "Loco::Allocs: Created TMujocoSingleBodyColliderAdapter " << name << " @ " << tinyutils::PointerToHexAddress( this ) << std::endl;
     #endif
     }
 
@@ -51,10 +51,10 @@ namespace mujoco {
 
     #if defined( LOCO_CORE_USE_TRACK_ALLOCS )
         const std::string name = ( m_ColliderRef ) ? m_ColliderRef->name() : "undefined";
-        if ( TLogger::IsActive() )
-            LOCO_CORE_TRACE( "Loco::Allocs: Destroyed TMujocoSingleBodyColliderAdapter {0} @ {1}", name, loco::PointerToHexAddress( this ) );
+        if ( tinyutils::Logger::IsActive() )
+            LOCO_CORE_TRACE( "Loco::Allocs: Destroyed TMujocoSingleBodyColliderAdapter {0} @ {1}", name, tinyutils::PointerToHexAddress( this ) );
         else
-            std::cout << "Loco::Allocs: Destroyed TMujocoSingleBodyColliderAdapter " << name << " @ " << loco::PointerToHexAddress( this ) << std::endl;
+            std::cout << "Loco::Allocs: Destroyed TMujocoSingleBodyColliderAdapter " << name << " @ " << tinyutils::PointerToHexAddress( this ) << std::endl;
     #endif
     }
 
@@ -80,7 +80,7 @@ namespace mujoco {
             if ( mesh_data.filename != "" )
             {
                 const std::string mesh_file = mesh_data.filename;
-                const std::string mesh_id = GetFilenameNoExtensionFromFilePath( mesh_file );
+                const std::string mesh_id = tinyutils::GetFilenameNoExtension( mesh_file );
                 const auto mesh_scale = m_ColliderRef->size();
 
                 m_mjcfElementAssetResources = std::make_unique<parsing::TElement>( LOCO_MJCF_MESH_TAG, parsing::eSchemaType::MJCF );

@@ -21,6 +21,7 @@ tysoc_mjc.egg-info/
 
 # dependencies-exclusions
 ext/tiny_math*
+ext/tiny_utils*
 ext/tiny_renderer*
 ext/imgui*
 ext/spdlog*

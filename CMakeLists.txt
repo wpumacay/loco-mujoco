@@ -100,7 +100,8 @@ set( LOCO_MUJOCO_INCLUDE_DIRS
      "${CMAKE_SOURCE_DIR}/core/ext/json"
      "${CMAKE_SOURCE_DIR}/core/ext/tinyxml2"
      "${CMAKE_SOURCE_DIR}/ext/spdlog/include"
-     "${CMAKE_SOURCE_DIR}/ext/tiny_math/include" )
+     "${CMAKE_SOURCE_DIR}/ext/tiny_math/include"
+     "${CMAKE_SOURCE_DIR}/ext/tiny_utils/include" )
 include_directories( ${LOCO_MUJOCO_INCLUDE_DIRS} )
 
 if ( WIN32 )

@@ -47,7 +47,7 @@ std::pair<std::vector<float>, std::vector<int>> create_mesh_tetrahedron()
 
 TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterBuild )
 {
-    loco::TLogger::Init();
+    loco::InitUtils();
 
     std::vector<loco::eShapeType> vec_col_types = { loco::eShapeType::BOX,
                                                     loco::eShapeType::SPHERE,
@@ -117,7 +117,7 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterBuild )
 
 TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterInitialize )
 {
-    loco::TLogger::Init();
+    loco::InitUtils();
 
     auto scenario = std::make_unique<loco::TScenario>();
 
@@ -223,7 +223,7 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterInitialize )
 
 TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterMeshBuild )
 {
-    loco::TLogger::Init();
+    loco::InitUtils();
 
     auto col_data = loco::TCollisionData();
     col_data.type = loco::eShapeType::MESH;
@@ -264,7 +264,7 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterMeshBuild )
 
 TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterMeshUserBuild )
 {
-    loco::TLogger::Init();
+    loco::InitUtils();
 
     auto vertices_faces = create_mesh_tetrahedron();
 
@@ -317,7 +317,7 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterMeshUserBuil
 
 TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterMeshInitialize )
 {
-    loco::TLogger::Init();
+    loco::InitUtils();
 
     auto scenario = std::make_unique<loco::TScenario>();
 
@@ -373,7 +373,7 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterMeshInitiali
 
 TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterMeshUserInitialize )
 {
-    loco::TLogger::Init();
+    loco::InitUtils();
 
     auto scenario = std::make_unique<loco::TScenario>();
 
@@ -428,7 +428,7 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterMeshUserInit
 
 TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterHfieldBuild )
 {
-    loco::TLogger::Init();
+    loco::InitUtils();
 
     const size_t num_width_samples = 40;
     const size_t num_depth_samples = 40;
@@ -481,7 +481,7 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterHfieldBuild 
 
 TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterHfieldInitialize )
 {
-    loco::TLogger::Init();
+    loco::InitUtils();
 
     auto scenario = std::make_unique<loco::TScenario>();
 

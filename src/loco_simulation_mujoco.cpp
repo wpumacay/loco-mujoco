@@ -32,10 +32,10 @@ namespace mujoco {
         //// _CreateTerrainGeneratorAdapters();
 
     #if defined( LOCO_CORE_USE_TRACK_ALLOCS )
-        if ( TLogger::IsActive() )
-            LOCO_CORE_TRACE( "Loco::Allocs: Created TMujocoSimulation @ {0}", loco::PointerToHexAddress( this ) );
+        if ( tinyutils::Logger::IsActive() )
+            LOCO_CORE_TRACE( "Loco::Allocs: Created TMujocoSimulation @ {0}", tinyutils::PointerToHexAddress( this ) );
         else
-            std::cout << "Loco::Allocs: Created TMujocoSimulation @ " << loco::PointerToHexAddress( this ) << std::endl;
+            std::cout << "Loco::Allocs: Created TMujocoSimulation @ " << tinyutils::PointerToHexAddress( this ) << std::endl;
     #endif
     }
 
@@ -57,10 +57,10 @@ namespace mujoco {
         m_mjcfSimulationElement = nullptr;
 
     #if defined( LOCO_CORE_USE_TRACK_ALLOCS )
-        if ( TLogger::IsActive() )
-            LOCO_CORE_TRACE( "Loco::Allocs: Destroyed TMujocoSimulation @ {0}", loco::PointerToHexAddress( this ) );
+        if ( tinyutils::Logger::IsActive() )
+            LOCO_CORE_TRACE( "Loco::Allocs: Destroyed TMujocoSimulation @ {0}", tinyutils::PointerToHexAddress( this ) );
         else
-            std::cout << "Loco::Allocs: Destroyed TMujocoSimulation @ " << loco::PointerToHexAddress( this ) << std::endl;
+            std::cout << "Loco::Allocs: Destroyed TMujocoSimulation @ " << tinyutils::PointerToHexAddress( this ) << std::endl;
     #endif
     }
 

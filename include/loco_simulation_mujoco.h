@@ -24,17 +24,17 @@ namespace mujoco {
 
         ~TMujocoSimulation();
 
-        parsing::TElement* mjcf_element() { return m_mjcfSimulationElement.get(); }
+        parsing::TElement* mjcf_element() { return m_MjcfSimulationElement.get(); }
 
-        const parsing::TElement* mjcf_element() const { return m_mjcfSimulationElement.get(); }
+        const parsing::TElement* mjcf_element() const { return m_MjcfSimulationElement.get(); }
 
-        mjModel* mjc_model() { return m_mjcModel.get(); }
+        mjModel* mjc_model() { return m_MjcModel.get(); }
 
-        const mjModel* mjc_model() const { return m_mjcModel.get(); }
+        const mjModel* mjc_model() const { return m_MjcModel.get(); }
 
-        mjData* mjc_data() { return m_mjcData.get(); }
+        mjData* mjc_data() { return m_MjcData.get(); }
 
-        const mjData* mjc_data() const { return m_mjcData.get(); }
+        const mjData* mjc_data() const { return m_MjcData.get(); }
 
     protected :
 
@@ -42,11 +42,15 @@ namespace mujoco {
 
         void _PreStepInternal() override;
 
-        void _SimStepInternal() override;
+        void _SimStepInternal( const TScalar& dt ) override;
 
         void _PostStepInternal() override;
 
         void _ResetInternal() override;
+
+        void _SetTimeStepInternal( const TScalar& time_step ) override;
+
+        void _SetGravityInternal( const TVec3& gravity ) override;
 
     private :
 
@@ -69,15 +73,15 @@ namespace mujoco {
     private :
 
         // Owned MuJoCo-mjModel struct (access mujoco resources related to model structure)
-        std::unique_ptr<mjModel, MjcModelDeleter> m_mjcModel;
+        std::unique_ptr<mjModel, MjcModelDeleter> m_MjcModel;
         // Owned MuJoCo-mjData struct (access mujoco resources related to simulation computations)
-        std::unique_ptr<mjData, MjcDataDeleter> m_mjcData;
+        std::unique_ptr<mjData, MjcDataDeleter> m_MjcData;
         // Owned mjcf Element used to store the simulation object
-        std::unique_ptr<parsing::TElement> m_mjcfSimulationElement;
+        std::unique_ptr<parsing::TElement> m_MjcfSimulationElement;
         // Checking-set to avoid double-additions of assets with same name
-        std::set<std::string> m_mjcfAssetsNames;
+        std::set<std::string> m_MjcfAssetsNames;
         // Checking-set to avoid double-additions of assets with same filepath
-        std::set<std::string> m_mjcfAssetsFilepaths;
+        std::set<std::string> m_MjcfAssetsFilepaths;
         // Flag to check if MuJoCo has already been activated (can only call activate once)
         static bool s_HasActivatedMujoco;
     };

@@ -70,6 +70,8 @@ namespace mujoco {
 
         // void _CollectResourcesFromTerrainGenerators();
 
+        void _CollectContacts();
+
     private :
 
         // Owned MuJoCo-mjModel struct (access mujoco resources related to model structure)

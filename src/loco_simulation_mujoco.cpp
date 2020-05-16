@@ -236,6 +236,62 @@ namespace mujoco {
         }
     }
 
+    void TMujocoSimulation::_CollectContacts()
+    {
+        LOCO_CORE_ASSERT( m_MjcModel, "TMujocoSimulation::_CollectContacts >>> mjModel struct is required \
+                          for collecting the contacts from the internal engine" );
+        LOCO_CORE_ASSERT( m_MjcModel, "TMujocoSimulation::_CollectContacts >>> mjData struct is required \
+                          for collecting the contacts from the internal engine" );
+
+        std::map< std::string, std::vector<TContactData> > detected_contacts;
+        ssize_t num_contacts = m_MjcData->ncon;
+        for ( ssize_t i = 0; i < num_contacts; i++ )
+        {
+            auto& mjc_contact_info = m_MjcData->contact[i];
+            if ( mjc_contact_info.geom1 == -1 || mjc_contact_info.geom2 == -1 )
+            {
+                LOCO_CORE_WARN( "TMujocoSimulation::_CollectContacts >>> got a contact without geom-id information" );
+                continue;
+            }
+
+            const std::string collider_1 = mj_id2name( m_MjcModel.get(), mjOBJ_GEOM, mjc_contact_info.geom1 );
+            const std::string collider_2 = mj_id2name( m_MjcModel.get(), mjOBJ_GEOM, mjc_contact_info.geom2 );
+
+            const TVec3 position = { (TScalar) mjc_contact_info.pos[0],
+                                     (TScalar) mjc_contact_info.pos[1],
+                                     (TScalar) mjc_contact_info.pos[2] };
+            const TVec3 normal = { (TScalar) mjc_contact_info.frame[0],
+                                   (TScalar) mjc_contact_info.frame[1],
+                                   (TScalar) mjc_contact_info.frame[2] };
+
+            if ( detected_contacts.find( collider_1 ) == detected_contacts.end() )
+                detected_contacts[collider_1] = std::vector<TContactData>();
+            if ( detected_contacts.find( collider_2 ) == detected_contacts.end() )
+                detected_contacts[collider_2] = std::vector<TContactData>();
+
+            TContactData contact_1, contact_2;
+            contact_1.position = position;  contact_2.position = position;
+            contact_1.normal = normal;      contact_2.normal = normal.scaled( -1.0 );
+            contact_1.name = collider_2;    contact_2.name = collider_1;
+
+            detected_contacts[collider_1].push_back( contact_1 );
+            detected_contacts[collider_2].push_back( contact_2 );
+        }
+
+        auto single_bodies = m_ScenarioRef->GetSingleBodiesList();
+        for ( auto single_body : single_bodies )
+        {
+            auto collider = single_body->collider();
+            auto collider_name = collider->name();
+
+            collider->contacts().clear();
+            if ( detected_contacts.find( collider_name ) != detected_contacts.end() )
+                collider->contacts() = detected_contacts[collider_name];
+
+            LOCO_CORE_INFO( "collider: {0}, num_contacts: {1}", collider_name, collider->contacts().size() );
+        }
+    }
+
     void TMujocoSimulation::_PreStepInternal()
     {
         // Make sure recycled objects are not being simulated
@@ -271,7 +327,7 @@ namespace mujoco {
 
     void TMujocoSimulation::_PostStepInternal()
     {
-        // Do nothing here, as call to adapters is enough (made in base)
+        _CollectContacts();
     }
 
     void TMujocoSimulation::_ResetInternal()

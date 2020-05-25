@@ -69,6 +69,7 @@ namespace mujoco {
         m_mjcfElementResources->SetString( "type", enumShape_to_mjcShape( m_ColliderRef->shape() ) );
         m_mjcfElementResources->SetInt( "contype", m_ColliderRef->collisionGroup() );
         m_mjcfElementResources->SetInt( "conaffinity", m_ColliderRef->collisionMask() );
+        m_mjcfElementResources->SetVec3( "friction", m_ColliderRef->data().friction );
         auto array_size = size_to_mjcSize( m_ColliderRef->shape(), m_ColliderRef->size() );
         if ( array_size.ndim > 0 )
             m_mjcfElementResources->SetArrayFloat( "size", array_size );
@@ -343,6 +344,18 @@ namespace mujoco {
             return;
         }
         m_mjcModelRef->geom_conaffinity[m_mjcGeomId] = collisionMask;
+    }
+
+    void TMujocoSingleBodyColliderAdapter::ChangeFriction( const TScalar& friction )
+    {
+        if ( m_mjcGeomId < 0 )
+        {
+            LOCO_CORE_ERROR( "TMujocoSingleBodyColliderAdapter::ChangeFriction >>> collider {0} not linked \
+                             to a valid mjc-geom (geom-id = -1", m_ColliderRef->name() );
+            return;
+        }
+        // Update only sliding friction (leave rolling and torsional as defaults)
+        m_mjcModelRef->geom_friction[3 * m_mjcGeomId + 0] = friction;
     }
 
     void TMujocoSingleBodyColliderAdapter::_resize_mesh( const TVec3& new_size )

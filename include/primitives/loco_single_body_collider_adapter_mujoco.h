@@ -37,6 +37,8 @@ namespace mujoco {
 
         void ChangeCollisionMask( int collisionMask ) override;
 
+        void ChangeFriction( const TScalar& friction ) override;
+
         void SetMjcModel( mjModel* mjModelRef ) { m_mjcModelRef = mjModelRef; }
 
         void SetMjcData( mjData* mjDataRef ) { m_mjcDataRef = mjDataRef; }

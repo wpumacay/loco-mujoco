@@ -437,17 +437,17 @@ namespace mujoco {
         TVec3 aabb_max = { -1e6f, -1e6f, -1e6f };
         for ( size_t i = 0; i < m_mjcGeomMeshVertNum; i++ )
         {
-            m_mjcModelRef->mesh_vert[3 * ( m_mjcGeomMeshVertStartAddr + i ) + 0] *= effective_scale.x();
-            m_mjcModelRef->mesh_vert[3 * ( m_mjcGeomMeshVertStartAddr + i ) + 1] *= effective_scale.y();
-            m_mjcModelRef->mesh_vert[3 * ( m_mjcGeomMeshVertStartAddr + i ) + 2] *= effective_scale.z();
+            m_mjcModelRef->mesh_vert[m_mjcGeomMeshVertStartAddr + 3 * i + 0] *= effective_scale.x();
+            m_mjcModelRef->mesh_vert[m_mjcGeomMeshVertStartAddr + 3 * i + 1] *= effective_scale.y();
+            m_mjcModelRef->mesh_vert[m_mjcGeomMeshVertStartAddr + 3 * i + 2] *= effective_scale.z();
 
-            aabb_min.x() = std::min( aabb_min.x(), m_mjcModelRef->mesh_vert[3 * ( m_mjcGeomMeshVertStartAddr + i ) + 0] );
-            aabb_min.y() = std::min( aabb_min.y(), m_mjcModelRef->mesh_vert[3 * ( m_mjcGeomMeshVertStartAddr + i ) + 1] );
-            aabb_min.z() = std::min( aabb_min.z(), m_mjcModelRef->mesh_vert[3 * ( m_mjcGeomMeshVertStartAddr + i ) + 2] );
+            aabb_min.x() = std::min( aabb_min.x(), m_mjcModelRef->mesh_vert[m_mjcGeomMeshVertStartAddr + 3 * i + 0] );
+            aabb_min.y() = std::min( aabb_min.y(), m_mjcModelRef->mesh_vert[m_mjcGeomMeshVertStartAddr + 3 * i + 1] );
+            aabb_min.z() = std::min( aabb_min.z(), m_mjcModelRef->mesh_vert[m_mjcGeomMeshVertStartAddr + 3 * i + 2] );
 
-            aabb_max.x() = std::max( aabb_max.x(), m_mjcModelRef->mesh_vert[3 * ( m_mjcGeomMeshVertStartAddr + i ) + 0] );
-            aabb_max.y() = std::max( aabb_max.y(), m_mjcModelRef->mesh_vert[3 * ( m_mjcGeomMeshVertStartAddr + i ) + 1] );
-            aabb_max.z() = std::max( aabb_max.z(), m_mjcModelRef->mesh_vert[3 * ( m_mjcGeomMeshVertStartAddr + i ) + 2] );
+            aabb_max.x() = std::max( aabb_max.x(), m_mjcModelRef->mesh_vert[m_mjcGeomMeshVertStartAddr + 3 * i + 0] );
+            aabb_max.y() = std::max( aabb_max.y(), m_mjcModelRef->mesh_vert[m_mjcGeomMeshVertStartAddr + 3 * i + 1] );
+            aabb_max.z() = std::max( aabb_max.z(), m_mjcModelRef->mesh_vert[m_mjcGeomMeshVertStartAddr + 3 * i + 2] );
         }
         m_mjcModelRef->geom_rbound[m_mjcGeomId] = 0.5f * ( aabb_max - aabb_min ).length();
         // New size becomes previous size for next resizing operation

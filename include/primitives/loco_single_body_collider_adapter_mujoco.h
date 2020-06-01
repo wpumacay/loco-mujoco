@@ -31,6 +31,8 @@ namespace mujoco {
 
         void ChangeSize( const TVec3& newSize ) override;
 
+        void ChangeVertexData( const std::vector<float>& vertices, const std::vector<int>& faces ) override;
+
         void ChangeElevationData( const std::vector<float>& heights ) override;
 
         void ChangeCollisionGroup( int collisionGroup ) override;

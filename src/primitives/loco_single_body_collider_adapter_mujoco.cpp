@@ -282,6 +282,74 @@ namespace mujoco {
             _resize_primitive( newSize );
     }
 
+    void TMujocoSingleBodyColliderAdapter::ChangeVertexData( const std::vector<float>& vertices, const std::vector<int>& faces )
+    {
+        if ( m_mjcGeomId < 0 )
+        {
+            LOCO_CORE_ERROR( "TMujocoSingleBodyColliderAdapter::ChangeVertexData >>> collider {0} not linked \
+                              to a valid mjc-geom (geom-id = -1)", m_ColliderRef->name() );
+            return;
+        }
+
+        if ( m_ColliderRef->shape() != eShapeType::MESH )
+        {
+            LOCO_CORE_WARN( "TMujocoSingleBodyColliderAdapter::ChangeVertexData >>> tried to set vertex-data \
+                             to the non-mesh collider {0}", m_ColliderRef->name() );
+            return;
+        }
+
+        LOCO_CORE_ASSERT( m_mjcGeomMeshId != -1, "TMujocoSingleBodyColliderAdapter::ChangeVertexData >>> something \
+                          went wrong initializing the mesh-collider {0}", m_ColliderRef->name() );
+
+        const ssize_t num_vertices = vertices.size() / 3;
+        const ssize_t num_faces = faces.size() / 3;
+
+        LOCO_CORE_INFO( "Changing vertex-data for mesh-collider {0}", m_ColliderRef->name() );
+        LOCO_CORE_TRACE( "old-num-vertices  : {0}", m_mjcModelRef->mesh_vertnum[m_mjcGeomMeshId] );
+        LOCO_CORE_TRACE( "old-num-faces     : {0}", m_mjcModelRef->mesh_facenum[m_mjcGeomMeshId] );
+        LOCO_CORE_TRACE( "new-num-vertices  : {0}", num_vertices );
+        LOCO_CORE_TRACE( "new-num-faces     : {0}", num_faces );
+        TVec3 aabb_min = { 1e6f, 1e6f, 1e6f };
+        TVec3 aabb_max = { -1e6f, -1e6f, -1e6f };
+        m_mjcModelRef->mesh_vertnum[m_mjcGeomMeshId] = num_vertices;
+        for ( ssize_t i = 0; i < num_vertices; i++ )
+        {
+            LOCO_CORE_TRACE( "old-vert {0} >>> {1}", 3 * i + 0, m_mjcModelRef->mesh_vert[m_mjcGeomMeshVertStartAddr + 3 * i + 0] );
+            LOCO_CORE_TRACE( "old-vert {0} >>> {1}", 3 * i + 1, m_mjcModelRef->mesh_vert[m_mjcGeomMeshVertStartAddr + 3 * i + 1] );
+            LOCO_CORE_TRACE( "old-vert {0} >>> {1}", 3 * i + 2, m_mjcModelRef->mesh_vert[m_mjcGeomMeshVertStartAddr + 3 * i + 2] );
+            LOCO_CORE_TRACE( "new-vert {0} >>> {1}", 3 * i + 0, vertices[3 * i + 0] );
+            LOCO_CORE_TRACE( "new-vert {0} >>> {1}", 3 * i + 1, vertices[3 * i + 1] );
+            LOCO_CORE_TRACE( "new-vert {0} >>> {1}", 3 * i + 2, vertices[3 * i + 2] );
+            m_mjcModelRef->mesh_vert[m_mjcGeomMeshVertStartAddr + 3 * i + 0] = vertices[3 * i + 0];
+            m_mjcModelRef->mesh_vert[m_mjcGeomMeshVertStartAddr + 3 * i + 1] = vertices[3 * i + 1];
+            m_mjcModelRef->mesh_vert[m_mjcGeomMeshVertStartAddr + 3 * i + 2] = vertices[3 * i + 2];
+
+            aabb_min.x() = std::min( aabb_min.x(), m_mjcModelRef->mesh_vert[m_mjcGeomMeshVertStartAddr + 3 * i + 0] );
+            aabb_min.y() = std::min( aabb_min.y(), m_mjcModelRef->mesh_vert[m_mjcGeomMeshVertStartAddr + 3 * i + 1] );
+            aabb_min.z() = std::min( aabb_min.z(), m_mjcModelRef->mesh_vert[m_mjcGeomMeshVertStartAddr + 3 * i + 2] );
+
+            aabb_max.x() = std::max( aabb_max.x(), m_mjcModelRef->mesh_vert[m_mjcGeomMeshVertStartAddr + 3 * i + 0] );
+            aabb_max.y() = std::max( aabb_max.y(), m_mjcModelRef->mesh_vert[m_mjcGeomMeshVertStartAddr + 3 * i + 1] );
+            aabb_max.z() = std::max( aabb_max.z(), m_mjcModelRef->mesh_vert[m_mjcGeomMeshVertStartAddr + 3 * i + 2] );
+        }
+        m_mjcModelRef->geom_rbound[m_mjcGeomId] = 0.5f * ( aabb_max - aabb_min ).length();
+
+        m_mjcModelRef->mesh_facenum[m_mjcGeomMeshId] = num_faces;
+        for ( ssize_t i = 0; i < num_faces; i++ )
+        {
+            LOCO_CORE_TRACE( "old-face {0} >>> {1}", 3 * i + 0, m_mjcModelRef->mesh_face[m_mjcGeomMeshVertStartAddr + 3 * i + 0] );
+            LOCO_CORE_TRACE( "old-face {0} >>> {1}", 3 * i + 1, m_mjcModelRef->mesh_face[m_mjcGeomMeshVertStartAddr + 3 * i + 1] );
+            LOCO_CORE_TRACE( "old-face {0} >>> {1}", 3 * i + 2, m_mjcModelRef->mesh_face[m_mjcGeomMeshVertStartAddr + 3 * i + 2] );
+            LOCO_CORE_TRACE( "new-face {0} >>> {1}", 3 * i + 0, faces[3 * i + 0] );
+            LOCO_CORE_TRACE( "new-face {0} >>> {1}", 3 * i + 1, faces[3 * i + 1] );
+            LOCO_CORE_TRACE( "new-face {0} >>> {1}", 3 * i + 2, faces[3 * i + 2] );
+            m_mjcModelRef->mesh_face[m_mjcGeomMeshVertStartAddr + 3 * i + 0] = faces[3 * i + 0];
+            m_mjcModelRef->mesh_face[m_mjcGeomMeshVertStartAddr + 3 * i + 1] = faces[3 * i + 1];
+            m_mjcModelRef->mesh_face[m_mjcGeomMeshVertStartAddr + 3 * i + 2] = faces[3 * i + 2];
+        }
+
+    }
+
     void TMujocoSingleBodyColliderAdapter::ChangeElevationData( const std::vector<float>& heights )
     {
         if ( m_mjcGeomId < 0 )

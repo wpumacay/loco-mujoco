@@ -287,8 +287,6 @@ namespace mujoco {
             collider->contacts().clear();
             if ( detected_contacts.find( collider_name ) != detected_contacts.end() )
                 collider->contacts() = detected_contacts[collider_name];
-
-            LOCO_CORE_INFO( "collider: {0}, num_contacts: {1}", collider_name, collider->contacts().size() );
         }
     }
 

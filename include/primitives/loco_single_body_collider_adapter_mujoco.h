@@ -5,11 +5,12 @@
 #include <primitives/loco_single_body_collider_adapter.h>
 
 namespace loco {
+namespace primitives {
     class TSingleBodyCollider;
-}
+}}
 
 namespace loco {
-namespace mujoco {
+namespace primitives {
 
     const float LOCO_MUJOCO_HFIELD_BASE = 1.0f;
 
@@ -94,5 +95,4 @@ namespace mujoco {
         std::unique_ptr<parsing::TElement> m_mjcfElementResources;
         std::unique_ptr<parsing::TElement> m_mjcfElementAssetResources;
     };
-
 }}

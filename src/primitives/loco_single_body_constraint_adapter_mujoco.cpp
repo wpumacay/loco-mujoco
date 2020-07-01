@@ -2,7 +2,7 @@
 #include <primitives/loco_single_body_constraint_adapter_mujoco.h>
 
 namespace loco {
-namespace mujoco {
+namespace primitives {
 
     //********************************************************************************************//
     //                              Mujoco-Adapter Interface Impl.                                //
@@ -54,7 +54,7 @@ namespace mujoco {
         LOCO_CORE_ASSERT( revolute_constraint, "TMujocoSingleBodyRevoluteConstraintAdapter::Build >>> \
                           constraint reference must be of type \"Revolute\", for constraint named {0}", m_ConstraintRef->name() );
 
-        auto mjcf_element = std::make_unique<parsing::TElement>( LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
+        auto mjcf_element = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
         mjcf_element->SetString( "name", revolute_constraint->name() );
         mjcf_element->SetString( "type", "hinge" );
         mjcf_element->SetString( "limited", "false" );
@@ -131,7 +131,7 @@ namespace mujoco {
         LOCO_CORE_ASSERT( prismatic_constraint, "TMujocoSingleBodyPrismaticConstraintAdapter::Build >>> \
                           constraint reference must be of type \"Prismatic\", for constraint named {0}", m_ConstraintRef->name() );
 
-        auto mjcf_element = std::make_unique<parsing::TElement>( LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
+        auto mjcf_element = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
         mjcf_element->SetString( "name", prismatic_constraint->name() );
         mjcf_element->SetString( "type", "slide" );
         mjcf_element->SetString( "limited", "false" );
@@ -204,7 +204,7 @@ namespace mujoco {
 
     void TMujocoSingleBodySphericalConstraintAdapter::Build()
     {
-        auto mjcf_element = std::make_unique<parsing::TElement>( LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
+        auto mjcf_element = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
         mjcf_element->SetString( "name", m_ConstraintRef->name() );
         mjcf_element->SetString( "type", "ball" );
         mjcf_element->SetString( "limited", "false" );
@@ -253,19 +253,19 @@ namespace mujoco {
 
     void TMujocoSingleBodyTranslational3dConstraintAdapter::Build()
     {
-        auto mjcf_slide_axis_x = std::make_unique<parsing::TElement>( LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
+        auto mjcf_slide_axis_x = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
         mjcf_slide_axis_x->SetString( "name", m_ConstraintRef->name() + "_trans_x" );
         mjcf_slide_axis_x->SetString( "type", "slide" );
         mjcf_slide_axis_x->SetString( "limited", "false" );
         mjcf_slide_axis_x->SetVec3( "pos", { 0.0f, 0.0f, 0.0f } );
         mjcf_slide_axis_x->SetVec3( "axis", { 1.0f, 0.0f, 0.0f } );
-        auto mjcf_slide_axis_y = std::make_unique<parsing::TElement>( LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
+        auto mjcf_slide_axis_y = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
         mjcf_slide_axis_y->SetString( "name", m_ConstraintRef->name() + "_trans_y" );
         mjcf_slide_axis_y->SetString( "type", "slide" );
         mjcf_slide_axis_y->SetString( "limited", "false" );
         mjcf_slide_axis_y->SetVec3( "pos", { 0.0f, 0.0f, 0.0f } );
         mjcf_slide_axis_y->SetVec3( "axis", { 0.0f, 1.0f, 0.0f } );
-        auto mjcf_slide_axis_z = std::make_unique<parsing::TElement>( LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
+        auto mjcf_slide_axis_z = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
         mjcf_slide_axis_z->SetString( "name", m_ConstraintRef->name() + "_trans_z" );
         mjcf_slide_axis_z->SetString( "type", "slide" );
         mjcf_slide_axis_z->SetString( "limited", "false" );
@@ -335,25 +335,25 @@ namespace mujoco {
 
     void TMujocoSingleBodyUniversal3dConstraintAdapter::Build()
     {
-        auto mjcf_slide_axis_x = std::make_unique<parsing::TElement>( LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
+        auto mjcf_slide_axis_x = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
         mjcf_slide_axis_x->SetString( "name", m_ConstraintRef->name() + "_trans_x" );
         mjcf_slide_axis_x->SetString( "type", "slide" );
         mjcf_slide_axis_x->SetString( "limited", "false" );
         mjcf_slide_axis_x->SetVec3( "pos", { 0.0f, 0.0f, 0.0f } );
         mjcf_slide_axis_x->SetVec3( "axis", { 1.0f, 0.0f, 0.0f } );
-        auto mjcf_slide_axis_y = std::make_unique<parsing::TElement>( LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
+        auto mjcf_slide_axis_y = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
         mjcf_slide_axis_y->SetString( "name", m_ConstraintRef->name() + "_trans_y" );
         mjcf_slide_axis_y->SetString( "type", "slide" );
         mjcf_slide_axis_y->SetString( "limited", "false" );
         mjcf_slide_axis_y->SetVec3( "pos", { 0.0f, 0.0f, 0.0f } );
         mjcf_slide_axis_y->SetVec3( "axis", { 0.0f, 1.0f, 0.0f } );
-        auto mjcf_slide_axis_z = std::make_unique<parsing::TElement>( LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
+        auto mjcf_slide_axis_z = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
         mjcf_slide_axis_z->SetString( "name", m_ConstraintRef->name() + "_trans_z" );
         mjcf_slide_axis_z->SetString( "type", "slide" );
         mjcf_slide_axis_z->SetString( "limited", "false" );
         mjcf_slide_axis_z->SetVec3( "pos", { 0.0f, 0.0f, 0.0f } );
         mjcf_slide_axis_z->SetVec3( "axis", { 0.0f, 0.0f, 1.0f } );
-        auto mjcf_hinge_axis_z = std::make_unique<parsing::TElement>( LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
+        auto mjcf_hinge_axis_z = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
         mjcf_hinge_axis_z->SetString( "name", m_ConstraintRef->name() + "_rot_z" );
         mjcf_hinge_axis_z->SetString( "type", "hinge" );
         mjcf_hinge_axis_z->SetString( "limited", "false" );
@@ -433,19 +433,19 @@ namespace mujoco {
 
     void TMujocoSingleBodyPlanarConstraintAdapter::Build()
     {
-        auto mjcf_slide_axis_x = std::make_unique<parsing::TElement>( LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
+        auto mjcf_slide_axis_x = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
         mjcf_slide_axis_x->SetString( "name", m_ConstraintRef->name() + "_trans_x" );
         mjcf_slide_axis_x->SetString( "type", "slide" );
         mjcf_slide_axis_x->SetString( "limited", "false" );
         mjcf_slide_axis_x->SetVec3( "pos", { 0.0f, 0.0f, 0.0f } );
         mjcf_slide_axis_x->SetVec3( "axis", { 1.0f, 0.0f, 0.0f } );
-        auto mjcf_slide_axis_z = std::make_unique<parsing::TElement>( LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
+        auto mjcf_slide_axis_z = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
         mjcf_slide_axis_z->SetString( "name", m_ConstraintRef->name() + "_trans_z" );
         mjcf_slide_axis_z->SetString( "type", "slide" );
         mjcf_slide_axis_z->SetString( "limited", "false" );
         mjcf_slide_axis_z->SetVec3( "pos", { 0.0f, 0.0f, 0.0f } );
         mjcf_slide_axis_z->SetVec3( "axis", { 0.0f, 0.0f, 1.0f } );
-        auto mjcf_hinge_axis_y = std::make_unique<parsing::TElement>( LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
+        auto mjcf_hinge_axis_y = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_JOINT_TAG, parsing::eSchemaType::MJCF );
         mjcf_hinge_axis_y->SetString( "name", m_ConstraintRef->name() + "_rot_y" );
         mjcf_hinge_axis_y->SetString( "type", "hinge" );
         mjcf_hinge_axis_y->SetString( "limited", "false" );

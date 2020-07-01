@@ -2,7 +2,7 @@
 #include <primitives/loco_single_body_collider_adapter_mujoco.h>
 
 namespace loco {
-namespace mujoco {
+namespace primitives {
 
     TMujocoSingleBodyColliderAdapter::TMujocoSingleBodyColliderAdapter( TSingleBodyCollider* collisionRef )
         : TISingleBodyColliderAdapter( collisionRef )
@@ -62,15 +62,15 @@ namespace mujoco {
     {
         LOCO_CORE_ASSERT( m_ColliderRef, "TMujocoSingleBodyColliderAdapter::Build >>> must have a valid collison-object (got nullptr instead)" );
 
-        m_mjcfElementResources = std::make_unique<parsing::TElement>( LOCO_MJCF_GEOM_TAG, parsing::eSchemaType::MJCF );
+        m_mjcfElementResources = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_GEOM_TAG, parsing::eSchemaType::MJCF );
         m_mjcfElementResources->SetString( "name", m_ColliderRef->name() );
         m_mjcfElementResources->SetVec3( "pos", { 0.0, 0.0, 0.0 } );
         m_mjcfElementResources->SetVec4( "quat", { 1.0, 0.0, 0.0, 0.0 } );
-        m_mjcfElementResources->SetString( "type", enumShape_to_mjcShape( m_ColliderRef->shape() ) );
+        m_mjcfElementResources->SetString( "type", mujoco::enumShape_to_mjcShape( m_ColliderRef->shape() ) );
         m_mjcfElementResources->SetInt( "contype", m_ColliderRef->collisionGroup() );
         m_mjcfElementResources->SetInt( "conaffinity", m_ColliderRef->collisionMask() );
         m_mjcfElementResources->SetVec3( "friction", m_ColliderRef->data().friction );
-        auto array_size = size_to_mjcSize( m_ColliderRef->shape(), m_ColliderRef->size() );
+        auto array_size = mujoco::size_to_mjcSize( m_ColliderRef->shape(), m_ColliderRef->size() );
         if ( array_size.ndim > 0 )
             m_mjcfElementResources->SetArrayFloat( "size", array_size );
 
@@ -84,7 +84,7 @@ namespace mujoco {
                 const std::string mesh_id = tinyutils::GetFilenameNoExtension( mesh_file );
                 const auto mesh_scale = m_ColliderRef->size();
 
-                m_mjcfElementAssetResources = std::make_unique<parsing::TElement>( LOCO_MJCF_MESH_TAG, parsing::eSchemaType::MJCF );
+                m_mjcfElementAssetResources = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_MESH_TAG, parsing::eSchemaType::MJCF );
                 m_mjcfElementAssetResources->SetString( "name", mesh_id );
                 m_mjcfElementAssetResources->SetString( "file", mesh_file );
                 m_mjcfElementAssetResources->SetVec3( "scale", mesh_scale );
@@ -97,9 +97,9 @@ namespace mujoco {
                 const auto mesh_scale = m_ColliderRef->size();
                 const auto& mesh_vertices = mesh_data.vertices;
                 const auto& mesh_faces = mesh_data.faces;
-                SaveMeshToBinary( mesh_file, mesh_vertices, mesh_faces );
+                mujoco::SaveMeshToBinary( mesh_file, mesh_vertices, mesh_faces );
 
-                m_mjcfElementAssetResources = std::make_unique<parsing::TElement>( LOCO_MJCF_MESH_TAG, parsing::eSchemaType::MJCF );
+                m_mjcfElementAssetResources = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_MESH_TAG, parsing::eSchemaType::MJCF );
                 m_mjcfElementAssetResources->SetString( "name", mesh_id );
                 m_mjcfElementAssetResources->SetVec3( "scale", mesh_scale );
                 m_mjcfElementAssetResources->SetString( "file", mesh_file );
@@ -124,9 +124,9 @@ namespace mujoco {
                                     0, 3, 2 };
                 const auto& mesh_vertices = mesh_data.vertices;
                 const auto& mesh_faces = mesh_data.faces;
-                SaveMeshToBinary( mesh_file, mesh_vertices, mesh_faces );
+                mujoco::SaveMeshToBinary( mesh_file, mesh_vertices, mesh_faces );
 
-                m_mjcfElementAssetResources = std::make_unique<parsing::TElement>( LOCO_MJCF_MESH_TAG, parsing::eSchemaType::MJCF );
+                m_mjcfElementAssetResources = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_MESH_TAG, parsing::eSchemaType::MJCF );
                 m_mjcfElementAssetResources->SetString( "name", mesh_id );
                 m_mjcfElementAssetResources->SetVec3( "scale", mesh_scale );
                 m_mjcfElementAssetResources->SetString( "file", mesh_file );
@@ -147,7 +147,7 @@ namespace mujoco {
                                  max_height * m_ColliderRef->size().z(),
                                  LOCO_MUJOCO_HFIELD_BASE };
 
-            m_mjcfElementAssetResources = std::make_unique<parsing::TElement>( LOCO_MJCF_HFIELD_TAG, parsing::eSchemaType::MJCF );
+            m_mjcfElementAssetResources = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_HFIELD_TAG, parsing::eSchemaType::MJCF );
             m_mjcfElementAssetResources->SetString( "name", hfield_id );
             m_mjcfElementAssetResources->SetInt( "nrow", num_depth_samples );
             m_mjcfElementAssetResources->SetInt( "ncol", num_width_samples );
@@ -170,7 +170,7 @@ namespace mujoco {
                 else if ( shape == eShapeType::HFIELD )
                     LOCO_CORE_WARN( "TMujocoSingleBodyColliderAdapter::Build >>> can't compute inertia of hfield-collider {0}", m_ColliderRef->name() );
 
-                const auto volume = compute_primitive_volume( shape, m_ColliderRef->size() );
+                const auto volume = mujoco::compute_primitive_volume( shape, m_ColliderRef->size() );
                 const auto density = inertia.mass / volume;
                 m_mjcfElementResources->SetFloat( "density", density );
             }
@@ -222,22 +222,23 @@ namespace mujoco {
             ChangeElevationData( m_ColliderRef->data().hfield_data.heights );
         }
 
+#if defined(LOCO_MUJOCO_DEBUG)
         const eShapeType shape = m_ColliderRef->shape();
         LOCO_CORE_TRACE( "MuJoCo-backend >>> collision-adapter" );
         LOCO_CORE_TRACE( "\tname            : {0}", m_ColliderRef->name() );
-        LOCO_CORE_TRACE( "\tcol-size        : {0}", ToString( m_ColliderRef->size() ) );
-        LOCO_CORE_TRACE( "\tcol-shape       : {0}", ToString( m_ColliderRef->shape() ) );
+        LOCO_CORE_TRACE( "\tcol-size        : {0}", loco::ToString( m_ColliderRef->size() ) );
+        LOCO_CORE_TRACE( "\tcol-shape       : {0}", loco::ToString( m_ColliderRef->shape() ) );
         LOCO_CORE_TRACE( "\tcol-group       : {0}", m_ColliderRef->collisionGroup() );
         LOCO_CORE_TRACE( "\tcol-mask        : {0}", m_ColliderRef->collisionMask() );
         LOCO_CORE_TRACE( "\tmjc-geom-id     : {0}", m_mjcGeomId );
         LOCO_CORE_TRACE( "\tmjc-geom-rbound : {0}", m_mjcGeomRbound );
         if ( shape != eShapeType::MESH && shape != eShapeType::HFIELD )
-            LOCO_CORE_TRACE( "\tcomputed-rbound : {0}", compute_primitive_rbound( m_ColliderRef->shape(), m_ColliderRef->size() ) );
+            LOCO_CORE_TRACE( "\tcomputed-rbound : {0}", mujoco::compute_primitive_rbound( m_ColliderRef->shape(), m_ColliderRef->size() ) );
         LOCO_CORE_TRACE( "\tmjc-contype     : {0}", m_mjcModelRef->geom_contype[m_mjcGeomId] );
         LOCO_CORE_TRACE( "\tmjc-conaffinity : {0}", m_mjcModelRef->geom_conaffinity[m_mjcGeomId] );
         LOCO_CORE_TRACE( "\tmjc-condim      : {0}", m_mjcModelRef->geom_condim[m_mjcGeomId] );
         LOCO_CORE_TRACE( "\tmjc-prnt-body-id: {0}", m_mjcModelRef->geom_bodyid[m_mjcGeomId] );
-        LOCO_CORE_TRACE( "\tmjc-friction    : {0}", ToString( mjarray_to_sizef( m_mjcModelRef->geom_friction + 3 * m_mjcGeomId, 3 ) ) );
+        LOCO_CORE_TRACE( "\tmjc-friction    : {0}", ToString( mujoco::mjarray_to_sizef( m_mjcModelRef->geom_friction + 3 * m_mjcGeomId, 3 ) ) );
 
         if ( shape == eShapeType::MESH )
         {
@@ -260,6 +261,7 @@ namespace mujoco {
             LOCO_CORE_TRACE( "mjcf-xml          :\n{0}", m_mjcfElementResources->ToString() );
         if ( m_mjcfElementAssetResources )
             LOCO_CORE_TRACE( "mjcf-xml-asset    :\n{0}", m_mjcfElementAssetResources->ToString() );
+#endif
     }
 
     void TMujocoSingleBodyColliderAdapter::ChangeSize( const TVec3& newSize )
@@ -473,10 +475,9 @@ namespace mujoco {
     void TMujocoSingleBodyColliderAdapter::_resize_primitive( const TVec3& new_size )
     {
         const auto shape = m_ColliderRef->shape();
-        const auto array_size = size_to_mjcSize( shape, new_size );
+        const auto array_size = mujoco::size_to_mjcSize( shape, new_size );
         for ( size_t i = 0; i < array_size.ndim; i++ )
             m_mjcModelRef->geom_size[3 * m_mjcGeomId + i] = array_size[i];
-        m_mjcModelRef->geom_rbound[m_mjcGeomId] = compute_primitive_rbound( shape, new_size );
+        m_mjcModelRef->geom_rbound[m_mjcGeomId] = mujoco::compute_primitive_rbound( shape, new_size );
     }
-
 }}

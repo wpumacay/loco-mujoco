@@ -2,7 +2,7 @@
 #include <primitives/loco_single_body_adapter_mujoco.h>
 
 namespace loco {
-namespace mujoco {
+namespace primitives {
 
     ssize_t TMujocoSingleBodyAdapter::s_DetachedNum = 0;
 
@@ -141,10 +141,10 @@ namespace mujoco {
                                       m_BodyRef->collider()->shape() == eShapeType::MESH );
         if ( m_BodyRef->dyntype() == eDynamicsType::DYNAMIC || is_static_mesh )
         {
-            m_mjcfElementResources = std::make_unique<parsing::TElement>( LOCO_MJCF_BODY_TAG, parsing::eSchemaType::MJCF );
+            m_mjcfElementResources = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_BODY_TAG, parsing::eSchemaType::MJCF );
             m_mjcfElementResources->SetString( "name", m_BodyRef->name() );
             m_mjcfElementResources->SetVec3( "pos", m_BodyRef->pos() );
-            m_mjcfElementResources->SetVec4( "quat", quat_to_mjcQuat( m_BodyRef->quat() ) );
+            m_mjcfElementResources->SetVec4( "quat", mujoco::quat_to_mjcQuat( m_BodyRef->quat() ) );
 
             // Inertial mjcf-element is added only if all inertia properties are given (mass + inertia matrix).
             // If only the mass is given, then the density is computed for the collider from the mass and volume.
@@ -187,12 +187,12 @@ namespace mujoco {
                               collider must have valid mjcf-resources once built, for body named {0}", m_BodyRef->name() );
             m_mjcfElementResources = parsing::TElement::CloneElement( mjc_collider_adapter->element_resources() );
             m_mjcfElementResources->SetVec3( "pos", m_BodyRef->pos() );
-            m_mjcfElementResources->SetVec4( "quat", quat_to_mjcQuat( m_BodyRef->quat() ) );
+            m_mjcfElementResources->SetVec4( "quat", mujoco::quat_to_mjcQuat( m_BodyRef->quat() ) );
         }
 
         if ( auto collider_element_asset_resources = mjc_collider_adapter->element_asset_resources() )
         {
-            m_mjcfElementAssetResources = std::make_unique<parsing::TElement>( LOCO_MJCF_ASSET_TAG, parsing::eSchemaType::MJCF );
+            m_mjcfElementAssetResources = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_ASSET_TAG, parsing::eSchemaType::MJCF );
             m_mjcfElementAssetResources->Add( parsing::TElement::CloneElement( collider_element_asset_resources ) );
         }
     }

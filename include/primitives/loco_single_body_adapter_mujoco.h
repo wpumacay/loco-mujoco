@@ -7,11 +7,12 @@
 #include <primitives/loco_single_body_constraint_adapter_mujoco.h>
 
 namespace loco {
+namespace primitives {
     class TSingleBody;
-}
+}}
 
 namespace loco {
-namespace mujoco {
+namespace primitives {
 
     // Where the detached objects rest-grid starts
     const TVec3 DETACHED_REST_GRID_START = { 0.0, 0.0, 100.0 };
@@ -110,5 +111,4 @@ namespace mujoco {
         TMat4 m_DetachedRestTransform;
         static ssize_t s_DetachedNum;
     };
-
 }}

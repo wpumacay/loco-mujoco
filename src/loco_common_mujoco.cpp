@@ -157,5 +157,4 @@ namespace mujoco {
         if ( !fhandle.good() )
             LOCO_CORE_ERROR( "SaveMeshToBinary >>> there was an error while trying to save mesh {0}", mesh_file );
     }
-
 }}

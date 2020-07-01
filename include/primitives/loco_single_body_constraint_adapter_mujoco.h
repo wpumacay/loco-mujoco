@@ -5,11 +5,12 @@
 #include <primitives/loco_single_body_constraint_adapter.h>
 
 namespace loco {
+namespace primitives {
     class TISingleBodyConstraint;
-}
+}}
 
 namespace loco {
-namespace mujoco {
+namespace primitives {
 
     class TIMujocoSingleBodyConstraintAdapter
     {

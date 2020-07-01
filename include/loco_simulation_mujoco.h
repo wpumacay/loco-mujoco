@@ -9,9 +9,8 @@
 #include <primitives/loco_single_body_collider_adapter_mujoco.h>
 #include <primitives/loco_single_body_adapter_mujoco.h>
 
-namespace loco {
-namespace mujoco {
-
+namespace loco
+{
     class TMujocoSimulation : public TISimulation
     {
     public :
@@ -75,9 +74,9 @@ namespace mujoco {
     private :
 
         // Owned MuJoCo-mjModel struct (access mujoco resources related to model structure)
-        std::unique_ptr<mjModel, MjcModelDeleter> m_MjcModel;
+        std::unique_ptr<mjModel, mujoco::MjcModelDeleter> m_MjcModel;
         // Owned MuJoCo-mjData struct (access mujoco resources related to simulation computations)
-        std::unique_ptr<mjData, MjcDataDeleter> m_MjcData;
+        std::unique_ptr<mjData, mujoco::MjcDataDeleter> m_MjcData;
         // Owned mjcf Element used to store the simulation object
         std::unique_ptr<parsing::TElement> m_MjcfSimulationElement;
         // Checking-set to avoid double-additions of assets with same name
@@ -88,6 +87,5 @@ namespace mujoco {
         static bool s_HasActivatedMujoco;
     };
 
-extern "C" TISimulation* simulation_create( loco::TScenario* scenarioRef );
-
-}}
+    extern "C" TISimulation* simulation_create( loco::TScenario* scenarioRef );
+}

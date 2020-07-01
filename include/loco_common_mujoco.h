@@ -49,5 +49,4 @@ namespace mujoco {
     void SaveMeshToBinary( const std::string& mesh_file,
                            const std::vector<float>& mesh_vertices,
                            const std::vector<int>& mesh_faces );
-
 }}

@@ -1,9 +1,8 @@
 
 #include <loco_simulation_mujoco.h>
 
-namespace loco {
-namespace mujoco {
-
+namespace loco
+{
     //// @sanitycheck
     //// How the simulation-creation process works (backend=MuJoCo)
     ////    * Within the constructor, we declare the resources (as default to nullptr) and create the adapters
@@ -44,7 +43,7 @@ namespace mujoco {
         auto single_bodies = m_ScenarioRef->GetSingleBodiesList();
         for ( auto single_body : single_bodies )
         {
-            auto single_body_adapter = std::make_unique<TMujocoSingleBodyAdapter>( single_body );
+            auto single_body_adapter = std::make_unique<primitives::TMujocoSingleBodyAdapter>( single_body );
             single_body->SetBodyAdapter( single_body_adapter.get() );
             m_SingleBodyAdapters.push_back( std::move( single_body_adapter ) );
         }
@@ -107,19 +106,19 @@ namespace mujoco {
         // Load the simulation from the xml-file created above *************************************
         const size_t error_buffer_size = 1000;
         char error_buffer[error_buffer_size];
-        m_MjcModel = std::unique_ptr<mjModel, MjcModelDeleter>( mj_loadXML( "simulation.xml", nullptr, error_buffer, error_buffer_size ) );
+        m_MjcModel = std::unique_ptr<mjModel, mujoco::MjcModelDeleter>( mj_loadXML( "simulation.xml", nullptr, error_buffer, error_buffer_size ) );
         if ( !m_MjcModel )
         {
             LOCO_CORE_ERROR( "TMujocoSimulation::_InitializeInternal >>> Couldn't initialize mujoco-API" );
             LOCO_CORE_ERROR( "\tError-message   : {0}", error_buffer );
             return false;
         }
-        m_MjcData = std::unique_ptr<mjData, MjcDataDeleter>( mj_makeData( m_MjcModel.get() ) );
+        m_MjcData = std::unique_ptr<mjData, mujoco::MjcDataDeleter>( mj_makeData( m_MjcModel.get() ) );
         //******************************************************************************************
 
         for ( auto& single_body_adapter : m_SingleBodyAdapters )
         {
-            if ( auto mjc_adapter = dynamic_cast<TMujocoSingleBodyAdapter*>( single_body_adapter.get() ) )
+            if ( auto mjc_adapter = dynamic_cast<primitives::TMujocoSingleBodyAdapter*>( single_body_adapter.get() ) )
             {
                 mjc_adapter->SetMjcModel( m_MjcModel.get() );
                 mjc_adapter->SetMjcData( m_MjcData.get() );
@@ -145,8 +144,8 @@ namespace mujoco {
         LOCO_CORE_ASSERT( m_MjcfSimulationElement, "TMujocoSimulation::_CollectResourcesFromSingleBodies >>> \
                           there is no mjcf-simulation-element to place the resources in" );
 
-        auto world_body_element = m_MjcfSimulationElement->GetFirstChildOfType( LOCO_MJCF_WORLDBODY_TAG );
-        auto assets_element = m_MjcfSimulationElement->GetFirstChildOfType( LOCO_MJCF_ASSET_TAG );
+        auto world_body_element = m_MjcfSimulationElement->GetFirstChildOfType( mujoco::LOCO_MJCF_WORLDBODY_TAG );
+        auto assets_element = m_MjcfSimulationElement->GetFirstChildOfType( mujoco::LOCO_MJCF_ASSET_TAG );
 
         LOCO_CORE_ASSERT( world_body_element, "TMujocoSimulation::_CollectResourcesFromSingleBodies >>> \
                           there is no world-body element in the mjcf-simulation-element" );
@@ -162,7 +161,7 @@ namespace mujoco {
                 continue;
             }
 
-            auto mjc_adapter = static_cast<TMujocoSingleBodyAdapter*>( single_body_adapter.get() );
+            auto mjc_adapter = static_cast<primitives::TMujocoSingleBodyAdapter*>( single_body_adapter.get() );
             auto mjcf_element = mjc_adapter->element_resources();
             LOCO_CORE_ASSERT( mjcf_element, "TMujocoSimulation::_CollectResourcesFromSingleBodies >>> \
                               single-body mjc-adapter must have a mjcf-element with its resources on it (got nullptr instead)" );
@@ -174,7 +173,7 @@ namespace mujoco {
                 {
                     auto asset_element = mjcf_asset_element->get_child( i );
                     const std::string asset_type = asset_element->elementType();
-                    if ( asset_type == LOCO_MJCF_MESH_TAG )
+                    if ( asset_type == mujoco::LOCO_MJCF_MESH_TAG )
                     {
                         // Check that meshes that have both id and filepath equal are not duplicated,
                         // and those that only have the same id but different filepaths should have
@@ -207,7 +206,7 @@ namespace mujoco {
                             static ssize_t num_duplicates = 1;
                             const std::string new_mesh_id = mesh_id + "_" + std::to_string( num_duplicates++ );
                             auto added_mjcf_body = world_body_element->get_child( world_body_element->num_children() - 1 );
-                            auto added_mjcf_collider = added_mjcf_body->GetFirstChildOfType( LOCO_MJCF_GEOM_TAG );
+                            auto added_mjcf_collider = added_mjcf_body->GetFirstChildOfType( mujoco::LOCO_MJCF_GEOM_TAG );
                             LOCO_CORE_ASSERT( added_mjcf_collider, "TMujocoSimulation::_CollectResourcesFromSingleBodies >>> \
                                               added mesh-body must have a valid mesh-collider-geom (but none found on mjcf element)" );
                             added_mjcf_collider->SetString( "mesh", new_mesh_id );
@@ -216,7 +215,7 @@ namespace mujoco {
                             assets_element->Add( parsing::TElement::CloneElement( asset_element ) );
                         }
                     }
-                    else if ( asset_type == LOCO_MJCF_HFIELD_TAG )
+                    else if ( asset_type == mujoco::LOCO_MJCF_HFIELD_TAG )
                     {
                         const std::string hfield_id = asset_element->GetString( "name" );
                         if ( m_MjcfAssetsNames.find( hfield_id ) != m_MjcfAssetsNames.end() )
@@ -294,7 +293,7 @@ namespace mujoco {
     {
         // Make sure recycled objects are not being simulated
         for ( ssize_t i = 0; i < m_SingleBodyAdaptersRecycled.size(); i++ )
-            if ( auto mjc_single_body_adapter = dynamic_cast<TMujocoSingleBodyAdapter*>( m_SingleBodyAdaptersRecycled[i].get() ) )
+            if ( auto mjc_single_body_adapter = dynamic_cast<primitives::TMujocoSingleBodyAdapter*>( m_SingleBodyAdaptersRecycled[i].get() ) )
                 mjc_single_body_adapter->HideMjcObject();
     }
 
@@ -349,9 +348,8 @@ namespace mujoco {
         m_MjcModel->opt.gravity[2] = gravity.z();
     }
 
-extern "C" TISimulation* simulation_create( loco::TScenario* scenarioRef )
-{
-    return new loco::mujoco::TMujocoSimulation( scenarioRef );
+    extern "C" TISimulation* simulation_create( loco::TScenario* scenarioRef )
+    {
+        return new loco::TMujocoSimulation( scenarioRef );
+    }
 }
-
-}}

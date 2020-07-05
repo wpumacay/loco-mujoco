@@ -25,14 +25,15 @@ namespace mujoco {
     {
         switch ( shape )
         {
-            case eShapeType::PLANE      : return { 0.5f * size.x(), 0.5f * size.y(), 1.0f };
-            case eShapeType::BOX        : return { 0.5f * size.x(), 0.5f * size.y(), 0.5f * size.z() };
-            case eShapeType::SPHERE     : return { size.x() };
-            case eShapeType::CYLINDER   : return { size.x(), 0.5f * size.y() };
-            case eShapeType::CAPSULE    : return { size.x(), 0.5f * size.y() };
-            case eShapeType::ELLIPSOID  : return { size.x(), size.y(), size.z() };
-            case eShapeType::MESH       : return {};
-            case eShapeType::HFIELD     : return {};
+            case eShapeType::PLANE          : return { 0.5f * size.x(), 0.5f * size.y(), 1.0f };
+            case eShapeType::BOX            : return { 0.5f * size.x(), 0.5f * size.y(), 0.5f * size.z() };
+            case eShapeType::SPHERE         : return { size.x() };
+            case eShapeType::CYLINDER       : return { size.x(), 0.5f * size.y() };
+            case eShapeType::CAPSULE        : return { size.x(), 0.5f * size.y() };
+            case eShapeType::ELLIPSOID      : return { size.x(), size.y(), size.z() };
+            case eShapeType::CONVEX_MESH    : return {};
+            case eShapeType::TRIANGULAR_MESH: return {};
+            case eShapeType::HEIGHTFIELD         : return {};
         }
 
         LOCO_CORE_ERROR( "size_to_mjcSize >>> unsupported shape: {0}", ToString( shape ) );
@@ -59,14 +60,15 @@ namespace mujoco {
     {
         switch ( shape )
         {
-            case eShapeType::BOX        : return "box";
-            case eShapeType::PLANE      : return "plane";
-            case eShapeType::SPHERE     : return "sphere";
-            case eShapeType::CYLINDER   : return "cylinder";
-            case eShapeType::CAPSULE    : return "capsule";
-            case eShapeType::ELLIPSOID  : return "ellipsoid";
-            case eShapeType::MESH       : return "mesh";
-            case eShapeType::HFIELD     : return "hfield";
+            case eShapeType::BOX            : return "box";
+            case eShapeType::PLANE          : return "plane";
+            case eShapeType::SPHERE         : return "sphere";
+            case eShapeType::CYLINDER       : return "cylinder";
+            case eShapeType::CAPSULE        : return "capsule";
+            case eShapeType::ELLIPSOID      : return "ellipsoid";
+            case eShapeType::CONVEX_MESH    : return "mesh";
+            case eShapeType::TRIANGULAR_MESH: return "trimesh";
+            case eShapeType::HEIGHTFIELD         : return "hfield";
         }
 
         LOCO_CORE_ERROR( "enumShape_to_mjcShape >>> unsupported shape: {0}", ToString( shape ) );

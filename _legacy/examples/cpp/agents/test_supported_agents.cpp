@@ -42,14 +42,14 @@ tysoc::TSingleBody* createHfield( const std::string& name, const tysoc::TVec3& p
     }
 
     tysoc::TCollisionData _collisionData;
-    _collisionData.type = tysoc::eShapeType::HFIELD;
+    _collisionData.type = tysoc::eShapeType::HEIGHTFIELD;
     _collisionData.size = { xExtent, yExtent, _maxHeight };
     _collisionData.hdata.nWidthSamples = nxSamples;
     _collisionData.hdata.nDepthSamples = nySamples;
     _collisionData.hdata.heightData = _heightData;
 
     tysoc::TVisualData _visualData;
-    _visualData.type = tysoc::eShapeType::HFIELD;
+    _visualData.type = tysoc::eShapeType::HEIGHTFIELD;
     _visualData.size = { xExtent, yExtent, _maxHeight };
     _visualData.texture = "built_in_chessboard";
     _visualData.hdata.nWidthSamples = nxSamples;

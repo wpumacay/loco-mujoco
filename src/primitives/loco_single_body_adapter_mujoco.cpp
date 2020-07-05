@@ -138,7 +138,7 @@ namespace primitives {
         // Only dynamic-bodies require actual bodies. Static ones only require geoms (expect meshes, that
         // can be added as static bodies without being pure geoms)
         const bool is_static_mesh = ( m_BodyRef->dyntype() == eDynamicsType::STATIC && 
-                                      m_BodyRef->collider()->shape() == eShapeType::MESH );
+                                      m_BodyRef->collider()->shape() == eShapeType::CONVEX_MESH );
         if ( m_BodyRef->dyntype() == eDynamicsType::DYNAMIC || is_static_mesh )
         {
             m_mjcfElementResources = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_BODY_TAG, parsing::eSchemaType::MJCF );
@@ -210,7 +210,7 @@ namespace primitives {
         mjc_collider_adapter->Initialize();
 
         const bool is_static_mesh = ( m_BodyRef->dyntype() == eDynamicsType::STATIC &&
-                                      m_BodyRef->collider()->shape() == eShapeType::MESH );
+                                      m_BodyRef->collider()->shape() == eShapeType::CONVEX_MESH );
         if ( m_BodyRef->dyntype() == eDynamicsType::DYNAMIC || is_static_mesh )
         {
             m_mjcBodyId = mj_name2id( m_mjcModelRef, mjOBJ_BODY, m_BodyRef->name().c_str() );
@@ -299,7 +299,7 @@ namespace primitives {
         LOCO_CORE_ASSERT( m_mjcBodyId, "TMujocoSingleBodyAdapter::Reset >>> {0} must be linked to a valid mjc-body", m_BodyRef->name() );
 
         const bool is_static_mesh = ( m_BodyRef->dyntype() == eDynamicsType::STATIC &&
-                                      m_BodyRef->collider()->shape() == eShapeType::MESH );
+                                      m_BodyRef->collider()->shape() == eShapeType::CONVEX_MESH );
         if ( m_BodyRef->dyntype() == eDynamicsType::DYNAMIC || is_static_mesh )
         {
             if ( m_BodyRef->constraint() )
@@ -357,7 +357,7 @@ namespace primitives {
         const TVec3 position = TVec3( transform.col( 3 ) );
         const TVec4 quaternion = tinymath::quaternion( TMat3( transform ) );
         const bool is_static_mesh = ( m_BodyRef->dyntype() == eDynamicsType::STATIC && 
-                                      m_BodyRef->collider()->shape() == eShapeType::MESH );
+                                      m_BodyRef->collider()->shape() == eShapeType::CONVEX_MESH );
         if ( m_BodyRef->dyntype() == eDynamicsType::DYNAMIC || is_static_mesh )
         {
             LOCO_CORE_ASSERT( m_mjcBodyId >= 0, "TMujocoSingleBodyAdapter::SetTransform >>> {0} must be \
@@ -468,7 +468,7 @@ namespace primitives {
     void TMujocoSingleBodyAdapter::GetTransform( TMat4& dst_transform ) /* const */
     {
         const bool is_static_mesh = ( m_BodyRef->dyntype() == eDynamicsType::STATIC && 
-                                      m_BodyRef->collider()->shape() == eShapeType::MESH );
+                                      m_BodyRef->collider()->shape() == eShapeType::CONVEX_MESH );
         if ( m_BodyRef->dyntype() == eDynamicsType::DYNAMIC || is_static_mesh )
         {
             LOCO_CORE_ASSERT( m_mjcBodyId >= 0, "TMujocoSingleBodyAdapter::GetTransform >>> {0} must be \

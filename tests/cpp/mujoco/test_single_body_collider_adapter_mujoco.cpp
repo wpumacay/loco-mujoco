@@ -226,7 +226,7 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterMeshBuild )
     loco::InitUtils();
 
     auto col_data = loco::TCollisionData();
-    col_data.type = loco::eShapeType::MESH;
+    col_data.type = loco::eShapeType::CONVEX_MESH;
     col_data.size = { 0.2f, 0.2f, 0.2f };
     col_data.mesh_data.filename = loco::PATH_RESOURCES + "meshes/monkey.stl";
 
@@ -269,7 +269,7 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterMeshUserBuil
     auto vertices_faces = create_mesh_tetrahedron();
 
     auto col_data = loco::TCollisionData();
-    col_data.type = loco::eShapeType::MESH;
+    col_data.type = loco::eShapeType::CONVEX_MESH;
     col_data.size = { 0.2f, 0.2f, 0.2f };
     col_data.mesh_data.vertices = vertices_faces.first;
     col_data.mesh_data.faces = vertices_faces.second;
@@ -322,11 +322,11 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterMeshInitiali
     auto scenario = std::make_unique<loco::TScenario>();
 
     auto col_data = loco::TCollisionData();
-    col_data.type = loco::eShapeType::MESH;
+    col_data.type = loco::eShapeType::CONVEX_MESH;
     col_data.size = { 0.2f, 0.2f, 0.2f };
     col_data.mesh_data.filename = loco::PATH_RESOURCES + "meshes/monkey.stl";
     auto vis_data = loco::TVisualData();
-    vis_data.type = loco::eShapeType::MESH;
+    vis_data.type = loco::eShapeType::CONVEX_MESH;
     vis_data.size = { 0.2f, 0.2f, 0.2f };
     vis_data.mesh_data.filename = loco::PATH_RESOURCES + "meshes/monkey.stl";
     auto body_data = loco::TBodyData();
@@ -380,12 +380,12 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterMeshUserInit
     auto vertices_faces = create_mesh_tetrahedron();
 
     auto col_data = loco::TCollisionData();
-    col_data.type = loco::eShapeType::MESH;
+    col_data.type = loco::eShapeType::CONVEX_MESH;
     col_data.size = { 0.2f, 0.2f, 0.2f };
     col_data.mesh_data.vertices = vertices_faces.first;
     col_data.mesh_data.faces = vertices_faces.second;
     auto vis_data = loco::TVisualData();
-    vis_data.type = loco::eShapeType::MESH;
+    vis_data.type = loco::eShapeType::CONVEX_MESH;
     vis_data.size = { 0.2f, 0.2f, 0.2f };
     vis_data.mesh_data.vertices = vertices_faces.first;
     vis_data.mesh_data.faces = vertices_faces.second;
@@ -433,7 +433,7 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterHfieldBuild 
     const size_t num_width_samples = 40;
     const size_t num_depth_samples = 40;
     auto col_data = loco::TCollisionData();
-    col_data.type = loco::eShapeType::HFIELD;
+    col_data.type = loco::eShapeType::HEIGHTFIELD;
     col_data.size = { 10.0f, 10.0f, 2.0f }; // width, depth, scale-height
     col_data.hfield_data.nWidthSamples = num_width_samples;
     col_data.hfield_data.nDepthSamples = num_depth_samples;
@@ -488,13 +488,13 @@ TEST( TestLocoMujocoCollisionAdapter, TestLocoMujocoCollisionAdapterHfieldInitia
     const size_t num_width_samples = 40;
     const size_t num_depth_samples = 40;
     auto col_data = loco::TCollisionData();
-    col_data.type = loco::eShapeType::HFIELD;
+    col_data.type = loco::eShapeType::HEIGHTFIELD;
     col_data.size = { 10.0f, 20.0f, 2.0f }; // width, depth, scale-height
     col_data.hfield_data.nWidthSamples = num_width_samples;
     col_data.hfield_data.nDepthSamples = num_depth_samples;
     col_data.hfield_data.heights = create_hfield( num_width_samples, num_depth_samples );
     auto vis_data = loco::TVisualData();
-    vis_data.type = loco::eShapeType::HFIELD;
+    vis_data.type = loco::eShapeType::HEIGHTFIELD;
     vis_data.size = { 10.0f, 20.0f, 2.0f }; // width, depth, scale-height
     vis_data.hfield_data.nWidthSamples = num_width_samples;
     vis_data.hfield_data.nDepthSamples = num_depth_samples;

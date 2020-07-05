@@ -14,11 +14,11 @@ TEST( TestLocoMujocoConstraintAdapter, TestLocoMujocoConstraintAdapterBuild )
 
     // Revolute constraint
     {
-        auto body = scenario->AddSingleBody( std::make_unique<loco::TBox>( "pole_0", loco::TVec3( 0.2f, 0.2f, 1.0f ), loco::TVec3(), loco::TMat3() ) );
-        auto constraint = std::make_unique<loco::TSingleBodyRevoluteConstraint>( "pole_0_rev_const", loco::TMat4( loco::TMat3(), loco::TVec3( 0.0f, 0.0f, 0.5f ) ), loco::TVec3( 1.0f, 0.0f, 0.0f ) );
+        auto body = scenario->AddSingleBody( std::make_unique<loco::primitives::TBox>( "pole_0", loco::TVec3( 0.2f, 0.2f, 1.0f ), loco::TVec3(), loco::TMat3() ) );
+        auto constraint = std::make_unique<loco::primitives::TSingleBodyRevoluteConstraint>( "pole_0_rev_const", loco::TMat4( loco::TMat3(), loco::TVec3( 0.0f, 0.0f, 0.5f ) ), loco::TVec3( 1.0f, 0.0f, 0.0f ) );
         EXPECT_EQ( constraint->constraint_type(), loco::eConstraintType::REVOLUTE );
         body->SetConstraint( std::move( constraint ) );
-        auto body_adapter = std::make_unique<loco::mujoco::TMujocoSingleBodyAdapter>( body );
+        auto body_adapter = std::make_unique<loco::primitives::TMujocoSingleBodyAdapter>( body );
         body->SetBodyAdapter( body_adapter.get() );
         body_adapter->Build();
 
@@ -27,7 +27,7 @@ TEST( TestLocoMujocoConstraintAdapter, TestLocoMujocoConstraintAdapterBuild )
         ASSERT_TRUE( body_constraint != nullptr );
         auto constraint_adapter = body_constraint->constraint_adapter();
         ASSERT_TRUE( constraint_adapter != nullptr );
-        auto mjc_constraint_adapter = dynamic_cast<loco::mujoco::TMujocoSingleBodyRevoluteConstraintAdapter*>( constraint_adapter );
+        auto mjc_constraint_adapter = dynamic_cast<loco::primitives::TMujocoSingleBodyRevoluteConstraintAdapter*>( constraint_adapter );
         ASSERT_TRUE( mjc_constraint_adapter != nullptr );
 
         auto mjcf_elements = mjc_constraint_adapter->elements_resources();
@@ -48,11 +48,11 @@ TEST( TestLocoMujocoConstraintAdapter, TestLocoMujocoConstraintAdapterBuild )
 
     // Prismatic constraint
     {
-        auto body = scenario->AddSingleBody( std::make_unique<loco::TBox>( "platform_0", loco::TVec3( 1.0f, 1.0f, 0.2f ), loco::TVec3(), loco::TMat3() ) );
-        auto constraint = std::make_unique<loco::TSingleBodyPrismaticConstraint>( "platform_0_prism_const", loco::TMat4(), loco::TVec3( 0.0f, 0.0f, 1.0f ) );
+        auto body = scenario->AddSingleBody( std::make_unique<loco::primitives::TBox>( "platform_0", loco::TVec3( 1.0f, 1.0f, 0.2f ), loco::TVec3(), loco::TMat3() ) );
+        auto constraint = std::make_unique<loco::primitives::TSingleBodyPrismaticConstraint>( "platform_0_prism_const", loco::TMat4(), loco::TVec3( 0.0f, 0.0f, 1.0f ) );
         EXPECT_EQ( constraint->constraint_type(), loco::eConstraintType::PRISMATIC );
         body->SetConstraint( std::move( constraint ) );
-        auto body_adapter = std::make_unique<loco::mujoco::TMujocoSingleBodyAdapter>( body );
+        auto body_adapter = std::make_unique<loco::primitives::TMujocoSingleBodyAdapter>( body );
         body->SetBodyAdapter( body_adapter.get() );
         body_adapter->Build();
 
@@ -60,7 +60,7 @@ TEST( TestLocoMujocoConstraintAdapter, TestLocoMujocoConstraintAdapterBuild )
         ASSERT_TRUE( body_constraint != nullptr );
         auto constraint_adapter = body_constraint->constraint_adapter();
         ASSERT_TRUE( constraint_adapter != nullptr );
-        auto mjc_constraint_adapter = dynamic_cast<loco::mujoco::TMujocoSingleBodyPrismaticConstraintAdapter*>( constraint_adapter );
+        auto mjc_constraint_adapter = dynamic_cast<loco::primitives::TMujocoSingleBodyPrismaticConstraintAdapter*>( constraint_adapter );
         ASSERT_TRUE( mjc_constraint_adapter != nullptr );
 
         auto mjcf_elements = mjc_constraint_adapter->elements_resources();

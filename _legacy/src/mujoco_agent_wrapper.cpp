@@ -636,7 +636,7 @@ namespace mujoco {
         auto _gquat = TMat3::toQuaternion( kinCollision->data.localTransform.getRotation() );
         _geomElmPtr->setAttributeVec4( "quat", { _gquat.w, _gquat.x, _gquat.y, _gquat.z } );
 
-        if ( kinCollision->data.type != eShapeType::MESH && kinCollision->data.type != eShapeType::HFIELD )
+        if ( kinCollision->data.type != eShapeType::MESH && kinCollision->data.type != eShapeType::HEIGHTFIELD )
             _geomElmPtr->setAttributeVec3( "size", _extractMjcSizeFromStandardSize( kinCollision->data ) );
         else if ( kinCollision->data.type == eShapeType::MESH )
             _geomElmPtr->setAttributeString( "mesh", tysoc::getFilenameNoExtensionFromFilePath( kinCollision->data.filename ) );
@@ -942,7 +942,7 @@ namespace mujoco {
         if ( data.type == eShapeType::CYLINDER ) return { data.size.x, 0.5f * data.size.y, data.size.z };
         if ( data.type == eShapeType::BOX ) return { 0.5f * data.size.x, 0.5f * data.size.y, 0.5f * data.size.z };
         if ( data.type == eShapeType::MESH ) return { data.size.x, data.size.y, data.size.z };
-        if ( data.type == eShapeType::HFIELD ) return { data.size.x, data.size.y, data.size.z };
+        if ( data.type == eShapeType::HEIGHTFIELD ) return { data.size.x, data.size.y, data.size.z };
 
         return data.size;
     }

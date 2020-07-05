@@ -84,8 +84,8 @@ TEST( TestLocoMujocoSingleBodyAdapter, TestLocoMujocoSingleBodyAdapterBuild )
 
     auto mesh_col_data = loco::TCollisionData();
     auto mesh_vis_data = loco::TVisualData();
-    mesh_col_data.type = loco::eShapeType::MESH;
-    mesh_vis_data.type = loco::eShapeType::MESH;
+    mesh_col_data.type = loco::eShapeType::CONVEX_MESH;
+    mesh_vis_data.type = loco::eShapeType::CONVEX_MESH;
     mesh_col_data.size = { 0.1f, 0.2f, 0.3f };
     mesh_vis_data.size = { 0.1f, 0.2f, 0.3f };
     mesh_col_data.mesh_data.filename = loco::PATH_RESOURCES + "meshes/monkey.stl";

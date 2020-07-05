@@ -48,7 +48,7 @@ namespace kintree {
             m_MjcfElementResources->SetArrayFloat( "size", array_size );
 
         const eShapeType shape = m_ColliderRef->shape();
-        if ( shape == eShapeType::MESH )
+        if ( shape == eShapeType::CONVEX_MESH )
         {
             auto& mesh_data = m_ColliderRef->data().mesh_data;
             if ( mesh_data.filename != "" )
@@ -99,7 +99,7 @@ namespace kintree {
                  ( ( inertia.ixx <= loco::EPS ) || ( inertia.iyy <= loco::EPS ) || ( inertia.izz <= loco::EPS ) ||
                    ( inertia.ixy <= -loco::EPS ) || ( inertia.ixz <= -loco::EPS ) || ( inertia.iyz <= -loco::EPS ) ) )
             {
-                if ( shape == eShapeType::MESH )
+                if ( shape == eShapeType::CONVEX_MESH )
                     LOCO_CORE_WARN( "TMujocoKinematicTreeColliderAdapter::Build >>> can't compute inertia of mesh-collider {0}", m_ColliderRef->name() );
 
                 const auto volume = mujoco::compute_primitive_volume( shape, m_ColliderRef->size() );
@@ -124,7 +124,7 @@ namespace kintree {
 
         m_MjcGeomRbound = m_MjcModelRef->geom_rbound[m_MjcGeomId];
         // Grab information required for mesh-colliders (used for resizing purposes later)
-        if ( m_ColliderRef->shape() == eShapeType::MESH )
+        if ( m_ColliderRef->shape() == eShapeType::CONVEX_MESH )
         {
             m_MjcGeomMeshId = m_MjcModelRef->geom_dataid[m_MjcGeomId];
             if ( m_MjcGeomMeshId < 0 )
@@ -171,7 +171,7 @@ namespace kintree {
             return;
 
         m_Size = new_size;
-        if ( m_ColliderRef->shape() == eShapeType::MESH )
+        if ( m_ColliderRef->shape() == eShapeType::CONVEX_MESH )
             _ResizeMesh( new_size );
         else
             _ResizePrimitive( new_size );

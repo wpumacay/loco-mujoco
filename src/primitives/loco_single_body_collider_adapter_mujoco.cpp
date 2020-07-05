@@ -75,7 +75,7 @@ namespace primitives {
             m_mjcfElementResources->SetArrayFloat( "size", array_size );
 
         const eShapeType shape = m_ColliderRef->shape();
-        if ( shape == eShapeType::MESH )
+        if ( shape == eShapeType::CONVEX_MESH )
         {
             auto& mesh_data = m_ColliderRef->data().mesh_data;
             if ( mesh_data.filename != "" )
@@ -134,7 +134,7 @@ namespace primitives {
             }
             // @todo: handle case when the user forgot to setup the mesh-resource properly (create mesh-cube from data)
         }
-        else if ( shape == eShapeType::HFIELD )
+        else if ( shape == eShapeType::HEIGHTFIELD )
         {
             // @todo: change hfield_data for hfield_data
             const int num_depth_samples = m_ColliderRef->data().hfield_data.nDepthSamples;
@@ -165,9 +165,9 @@ namespace primitives {
             {
                 if ( shape == eShapeType::PLANE )
                     LOCO_CORE_WARN( "TMujocoSingleBodyColliderAdapter::Build >>> can't compute inertia of plane-collider {0}", m_ColliderRef->name() );
-                else if ( shape == eShapeType::MESH )
+                else if ( shape == eShapeType::CONVEX_MESH )
                     LOCO_CORE_WARN( "TMujocoSingleBodyColliderAdapter::Build >>> can't compute inertia of mesh-collider {0}", m_ColliderRef->name() );
-                else if ( shape == eShapeType::HFIELD )
+                else if ( shape == eShapeType::HEIGHTFIELD )
                     LOCO_CORE_WARN( "TMujocoSingleBodyColliderAdapter::Build >>> can't compute inertia of hfield-collider {0}", m_ColliderRef->name() );
 
                 const auto volume = mujoco::compute_primitive_volume( shape, m_ColliderRef->size() );
@@ -191,7 +191,7 @@ namespace primitives {
         }
 
         m_mjcGeomRbound = m_mjcModelRef->geom_rbound[m_mjcGeomId];
-        if ( m_ColliderRef->data().type == eShapeType::MESH )
+        if ( m_ColliderRef->data().type == eShapeType::CONVEX_MESH )
         {
             m_mjcGeomMeshId = m_mjcModelRef->geom_dataid[m_mjcGeomId];
             if ( m_mjcGeomMeshId < 0 )
@@ -206,7 +206,7 @@ namespace primitives {
             m_mjcGeomMeshVertStartAddr = m_mjcModelRef->mesh_vertadr[m_mjcGeomMeshId];
             m_mjcGeomMeshFaceStartAddr = m_mjcModelRef->mesh_faceadr[m_mjcGeomMeshId];
         }
-        else if ( m_ColliderRef->data().type == eShapeType::HFIELD )
+        else if ( m_ColliderRef->data().type == eShapeType::HEIGHTFIELD )
         {
             m_mjcGeomHFieldId = m_mjcModelRef->geom_dataid[m_mjcGeomId];
             if ( m_mjcGeomHFieldId < 0 )
@@ -232,7 +232,7 @@ namespace primitives {
         LOCO_CORE_TRACE( "\tcol-mask        : {0}", m_ColliderRef->collisionMask() );
         LOCO_CORE_TRACE( "\tmjc-geom-id     : {0}", m_mjcGeomId );
         LOCO_CORE_TRACE( "\tmjc-geom-rbound : {0}", m_mjcGeomRbound );
-        if ( shape != eShapeType::MESH && shape != eShapeType::HFIELD )
+        if ( shape != eShapeType::CONVEX_MESH && shape != eShapeType::HEIGHTFIELD )
             LOCO_CORE_TRACE( "\tcomputed-rbound : {0}", mujoco::compute_primitive_rbound( m_ColliderRef->shape(), m_ColliderRef->size() ) );
         LOCO_CORE_TRACE( "\tmjc-contype     : {0}", m_mjcModelRef->geom_contype[m_mjcGeomId] );
         LOCO_CORE_TRACE( "\tmjc-conaffinity : {0}", m_mjcModelRef->geom_conaffinity[m_mjcGeomId] );
@@ -240,7 +240,7 @@ namespace primitives {
         LOCO_CORE_TRACE( "\tmjc-prnt-body-id: {0}", m_mjcModelRef->geom_bodyid[m_mjcGeomId] );
         LOCO_CORE_TRACE( "\tmjc-friction    : {0}", ToString( mujoco::mjarray_to_sizef( m_mjcModelRef->geom_friction + 3 * m_mjcGeomId, 3 ) ) );
 
-        if ( shape == eShapeType::MESH )
+        if ( shape == eShapeType::CONVEX_MESH )
         {
             LOCO_CORE_TRACE( "\tmesh-filename   : {0}", m_ColliderRef->data().mesh_data.filename );
             LOCO_CORE_TRACE( "\tmjc-mesh-id     : {0}", m_mjcGeomMeshId );
@@ -249,7 +249,7 @@ namespace primitives {
             LOCO_CORE_TRACE( "\tmjc-mesh-vrt-adr: {0}", m_mjcGeomMeshVertStartAddr );
             LOCO_CORE_TRACE( "\tmjc-mesh-fac-adr: {0}", m_mjcGeomMeshFaceStartAddr );
         }
-        else if ( shape == eShapeType::HFIELD )
+        else if ( shape == eShapeType::HEIGHTFIELD )
         {
             LOCO_CORE_TRACE( "\tmjc-hfield-id   : {0}", m_mjcGeomHFieldId );
             LOCO_CORE_TRACE( "\tmjc-hfield-adr  : {0}", m_mjcGeomHFieldStartAddr );
@@ -276,9 +276,9 @@ namespace primitives {
         }
 
         const eShapeType shape = m_ColliderRef->shape();
-        if ( shape == eShapeType::MESH )
+        if ( shape == eShapeType::CONVEX_MESH )
             _resize_mesh( newSize );
-        else if ( shape == eShapeType::HFIELD )
+        else if ( shape == eShapeType::HEIGHTFIELD )
             _resize_hfield( newSize );
         else
             _resize_primitive( newSize );
@@ -293,7 +293,7 @@ namespace primitives {
             return;
         }
 
-        if ( m_ColliderRef->shape() != eShapeType::MESH )
+        if ( m_ColliderRef->shape() != eShapeType::CONVEX_MESH )
         {
             LOCO_CORE_WARN( "TMujocoSingleBodyColliderAdapter::ChangeVertexData >>> tried to set vertex-data \
                              to the non-mesh collider {0}", m_ColliderRef->name() );
@@ -361,7 +361,7 @@ namespace primitives {
             return;
         }
 
-        if ( m_ColliderRef->shape() != eShapeType::HFIELD )
+        if ( m_ColliderRef->shape() != eShapeType::HEIGHTFIELD )
         {
             LOCO_CORE_WARN( "TMujocoSingleBodyColliderAdapter::ChangeElevationData >>> tried to set heightfield data \
                              to the non-heightfield collider {0}", m_ColliderRef->name() );

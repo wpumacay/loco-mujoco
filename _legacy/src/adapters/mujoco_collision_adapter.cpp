@@ -53,7 +53,7 @@ namespace tysoc {
             m_mjcfXmlResource->setAttributeString( "mesh", m_mjcfXmlAssetResource->getAttributeString( "name" ) );
         }
 
-        if ( m_collisionPtr->shape() == eShapeType::HFIELD )
+        if ( m_collisionPtr->shape() == eShapeType::HEIGHTFIELD )
         {
             auto& _hdata = m_collisionPtr->dataRef().hdata;
             m_mjcfXmlAssetResource = new mjcf::GenericElement( "hfield" );
@@ -142,7 +142,7 @@ namespace tysoc {
             return;
         }
 
-        if ( m_collisionPtr->shape() == eShapeType::HFIELD )
+        if ( m_collisionPtr->shape() == eShapeType::HEIGHTFIELD )
         {
             std::cout << "WARNING> changing hfield sizes at runtime is not supported, "
                       << "as it requires recomputing the elevation data of the collider" << std::endl;
@@ -164,7 +164,7 @@ namespace tysoc {
         assert( m_collisionPtr );
         assert( m_mjcGeomId != -1 );
 
-        if ( m_collisionPtr->shape() != eShapeType::HFIELD )
+        if ( m_collisionPtr->shape() != eShapeType::HEIGHTFIELD )
         {
             std::cout << "WARNING> tried setting elevation data to a non-hfield collider" << std::endl;
             return;
@@ -215,7 +215,7 @@ namespace tysoc {
         {
             m_mjcGeomMeshId = m_mjcModelPtr->geom_dataid[m_mjcGeomId];
         }
-        else if ( m_collisionPtr->data().type == eShapeType::HFIELD )
+        else if ( m_collisionPtr->data().type == eShapeType::HEIGHTFIELD )
         {
             // hfield resource location in model structure
             m_mjcGeomHFieldId = m_mjcModelPtr->geom_dataid[m_mjcGeomId];

@@ -18,7 +18,7 @@ TEST( TestLocoRemoveObjects, TestRemoveSingleBody )
     body_data.collision = col_data;
     body_data.visual = vis_data;
 
-    auto body_obj = std::make_unique<loco::TSingleBody>( "body_0", body_data, tinymath::Vector3f( 1.0, 1.0, 1.0 ), tinymath::Matrix3f() );
+    auto body_obj = std::make_unique<loco::primitives::TSingleBody>( "body_0", body_data, tinymath::Vector3f( 1.0, 1.0, 1.0 ), tinymath::Matrix3f() );
     auto scenario = std::make_unique<loco::TScenario>();
     scenario->AddSingleBody( std::move( body_obj ) );
 
@@ -53,7 +53,7 @@ TEST( TestLocoRemoveObjects, TestRemoveDrawable )
     vis_data.type = loco::eShapeType::CAPSULE;
     vis_data.size = { 0.1, 0.2, 0.1 };
 
-    auto drawable = std::make_unique<loco::TDrawable>( "drawable_0", vis_data );
+    auto drawable = std::make_unique<loco::visualizer::TDrawable>( "drawable_0", vis_data );
     auto scenario = std::make_unique<loco::TScenario>();
     scenario->AddDrawable( std::move( drawable ) );
 

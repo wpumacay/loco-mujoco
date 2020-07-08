@@ -44,7 +44,7 @@ namespace kintree {
 
         const parsing::TElement* element_resources() const { return m_MjcfElementResources.get(); }
 
-        const parsing::TElement* element_asset_resources() const { return m_MjcfElementAssetResources.get(); }
+        const parsing::TElement* element_assets_resources() const { return m_MjcfElementAssetResources.get(); }
 
         ssize_t mjc_geom_id() const { return m_MjcGeomId; }
 

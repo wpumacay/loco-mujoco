@@ -52,16 +52,22 @@ namespace kintree {
         for ( auto collider : colliders )
         {
             auto mjc_collider_adapter = std::make_unique<TMujocoKinematicTreeColliderAdapter>( collider );
-            if ( auto collider_element_asset_resources = mjc_collider_adapter->element_asset_resources() )
-            {
-                if ( !m_MjcfElementAssetsResources )
-                    m_MjcfElementAssetsResources = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_ASSET_TAG, parsing::eSchemaType::MJCF );
-                m_MjcfElementAssetsResources->Add( parsing::TElement::CloneElement( collider_element_asset_resources ) );
-            }
             collider->SetColliderAdapter( mjc_collider_adapter.get() );
             m_CollidersAdapters.push_back( std::move( mjc_collider_adapter ) );
             m_CollidersAdapters.back()->Build();
 
+            if ( auto collider_element_resources = static_cast<TMujocoKinematicTreeColliderAdapter*>(
+                                                        m_CollidersAdapters.back().get() )->element_resources() )
+            {
+                m_MjcfElementResources->Add( parsing::TElement::CloneElement( collider_element_resources ) );
+            }
+            if ( auto collider_element_assets_resources = static_cast<TMujocoKinematicTreeColliderAdapter*>(
+                                                                m_CollidersAdapters.back().get() )->element_assets_resources() )
+            {
+                if ( !m_MjcfElementAssetsResources )
+                    m_MjcfElementAssetsResources = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_ASSET_TAG, parsing::eSchemaType::MJCF );
+                m_MjcfElementAssetsResources->Add( parsing::TElement::CloneElement( collider_element_assets_resources ) );
+            }
         }
 
         auto joints = m_BodyRef->joints();
@@ -71,6 +77,11 @@ namespace kintree {
             joint->SetJointAdapter( mjc_joint_adapter.get() );
             m_JointsAdapters.push_back( std::move( mjc_joint_adapter ) );
             m_JointsAdapters.back()->Build();
+
+            auto vec_elements_resources = static_cast<TMujocoKinematicTreeJointAdapter*>( 
+                                                m_JointsAdapters.back().get() )->elements_resources();
+            for ( auto joint_element_resource : vec_elements_resources )
+                m_MjcfElementResources->Add( parsing::TElement::CloneElement( joint_element_resource ) );
         }
     }
 

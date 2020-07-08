@@ -46,9 +46,9 @@ namespace kintree {
 
         ssize_t mjc_body_id() const { return m_MjcBodyId; }
 
-        parsing::TElement* element_resource() { return m_MjcfElementResources.get(); }
+        parsing::TElement* element_resources() { return m_MjcfElementResources.get(); }
 
-        const parsing::TElement* element_resource() const { return m_MjcfElementResources.get(); }
+        const parsing::TElement* element_resources() const { return m_MjcfElementResources.get(); }
 
         parsing::TElement* element_assets_resources() { return m_MjcfElementAssetsResources.get(); }
 

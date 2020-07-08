@@ -36,6 +36,8 @@ namespace kintree {
 
         void ChangeCollisionMask( int collision_mask ) override;
 
+        void ChangeFriction( const TScalar&  ) override;
+
         void SetMjcModel( mjModel* mj_model_ref ) { m_MjcModelRef = mj_model_ref; }
 
         void SetMjcData( mjData* mj_data_ref ) { m_MjcDataRef = mj_data_ref; }

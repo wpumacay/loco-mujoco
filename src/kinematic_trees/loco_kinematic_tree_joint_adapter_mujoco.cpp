@@ -127,13 +127,29 @@ namespace kintree {
         if ( m_MjcJointId < 0 )
             return;
 
+        const bool is_root_joint = ( ( m_JointRef->parent() ) && ( !m_JointRef->parent()->parent() ) );
+        if ( is_root_joint )
+            return; // Root-joint case is handled by the kinematic-tree itself
+
+        const auto joint_type = m_JointRef->type();
         const auto qpos0 = m_JointRef->qpos0();
         const auto qvel0 = m_JointRef->qvel0();
         const auto num_qpos = m_JointRef->num_qpos();
         const auto num_qvel = m_JointRef->num_qvel();
 
-        for ( ssize_t i = 0; i < num_qpos; i++ )
-            m_MjcDataRef->qpos[m_MjcJointQposAdr + i] = qpos0[i];
+        if ( joint_type == eJointType::SPHERICAL ) // take into account w-x-y-z layout used by mujoco
+        {
+            m_MjcDataRef->qpos[m_MjcJointQposAdr + 0] = qpos0[3];
+            m_MjcDataRef->qpos[m_MjcJointQposAdr + 1] = qpos0[0];
+            m_MjcDataRef->qpos[m_MjcJointQposAdr + 2] = qpos0[1];
+            m_MjcDataRef->qpos[m_MjcJointQposAdr + 3] = qpos0[2];
+        }
+        else
+        {
+            for ( ssize_t i = 0; i < num_qpos; i++ )
+                m_MjcDataRef->qpos[m_MjcJointQposAdr + i] = qpos0[i];
+        }
+
         for ( ssize_t i = 0; i < num_qvel; i++ )
             m_MjcDataRef->qvel[m_MjcJointQvelAdr + i] = qvel0[i];
     }

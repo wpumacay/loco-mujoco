@@ -218,13 +218,28 @@ namespace kintree {
 
     void TMujocoKinematicTreeColliderAdapter::ChangeCollisionGroup( int collision_group )
     {
+        LOCO_CORE_ASSERT( m_MjcModelRef, "TMujocoKinematicTreeColliderAdapter::ChangeCollisionGroup >>> must have a valid mjModel reference" );
+        LOCO_CORE_ASSERT( m_MjcDataRef, "TMujocoKinematicTreeColliderAdapter::ChangeCollisionGroup >>> must have a valid mjData reference" );
+
         if ( m_MjcGeomId >= 0 )
             m_MjcModelRef->geom_contype[m_MjcGeomId] = collision_group;
     }
 
     void TMujocoKinematicTreeColliderAdapter::ChangeCollisionMask( int collision_mask )
     {
+        LOCO_CORE_ASSERT( m_MjcModelRef, "TMujocoKinematicTreeColliderAdapter::ChangeCollisionMask >>> must have a valid mjModel reference" );
+        LOCO_CORE_ASSERT( m_MjcDataRef, "TMujocoKinematicTreeColliderAdapter::ChangeCollisionMask >>> must have a valid mjData reference" );
+
         if ( m_MjcGeomId >= 0 )
             m_MjcModelRef->geom_conaffinity[m_MjcGeomId] = collision_mask;
+    }
+
+    void TMujocoKinematicTreeColliderAdapter::ChangeFriction( const TScalar& friction )
+    {
+        LOCO_CORE_ASSERT( m_MjcModelRef, "TMujocoKinematicTreeColliderAdapter::ChangeFriction >>> must have a valid mjModel reference" );
+        LOCO_CORE_ASSERT( m_MjcDataRef, "TMujocoKinematicTreeColliderAdapter::ChangeFriction >>> must have a valid mjData reference" );
+
+        if ( m_MjcGeomId >= 0 ) // Update only sliding friction (leave rolling and torsional as defaults)
+            m_MjcModelRef->geom_friction[3 * m_MjcGeomId + 0] = friction;
     }
 }}

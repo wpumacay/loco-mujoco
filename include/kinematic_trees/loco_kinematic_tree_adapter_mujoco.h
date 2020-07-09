@@ -49,9 +49,27 @@ namespace kintree {
 
     private :
 
+        void _SetTransformFreeJoint( TKinematicTreeJoint* joint_ref, const TMat4& tf );
+
+        void _SetLinearVelFreeJoint( TKinematicTreeJoint* joint_ref, const TVec3& linear_vel );
+
+        void _SetAngularVelFreeJoint( TKinematicTreeJoint* joint_ref, const TVec3& angular_vel );
+
+        void _SetTransformPlanarJoint( TKinematicTreeJoint* joint_ref, const TMat4& tf );
+
+        void _SetLinearVelPlanarJoint( TKinematicTreeJoint* joint_ref, const TVec3& linear_vel );
+
+        void _SetAngularVelPlanarJoint( TKinematicTreeJoint* joint_ref, const TVec3& angular_vel );
+
+        void _SetTransformFixedJoint( TKinematicTreeBody* body_ref, const TMat4& tf );
+
+    private :
+
         mjModel* m_MjcModelRef = nullptr;
 
         mjData* m_MjcDataRef = nullptr;
+
+        ssize_t m_MjcRootBodyId = -1;
 
         std::unique_ptr<parsing::TElement> m_MjcfElementResources = nullptr;
 

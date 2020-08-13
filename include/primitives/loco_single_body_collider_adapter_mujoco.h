@@ -46,7 +46,7 @@ namespace primitives {
 
         void SetMjcData( mjData* mjDataRef ) { m_mjcDataRef = mjDataRef; }
 
-        const parsing::TElement* element_resources() const { return m_mjcfElementResources.get(); }
+        std::vector<const parsing::TElement*> elements_resources() const;
 
         const parsing::TElement* element_asset_resources() const { return m_mjcfElementAssetResources.get(); }
 
@@ -92,7 +92,8 @@ namespace primitives {
         TVec3 m_size;
         TVec3 m_size0;
 
-        std::unique_ptr<parsing::TElement> m_mjcfElementResources;
+        std::vector<std::unique_ptr<parsing::TElement>> m_mjcfElementsResources;
+
         std::unique_ptr<parsing::TElement> m_mjcfElementAssetResources;
     };
 }}

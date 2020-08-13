@@ -160,9 +160,12 @@ namespace primitives {
                                                                   inertia.ixy, inertia.ixz, inertia.iyz } );
             }
 
-            LOCO_CORE_ASSERT( mjc_collider_adapter->element_resources(), "TMujocoSingleBodyAdapter::Build >>> \
-                              collider must have valid mjcf-resources once built, for body named {0}", m_BodyRef->name() );
-            m_mjcfElementResources->Add( parsing::TElement::CloneElement( mjc_collider_adapter->element_resources() ) );
+            auto mjcf_xml_geoms = mjc_collider_adapter->elements_resources();
+            LOCO_CORE_ASSERT( mjcf_xml_geoms.size() > 0, "TMujocoSingleBodyAdapter::Build >>> collider "
+                              "must have mjcf-geom-resources (at least 1) once built, for body named {0}",
+                              m_BodyRef->name() );
+            for ( auto mjcf_geom : mjcf_xml_geoms )
+                m_mjcfElementResources->Add( parsing::TElement::CloneElement( mjcf_geom ) );
 
             if ( m_ConstraintAdapter )
             {
@@ -183,9 +186,12 @@ namespace primitives {
         }
         else
         {
-            LOCO_CORE_ASSERT( mjc_collider_adapter->element_resources(), "TMujocoSingleBodyAdapter::Build >>> \
-                              collider must have valid mjcf-resources once built, for body named {0}", m_BodyRef->name() );
-            m_mjcfElementResources = parsing::TElement::CloneElement( mjc_collider_adapter->element_resources() );
+            auto mjcf_xml_geoms = mjc_collider_adapter->elements_resources();
+            if ( mjcf_xml_geoms.size() > 1 )
+                LOCO_CORE_WARN( "TMujocoSingleBodyAdapter::Build >>> collider must have only 1 geom "
+                                "if using static hfields or primitives. Error found in body named {0}", m_BodyRef->name() );
+
+            m_mjcfElementResources = parsing::TElement::CloneElement( mjcf_xml_geoms.front() );
             m_mjcfElementResources->SetVec3( "pos", m_BodyRef->pos() );
             m_mjcfElementResources->SetVec4( "quat", mujoco::quat_to_mjcQuat( m_BodyRef->quat() ) );
         }

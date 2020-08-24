@@ -26,9 +26,7 @@ namespace loco
         m_MjcfSimulationElement = nullptr;
 
         _CreateSingleBodyAdapters();
-        //// _CreateCompoundAdapters();
-        //// _CreateKintreeAdapters();
-        //// _CreateTerrainGeneratorAdapters();
+        _CreateKinematicTreeAdapters();
 
     #if defined( LOCO_CORE_USE_TRACK_ALLOCS )
         if ( tinyutils::Logger::IsActive() )
@@ -46,6 +44,17 @@ namespace loco
             auto single_body_adapter = std::make_unique<primitives::TMujocoSingleBodyAdapter>( single_body );
             single_body->SetBodyAdapter( single_body_adapter.get() );
             m_SingleBodyAdapters.push_back( std::move( single_body_adapter ) );
+        }
+    }
+
+    void TMujocoSimulation::_CreateKinematicTreeAdapters()
+    {
+        auto kinematic_trees = m_ScenarioRef->GetKinematicTreesList();
+        for ( auto kinematic_tree : kinematic_trees )
+        {
+            auto kinematic_tree_adapter = std::make_unique<kintree::TMujocoKinematicTreeAdapter>( kinematic_tree );
+            kinematic_tree->SetKintreeAdapter( kinematic_tree_adapter.get() );
+            m_KinematicTreeAdapters.push_back( std::move( kinematic_tree_adapter ) );
         }
     }
 
@@ -90,9 +99,7 @@ namespace loco
         mjcf_option_element->SetVec3( "gravity", m_Gravity );
 
         _CollectResourcesFromSingleBodies();
-        // _CollectResourcesFromCompounds();
-        // _CollectResourcesFromKintrees();
-        // _CollectResourcesFromTerrainGenerators();
+        _CollectResourcesFromKinematicTrees();
 
         // Store the xml-resources for this simulation into disk
         m_MjcfSimulationElement->SaveToXml( "simulation.xml" );
@@ -119,6 +126,14 @@ namespace loco
         for ( auto& single_body_adapter : m_SingleBodyAdapters )
         {
             if ( auto mjc_adapter = dynamic_cast<primitives::TMujocoSingleBodyAdapter*>( single_body_adapter.get() ) )
+            {
+                mjc_adapter->SetMjcModel( m_MjcModel.get() );
+                mjc_adapter->SetMjcData( m_MjcData.get() );
+            }
+        }
+        for ( auto& kinematic_tree_adapter : m_KinematicTreeAdapters )
+        {
+            if ( auto mjc_adapter = dynamic_cast<kintree::TMujocoKinematicTreeAdapter*>( kinematic_tree_adapter.get() ) )
             {
                 mjc_adapter->SetMjcModel( m_MjcModel.get() );
                 mjc_adapter->SetMjcData( m_MjcData.get() );
@@ -232,6 +247,34 @@ namespace loco
                     }
                 }
             }
+        }
+    }
+
+    void TMujocoSimulation::_CollectResourcesFromKinematicTrees()
+    {
+        LOCO_CORE_ASSERT( m_MjcfSimulationElement, "TMujocoSimulation::_CollectResourcesFromKinematicTrees >>> \
+                          there is no mjcf-simulation-element to place the resources in" );
+
+        auto simulation_element = m_MjcfSimulationElement.get();
+        auto assets_element = m_MjcfSimulationElement->GetFirstChildOfType( mujoco::LOCO_MJCF_ASSET_TAG );
+
+        LOCO_CORE_ASSERT( assets_element, "TMujocoSimulation::_CollectResourcesFromKinematicTrees >>> \
+                          there is no asset element in the mjcf-simulation-element" );
+
+        for ( auto& kinematic_tree_adapter : m_KinematicTreeAdapters )
+        {
+            if ( !kinematic_tree_adapter )
+            {
+                LOCO_CORE_ERROR( "TMujocoSimulation::_CollectResourcesFromKinematicTrees >>> there's a \
+                                  rogue nullptr single-body adapter that was added to the adapters list" );
+                continue;
+            }
+
+            auto mjc_adapter = static_cast<kintree::TMujocoKinematicTreeAdapter*>( kinematic_tree_adapter.get() );
+            auto mjcf_element = mjc_adapter->element_resources();
+            LOCO_CORE_ASSERT( mjcf_element, "TMujocoSimulation::_CollectResourcesFromKinematicTrees >>> \
+                              kinematic-tree mjc-adapter must have a mjcf-element with its resources on it (got nullptr instead)" );
+            simulation_element->Add( parsing::TElement::CloneElement( mjcf_element ) );
         }
     }
 

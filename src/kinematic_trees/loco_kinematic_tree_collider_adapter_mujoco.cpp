@@ -22,7 +22,8 @@ namespace kintree {
 
         m_MjcModelRef = nullptr;
         m_MjcDataRef = nullptr;
-        m_MjcfElementResources = nullptr;
+
+        m_MjcfElementsResources.clear();
         m_MjcfElementAssetResources = nullptr;
     }
 
@@ -30,82 +31,122 @@ namespace kintree {
     {
         LOCO_CORE_ASSERT( m_ColliderRef, "TMujocoKinematicTreeColliderAdapter::Build >>> must have a valid collison-object (got nullptr instead)" );
 
-        m_MjcfElementResources = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_GEOM_TAG, parsing::eSchemaType::MJCF );
-        m_MjcfElementResources->SetString( "name", m_ColliderRef->name() );
-        // Set local transform of this collider w.r.t. to its parent body --------------------------
-        auto local_tf = m_ColliderRef->local_tf();
-        const auto rel_position = local_tf.col( 3 );
-        const auto rel_quaternion = tinymath::quaternion( TMat3( local_tf ) );
-        m_MjcfElementResources->SetVec3( "pos", rel_position );
-        m_MjcfElementResources->SetVec4( "quat", mujoco::quat_to_mjcQuat( rel_quaternion ) );
-        // -----------------------------------------------------------------------------------------
-        m_MjcfElementResources->SetString( "type", mujoco::enumShape_to_mjcShape( m_ColliderRef->shape() ) );
-        m_MjcfElementResources->SetInt( "contype", m_ColliderRef->collisionGroup() );
-        m_MjcfElementResources->SetInt( "conaffinity", m_ColliderRef->collisionMask() );
-        m_MjcfElementResources->SetVec3( "friction", m_ColliderRef->data().friction );
-        auto array_size = mujoco::size_to_mjcSize( m_ColliderRef->shape(), m_ColliderRef->size() );
-        if ( array_size.ndim > 0 )
-            m_MjcfElementResources->SetArrayFloat( "size", array_size );
-
-        const eShapeType shape = m_ColliderRef->shape();
-        if ( shape == eShapeType::CONVEX_MESH )
+        const eShapeType collision_shape = m_ColliderRef->shape();
+        if ( collision_shape == eShapeType::COMPOUND )
         {
-            auto& mesh_data = m_ColliderRef->data().mesh_data;
-            if ( mesh_data.filename != "" )
+            auto& children_data = m_ColliderRef->data().children;
+            auto& children_tfs = m_ColliderRef->data().children_tfs;
+
+            for ( ssize_t i = 0; i < children_data.size(); i++ )
             {
-                const std::string mesh_file = mesh_data.filename;
-                const std::string mesh_id = tinyutils::GetFilenameNoExtension( mesh_file );
-                const auto mesh_scale = m_ColliderRef->size();
+                const auto children_type = children_data[i].type;
+                if ( ( children_type == eShapeType::CONVEX_MESH ) || ( children_type == eShapeType::TRIANGULAR_MESH ) ||
+                     ( children_type == eShapeType::HEIGHTFIELD ) || ( children_type == eShapeType::COMPOUND ) ||
+                     ( children_type == eShapeType::PLANE ) || ( children_type == eShapeType::NONE ) )
+                {
+                    LOCO_CORE_WARN( "TMujocoKinematicTreeColliderAdapter::Build >>> children of a compound "
+                                    "collider are expected to be of supported types box|sphere|cylinder|capsule|ellipsoid, "
+                                    "but got {0} shape instead. Error found in collider {1}", ToString( children_type ), m_ColliderRef->name() );
+                    continue;
+                }
 
-                m_MjcfElementAssetResources = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_MESH_TAG, parsing::eSchemaType::MJCF );
-                m_MjcfElementAssetResources->SetString( "name", mesh_id );
-                m_MjcfElementAssetResources->SetString( "file", mesh_file );
-                m_MjcfElementAssetResources->SetVec3( "scale", mesh_scale );
-                m_MjcfElementResources->SetString( "mesh", mesh_id );
-            }
-            else
-            {
-                LOCO_CORE_ERROR( "TMujocoKinematicTreeColliderAdapter::Build >>> kintree-mesh-collider {0} requires a \
-                                  filename to be provided by the user. Creating a dummy tetrahedron instead.", m_ColliderRef->name() );
+                auto mjcf_element_resource = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_GEOM_TAG, parsing::eSchemaType::MJCF );
+                const auto pos = TVec3( children_tfs[i].col( 3 ) );
+                const auto quat = tinymath::quaternion( children_tfs[i] );
+                mjcf_element_resource->SetString( "name", m_ColliderRef->name() + "_" + std::to_string( i ) );
+                mjcf_element_resource->SetVec3( "pos", pos );
+                mjcf_element_resource->SetVec4( "quat", mujoco::quat_to_mjcQuat( quat ) );
+                mjcf_element_resource->SetString( "type", mujoco::enumShape_to_mjcShape( children_type ) );
+                mjcf_element_resource->SetInt( "contype", m_ColliderRef->collisionGroup() );
+                mjcf_element_resource->SetInt( "conaffinity", m_ColliderRef->collisionMask() );
+                mjcf_element_resource->SetVec3( "friction", m_ColliderRef->data().friction );
+                auto array_size = mujoco::size_to_mjcSize( children_type, children_data[i].size );
+                if ( array_size.ndim > 0 )
+                    mjcf_element_resource->SetArrayFloat( "size", array_size );
 
-                const std::string mesh_file = m_ColliderRef->name() + ".msh";
-                const std::string mesh_id = m_ColliderRef->name() + "_asset";
-                const auto mesh_scale = m_ColliderRef->size();
-                mesh_data.vertices = { 0.0f, 0.0f, 0.0f,
-                                       1.0f, 0.0f, 0.0f,
-                                       0.0f, 1.0f, 0.0f,
-                                       0.0f, 0.0f, 1.0f };
-                mesh_data.faces = { 0, 2, 1,
-                                    0, 1, 3,
-                                    1, 2, 3,
-                                    0, 3, 2 };
-                const auto& mesh_vertices = mesh_data.vertices;
-                const auto& mesh_faces = mesh_data.faces;
-                mujoco::SaveMeshToBinary( mesh_file, mesh_vertices, mesh_faces );
-
-                m_MjcfElementAssetResources = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_MESH_TAG, parsing::eSchemaType::MJCF );
-                m_MjcfElementAssetResources->SetString( "name", mesh_id );
-                m_MjcfElementAssetResources->SetString( "file", mesh_file );
-                m_MjcfElementAssetResources->SetVec3( "scale", mesh_scale );
-                m_MjcfElementResources->SetString( "mesh", mesh_id );
+                m_MjcfElementsResources.push_back( std::move( mjcf_element_resource ) );
             }
         }
-
-        // If parent-body has only inertia.mass set, then we'll deal with it computing an appropriate density
-        if ( auto parent_body = m_ColliderRef->parent() )
+        else /* normal colliders (single-shape) */
         {
-            const auto& inertia = parent_body->data().inertia;
-            if ( ( inertia.mass > loco::EPS ) && 
-                 ( ( inertia.ixx <= loco::EPS ) || ( inertia.iyy <= loco::EPS ) || ( inertia.izz <= loco::EPS ) ||
-                   ( inertia.ixy <= -loco::EPS ) || ( inertia.ixz <= -loco::EPS ) || ( inertia.iyz <= -loco::EPS ) ) )
-            {
-                if ( shape == eShapeType::CONVEX_MESH )
-                    LOCO_CORE_WARN( "TMujocoKinematicTreeColliderAdapter::Build >>> can't compute inertia of mesh-collider {0}", m_ColliderRef->name() );
+            auto mjcf_element_resource = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_GEOM_TAG, parsing::eSchemaType::MJCF );
+            mjcf_element_resource->SetString( "name", m_ColliderRef->name() );
+            // Set local transform of this collider w.r.t. to its parent body --------------------------
+            auto local_tf = m_ColliderRef->local_tf();
+            const auto rel_position = local_tf.col( 3 );
+            const auto rel_quaternion = tinymath::quaternion( local_tf );
+            mjcf_element_resource->SetVec3( "pos", rel_position );
+            mjcf_element_resource->SetVec4( "quat", mujoco::quat_to_mjcQuat( rel_quaternion ) );
+            // -----------------------------------------------------------------------------------------
+            mjcf_element_resource->SetString( "type", mujoco::enumShape_to_mjcShape( m_ColliderRef->shape() ) );
+            mjcf_element_resource->SetInt( "contype", m_ColliderRef->collisionGroup() );
+            mjcf_element_resource->SetInt( "conaffinity", m_ColliderRef->collisionMask() );
+            mjcf_element_resource->SetVec3( "friction", m_ColliderRef->data().friction );
+            auto array_size = mujoco::size_to_mjcSize( m_ColliderRef->shape(), m_ColliderRef->size() );
+            if ( array_size.ndim > 0 )
+                mjcf_element_resource->SetArrayFloat( "size", array_size );
 
-                const auto volume = mujoco::compute_primitive_volume( shape, m_ColliderRef->size() );
-                const auto density = inertia.mass / volume;
-                m_MjcfElementResources->SetFloat( "density", density );
+            if ( collision_shape == eShapeType::CONVEX_MESH )
+            {
+                auto& mesh_data = m_ColliderRef->data().mesh_data;
+                if ( mesh_data.filename != "" )
+                {
+                    const std::string mesh_file = mesh_data.filename;
+                    const std::string mesh_id = tinyutils::GetFilenameNoExtension( mesh_file );
+                    const auto mesh_scale = m_ColliderRef->size();
+
+                    m_MjcfElementAssetResources = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_MESH_TAG, parsing::eSchemaType::MJCF );
+                    m_MjcfElementAssetResources->SetString( "name", mesh_id );
+                    m_MjcfElementAssetResources->SetString( "file", mesh_file );
+                    m_MjcfElementAssetResources->SetVec3( "scale", mesh_scale );
+                    mjcf_element_resource->SetString( "mesh", mesh_id );
+                }
+                else
+                {
+                    LOCO_CORE_ERROR( "TMujocoKinematicTreeColliderAdapter::Build >>> kintree-mesh-collider {0} requires a \
+                                      filename to be provided by the user. Creating a dummy tetrahedron instead.", m_ColliderRef->name() );
+
+                    const std::string mesh_file = m_ColliderRef->name() + ".msh";
+                    const std::string mesh_id = m_ColliderRef->name() + "_asset";
+                    const auto mesh_scale = m_ColliderRef->size();
+                    mesh_data.vertices = { 0.0f, 0.0f, 0.0f,
+                                           1.0f, 0.0f, 0.0f,
+                                           0.0f, 1.0f, 0.0f,
+                                           0.0f, 0.0f, 1.0f };
+                    mesh_data.faces = { 0, 2, 1,
+                                        0, 1, 3,
+                                        1, 2, 3,
+                                        0, 3, 2 };
+                    const auto& mesh_vertices = mesh_data.vertices;
+                    const auto& mesh_faces = mesh_data.faces;
+                    mujoco::SaveMeshToBinary( mesh_file, mesh_vertices, mesh_faces );
+
+                    m_MjcfElementAssetResources = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_MESH_TAG, parsing::eSchemaType::MJCF );
+                    m_MjcfElementAssetResources->SetString( "name", mesh_id );
+                    m_MjcfElementAssetResources->SetString( "file", mesh_file );
+                    m_MjcfElementAssetResources->SetVec3( "scale", mesh_scale );
+                    mjcf_element_resource->SetString( "mesh", mesh_id );
+                }
             }
+
+            // If parent-body has only inertia.mass set, then we'll deal with it computing an appropriate density
+            if ( auto parent_body = m_ColliderRef->parent() )
+            {
+                const auto& inertia = parent_body->data().inertia;
+                if ( ( inertia.mass > loco::EPS ) && 
+                     ( ( inertia.ixx <= loco::EPS ) || ( inertia.iyy <= loco::EPS ) || ( inertia.izz <= loco::EPS ) ||
+                       ( inertia.ixy <= -loco::EPS ) || ( inertia.ixz <= -loco::EPS ) || ( inertia.iyz <= -loco::EPS ) ) )
+                {
+                    if ( collision_shape == eShapeType::CONVEX_MESH )
+                        LOCO_CORE_WARN( "TMujocoKinematicTreeColliderAdapter::Build >>> can't compute inertia of mesh-collider {0}", m_ColliderRef->name() );
+
+                    const auto volume = mujoco::compute_primitive_volume( collision_shape, m_ColliderRef->size() );
+                    const auto density = inertia.mass / volume;
+                    mjcf_element_resource->SetFloat( "density", density );
+                }
+            }
+
+            m_MjcfElementsResources.push_back( std::move( mjcf_element_resource ) );
         }
     }
 
@@ -113,6 +154,9 @@ namespace kintree {
     {
         LOCO_CORE_ASSERT( m_MjcModelRef, "TMujocoKinematicTreeColliderAdapter::Initialize >>> must have a valid mjModel reference" );
         LOCO_CORE_ASSERT( m_MjcDataRef, "TMujocoKinematicTreeColliderAdapter::Initialize >>> must have a valid mjData reference" );
+
+        if ( m_ColliderRef->shape() == eShapeType::COMPOUND )
+            return; // Compound shapes don't allow to handle its MuJoCo properties (as they are composed multiple geoms)
 
         m_MjcGeomId = mj_name2id( m_MjcModelRef, mjOBJ_GEOM, m_ColliderRef->name().c_str() );
         if ( m_MjcGeomId < 0 )
@@ -165,8 +209,10 @@ namespace kintree {
         LOCO_CORE_ASSERT( m_MjcModelRef, "TMujocoKinematicTreeColliderAdapter::Initialize >>> must have a valid mjModel reference" );
         LOCO_CORE_ASSERT( m_MjcDataRef, "TMujocoKinematicTreeColliderAdapter::Initialize >>> must have a valid mjData reference" );
 
+        if ( m_ColliderRef->shape() == eShapeType::COMPOUND )
+            return; // We can't change the size of compound-shaped colliders
         if ( tinymath::allclose( m_Size, new_size ) )
-            return;
+            return; // If the size is the same, avoid unnecesary updates
         if ( m_MjcGeomId < 0 )
             return;
 
@@ -221,8 +267,9 @@ namespace kintree {
         LOCO_CORE_ASSERT( m_MjcModelRef, "TMujocoKinematicTreeColliderAdapter::ChangeCollisionGroup >>> must have a valid mjModel reference" );
         LOCO_CORE_ASSERT( m_MjcDataRef, "TMujocoKinematicTreeColliderAdapter::ChangeCollisionGroup >>> must have a valid mjData reference" );
 
-        if ( m_MjcGeomId >= 0 )
-            m_MjcModelRef->geom_contype[m_MjcGeomId] = collision_group;
+        if ( m_MjcGeomId < 0 )
+            return;
+        m_MjcModelRef->geom_contype[m_MjcGeomId] = collision_group;
     }
 
     void TMujocoKinematicTreeColliderAdapter::ChangeCollisionMask( int collision_mask )
@@ -230,8 +277,9 @@ namespace kintree {
         LOCO_CORE_ASSERT( m_MjcModelRef, "TMujocoKinematicTreeColliderAdapter::ChangeCollisionMask >>> must have a valid mjModel reference" );
         LOCO_CORE_ASSERT( m_MjcDataRef, "TMujocoKinematicTreeColliderAdapter::ChangeCollisionMask >>> must have a valid mjData reference" );
 
-        if ( m_MjcGeomId >= 0 )
-            m_MjcModelRef->geom_conaffinity[m_MjcGeomId] = collision_mask;
+        if ( m_MjcGeomId < 0 )
+            return;
+        m_MjcModelRef->geom_conaffinity[m_MjcGeomId] = collision_mask;
     }
 
     void TMujocoKinematicTreeColliderAdapter::ChangeFriction( const TScalar& friction )
@@ -239,7 +287,17 @@ namespace kintree {
         LOCO_CORE_ASSERT( m_MjcModelRef, "TMujocoKinematicTreeColliderAdapter::ChangeFriction >>> must have a valid mjModel reference" );
         LOCO_CORE_ASSERT( m_MjcDataRef, "TMujocoKinematicTreeColliderAdapter::ChangeFriction >>> must have a valid mjData reference" );
 
-        if ( m_MjcGeomId >= 0 ) // Update only sliding friction (leave rolling and torsional as defaults)
-            m_MjcModelRef->geom_friction[3 * m_MjcGeomId + 0] = friction;
+        if ( m_MjcGeomId < 0 )
+            return;
+        // Update only sliding friction (leave rolling and torsional as defaults)
+        m_MjcModelRef->geom_friction[3 * m_MjcGeomId + 0] = friction;
+    }
+
+    std::vector<const parsing::TElement*> TMujocoKinematicTreeColliderAdapter::elements_resources() const
+    {
+        std::vector<const parsing::TElement*> vec_elements;
+        for ( auto& element : m_MjcfElementsResources )
+            vec_elements.push_back( element.get() );
+        return vec_elements;
     }
 }}

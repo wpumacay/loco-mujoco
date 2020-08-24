@@ -48,21 +48,21 @@ namespace kintree {
                                                           inertia.ixy, inertia.ixz, inertia.iyz } );
         }
 
-        auto colliders = m_BodyRef->colliders();
-        for ( auto collider : colliders )
+        if ( auto collider = m_BodyRef->collider() )
         {
-            auto mjc_collider_adapter = std::make_unique<TMujocoKinematicTreeColliderAdapter>( collider );
-            collider->SetColliderAdapter( mjc_collider_adapter.get() );
-            m_CollidersAdapters.push_back( std::move( mjc_collider_adapter ) );
-            m_CollidersAdapters.back()->Build();
+            m_ColliderAdapter = std::make_unique<TMujocoKinematicTreeColliderAdapter>( collider );
+            collider->SetColliderAdapter( m_ColliderAdapter.get() );
 
-            if ( auto collider_element_resources = static_cast<TMujocoKinematicTreeColliderAdapter*>(
-                                                        m_CollidersAdapters.back().get() )->element_resources() )
-            {
-                m_MjcfElementResources->Add( parsing::TElement::CloneElement( collider_element_resources ) );
-            }
-            if ( auto collider_element_assets_resources = static_cast<TMujocoKinematicTreeColliderAdapter*>(
-                                                                m_CollidersAdapters.back().get() )->element_assets_resources() )
+            auto mjc_collider_adapter = static_cast<TMujocoKinematicTreeColliderAdapter*>( m_ColliderAdapter.get() );
+            mjc_collider_adapter->Build();
+
+            auto mjcf_xml_geoms = mjc_collider_adapter->elements_resources();
+            LOCO_CORE_ASSERT( mjcf_xml_geoms.size() > 0, "TMujocoKinematicTreeBodyAdapter::Build >>> collider "
+                              "must have mjcf-geom-resources (at least 1) once built, for body named {0}", m_BodyRef->name() );
+            for ( auto mjcf_geom : mjcf_xml_geoms )
+                m_MjcfElementResources->Add( parsing::TElement::CloneElement( mjcf_geom ) );
+
+            if ( auto collider_element_assets_resources = mjc_collider_adapter->element_assets_resources() )
             {
                 if ( !m_MjcfElementAssetsResources )
                     m_MjcfElementAssetsResources = std::make_unique<parsing::TElement>( mujoco::LOCO_MJCF_ASSET_TAG, parsing::eSchemaType::MJCF );
@@ -70,17 +70,16 @@ namespace kintree {
             }
         }
 
-        auto joints = m_BodyRef->joints();
-        for ( auto joint : joints )
+        if ( auto joint = m_BodyRef->joint() )
         {
-            auto mjc_joint_adapter = std::make_unique<TMujocoKinematicTreeJointAdapter>( joint );
-            joint->SetJointAdapter( mjc_joint_adapter.get() );
-            m_JointsAdapters.push_back( std::move( mjc_joint_adapter ) );
-            m_JointsAdapters.back()->Build();
+            m_JointAdapter = std::make_unique<TMujocoKinematicTreeJointAdapter>( joint );
+            joint->SetJointAdapter( m_JointAdapter.get() );
 
-            auto vec_elements_resources = static_cast<TMujocoKinematicTreeJointAdapter*>( 
-                                                m_JointsAdapters.back().get() )->elements_resources();
-            for ( auto joint_element_resource : vec_elements_resources )
+            auto mjc_collider_adapter = static_cast<TMujocoKinematicTreeJointAdapter*>( m_JointAdapter.get() );
+            mjc_collider_adapter->Build();
+
+            auto vec_jnt_elements = static_cast<TMujocoKinematicTreeJointAdapter*>( mjc_collider_adapter )->elements_resources();
+            for ( auto joint_element_resource : vec_jnt_elements )
                 m_MjcfElementResources->Add( parsing::TElement::CloneElement( joint_element_resource ) );
         }
     }
@@ -104,7 +103,7 @@ namespace kintree {
         LOCO_CORE_ASSERT( m_MjcModelRef, "TMujocoKinematicTreeBodyAdapter::Reset >>> must have a valid mjModel reference (got nullptr)" );
         LOCO_CORE_ASSERT( m_MjcDataRef, "TMujocoKinematicTreeBodyAdapter::Reset >>> must have a valid mjData reference (got nullptr)" );
 
-        // Nothing to reset, the colliders|joints' adapters are handled by its related objects
+        // Nothing to reset, the collider|joint' adapters are handled by its related objects
     }
 
     void TMujocoKinematicTreeBodyAdapter::SetForceCOM( const TVec3& force )
@@ -155,24 +154,20 @@ namespace kintree {
     void TMujocoKinematicTreeBodyAdapter::SetMjcModel( mjModel* mj_model_ref )
     {
         m_MjcModelRef = mj_model_ref;
-        for ( auto& collider_adapter : m_CollidersAdapters )
-            if ( auto mjc_collider_adapter = dynamic_cast<TMujocoKinematicTreeColliderAdapter*>( collider_adapter.get() ) )
-                mjc_collider_adapter->SetMjcModel( mj_model_ref );
+        if ( auto mjc_collider_adapter = dynamic_cast<TMujocoKinematicTreeColliderAdapter*>( m_ColliderAdapter.get() ) )
+            mjc_collider_adapter->SetMjcModel( mj_model_ref );
 
-        for ( auto& joint_adapter : m_JointsAdapters )
-            if ( auto mjc_joint_adapter = dynamic_cast<TMujocoKinematicTreeJointAdapter*>( joint_adapter.get() ) )
-                mjc_joint_adapter->SetMjcModel( mj_model_ref );
+        if ( auto mjc_joint_adapter = dynamic_cast<TMujocoKinematicTreeJointAdapter*>( m_JointAdapter.get() ) )
+            mjc_joint_adapter->SetMjcModel( mj_model_ref );
     }
 
     void TMujocoKinematicTreeBodyAdapter::SetMjcData( mjData* mj_data_ref )
     {
         m_MjcDataRef = mj_data_ref;
-        for ( auto& collider_adapter : m_CollidersAdapters )
-            if ( auto mjc_collider_adapter = dynamic_cast<TMujocoKinematicTreeColliderAdapter*>( collider_adapter.get() ) )
-                mjc_collider_adapter->SetMjcData( mj_data_ref );
+        if ( auto mjc_collider_adapter = dynamic_cast<TMujocoKinematicTreeColliderAdapter*>( m_ColliderAdapter.get() ) )
+            mjc_collider_adapter->SetMjcData( mj_data_ref );
 
-        for ( auto& joint_adapter : m_JointsAdapters )
-            if ( auto mjc_joint_adapter = dynamic_cast<TMujocoKinematicTreeJointAdapter*>( joint_adapter.get() ) )
-                mjc_joint_adapter->SetMjcData( mj_data_ref );
+        if ( auto mjc_joint_adapter = dynamic_cast<TMujocoKinematicTreeJointAdapter*>( m_JointAdapter.get() ) )
+            mjc_joint_adapter->SetMjcData( mj_data_ref );
     }
 }}

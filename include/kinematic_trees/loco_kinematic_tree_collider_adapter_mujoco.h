@@ -42,7 +42,7 @@ namespace kintree {
 
         void SetMjcData( mjData* mj_data_ref ) { m_MjcDataRef = mj_data_ref; }
 
-        const parsing::TElement* element_resources() const { return m_MjcfElementResources.get(); }
+        std::vector<const parsing::TElement*> elements_resources() const;
 
         const parsing::TElement* element_assets_resources() const { return m_MjcfElementAssetResources.get(); }
 
@@ -78,7 +78,7 @@ namespace kintree {
 
         double m_MjcGeomRbound = 0.0;
 
-        std::unique_ptr<parsing::TElement> m_MjcfElementResources = nullptr;
+        std::vector<std::unique_ptr<parsing::TElement>> m_MjcfElementsResources;
 
         std::unique_ptr<parsing::TElement> m_MjcfElementAssetResources = nullptr;
 

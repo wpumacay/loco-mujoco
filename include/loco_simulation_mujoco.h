@@ -6,8 +6,8 @@
 #include <utils/loco_parsing_schema.h>
 #include <utils/loco_parsing_element.h>
 
-#include <primitives/loco_single_body_collider_adapter_mujoco.h>
 #include <primitives/loco_single_body_adapter_mujoco.h>
+#include <kinematic_trees/loco_kinematic_tree_adapter_mujoco.h>
 
 namespace loco
 {
@@ -55,19 +55,11 @@ namespace loco
 
         void _CreateSingleBodyAdapters();
 
-        // void _CreateCompoundAdapters();
-
-        // void _CreateKintreeAdapters();
-
-        // void _CreateTerrainGeneratorAdapters();
+        void _CreateKinematicTreeAdapters();
 
         void _CollectResourcesFromSingleBodies();
 
-        // void _CollectResourcesFromCompounds();
-
-        // void _CollectResourcesFromKintrees();
-
-        // void _CollectResourcesFromTerrainGenerators();
+        void _CollectResourcesFromKinematicTrees();
 
         void _CollectContacts();
 

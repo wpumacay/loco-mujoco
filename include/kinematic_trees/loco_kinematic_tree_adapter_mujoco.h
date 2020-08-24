@@ -47,6 +47,14 @@ namespace kintree {
 
         void SetMjcData( mjData* mj_data_ref );
 
+        parsing::TElement* element_resources() { return m_MjcfElementResources.get(); }
+
+        const parsing::TElement* element_resources() const { return m_MjcfElementResources.get(); }
+
+        parsing::TElement* element_assets_resources() { return m_MjcfElementAssetsResources.get(); }
+
+        const parsing::TElement* element_assets_resources() const { return m_MjcfElementAssetsResources.get(); }
+
     private :
 
         void _SetTransformFreeJoint( TKinematicTreeJoint* joint_ref, const TMat4& tf );

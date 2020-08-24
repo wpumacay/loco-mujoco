@@ -90,15 +90,8 @@ namespace kintree {
             LOCO_CORE_ERROR( "TMujocoKinematicTreeAdapter::Reset >>> kintree {0} doesn't have a root-body", m_KintreeRef->name() );
             return;
         }
-        auto root_joint_candidates = root_body->joints();
-        if ( root_joint_candidates.size() != 1 )
-        {
-            LOCO_CORE_ERROR( "TMujocoKinematicTreeAdapter::Reset >>> there must be only one root-joint "
-                             "for the root-body. Found {0} joints at the root-body for kintree {1}",
-                             root_joint_candidates.size(), m_KintreeRef->name() );
-            return;
-        }
-        auto root_joint = root_joint_candidates.front();
+
+        auto root_joint = root_body->joint();
         const eJointType root_joint_type = root_joint->type();
         /**/ if ( root_joint_type == eJointType::FREE )
         {
@@ -145,15 +138,8 @@ namespace kintree {
             LOCO_CORE_ERROR( "TMujocoKinematicTreeAdapter::SetTransform >>> kintree {0} doesn't have a root-body", m_KintreeRef->name() );
             return;
         }
-        auto root_joint_candidates = root_body->joints();
-        if ( root_joint_candidates.size() != 1 )
-        {
-            LOCO_CORE_ERROR( "TMujocoKinematicTreeAdapter::Reset >>> there must be only one root-joint "
-                             "for the root-body. Found {0} joints at the root-body for kintree {1}",
-                             root_joint_candidates.size(), m_KintreeRef->name() );
-            return;
-        }
-        auto root_joint = root_joint_candidates.front();
+
+        auto root_joint = root_body->joint();
         const eJointType root_joint_type = root_joint->type();
         /**/ if ( root_joint_type == eJointType::FREE )
             _SetTransformFreeJoint( root_joint, tf );
@@ -176,15 +162,8 @@ namespace kintree {
                              m_KintreeRef->name() );
             return;
         }
-        auto root_joint_candidates = root_body->joints();
-        if ( root_joint_candidates.size() != 1 )
-        {
-            LOCO_CORE_ERROR( "TMujocoKinematicTreeAdapter::Reset >>> there must be only one root-joint "
-                             "for the root-body. Found {0} joints at the root-body for kintree {1}",
-                             root_joint_candidates.size(), m_KintreeRef->name() );
-            return;
-        }
-        auto root_joint = root_joint_candidates.front();
+
+        auto root_joint = root_body->joint();
         const eJointType root_joint_type = root_joint->type();
         /**/ if ( root_joint_type == eJointType::FREE )
             _SetLinearVelFreeJoint( root_joint, linear_vel );
@@ -205,15 +184,8 @@ namespace kintree {
                              m_KintreeRef->name() );
             return;
         }
-        auto root_joint_candidates = root_body->joints();
-        if ( root_joint_candidates.size() != 1 )
-        {
-            LOCO_CORE_ERROR( "TMujocoKinematicTreeAdapter::Reset >>> there must be only one root-joint "
-                             "for the root-body. Found {0} joints at the root-body for kintree {1}",
-                             root_joint_candidates.size(), m_KintreeRef->name() );
-            return;
-        }
-        auto root_joint = root_joint_candidates.front();
+
+        auto root_joint = root_body->joint();
         const eJointType root_joint_type = root_joint->type();
         /**/ if ( root_joint_type == eJointType::FREE )
             _SetAngularVelFreeJoint( root_joint, angular_vel );

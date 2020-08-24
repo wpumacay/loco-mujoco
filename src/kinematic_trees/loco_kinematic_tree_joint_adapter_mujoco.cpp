@@ -25,7 +25,7 @@ namespace kintree {
 
         const auto joint_type = m_JointRef->type();
         if ( joint_type == eJointType::FIXED )
-            return; // Fixed-joints are behave like non-existent mjcf elements in the mjcf format
+            return; // Fixed-joints behave like non-existent mjcf elements in the mjcf format
 
         if ( joint_type != eJointType::PLANAR )
         {
@@ -100,8 +100,10 @@ namespace kintree {
         LOCO_CORE_ASSERT( m_MjcDataRef, "TMujocoKinematicTreeJointAdapter::Initialize >>> must have a valid mjData reference" );
 
         const auto joint_type = m_JointRef->type();
-        if ( joint_type == eJointType::FIXED || joint_type == eJointType::PLANAR )
-            return;
+        if ( joint_type == eJointType::FIXED )
+            return; // Fixed joints don't have any handle to mjc-joints
+        if ( joint_type == eJointType::PLANAR )
+            return; // A planar joint requires multiple mjc-joints, so don't use handles
 
         m_MjcJointId = mj_name2id( m_MjcModelRef, mjOBJ_JOINT, m_JointRef->name().c_str() );
         if ( m_MjcJointId < 0 )
@@ -159,6 +161,9 @@ namespace kintree {
         LOCO_CORE_ASSERT( m_MjcModelRef, "TMujocoKinematicTreeJointAdapter::SetQpos >>> must have a valid mjModel reference" );
         LOCO_CORE_ASSERT( m_MjcDataRef, "TMujocoKinematicTreeJointAdapter::SetQpos >>> must have a valid mjData reference" );
 
+        if ( m_MjcJointId < 0 )
+            return;
+
         const ssize_t num_qpos = m_JointRef->num_qpos();
         if ( qpos.size() != num_qpos )
         {
@@ -167,8 +172,6 @@ namespace kintree {
                               loco::ToString( m_JointRef->type() ), std::to_string( num_qpos ), std::to_string( qpos.size() ) );
             return;
         }
-        if ( m_MjcJointId < 0 )
-            return;
 
         for ( ssize_t i = 0; i < num_qpos; i++ )
             m_MjcDataRef->qpos[m_MjcJointQposAdr + i] = qpos[i];
@@ -179,6 +182,9 @@ namespace kintree {
         LOCO_CORE_ASSERT( m_MjcModelRef, "TMujocoKinematicTreeJointAdapter::SetQvel >>> must have a valid mjModel reference" );
         LOCO_CORE_ASSERT( m_MjcDataRef, "TMujocoKinematicTreeJointAdapter::SetQvel >>> must have a valid mjData reference" );
 
+        if ( m_MjcJointId < 0 )
+            return;
+
         const ssize_t num_qvel = m_JointRef->num_qvel();
         if ( qvel.size() != num_qvel )
         {
@@ -187,8 +193,6 @@ namespace kintree {
                               loco::ToString( m_JointRef->type() ), std::to_string( num_qvel ), std::to_string( qvel.size() ) );
             return;
         }
-        if ( m_MjcJointId < 0 )
-            return;
 
         for ( ssize_t i = 0; i < num_qvel; i++ )
             m_MjcDataRef->qvel[m_MjcJointQvelAdr + i] = qvel[i];
@@ -268,7 +272,6 @@ namespace kintree {
         m_MjcModelRef->jnt_limited[m_MjcJointId] = (limited) ? 1 : 0;
         if ( limited )
         {
-            // @todo: check if limits for revolute joints are required in degrees or radians
             /**/ if ( joint_type == eJointType::SPHERICAL )
             {
                 m_MjcModelRef->jnt_range[2 * m_MjcJointId + 0] = 0.0f;
@@ -276,6 +279,7 @@ namespace kintree {
             }
             else if ( joint_type == eJointType::REVOLUTE )
             {
+                // @todo: check if limits for revolute joints are required in degrees or radians
                 m_MjcModelRef->jnt_range[2 * m_MjcJointId + 0] = Rad2degrees( limits.x() );
                 m_MjcModelRef->jnt_range[2 * m_MjcJointId + 1] = Rad2degrees( limits.y() );
             }

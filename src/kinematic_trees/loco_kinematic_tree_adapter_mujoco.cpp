@@ -56,9 +56,17 @@ namespace kintree {
                                                             body_element_assets_resources->get_child( i ) ) );
             }
 
+            // Check for dummy bodies, as they have to be skipped in the traversal in the appropriate way
+            const bool is_dummy_body = ( ( !curr_body->collider() ) && ( curr_body->joint() ) );
+
             auto children = curr_body->children();
             for ( auto child : children )
-                dfs_body_parentElm.push( { child, curr_parent_elm->get_child( curr_parent_elm->num_children() - 1 ) } );
+            {
+                if ( !is_dummy_body )
+                    dfs_body_parentElm.push( { child, curr_parent_elm->get_child( curr_parent_elm->num_children() - 1 ) } );
+                else
+                    dfs_body_parentElm.push( { child, curr_parent_elm } );
+            }
         }
     }
 

@@ -82,12 +82,25 @@ namespace kintree {
             for ( auto joint_element_resource : vec_jnt_elements )
                 m_MjcfElementResources->Add( parsing::TElement::CloneElement( joint_element_resource ) );
         }
+
+        // CHeck for the case of dummy-bodies, as they require to replace mjcf-body + mjcf-joint for just a mjcf-joint
+        const bool is_dummy_body = ( ( !m_BodyRef->collider() ) && ( m_BodyRef->joint() ) );
+        if ( is_dummy_body )
+        {
+            auto mjcf_joint_element = m_MjcfElementResources->GetFirstChildOfType( mujoco::LOCO_MJCF_JOINT_TAG );
+            m_MjcfElementResources = parsing::TElement::CloneElement( mjcf_joint_element );
+        }
     }
 
     void TMujocoKinematicTreeBodyAdapter::Initialize()
     {
         LOCO_CORE_ASSERT( m_MjcModelRef, "TMujocoKinematicTreeBodyAdapter::Initialize >>> must have a valid mjModel reference (got nullptr)" );
         LOCO_CORE_ASSERT( m_MjcDataRef, "TMujocoKinematicTreeBodyAdapter::Initialize >>> must have a valid mjData reference (got nullptr)" );
+
+        // Dummy bodies don't have an associated mjc-body object
+        const bool is_dummy_body = ( ( !m_BodyRef->collider() ) && ( m_BodyRef->joint() ) );
+        if ( is_dummy_body )
+            return;
 
         m_MjcBodyId = mj_name2id( m_MjcModelRef, mjOBJ_BODY, m_BodyRef->name().c_str() );
         if ( m_MjcBodyId < 0 )

@@ -97,6 +97,12 @@ namespace kintree {
         LOCO_CORE_ASSERT( m_MjcModelRef, "TMujocoKinematicTreeBodyAdapter::Initialize >>> must have a valid mjModel reference (got nullptr)" );
         LOCO_CORE_ASSERT( m_MjcDataRef, "TMujocoKinematicTreeBodyAdapter::Initialize >>> must have a valid mjData reference (got nullptr)" );
 
+        if ( auto mjc_collider_adapter = dynamic_cast<TMujocoKinematicTreeJointAdapter*>( m_ColliderAdapter.get() ) )
+            mjc_collider_adapter->Initialize();
+
+        if ( auto mjc_joint_adapter = dynamic_cast<TMujocoKinematicTreeJointAdapter*>( m_JointAdapter.get() ) )
+            mjc_joint_adapter->Initialize();
+
         // Dummy bodies don't have an associated mjc-body object
         const bool is_dummy_body = ( ( !m_BodyRef->collider() ) && ( m_BodyRef->joint() ) );
         if ( is_dummy_body )
